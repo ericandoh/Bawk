@@ -27,6 +27,7 @@
 
 class PlayerRender {
 public:
+    PlayerRender();
     void set_camera(Position* pos, Direction* dir);
 };
 

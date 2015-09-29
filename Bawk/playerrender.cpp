@@ -9,7 +9,13 @@
 #include "playerrender.h"
 #include <GLFW/glfw3.h>
 
-/*void PlayerRender::set_camera(Position* pos, Direction* dir) {
+PlayerRender::PlayerRender() {
+    // initialize things
+}
+
+void PlayerRender::set_camera(Position* pos, Direction* dir) {
     glMatrixMode(GL_MODELVIEW);                  // indicate we are specifying camera transformations
     glLoadIdentity();                            // make sure transformation is "zero'd"
-}*/
+    
+    glRotatef((float) glfwGetTime() * 50.f, 0.f, 3.f, 1.f);
+}

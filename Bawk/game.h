@@ -25,10 +25,17 @@
 #define __Bawk__game__
 
 #include <stdio.h>
+#include <GLFW/glfw3.h>
+#include "world.h"
+#include "player.h"
 
-namespace game {
+class Game {
+    World world;
+    Player player;
+public:
     void init();
     void render();
-}
+    void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+};
 
 #endif /* defined(__Bawk__game__) */

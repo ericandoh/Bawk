@@ -25,8 +25,11 @@
 #define __Bawk__worldrender__
 
 #include <stdio.h>
+//removeme
+#include "chunk.h"
 
 class WorldRender {
+    chunk chunk;
 public:
     WorldRender();
     void render();

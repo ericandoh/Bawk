@@ -14,5 +14,5 @@ Player::Player() {
 }
 
 void Player::set_camera() {
-    //playerrender.set_camera(&pos, &dir);
+    playerrender.set_camera(&pos, &dir);
 }
