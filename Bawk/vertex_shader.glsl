@@ -7,4 +7,5 @@ varying vec4 texcoord;
 void main(void) {
     texcoord = coord;
     gl_Position = mvp * vec4(coord.xyz, 1);
+    //gl_Position = vec4(coord.xyz, 1);
 }

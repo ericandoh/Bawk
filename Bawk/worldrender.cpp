@@ -15,7 +15,9 @@ WorldRender::WorldRender() {
     for (int x = 0; x < CX; x++) {
         for (int y = 0; y < CY; y++) {
             for (int z = 0; z < CZ; z++) {
-                chunk.blk[x][y][z] = (uint8_t)(rand() * sizeof(uint8_t));
+                if (rand() % 10 < 3) {
+                    chunk.set(x, y, z, (uint8_t)(rand() * sizeof(uint8_t)));
+                }
             }
         }
     }
@@ -33,6 +35,6 @@ void drawRectangle(float x, float y, float width, float height, float r, float g
 
 // renders the world
 void WorldRender::render() {
-    drawRectangle(0.1f, 0.1f, 0.5f, 0.7f, 0.5f, 0.5f, 0.3f);
+    //drawRectangle(0.1f, 0.1f, 0.5f, 0.7f, 0.5f, 0.5f, 0.3f);
     chunk.render();
 }

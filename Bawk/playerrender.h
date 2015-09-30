@@ -23,12 +23,13 @@
 #define __Bawk__playerrender__
 
 #include <stdio.h>
+#include "glm/glm.hpp"
 #include "math.h"
 
 class PlayerRender {
 public:
     PlayerRender();
-    void set_camera(Position* pos, Direction* dir);
+    void set_camera(glm::vec3* pos, glm::vec3* forward, glm::vec3* up, glm::vec3* dir);
 };
 
 #endif /* defined(__Bawk__playerrender__) */

@@ -20,12 +20,16 @@
 //
 //  Notes
 //  - Later convert this entirely into a viewport and put start point somewhere else
-//  -
+//  - Read up on https://sites.google.com/site/letsmakeavoxelengine/home/basic-block-rendering
+//  - OpenGL https://en.wikibooks.org/wiki/OpenGL_Programming
 
 #include "display.h"
 
 int main(void)
 {
-    run();
-    return 0;
+    int status = run();
+    if (status != 0) {
+        printf("Program had an exception while running\n");
+    }
+    return status;
 }

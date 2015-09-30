@@ -19,29 +19,20 @@
 		075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075C67451BBA427B00CB87DE /* worldrender.cpp */; };
 		075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075C674A1BBA4AD600CB87DE /* playerrender.cpp */; };
 		075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075C67511BBA603D00CB87DE /* shader_loader.cpp */; };
-		075C67611BBA6B4800CB87DE /* frag_shader in CopyFiles */ = {isa = PBXBuildFile; fileRef = 075C675F1BBA6B4800CB87DE /* frag_shader */; };
-		075C67621BBA6B4800CB87DE /* vertex_shader in CopyFiles */ = {isa = PBXBuildFile; fileRef = 075C67601BBA6B4800CB87DE /* vertex_shader */; };
 		075C67661BBA78D600CB87DE /* display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075C67641BBA78D600CB87DE /* display.cpp */; };
+		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
+		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		074B6C961BB9D2380065192B /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = usr/share/man/man1;
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
 		075C675C1BBA6B1C00CB87DE /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				075C67611BBA6B4800CB87DE /* frag_shader in CopyFiles */,
-				075C67621BBA6B4800CB87DE /* vertex_shader in CopyFiles */,
+				07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */,
+				07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,15 +60,14 @@
 		075C674A1BBA4AD600CB87DE /* playerrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = playerrender.cpp; sourceTree = "<group>"; };
 		075C674B1BBA4AD600CB87DE /* playerrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = playerrender.h; sourceTree = "<group>"; };
 		075C674D1BBA53B300CB87DE /* chunk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = chunk.h; sourceTree = "<group>"; };
-		075C674F1BBA593400CB87DE /* vertex_shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertex_shader; sourceTree = "<group>"; };
-		075C67501BBA599600CB87DE /* frag_shader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = frag_shader; sourceTree = "<group>"; };
 		075C67511BBA603D00CB87DE /* shader_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader_loader.cpp; sourceTree = "<group>"; };
 		075C67521BBA603D00CB87DE /* shader_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shader_loader.h; sourceTree = "<group>"; };
 		075C67541BBA62B300CB87DE /* settings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = settings.h; sourceTree = "<group>"; };
-		075C675F1BBA6B4800CB87DE /* frag_shader */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader; path = Bawk/frag_shader; sourceTree = "<group>"; };
-		075C67601BBA6B4800CB87DE /* vertex_shader */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader; path = Bawk/vertex_shader; sourceTree = "<group>"; };
 		075C67641BBA78D600CB87DE /* display.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = display.cpp; sourceTree = "<group>"; };
 		075C67651BBA78D600CB87DE /* display.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = display.h; sourceTree = "<group>"; };
+		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
+		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
+		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,8 +89,9 @@
 		074B6C8F1BB9D2380065192B = {
 			isa = PBXGroup;
 			children = (
-				075C675F1BBA6B4800CB87DE /* frag_shader */,
-				075C67601BBA6B4800CB87DE /* vertex_shader */,
+				07C4260C1BBB18AB0045D796 /* frag_shader.glsl */,
+				07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */,
+				07C426101BBB2B110045D796 /* glm */,
 				075C67361BBA30BE00CB87DE /* CoreVideo.framework */,
 				075C67341BBA2FEC00CB87DE /* IOKit.framework */,
 				075C67321BBA2FE200CB87DE /* libglfw3.a */,
@@ -125,7 +116,6 @@
 			children = (
 				075C67631BBA78C800CB87DE /* display */,
 				075C67551BBA695900CB87DE /* shader_loader */,
-				075C674E1BBA590900CB87DE /* shaders */,
 				075C67481BBA446E00CB87DE /* math */,
 				075C67441BBA426000CB87DE /* render */,
 				075C673D1BBA3ED700CB87DE /* entities */,
@@ -177,15 +167,6 @@
 			name = math;
 			sourceTree = "<group>";
 		};
-		075C674E1BBA590900CB87DE /* shaders */ = {
-			isa = PBXGroup;
-			children = (
-				075C674F1BBA593400CB87DE /* vertex_shader */,
-				075C67501BBA599600CB87DE /* frag_shader */,
-			);
-			name = shaders;
-			sourceTree = "<group>";
-		};
 		075C67551BBA695900CB87DE /* shader_loader */ = {
 			isa = PBXGroup;
 			children = (
@@ -213,7 +194,6 @@
 			buildPhases = (
 				074B6C941BB9D2380065192B /* Sources */,
 				074B6C951BB9D2380065192B /* Frameworks */,
-				074B6C961BB9D2380065192B /* CopyFiles */,
 				075C675C1BBA6B1C00CB87DE /* CopyFiles */,
 			);
 			buildRules = (
@@ -359,6 +339,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/usr/local/include,
+					$SOURCE_ROOT,
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -372,6 +353,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					/usr/local/include,
+					$SOURCE_ROOT,
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";

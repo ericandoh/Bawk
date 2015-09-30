@@ -13,7 +13,11 @@
 #include <GLFW/glfw3.h>
 
 extern GLuint block_attribute_coord;
+extern GLuint block_uniform_mvp;
+extern GLuint program;
 
-int run(void);
+void get_window_size(int* width, int* height);
+
+int run();
 
 #endif /* defined(__Bawk__display__) */

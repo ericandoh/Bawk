@@ -11,28 +11,35 @@
 #include <fstream>
 #include <streambuf>
 #include <iostream>
+#include <GLFW/glfw3.h>
 #include "shader_loader.h"
+#include "display.h"
 
-const std::string VERTEX_SHADER = "vertex_shader";
-const std::string FRAG_SHADER = "frag_shader";
+const std::string VERTEX_SHADER = "vertex_shader.glsl";
+const std::string FRAG_SHADER = "frag_shader.glsl";
 
-const GLuint INVALID_SHADER = -1;
+const int SUCCESS = 0;
+const int FAILURE = -1;
 
 long get_file_length(std::string file_name) {
     // TODO (handle if file not found)
     // right now will return -1 => can't reserve string lol
-    std::ifstream t(file_name);
+    std::ifstream t(file_name, std::ifstream::ate | std::ifstream::binary);
     return t.tellg();
 }
 
 // Loads an entire file text into a string
-void load_file(std::string str, std::string file_name) {
-    std::ifstream t(file_name);
+void load_file(std::string& str, std::string file_name) {
+    std::ifstream t(file_name, std::ifstream::ate | std::ifstream::binary);
+    t.seekg(0, std::ios::beg);
     str.assign((std::istreambuf_iterator<char>(t)),
                std::istreambuf_iterator<char>());
 }
 
-GLuint set_shaders() {
+int set_shaders() {
+    
+    printf("Setting shaders\n");
+    
     std::string vertexSource;
     std::string fragmentSource;
     
@@ -77,8 +84,10 @@ GLuint set_shaders() {
         //Use the infoLog as you see fit.
         
         //In this simple program, we'll just leave
-        return INVALID_SHADER;
+        return FAILURE;
     }
+    
+    
     
     //Create an empty fragment shader handle
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -112,13 +121,15 @@ GLuint set_shaders() {
         //Use the infoLog as you see fit.
         
         //In this simple program, we'll just leave
-        return INVALID_SHADER;
+        return FAILURE;
     }
+    
+    
     
     //Vertex and fragment shaders are successfully compiled.
     //Now time to link them together into a program.
     //Get a program object.
-    GLuint program = glCreateProgram();
+    program = glCreateProgram();
     
     //Attach our shaders to our program
     glAttachShader(program, vertexShader);
@@ -136,8 +147,11 @@ GLuint set_shaders() {
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
         
         //The maxLength includes the NULL character
-        std::vector<GLchar> infoLog(maxLength);
-        glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+        GLchar *info_log;
+        info_log = (GLchar*)malloc(maxLength);
+        glGetProgramInfoLog(program, maxLength, &maxLength, info_log);
+        fprintf(stderr, "Program compilation failed: %*s\n", maxLength, info_log);
+        free(info_log);
         
         //We don't need the program anymore.
         glDeleteProgram(program);
@@ -148,19 +162,33 @@ GLuint set_shaders() {
         //Use the infoLog as you see fit.
         
         //In this simple program, we'll just leave
-        return INVALID_SHADER;
+        return FAILURE;
     }
     
+    //TODO move this outside somewhere
     //Always detach shaders after a successful link.
-    glDetachShader(program, vertexShader);
-    glDetachShader(program, fragmentShader);
+    //glDetachShader(program, vertexShader);
+    //glDetachShader(program, fragmentShader);
     
-    GLint attribute_coord;
-    const char* attribute_name = "coord2d";
-    attribute_coord = glGetAttribLocation(program, attribute_name);
-    if (attribute_coord == -1) {
-        fprintf(stderr, "Could not bind attribute %s", attribute_name);
-        return INVALID_SHADER;
+    
+    const char* attribute_name = "coord";
+    block_attribute_coord = glGetAttribLocation(program, attribute_name);
+    if (block_attribute_coord == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
+        return FAILURE;
     }
-    return attribute_coord;
+    
+    const char* uniform_name = "mvp";
+    block_uniform_mvp = glGetUniformLocation(program, uniform_name);
+    if (block_uniform_mvp == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n",uniform_name);
+        return false;
+    }
+    
+    glEnableVertexAttribArray(block_attribute_coord);
+    
+    //glEnable(GL_CULL_FACE);
+    
+    printf("Done loading shaders\n");
+    return SUCCESS;
 }

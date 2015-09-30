@@ -30,66 +30,87 @@
 #include "shader_loader.h"
 #include "display.h"
 
-class Viewport {
-public:
-    int w, h;
-};
-
-Viewport viewport;
+// shaders and attributes set by shader loading program
 GLuint block_attribute_coord;
+GLuint block_uniform_mvp;
+GLuint program;
+
+GLFWwindow* window;
+
+// input related variables
+double xprev, yprev = 0;
+double max_mouse_movement = 100;
+double mouse_speed = 1.0;
 
 // replace this with current input reading interface
 Game* current_game;
 
-// reshapes window. NOT IN USE
-void reshape(int w, int h) {
-    viewport.w = w;
-    viewport.h = h;
+int init_resources() {
+    // shader program for blocks
+    if (!set_shaders()) {
+        // shader failed to load, crash program here
+        // TODO
+        return -1;
+    }
     
-    //GLfloat aspect = (GLfloat)w / (GLfloat)h;
+    glEnable(GL_CULL_FACE);
+    glPolygonOffset(1, 1);
     
-    glViewport(0, 0, viewport.w, viewport.h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    
+    return 0;
 }
 
-void init() {
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClearDepth(1.0f);
-    
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    //glDepthFunc(GL_LESS);
-    //glShadeModel(GL_SMOOTH);
-    
-    //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    
-    reshape(viewport.w, viewport.h);
-    
-    // shader program for blocks
-    block_attribute_coord = set_shaders();
+void free_resources() {
+    // TODO this needs work
+    glDeleteProgram(program);
+}
+
+void get_window_size(int* width, int* height) {
+    glfwGetWindowSize(window, width, height);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (current_game) {
-        current_game->key_callback(window, key, scancode, action, mods);
+        current_game->key_callback(key, scancode, action, mods);
     }
 }
 
-int run(void)
+void mouse_move_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (current_game) {
+        double xdiff = xpos - xprev;
+        double ydiff = ypos - yprev;
+        if (xdiff < -max_mouse_movement) {
+            xdiff = -max_mouse_movement;
+        }
+        else if (xdiff > max_mouse_movement) {
+            xdiff = max_mouse_movement;
+        }
+        if (ydiff < -max_mouse_movement) {
+            ydiff = -max_mouse_movement;
+        }
+        else if (ydiff > max_mouse_movement) {
+            ydiff = max_mouse_movement;
+        }
+        xprev = xpos;
+        yprev = ypos;
+        
+        int width, height;
+        get_window_size(&width, &height);
+        current_game->mouse_move_callback(xdiff / width * mouse_speed, ydiff / height * mouse_speed);
+    }
+    printf("Mouse movement %f %f\n", xpos, ypos);
+}
+
+int run()
 {
-    GLFWwindow* window;
-    
     /* Initialize the library */
     if (!glfwInit())
         return -1;
     
-    viewport.w = 640;
-    viewport.h = 480;
+    int width = 640;
+    int height = 480;
     
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(viewport.w, viewport.h, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Bawk", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -99,22 +120,30 @@ int run(void)
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     
-    /* Initializes OpenGL necessities */
-    ::init();
+    if (!init_resources())
+        return -1;
     
     /* Initializes the game. This might need changing in the future */
     Game game;
     game.init();
+    
+    /* Initializes OpenGL necessities */
+    //::init();
     
     current_game = &game;
     
     /* Connect inputs to game */
     glfwSetKeyCallback(window, key_callback);
     
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_move_callback);
+    
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_POLYGON_OFFSET_FILL);
         
         /* Render here */
         game.render();
@@ -127,5 +156,9 @@ int run(void)
     }
     
     glfwTerminate();
+    
+    // TODO make a call to free resources here
+    free_resources();
+    
     return 0;
 }

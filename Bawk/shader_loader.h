@@ -24,8 +24,7 @@
 #define __Bawk__shader_loader__
 
 #include <stdio.h>
-#include <GLFW/glfw3.h>
 
-GLuint set_shaders();
+int set_shaders();
 
 #endif /* defined(__Bawk__shader_loader__) */

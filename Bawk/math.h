@@ -14,7 +14,7 @@
 //
 //  Notes
 //  - Can later set typedef (OPENGL class) Position
-//  -
+//  - for now unused, later convert all glm::vec3 to above
 //
 //  Created by Eric Oh on 9/28/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.

@@ -35,7 +35,8 @@ class Game {
 public:
     void init();
     void render();
-    void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void key_callback(int key, int scancode, int action, int mods);
+    void mouse_move_callback(double xdiff, double ydiff);
 };
 
 #endif /* defined(__Bawk__game__) */
