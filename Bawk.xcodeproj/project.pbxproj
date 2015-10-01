@@ -22,6 +22,8 @@
 		075C67661BBA78D600CB87DE /* display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075C67641BBA78D600CB87DE /* display.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
+		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
+		07C4263B1BBCC5700045D796 /* chunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C4263A1BBCC5700045D796 /* chunk.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -56,7 +58,6 @@
 		075C67421BBA41F000CB87DE /* player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
 		075C67451BBA427B00CB87DE /* worldrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = worldrender.cpp; sourceTree = "<group>"; };
 		075C67461BBA427B00CB87DE /* worldrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = worldrender.h; sourceTree = "<group>"; };
-		075C67491BBA44D300CB87DE /* math.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = math.h; sourceTree = "<group>"; };
 		075C674A1BBA4AD600CB87DE /* playerrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = playerrender.cpp; sourceTree = "<group>"; };
 		075C674B1BBA4AD600CB87DE /* playerrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = playerrender.h; sourceTree = "<group>"; };
 		075C674D1BBA53B300CB87DE /* chunk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = chunk.h; sourceTree = "<group>"; };
@@ -68,6 +69,10 @@
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
+		07C426361BBCB2060045D796 /* displayable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = displayable.h; sourceTree = "<group>"; };
+		07C426371BBCB37E0045D796 /* program.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = program.cpp; sourceTree = "<group>"; };
+		07C426381BBCB37E0045D796 /* program.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = program.h; sourceTree = "<group>"; };
+		07C4263A1BBCC5700045D796 /* chunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunk.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,13 +121,14 @@
 			children = (
 				075C67631BBA78C800CB87DE /* display */,
 				075C67551BBA695900CB87DE /* shader_loader */,
-				075C67481BBA446E00CB87DE /* math */,
 				075C67441BBA426000CB87DE /* render */,
 				075C673D1BBA3ED700CB87DE /* entities */,
 				075C67381BBA34C700CB87DE /* game */,
 				074B6C9B1BB9D2380065192B /* main.cpp */,
 				075C673C1BBA3E0C00CB87DE /* template.h */,
 				075C67541BBA62B300CB87DE /* settings.h */,
+				07C426371BBCB37E0045D796 /* program.cpp */,
+				07C426381BBCB37E0045D796 /* program.h */,
 			);
 			path = Bawk;
 			sourceTree = "<group>";
@@ -132,6 +138,7 @@
 			children = (
 				075C67391BBA350200CB87DE /* game.cpp */,
 				075C673A1BBA350200CB87DE /* game.h */,
+				07C426361BBCB2060045D796 /* displayable.h */,
 			);
 			name = game;
 			sourceTree = "<group>";
@@ -155,16 +162,9 @@
 				075C674A1BBA4AD600CB87DE /* playerrender.cpp */,
 				075C674B1BBA4AD600CB87DE /* playerrender.h */,
 				075C674D1BBA53B300CB87DE /* chunk.h */,
+				07C4263A1BBCC5700045D796 /* chunk.cpp */,
 			);
 			name = render;
-			sourceTree = "<group>";
-		};
-		075C67481BBA446E00CB87DE /* math */ = {
-			isa = PBXGroup;
-			children = (
-				075C67491BBA44D300CB87DE /* math.h */,
-			);
-			name = math;
 			sourceTree = "<group>";
 		};
 		075C67551BBA695900CB87DE /* shader_loader */ = {
@@ -242,6 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
+				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
@@ -249,6 +250,7 @@
 				074B6C9C1BB9D2380065192B /* main.cpp in Sources */,
 				075C67401BBA3EE800CB87DE /* world.cpp in Sources */,
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
+				07C4263B1BBCC5700045D796 /* chunk.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

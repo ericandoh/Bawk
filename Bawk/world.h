@@ -34,6 +34,8 @@ class World {
     
 public:
     World();
+    int load_resources();
+    void free_resources();
     void render();
     void step();
 };

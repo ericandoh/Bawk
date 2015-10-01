@@ -15,6 +15,7 @@ Player::Player() {
     dir = glm::vec3(0.1f, 0.1f, 0.1f);
     up = glm::vec3(0.0f, 1.0f, 0.0f);
     angle = glm::vec2(0.0f, 0.0f);
+    update_direction(0.0, 0.0);
     playerrender = PlayerRender();
 }
 
@@ -25,22 +26,18 @@ void Player::set_camera() {
 // movement methods. Move these to class Entity
 void Player::move_forward() {
     // override this if flying/on land
-    pos.x += dir.x;
-    pos.y += dir.y;
-    pos.z += dir.z;
+    pos += forward;
 }
 void Player::move_backward() {
-    pos.x -= dir.x;
-    pos.y -= dir.y;
-    pos.z -= dir.z;
+    pos -= forward;
 }
 void Player::move_left() {
-    pos.x += dir.z;
-    pos.z -= dir.x;
+    pos.x += forward.z;
+    pos.z -= forward.x;
 }
 void Player::move_right() {
-    pos.x -= dir.z;
-    pos.z += dir.x;
+    pos.x -= forward.z;
+    pos.z += forward.x;
 }
 void Player::move_up() {
     pos.y += 1.0f;

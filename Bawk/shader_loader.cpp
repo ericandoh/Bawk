@@ -18,9 +18,6 @@
 const std::string VERTEX_SHADER = "vertex_shader.glsl";
 const std::string FRAG_SHADER = "frag_shader.glsl";
 
-const int SUCCESS = 0;
-const int FAILURE = -1;
-
 long get_file_length(std::string file_name) {
     // TODO (handle if file not found)
     // right now will return -1 => can't reserve string lol
@@ -36,7 +33,10 @@ void load_file(std::string& str, std::string file_name) {
                std::istreambuf_iterator<char>());
 }
 
-int set_shaders() {
+int set_shaders(GLuint* block_attribute_coord,
+                GLuint* block_uniform_mvp,
+                GLuint* program)
+{
     
     printf("Setting shaders\n");
     
@@ -84,10 +84,8 @@ int set_shaders() {
         //Use the infoLog as you see fit.
         
         //In this simple program, we'll just leave
-        return FAILURE;
+        return -1;
     }
-    
-    
     
     //Create an empty fragment shader handle
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -121,7 +119,7 @@ int set_shaders() {
         //Use the infoLog as you see fit.
         
         //In this simple program, we'll just leave
-        return FAILURE;
+        return -1;
     }
     
     
@@ -129,32 +127,32 @@ int set_shaders() {
     //Vertex and fragment shaders are successfully compiled.
     //Now time to link them together into a program.
     //Get a program object.
-    program = glCreateProgram();
+    *program = glCreateProgram();
     
     //Attach our shaders to our program
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
+    glAttachShader(*program, vertexShader);
+    glAttachShader(*program, fragmentShader);
     
     //Link our program
-    glLinkProgram(program);
+    glLinkProgram(*program);
     
     //Note the different functions here: glGetProgram* instead of glGetShader*.
     GLint isLinked = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
+    glGetProgramiv(*program, GL_LINK_STATUS, (int *)&isLinked);
     if(isLinked == GL_FALSE)
     {
         GLint maxLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetProgramiv(*program, GL_INFO_LOG_LENGTH, &maxLength);
         
         //The maxLength includes the NULL character
         GLchar *info_log;
         info_log = (GLchar*)malloc(maxLength);
-        glGetProgramInfoLog(program, maxLength, &maxLength, info_log);
+        glGetProgramInfoLog(*program, maxLength, &maxLength, info_log);
         fprintf(stderr, "Program compilation failed: %*s\n", maxLength, info_log);
         free(info_log);
         
         //We don't need the program anymore.
-        glDeleteProgram(program);
+        glDeleteProgram(*program);
         //Don't leak shaders either.
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
@@ -162,7 +160,7 @@ int set_shaders() {
         //Use the infoLog as you see fit.
         
         //In this simple program, we'll just leave
-        return FAILURE;
+        return -1;
     }
     
     //TODO move this outside somewhere
@@ -172,23 +170,23 @@ int set_shaders() {
     
     
     const char* attribute_name = "coord";
-    block_attribute_coord = glGetAttribLocation(program, attribute_name);
-    if (block_attribute_coord == -1) {
+    *block_attribute_coord = glGetAttribLocation(*program, attribute_name);
+    if (*block_attribute_coord == -1) {
         fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
-        return FAILURE;
+        return -1;
     }
     
     const char* uniform_name = "mvp";
-    block_uniform_mvp = glGetUniformLocation(program, uniform_name);
-    if (block_uniform_mvp == -1) {
+    *block_uniform_mvp = glGetUniformLocation(*program, uniform_name);
+    if (*block_uniform_mvp == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_name);
         return false;
     }
     
-    glEnableVertexAttribArray(block_attribute_coord);
+    glEnableVertexAttribArray(*block_attribute_coord);
     
     //glEnable(GL_CULL_FACE);
     
     printf("Done loading shaders\n");
-    return SUCCESS;
+    return 0;
 }

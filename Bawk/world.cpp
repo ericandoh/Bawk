@@ -10,8 +10,15 @@
 // constructor
 World::World() {
     age = 0;
-    
     world_render = WorldRender();
+}
+
+int World::load_resources() {
+    return world_render.load_resources();
+}
+
+void World::free_resources() {
+    world_render.free_resources();
 }
 
 // renders the world

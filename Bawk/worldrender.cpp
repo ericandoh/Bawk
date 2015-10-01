@@ -7,8 +7,13 @@
 //
 
 #include <cstdlib>
+#include "shader_loader.h"
 #include "worldrender.h"
-#include <GLFW/glfw3.h>
+
+// shaders and attributes set by shader loading program
+GLuint block_attribute_coord;
+GLuint block_uniform_mvp;
+GLuint program;
 
 // constructs a world render
 WorldRender::WorldRender() {
@@ -21,6 +26,22 @@ WorldRender::WorldRender() {
             }
         }
     }
+}
+
+int WorldRender::load_resources() {
+    if (set_shaders(&block_attribute_coord,
+                    &block_uniform_mvp,
+                    &program)) {
+        return -1;
+    }
+    
+    glEnable(GL_CULL_FACE);
+    glPolygonOffset(1, 1);
+    return 0;
+}
+
+void WorldRender::free_resources() {
+    glDeleteProgram(program);
 }
 
 void drawRectangle(float x, float y, float width, float height, float r, float g, float b) {

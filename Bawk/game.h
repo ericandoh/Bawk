@@ -2,14 +2,14 @@
 //  Main game class
 //  - Holds the World, other entity information
 //  - Multiplexes all functions together
-//  - Main logic loop can be found here
 //  - Holds a reference to the current Player playing this game
 //
 //  Used by:
-//  - main.cpp (game entry point)
+//  - display.cpp (displays this)
+//  - program.cpp (sets this to be displayed)
 //
 //  Uses:
-//  -
+//  - world.h, player.h
 //
 //  Notes
 //  - Move this into a Screen subclass then run another global instance on top of this
@@ -28,15 +28,17 @@
 #include <GLFW/glfw3.h>
 #include "world.h"
 #include "player.h"
+#include "displayable.h"
 
-class Game {
-    World world;
+class Game : public Displayable {
+    World superworld;
     Player player;
 public:
-    void init();
-    void render();
-    void key_callback(int key, int scancode, int action, int mods);
-    void mouse_move_callback(double xdiff, double ydiff);
+    int init() override;
+    void render() override;
+    void key_callback(int key, int scancode, int action, int mods) override;
+    void mouse_move_callback(double xdiff, double ydiff) override;
+    void close() override;
 };
 
 #endif /* defined(__Bawk__game__) */

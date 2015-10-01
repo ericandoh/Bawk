@@ -2,7 +2,7 @@
 //  All rendering logic for the world is stored in this object
 //  - Encapsulates OpenGL here
 //  - Stores relevant chunk meshes to render
-//  -
+//  - Loads/Requests resources at beginning, and frees them at end
 //  -
 //
 //  Used by:
@@ -25,14 +25,21 @@
 #define __Bawk__worldrender__
 
 #include <stdio.h>
+#include <GLFW/glfw3.h>
 //removeme
 #include "chunk.h"
 
+extern GLuint block_attribute_coord;
+extern GLuint block_uniform_mvp;
+extern GLuint program;
+
 class WorldRender {
-    chunk chunk;
+    Chunk chunk;
 public:
     WorldRender();
+    int load_resources();
     void render();
+    void free_resources();
 };
 
 #endif /* defined(__Bawk__worldrender__) */

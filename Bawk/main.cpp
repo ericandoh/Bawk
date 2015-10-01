@@ -6,30 +6,28 @@
 
 //
 //  Entrypoint for game
-//  - Handles resizing, viewport width/height
-//  - Main render loop here
+//  -
 //  -
 //
 //  Used by:
 //  - A human! :D
 //
 //  Uses:
-//  - shader_loader.cpp (to load shaders)
-//  - game.cpp (to run the game, duh!)
+//  - program.h (the actual program)
 //  -
 //
 //  Notes
-//  - Later convert this entirely into a viewport and put start point somewhere else
 //  - Read up on https://sites.google.com/site/letsmakeavoxelengine/home/basic-block-rendering
 //  - OpenGL https://en.wikibooks.org/wiki/OpenGL_Programming
 
-#include "display.h"
+#include "program.h"
 
 int main(void)
 {
-    int status = run();
-    if (status != 0) {
-        printf("Program had an exception while running\n");
+    int status = run_game();
+    if (!status) {
+        printf("Program exitted with error code %d\n", status);
     }
-    return status;
+    printf("End of program\n");
+    return 0;
 }
