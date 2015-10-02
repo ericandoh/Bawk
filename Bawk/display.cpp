@@ -96,7 +96,6 @@ void display_close() {
 
 int display_run()
 {
-    
     should_exit = false;
     /* Loop until the user closes the window */
     while (!(glfwWindowShouldClose(window) || should_exit))
@@ -114,8 +113,6 @@ int display_run()
         /* Poll for and process events */
         glfwPollEvents();
     }
-    // free resources related with this display
-    current_display->close();
     
     if (!should_exit) {
         // this was called by a call to exit window. close the program

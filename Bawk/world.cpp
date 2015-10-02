@@ -9,8 +9,8 @@
 
 // constructor
 World::World() {
+    printf("Adding World\n");
     age = 0;
-    world_render = WorldRender();
 }
 
 int World::load_resources() {
@@ -22,8 +22,8 @@ void World::free_resources() {
 }
 
 // renders the world
-void World::render() {
-    world_render.render();
+void World::render(fmat4* transform) {
+    world_render.render(transform);
 }
 
 // cycles one timestep for the world

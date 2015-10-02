@@ -23,14 +23,12 @@
 #ifndef Bawk_chunk_h
 #define Bawk_chunk_h
 
-#include "glm/glm.hpp"
+#include <GLFW/glfw3.h>
 
 // dimensions of our chunk
 #define CX 16
 #define CY 16
 #define CZ 16
-
-typedef glm::tvec4<GLbyte> byte4;
 
 class Chunk {
     uint8_t blk[CX][CY][CZ];    // blk type for each block

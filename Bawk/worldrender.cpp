@@ -17,15 +17,10 @@ GLuint program;
 
 // constructs a world render
 WorldRender::WorldRender() {
-    for (int x = 0; x < CX; x++) {
-        for (int y = 0; y < CY; y++) {
-            for (int z = 0; z < CZ; z++) {
-                if (rand() % 10 < 3) {
-                    chunk.set(x, y, z, (uint8_t)(rand() * sizeof(uint8_t)));
-                }
-            }
-        }
-    }
+    printf("Adding world render\n");
+    SuperObject* world = new SuperObject();
+    world->init();
+    superobjects.push_back(world);
 }
 
 int WorldRender::load_resources() {
@@ -41,6 +36,9 @@ int WorldRender::load_resources() {
 }
 
 void WorldRender::free_resources() {
+    for (int i = 0; i < superobjects.size(); i++) {
+        delete superobjects[i];
+    }
     glDeleteProgram(program);
 }
 
@@ -55,7 +53,9 @@ void drawRectangle(float x, float y, float width, float height, float r, float g
 }
 
 // renders the world
-void WorldRender::render() {
+void WorldRender::render(fmat4* transform) {
     //drawRectangle(0.1f, 0.1f, 0.5f, 0.7f, 0.5f, 0.5f, 0.3f);
-    chunk.render();
+    for (int i = 0; i < superobjects.size(); i++) {
+        superobjects[i]->render(transform);
+    }
 }

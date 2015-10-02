@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <cstring>
 #include <GLFW/glfw3.h>
+#include "glm/glm.hpp"
 #include "worldrender.h"
 
 #define CX 16
@@ -21,6 +22,17 @@ Chunk::Chunk() {
     memset(blk, 0, sizeof blk);
     elements = 0;
     changed = true;
+    
+    for (int x = 0; x < CX; x++) {
+        for (int y = 0; y < CY; y++) {
+            for (int z = 0; z < CZ; z++) {
+                if (rand() % 10 < 3) {
+                    blk[x][y][z] = (uint8_t)(rand() * sizeof(uint8_t));
+                }
+            }
+        }
+    }
+    
     glGenBuffers(1, &vbo);
 }
 

@@ -22,6 +22,7 @@
 #define __Bawk__world__
 
 #include <stdio.h>
+#include "basic_types.h"
 #include "worldrender.h"
 
 class World {
@@ -36,7 +37,7 @@ public:
     World();
     int load_resources();
     void free_resources();
-    void render();
+    void render(fmat4* transform);
     void step();
 };
 

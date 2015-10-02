@@ -31,14 +31,14 @@
 #include "displayable.h"
 
 class Game : public Displayable {
-    World superworld;
-    Player player;
+    World* world;
+    Player* player;
 public:
     int init() override;
     void render() override;
     void key_callback(int key, int scancode, int action, int mods) override;
     void mouse_move_callback(double xdiff, double ydiff) override;
-    void close() override;
+    ~Game();
 };
 
 #endif /* defined(__Bawk__game__) */

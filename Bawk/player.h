@@ -25,22 +25,22 @@
 #define __Bawk__player__
 
 #include <stdio.h>
-#include "glm/glm.hpp"
 #include "math.h"
 #include "playerrender.h"
+#include "basic_types.h"
 
 class Player {
-    glm::vec3 pos;
-    glm::vec3 forward;
-    //glm::vec3 right;
-    glm::vec3 up;
-    glm::vec3 dir;
-    glm::vec2 angle;
+    fvec3 pos;
+    fvec3 forward;
+    //fvec3 right;
+    fvec3 up;
+    fvec3 dir;
+    fvec2 angle;
     
     PlayerRender playerrender;
 public:
     Player();
-    void set_camera();
+    fmat4* set_camera();
     void move_forward();
     void move_backward();
     void move_left();

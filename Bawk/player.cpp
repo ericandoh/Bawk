@@ -11,16 +11,16 @@
 
 Player::Player() {
     // replace these with vectors later on
-    pos = glm::vec3(0.0f, 0.0f, 0.0f);
-    dir = glm::vec3(0.1f, 0.1f, 0.1f);
-    up = glm::vec3(0.0f, 1.0f, 0.0f);
-    angle = glm::vec2(0.0f, 0.0f);
+    pos = fvec3(0.0f, 0.0f, 0.0f);
+    dir = fvec3(0.1f, 0.1f, 0.1f);
+    up = fvec3(0.0f, 1.0f, 0.0f);
+    angle = fvec2(0.0f, 0.0f);
     update_direction(0.0, 0.0);
     playerrender = PlayerRender();
 }
 
-void Player::set_camera() {
-    playerrender.set_camera(&pos, &forward, &up, &dir);
+fmat4* Player::set_camera() {
+    return playerrender.set_camera(&pos, &forward, &up, &dir);
 }
 
 // movement methods. Move these to class Entity

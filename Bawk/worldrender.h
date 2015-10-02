@@ -26,19 +26,20 @@
 
 #include <stdio.h>
 #include <GLFW/glfw3.h>
-//removeme
-#include "chunk.h"
+#include <vector>
+#include "basic_types.h"
+#include "superobject.h"
 
 extern GLuint block_attribute_coord;
 extern GLuint block_uniform_mvp;
 extern GLuint program;
 
 class WorldRender {
-    Chunk chunk;
+    std::vector<SuperObject*> superobjects;
 public:
     WorldRender();
     int load_resources();
-    void render();
+    void render(fmat4* transform);
     void free_resources();
 };
 

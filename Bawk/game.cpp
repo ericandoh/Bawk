@@ -18,16 +18,17 @@ std::map<int, Action> key_to_action;
 
 // initializes all needed game variables. This should be called before render()
 int Game::init() {
-    // load world
-    superworld = World();
+    
+    player = new Player();
+    world = new World();
     
     // load resources for the world
-    if (superworld.load_resources()) {
+    if (world->load_resources()) {
         return -1;
     }
     
     // later separate loading the player and the world - this might get complicated!
-    player = Player();
+    player = new Player();
     
     // set key mappings
     key_to_action[GLFW_KEY_SPACE] = MOVE_UP;
@@ -42,8 +43,8 @@ int Game::init() {
     
 // Called in the main render loop. Pass the rendering to the appropriate entries
 void Game::render() {
-    player.set_camera();
-    superworld.render();
+    fmat4* transform = player->set_camera();
+    world->render(transform);
 }
 
 // Calls an action depending on key pressed
@@ -61,22 +62,22 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         
         switch (todo) {
             case MOVE_UP:
-                player.move_up();
+                player->move_up();
                 break;
             case MOVE_DOWN:
-                player.move_down();
+                player->move_down();
                 break;
             case MOVE_LEFT:
-                player.move_left();
+                player->move_left();
                 break;
             case MOVE_RIGHT:
-                player.move_right();
+                player->move_right();
                 break;
             case MOVE_FORWARD:
-                player.move_forward();
+                player->move_forward();
                 break;
             case MOVE_BACKWARD:
-                player.move_backward();
+                player->move_backward();
                 break;
             default:
                 // do nothing
@@ -86,11 +87,14 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
 }
 
 void Game::mouse_move_callback(double xdiff, double ydiff) {
-    player.update_direction(xdiff, ydiff);
+    player->update_direction(xdiff, ydiff);
 }
 
-void Game::close() {
+Game::~Game() {
+    printf("Cleaning up game\n");
     // cleanup assets
-    superworld.free_resources();
+    world->free_resources();
+    delete player;
+    delete world;
 }
 

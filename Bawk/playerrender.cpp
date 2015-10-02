@@ -7,26 +7,21 @@
 //
 
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "display.h"
-#include "worldrender.h"
+#include "display.h"    // for get_window_size
 #include "playerrender.h"
 
 PlayerRender::PlayerRender() {
     // initialize things
 }
 
-void PlayerRender::set_camera(glm::vec3* pos, glm::vec3* forward, glm::vec3* up, glm::vec3* dir) {
+fmat4* PlayerRender::set_camera(fvec3* pos, fvec3* forward, fvec3* up, fvec3* dir) {
     
     int width, height;
     get_window_size(&width, &height);
     
-    glm::mat4 view = glm::lookAt(*pos, *pos + *dir, *up);
-    glm::mat4 projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
-    
-    glm::mat4 mvp = projection * view;
-    
-    glUniformMatrix4fv(block_uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    view = glm::lookAt(*pos, *pos + *dir, *up);
+    projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
+    mvp = projection * view;
+    return &mvp;
 }
