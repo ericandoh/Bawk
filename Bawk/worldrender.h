@@ -31,6 +31,7 @@
 extern GLuint block_attribute_coord;
 extern GLuint texture_attribute_coord;
 extern GLuint block_uniform_mvp;
+extern GLuint tile_texture;
 extern GLuint program;
 
 int world_load_resources();

@@ -11,6 +11,7 @@
 #include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 #include "worldrender.h"
+#include "block.h"
 
 // dimensions of a chunk
 #define CX 16
@@ -33,9 +34,9 @@ void set_coord_and_texture(GLbyte coord[][3],
     coord[index][2] = z;
     
     // first 8 bits. Represents the x-axis in our texture atlas
-    texture[index][0] = type >> 0x8;
+    texture[index][0] = type;
     // last 8 bits. Represents the y-axis in our texture atlas
-    texture[index][1] = type;
+    texture[index][1] = type >> 0x8;
     // some extra flags we can set to let shader know how to render this
     texture[index][2] = flags;
 }
@@ -47,11 +48,14 @@ RenderableChunk::RenderableChunk() {
     lastused = glfwGetTime();
     changed = true;
     
+    left = right = below = above = front = back = 0;
+    
     for (int x = 0; x < CX; x++) {
         for (int y = 0; y < CY; y++) {
             for (int z = 0; z < CZ; z++) {
                 if (rand() % 10 < 3) {
-                    blk[x][y][z] = (uint16_t)(rand() * sizeof(uint16_t));
+                    //blk[x][y][z] = (uint16_t)(rand() * sizeof(uint16_t));
+                    blk[x][y][z] = rand() % 3;
                 }
             }
         }
@@ -193,7 +197,7 @@ void RenderableChunk::update() {
                     continue;
                 }
                 uint16_t type = blk[x][y][z];
-                uint8_t flags = 0;
+                uint8_t flags = 0x1;
                 
                 if(vis && z != 0 && blk[x][y][z] == blk[x][y][z - 1]) {
                     set_coord_and_texture(vertex, texture, i - 4, x, y, z + 1, type, flags);
@@ -223,7 +227,7 @@ void RenderableChunk::update() {
                     continue;
                 }
                 uint16_t type = blk[x][y][z];
-                uint8_t flags = 0;
+                uint8_t flags = 0x1;
                 
                 if(vis && z != 0 && blk[x][y][z] == blk[x][y][z - 1]) {
                     set_coord_and_texture(vertex, texture, i - 5, x, y + 1, z + 1, type, flags);

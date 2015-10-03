@@ -1,0 +1,18 @@
+//
+//  texture_loader.h
+//  Bawk
+//  http://www.lonesock.net/soil.html
+//
+//  Created by Eric Oh on 10/2/15.
+//  Copyright (c) 2015 Eric Oh. All rights reserved.
+//
+
+#ifndef __Bawk__texture_loader__
+#define __Bawk__texture_loader__
+
+#include <stdio.h>
+#include <GLFW/glfw3.h>
+
+GLuint load_tiles();
+
+#endif /* defined(__Bawk__texture_loader__) */

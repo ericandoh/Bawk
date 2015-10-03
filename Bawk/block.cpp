@@ -1,14 +1,14 @@
 //
-//  chunk.cpp
+//  block.cpp
 //  Bawk
 //
 //  Created by Eric Oh on 10/2/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
-#include "chunk.h"
+#include "block.h"
 
-int Chunk::get_transparency(uint16_t block) {
+int get_transparency(uint16_t block) {
     if (block == 0) {
         return 2;
     }

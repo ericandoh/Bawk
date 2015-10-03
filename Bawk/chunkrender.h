@@ -44,7 +44,6 @@ protected:
 public:
     RenderableChunk();
     ~RenderableChunk();
-    virtual int get_transparency(uint16_t block) = 0;
     uint16_t get(int x, int y, int z);
     void set(int x, int y, int z, uint16_t type);
     void update();
