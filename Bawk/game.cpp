@@ -32,7 +32,7 @@ int Game::init() {
     
     // set key mappings
     key_to_action[GLFW_KEY_SPACE] = MOVE_UP;
-    key_to_action[GLFW_KEY_LEFT_SHIFT] = MOVE_DOWN;
+    key_to_action[GLFW_KEY_Z] = MOVE_DOWN;
     key_to_action[GLFW_KEY_A] = MOVE_LEFT;
     key_to_action[GLFW_KEY_D] = MOVE_RIGHT;
     key_to_action[GLFW_KEY_W] = MOVE_FORWARD;

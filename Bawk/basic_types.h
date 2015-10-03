@@ -26,10 +26,10 @@ struct ivec3 : glm::tvec3<int> {
     ivec3(int ix=0, int iy=0, int iz=0) {
         x = ix; y = iy; z = iz;
     }
-    bool operator<(const ivec3& b) const
+    /*bool operator<(const ivec3& b) const
     {
         return hash_value() < b.hash_value();
-    };
+    };*/
     // added functions so that we can use these as keys in a map!
     bool operator==(const ivec3 &other) const
     {
@@ -37,8 +37,9 @@ struct ivec3 : glm::tvec3<int> {
               && y == other.y
               && z == other.z);
     }
+    /*
     // return hash function based on interleaving of x, y, z
-    std::size_t hash_value() const
+    std::size_t operator()(const ivec3& k) const
     {
         // turn first 9 bits to a 27 bit string, then add together
         // the result should be XYZXYZXYZXYZ for XXXX, YYYY, ZZZZ (but with more bits)
@@ -46,7 +47,7 @@ struct ivec3 : glm::tvec3<int> {
         uint32_t yb = spread_bits(y) << 1;
         uint32_t zb = spread_bits(z) << 2;
         return xb + yb + zb;
-    }
+    }*/
 };
 
 // 4x4 matrix, for rendering calculations

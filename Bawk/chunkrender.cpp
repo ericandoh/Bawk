@@ -48,7 +48,7 @@ void set_coord_and_texture(GLbyte coord[][3],
 }
 
 RenderableChunk::RenderableChunk() {
-    memset(blk, 0, sizeof blk);
+    memset(blk, 0, sizeof(blk[0][0][0])*CX*CY*CZ);
     elements = 0;
     slot = 0;
     lastused = glfwGetTime();
@@ -67,6 +67,16 @@ RenderableChunk::RenderableChunk() {
             }
         }
     }
+}
+
+RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
+    memset(blk, 0, sizeof blk);
+    elements = 0;
+    slot = 0;
+    lastused = glfwGetTime();
+    changed = true;
+    left = right = below = above = front = back = 0;
+    memcpy(&blk[0][0][0], &from[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
 }
 
 void delete_all_buffers() {
@@ -117,7 +127,9 @@ uint16_t RenderableChunk::get(int x, int y, int z) {
 }
 
 void RenderableChunk::set(int x, int y, int z, uint16_t type) {
+    printf("From %d\n", blk[x][y][z]);
     blk[x][y][z] = type;
+    printf("To %d\n", blk[x][y][z]);
     changed = true;
 }
 

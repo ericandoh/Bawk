@@ -30,6 +30,7 @@
 		0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFA1BBF7DBE00477144 /* image_helper.c */; };
 		0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFB1BBF7DBE00477144 /* SOIL.c */; };
 		0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */; };
+		0766EB091BBF9CC900477144 /* base_world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB071BBF9CC900477144 /* base_world.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -98,6 +99,8 @@
 		0766EB041BBF7E7200477144 /* stb_image_aug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_aug.h; sourceTree = "<group>"; };
 		0766EB051BBF7E7200477144 /* stbi_DDS_aug_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stbi_DDS_aug_c.h; sourceTree = "<group>"; };
 		0766EB061BBF7E7200477144 /* stbi_DDS_aug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stbi_DDS_aug.h; sourceTree = "<group>"; };
+		0766EB071BBF9CC900477144 /* base_world.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base_world.cpp; sourceTree = "<group>"; };
+		0766EB081BBF9CC900477144 /* base_world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_world.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -199,6 +202,8 @@
 				075EA6D51BBDBE26001CC402 /* superobject.h */,
 				0766EAEC1BBF74FD00477144 /* block.cpp */,
 				0766EAED1BBF74FD00477144 /* block.h */,
+				0766EB071BBF9CC900477144 /* base_world.cpp */,
+				0766EB081BBF9CC900477144 /* base_world.h */,
 			);
 			name = entities;
 			sourceTree = "<group>";
@@ -299,6 +304,7 @@
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
+				0766EB091BBF9CC900477144 /* base_world.cpp in Sources */,
 				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,

@@ -7,7 +7,3 @@
 //
 
 #include "superobject.h"
-
-void SuperObject::fill() {
-    randomize();
-}

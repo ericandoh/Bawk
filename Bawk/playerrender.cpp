@@ -13,7 +13,7 @@
 
 RenderablePlayer::RenderablePlayer() {
     // initialize things
-    pos = fvec3(0.0f, 0.0f, 0.0f);
+    pos = fvec3(0.0f, 8.0f, 0.0f);
     dir = fvec3(1.0f, 0.0f, 0.0f);
     forward = dir;
     up = fvec3(0.0f, 1.0f, 0.0f);

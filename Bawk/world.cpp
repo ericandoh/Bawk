@@ -6,14 +6,14 @@
 //
 
 #include "world.h"
+#include "base_world.h"
 
 // constructor
 World::World() {
     printf("Adding World\n");
     age = 0;
     
-    SuperObject* world = new SuperObject();
-    world->fill();
+    BaseWorld* world = new BaseWorld();
     superobjects.push_back(world);
 
 }

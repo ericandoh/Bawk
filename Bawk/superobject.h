@@ -13,9 +13,6 @@
 #include "superobjectrender.h"
 
 class SuperObject : public RenderableSuperObject {
-public:
-    // fills superobject with some data. Used only for initial test, might replace later
-    void fill();
 };
 
 #endif /* defined(__Bawk__Superobject__) */
