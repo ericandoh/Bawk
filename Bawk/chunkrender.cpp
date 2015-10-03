@@ -21,8 +21,14 @@
 // number of chunks to have loaded at any one time
 #define CHUNKSLOTS 3000
 
+struct vboholder {
+    RenderableChunk* owner;
+    GLuint coord_vbo;
+    GLuint texture_vbo;
+};
+
 // slots for VBO for the chunks. This gets cycled if we don't have enough
-static struct RenderableChunk *chunk_slot[CHUNKSLOTS] = {0};
+static struct vboholder chunk_slot[CHUNKSLOTS] = {0};
 
 void set_coord_and_texture(GLbyte coord[][3],
                            GLbyte texture[][3],
@@ -55,18 +61,24 @@ RenderableChunk::RenderableChunk() {
             for (int z = 0; z < CZ; z++) {
                 if (rand() % 10 < 3) {
                     //blk[x][y][z] = (uint16_t)(rand() * sizeof(uint16_t));
+                    // pick a random block 0, 1, or 2
                     blk[x][y][z] = rand() % 3;
                 }
             }
         }
     }
-    glGenBuffers(1, &coord_vbo);
-    glGenBuffers(1, &texture_vbo);
 }
 
-RenderableChunk::~RenderableChunk() {
-    glDeleteBuffers(1, &coord_vbo);
-    glDeleteBuffers(1, &texture_vbo);
+void delete_all_buffers() {
+    for(int i = 0; i < CHUNKSLOTS; i++) {
+        // List is sequential, so first empty cell is end of list
+        if(!chunk_slot[i].owner) {
+            break;
+        }
+        // Delete buffers that remain
+        glDeleteBuffers(1, &chunk_slot[i].coord_vbo);
+        glDeleteBuffers(1, &chunk_slot[i].texture_vbo);
+    }
 }
 
 bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) {
@@ -317,32 +329,32 @@ void RenderableChunk::update() {
         return;
     
     // If we don't have an active slot, find one
-    if(chunk_slot[slot] != this) {
+    if(chunk_slot[slot].owner != this) {
         int lru = 0;
         for(int i = 0; i < CHUNKSLOTS; i++) {
             // If there is an empty slot, use it
-            if(!chunk_slot[i]) {
+            if(!chunk_slot[i].owner) {
                 lru = i;
                 break;
             }
             // Otherwise try to find the least recently used slot
-            if(chunk_slot[i]->lastused < chunk_slot[lru]->lastused)
+            if(chunk_slot[i].owner->lastused < chunk_slot[lru].owner->lastused)
                 lru = i;
         }
         
         // If the slot is empty, create a new VBO
-        if(!chunk_slot[lru]) {
-            glGenBuffers(1, &coord_vbo);
-            glGenBuffers(1, &texture_vbo);
-            // Otherwise, steal it from the previous slot owner
+        if(!chunk_slot[lru].owner) {
+            glGenBuffers(1, &chunk_slot[lru].coord_vbo);
+            glGenBuffers(1, &chunk_slot[lru].texture_vbo);
         } else {
-            coord_vbo = chunk_slot[lru]->coord_vbo;
-            texture_vbo = chunk_slot[lru]->texture_vbo;
-            chunk_slot[lru]->changed = true;
+            // Otherwise, steal it from the previous slot owner
+            chunk_slot[lru].owner->changed = true;
         }
+        coord_vbo = chunk_slot[lru].coord_vbo;
+        texture_vbo = chunk_slot[lru].texture_vbo;
         
         slot = lru;
-        chunk_slot[slot] = this;
+        chunk_slot[slot].owner = this;
     }
     
     glBindBuffer(GL_ARRAY_BUFFER, coord_vbo);

@@ -11,6 +11,7 @@
 #include "shader_loader.h"
 #include "texture_loader.h"
 #include "worldrender.h"
+#include "chunkrender.h"
 
 // shaders and attributes set by shader loading program
 GLuint block_attribute_coord;
@@ -46,6 +47,7 @@ int world_load_resources() {
 }
 
 void world_free_resources() {
+    delete_all_buffers();
     glDeleteProgram(program);
     glDeleteTextures(1, &tile_texture);
 }

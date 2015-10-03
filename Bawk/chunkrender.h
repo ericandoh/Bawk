@@ -30,6 +30,8 @@
 #define CY 16
 #define CZ 16
 
+void delete_all_buffers();
+
 class RenderableChunk {
     GLuint coord_vbo;           // VBO (vertex buffer object) for coordinates
     GLuint texture_vbo;         // VBO (vertex buffer object) for textures/flags
@@ -43,7 +45,6 @@ protected:
     bool changed;               // if chunk is updated, set this
 public:
     RenderableChunk();
-    ~RenderableChunk();
     uint16_t get(int x, int y, int z);
     void set(int x, int y, int z, uint16_t type);
     void update();
