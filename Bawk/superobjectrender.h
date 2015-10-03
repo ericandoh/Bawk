@@ -37,20 +37,23 @@ class RenderableSuperObject {
     // depending on render distance
     // (we can also optimize it so that active rendered in/out is only done for big objects)
     // (i.e. the world, or MASSIVE SHIPS)
-private:
     chunk_map chunks;
     // internal function that will make calls to load and save a chunk
+    int load_chunk(int x, int y, int z);
+    void delete_chunk(int x, int y, int z);
 public:
-    ~RenderableSuperObject();// noexcept(true);
-    void randomize();
+    ~RenderableSuperObject();
     uint16_t get_block(int x, int y, int z);
     void set_block(int x, int y, int z, uint16_t type);
     void render(fmat4* transform);
-    int load_chunk(int x, int y, int z);
+    // given player coordinates loads in new chunks/deprecates old ones
+    void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // called when a request to load a chunk from disk is made
     virtual int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) = 0;
     // called when a chunk goes out of scope and no longer needs to be rendered
     virtual void save_chunk(int x, int y, int z) = 0;
+    // checks if a chunk at x, y, z is within the superobject dimensions
+    virtual bool within_dimensions(int x, int y, int z) = 0;
 };
 
 #endif /* defined(__Bawk__superobjectrender__) */

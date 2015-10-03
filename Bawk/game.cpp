@@ -16,10 +16,11 @@ enum Action {
 
 std::map<int, Action> key_to_action;
 
+// if the player moves more than 1 dimension away from previous location, update
+float CHUNK_UPDATE_TRIGGER_DISTANCE = 16.0f;
+
 // initializes all needed game variables. This should be called before render()
 int Game::init() {
-    
-    player = new Player();
     world = new World();
     
     // load resources for the world
@@ -29,6 +30,10 @@ int Game::init() {
     
     // later separate loading the player and the world - this might get complicated!
     player = new Player();
+    fvec3* player_pos = player->get_pos();
+    last_player_pos = fvec3(player_pos->x, player_pos->y, player_pos->z);
+    
+    world->update_chunks(0, player_pos);
     
     // set key mappings
     key_to_action[GLFW_KEY_SPACE] = MOVE_UP;
@@ -45,6 +50,18 @@ int Game::init() {
 void Game::render() {
     fmat4* transform = player->set_camera();
     world->render(transform);
+}
+
+float get_dst(fvec3* a, fvec3* b) {
+    return sqrtf(powf(a->x - b->x, 2) + powf(a->y - b->y, 2) + powf(a->z - b->z, 2));
+}
+
+void Game::check_need_update() {
+    fvec3* player_pos = player->get_pos();
+    if (get_dst(&last_player_pos, player_pos) >= CHUNK_UPDATE_TRIGGER_DISTANCE) {
+        world->update_chunks(&last_player_pos, player_pos);
+        last_player_pos = fvec3(player_pos->x, player_pos->y, player_pos->z);
+    }
 }
 
 // Calls an action depending on key pressed
@@ -83,6 +100,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 // do nothing
                 ;
         }
+        check_need_update();
     }
 }
 

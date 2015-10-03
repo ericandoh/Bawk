@@ -42,6 +42,10 @@ void RenderablePlayer::move_down() {
     pos.y -= 1.0f;
 }
 
+fvec3* RenderablePlayer::get_pos() {
+    return &pos;
+}
+
 fmat4* RenderablePlayer::set_camera() {
     int width, height;
     get_window_size(&width, &height);

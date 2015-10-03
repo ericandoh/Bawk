@@ -15,7 +15,6 @@ World::World() {
     
     BaseWorld* world = new BaseWorld();
     superobjects.push_back(world);
-
 }
 
 World::~World() {
@@ -36,6 +35,12 @@ void World::free_resources() {
 void World::render(fmat4* transform) {
     for (int i = 0; i < superobjects.size(); i++) {
         superobjects[i]->render(transform);
+    }
+}
+
+void World::update_chunks(fvec3* old_pos, fvec3* new_pos) {
+    for (int i = 0; i < superobjects.size(); i++) {
+        superobjects[i]->update_chunks(old_pos, new_pos);
     }
 }
 

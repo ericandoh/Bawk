@@ -33,6 +33,8 @@
 class Game : public Displayable {
     World* world;
     Player* player;
+    fvec3 last_player_pos;
+    void check_need_update();
 public:
     int init() override;
     void render() override;

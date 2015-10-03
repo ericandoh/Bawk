@@ -43,6 +43,7 @@ public:
     void move_right();
     void move_up();
     void move_down();
+    fvec3* get_pos();
     fmat4* set_camera();
 };
 

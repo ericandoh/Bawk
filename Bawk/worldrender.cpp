@@ -22,6 +22,8 @@ GLuint program;
 
 static GLint uniform_texture;
 
+int CHUNK_RENDER_DIST = 3;
+
 int world_load_resources() {
     if (set_shaders(&block_attribute_coord,
                     &texture_attribute_coord,

@@ -40,6 +40,7 @@ public:
     int load_resources();
     void free_resources();
     void render(fmat4* transform);
+    void update_chunks(fvec3* old_pos, fvec3* new_pos);
     void step();
 };
 

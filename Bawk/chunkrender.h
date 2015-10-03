@@ -39,11 +39,13 @@ class RenderableChunk {
     int slot;                   // which slot it is using for the VBO?
     double lastused;
     uint16_t blk[CX][CY][CZ];   // blk type for each block
-    bool changed;               // if chunk is updated, set this
-    RenderableChunk *left, *right, *below, *above, *front, *back;
     bool isblocked(int x1, int y1, int z1, int x2, int y2, int z2);
 public:
-    RenderableChunk();
+    // these set public for ease of setting
+    RenderableChunk *left, *right, *below, *above, *front, *back;
+    bool changed;               // if chunk is updated, set this
+    //RenderableChunk();
+    ~RenderableChunk();
     RenderableChunk(uint16_t from[CX][CY][CZ]);
     uint16_t get(int x, int y, int z);
     void set(int x, int y, int z, uint16_t type);

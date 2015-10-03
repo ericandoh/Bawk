@@ -47,7 +47,7 @@ void set_coord_and_texture(GLbyte coord[][3],
     texture[index][2] = flags;
 }
 
-RenderableChunk::RenderableChunk() {
+/*RenderableChunk::RenderableChunk() {
     memset(blk, 0, sizeof(blk[0][0][0])*CX*CY*CZ);
     elements = 0;
     slot = 0;
@@ -67,7 +67,7 @@ RenderableChunk::RenderableChunk() {
             }
         }
     }
-}
+}*/
 
 RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
     memset(blk, 0, sizeof blk);
@@ -77,6 +77,40 @@ RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
     changed = true;
     left = right = below = above = front = back = 0;
     memcpy(&blk[0][0][0], &from[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
+}
+
+RenderableChunk::~RenderableChunk() {
+    // removing this chunk
+    // free its slot
+    if(chunk_slot[slot].owner == this) {
+        chunk_slot[slot].owner = 0;
+    }
+    
+    // detach from all its chunky neighbors if they exist
+    if (left) {
+        left->right = 0;
+        left->changed = true;
+    }
+    if (right) {
+        right->left = 0;
+        right->changed = true;
+    }
+    if (below) {
+        below->above = 0;
+        below->changed = true;
+    }
+    if (above) {
+        above->below = 0;
+        above->changed = true;
+    }
+    if (front) {
+        front->back = 0;
+        front->changed = true;
+    }
+    if (back) {
+        back->front = 0;
+        back->changed = true;
+    }
 }
 
 void delete_all_buffers() {
@@ -127,9 +161,21 @@ uint16_t RenderableChunk::get(int x, int y, int z) {
 }
 
 void RenderableChunk::set(int x, int y, int z, uint16_t type) {
-    printf("From %d\n", blk[x][y][z]);
     blk[x][y][z] = type;
-    printf("To %d\n", blk[x][y][z]);
+    // When updating blocks at the edge of this chunk,
+    // visibility of blocks in the neighbouring chunk might change.
+    if(x == 0 && left)
+        left->changed = true;
+    if(x == CX - 1 && right)
+        right->changed = true;
+    if(y == 0 && below)
+        below->changed = true;
+    if(y == CY - 1 && above)
+        above->changed = true;
+    if(z == 0 && front)
+        front->changed = true;
+    if(z == CZ - 1 && back)
+        back->changed = true;
     changed = true;
 }
 
@@ -334,7 +380,7 @@ void RenderableChunk::update() {
     changed = false;
     elements = i;
     
-    printf("Finished generating %d elements\n", elements);
+    //printf("Finished generating %d elements\n", elements);
     
     // If this chunk is empty, no need to allocate a chunk slot.
     if(!elements)

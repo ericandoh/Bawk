@@ -18,8 +18,9 @@ class BaseWorld: public SuperObject {
     uint16_t ground[CX][CY][CZ];
 public:
     BaseWorld();
-    int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z);
-    void save_chunk(int x, int y, int z);
+    int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) override;
+    void save_chunk(int x, int y, int z) override;
+    bool within_dimensions(int x, int y, int z) override;
 };
 
 #endif /* defined(__Bawk__base_world__) */

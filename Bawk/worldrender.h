@@ -34,6 +34,8 @@ extern GLuint block_uniform_mvp;
 extern GLuint tile_texture;
 extern GLuint program;
 
+extern int CHUNK_RENDER_DIST;
+
 int world_load_resources();
 void world_free_resources();
 void set_transform_matrix(fmat4 mvp);
