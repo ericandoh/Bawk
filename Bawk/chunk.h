@@ -14,8 +14,7 @@
 
 class Chunk: public RenderableChunk {
 public:
-    uint16_t get(int x, int y, int z);
-    void set(int x, int y, int z, uint16_t type);
+    int get_transparency(uint16_t block) override;
 };
 
 #endif /* defined(__Bawk__chunk__) */

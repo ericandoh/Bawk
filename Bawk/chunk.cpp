@@ -8,12 +8,11 @@
 
 #include "chunk.h"
 
-
-uint16_t Chunk::get(int x, int y, int z) {
-    return blk[x][y][z];
-}
-
-void Chunk::set(int x, int y, int z, uint16_t type) {
-    blk[x][y][z] = type;
-    changed = true;
+int Chunk::get_transparency(uint16_t block) {
+    if (block == 0) {
+        return 2;
+    }
+    // all blocks are opaque for now
+    // later return an integer if not transparent
+    return 0;
 }
