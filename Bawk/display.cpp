@@ -2,6 +2,10 @@
  * Use this link for basic basic setup!
  * http://www.glfw.org/docs/latest/quick.html
  *
+ *
+ * Later multithread the input (cycle) stepping
+ * http://stackoverflow.com/questions/16560923/how-to-create-a-glfw-thread-in-c
+ *
  */
 
 #include "display.h"
@@ -69,6 +73,9 @@ int init_display() {
         glfwTerminate();
         return -1;
     }
+    
+    // can set vsync interval later on
+    //glfwSwapInterval(1);
     
     /* Make the window's context current */
     glfwMakeContextCurrent(window);

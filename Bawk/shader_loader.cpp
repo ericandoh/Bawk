@@ -13,7 +13,6 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "shader_loader.h"
-#include "display.h"
 
 const std::string VERTEX_SHADER = "vertex_shader.glsl";
 const std::string FRAG_SHADER = "frag_shader.glsl";
@@ -34,6 +33,7 @@ void load_file(std::string& str, std::string file_name) {
 }
 
 int set_shaders(GLuint* block_attribute_coord,
+                GLuint* texture_attribute_coord,
                 GLuint* block_uniform_mvp,
                 GLuint* program)
 {
@@ -176,6 +176,13 @@ int set_shaders(GLuint* block_attribute_coord,
         return -1;
     }
     
+    const char* texture_attribute_name = "texture_coord";
+    *texture_attribute_coord = glGetAttribLocation(*program, texture_attribute_name);
+    if (*texture_attribute_coord == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n", texture_attribute_name);
+        return -1;
+    }
+    
     const char* uniform_name = "mvp";
     *block_uniform_mvp = glGetUniformLocation(*program, uniform_name);
     if (*block_uniform_mvp == -1) {
@@ -184,6 +191,7 @@ int set_shaders(GLuint* block_attribute_coord,
     }
     
     glEnableVertexAttribArray(*block_attribute_coord);
+    glEnableVertexAttribArray(*texture_attribute_coord);
     
     //glEnable(GL_CULL_FACE);
     

@@ -26,13 +26,24 @@
 #include "basic_types.h"
 #include "math.h"
 
-class PlayerRender {
-    fmat4 view;
-    fmat4 projection;
+class RenderablePlayer {
     fmat4 mvp;
+protected:
+    fvec3 pos;
+    fvec3 forward;
+    //fvec3 right;
+    fvec3 up;
+    fvec3 dir;
+    
 public:
-    PlayerRender();
-    fmat4* set_camera(fvec3* pos, fvec3* forward, fvec3* up, fvec3* dir);
+    RenderablePlayer();
+    void move_forward();
+    void move_backward();
+    void move_left();
+    void move_right();
+    void move_up();
+    void move_down();
+    fmat4* set_camera();
 };
 
 #endif /* defined(__Bawk__playerrender__) */

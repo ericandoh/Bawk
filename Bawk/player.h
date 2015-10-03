@@ -29,24 +29,10 @@
 #include "playerrender.h"
 #include "basic_types.h"
 
-class Player {
-    fvec3 pos;
-    fvec3 forward;
-    //fvec3 right;
-    fvec3 up;
-    fvec3 dir;
+class Player : public RenderablePlayer {
     fvec2 angle;
-    
-    PlayerRender playerrender;
 public:
     Player();
-    fmat4* set_camera();
-    void move_forward();
-    void move_backward();
-    void move_left();
-    void move_right();
-    void move_up();
-    void move_down();
     void update_direction(double xdiff, double ydiff);
     void debug();
 };

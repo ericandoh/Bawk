@@ -29,6 +29,7 @@
 #include <GLFW/glfw3.h>
 
 int set_shaders(GLuint* block_attribute_coord,
+                GLuint* texture_attribute_coord,
                 GLuint* block_uniform_mvp,
                 GLuint* program);
 

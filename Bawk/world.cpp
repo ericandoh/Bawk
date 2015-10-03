@@ -11,19 +11,32 @@
 World::World() {
     printf("Adding World\n");
     age = 0;
+    
+    SuperObject* world = new SuperObject();
+    world->fill();
+    superobjects.push_back(world);
+
+}
+
+World::~World() {
+    for (int i = 0; i < superobjects.size(); i++) {
+        delete superobjects[i];
+    }
 }
 
 int World::load_resources() {
-    return world_render.load_resources();
+    return world_load_resources();
 }
 
 void World::free_resources() {
-    world_render.free_resources();
+    world_free_resources();
 }
 
 // renders the world
 void World::render(fmat4* transform) {
-    world_render.render(transform);
+    for (int i = 0; i < superobjects.size(); i++) {
+        superobjects[i]->render(transform);
+    }
 }
 
 // cycles one timestep for the world

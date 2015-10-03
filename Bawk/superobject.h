@@ -15,7 +15,7 @@
 #include "basic_types.h"
 #include "chunk.h"
 
-typedef std::map<ivec3, Chunk> chunk_map;
+typedef std::map<ivec3, Chunk*> chunk_map;
 
 class SuperObject {
     // note: this may/may NOT contain all data about this superobject
@@ -25,8 +25,10 @@ class SuperObject {
     // (i.e. the world, or MASSIVE SHIPS)
     chunk_map chunks;
 public:
-    void init();
-    void remove();
+    // free chunks related with this superobject
+    ~SuperObject();
+    // fills superobject with some data. Used only for initial test, might replace later
+    void fill();
     uint8_t get(int x, int y, int z);
     void set(int x, int y, int z, uint8_t type);
     void render(fmat4* transform);

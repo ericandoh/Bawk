@@ -22,6 +22,7 @@
 #define __Bawk__world__
 
 #include <stdio.h>
+#include <vector>
 #include "basic_types.h"
 #include "worldrender.h"
 
@@ -30,11 +31,12 @@ class World {
     // how many cycles the world has lived through
     unsigned long age;
     
-    // object used to render this world
-    WorldRender world_render;
+    // vector of objects
+    std::vector<SuperObject*> superobjects;
     
 public:
     World();
+    ~World();
     int load_resources();
     void free_resources();
     void render(fmat4* transform);

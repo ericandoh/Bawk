@@ -21,6 +21,7 @@ typedef glm::vec2 fvec2;
 // OUTPUT: 00A00B00C
 uint32_t spread_bits(uint32_t val);
 
+// a vec3 of ints that can be hashed (with coordinate locality)
 struct ivec3 : glm::tvec3<int> {
     ivec3(int ix=0, int iy=0, int iz=0) {
         x = ix; y = iy; z = iz;

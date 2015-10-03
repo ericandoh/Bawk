@@ -11,40 +11,10 @@
 
 Player::Player() {
     // replace these with vectors later on
-    pos = fvec3(0.0f, 0.0f, 0.0f);
-    dir = fvec3(0.1f, 0.1f, 0.1f);
-    up = fvec3(0.0f, 1.0f, 0.0f);
     angle = fvec2(0.0f, 0.0f);
     update_direction(0.0, 0.0);
-    playerrender = PlayerRender();
 }
 
-fmat4* Player::set_camera() {
-    return playerrender.set_camera(&pos, &forward, &up, &dir);
-}
-
-// movement methods. Move these to class Entity
-void Player::move_forward() {
-    // override this if flying/on land
-    pos += forward;
-}
-void Player::move_backward() {
-    pos -= forward;
-}
-void Player::move_left() {
-    pos.x += forward.z;
-    pos.z -= forward.x;
-}
-void Player::move_right() {
-    pos.x -= forward.z;
-    pos.z += forward.x;
-}
-void Player::move_up() {
-    pos.y += 1.0f;
-}
-void Player::move_down() {
-    pos.y -= 1.0f;
-}
 
 void Player::update_direction(double xdiff, double ydiff) {
     

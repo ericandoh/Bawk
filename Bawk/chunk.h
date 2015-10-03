@@ -1,47 +1,21 @@
 //
-//  Represents a chunk
-//  -
-//  -
-//  -
+//  chunk.h
+//  Bawk
 //
-//  Used by:
-//  -
-//
-//  Uses:
-//  -
-//  -
-//  -
-//
-//  Notes
-//  - Stolen shamelessly from https://en.wikibooks.org/wiki/OpenGL_Programming/Glescraft_1
-//  -
-//
-//  Created by Eric Oh on 9/28/15.
+//  Created by Eric Oh on 10/2/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
-#ifndef Bawk_chunk_h
-#define Bawk_chunk_h
+#ifndef __Bawk__chunk__
+#define __Bawk__chunk__
 
-#include <GLFW/glfw3.h>
+#include <stdio.h>
+#include "chunkrender.h"
 
-// dimensions of our chunk
-#define CX 16
-#define CY 16
-#define CZ 16
-
-class Chunk {
-    uint8_t blk[CX][CY][CZ];    // blk type for each block
-    GLuint vbo;                 // reference to VBO (vertex buffer object)
-    int elements;               // number of blocks that need rendering
-    bool changed;               // if chunk is updated, set this
+class Chunk: public RenderableChunk {
 public:
-    Chunk();
-    void remove();
-    uint8_t get(int x, int y, int z);
-    void set(int x, int y, int z, uint8_t type);
-    void update();
-    void render();
+    uint16_t get(int x, int y, int z);
+    void set(int x, int y, int z, uint16_t type);
 };
 
-#endif
+#endif /* defined(__Bawk__chunk__) */

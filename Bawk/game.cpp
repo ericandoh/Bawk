@@ -57,7 +57,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         exit_game();
     }
     
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_REPEAT) {
         Action todo = key_to_action[key];
         
         switch (todo) {
