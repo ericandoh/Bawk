@@ -38,6 +38,7 @@ class Game : public Displayable {
 public:
     int init() override;
     void render() override;
+    void frame() override;
     void key_callback(int key, int scancode, int action, int mods) override;
     void mouse_move_callback(double xdiff, double ydiff) override;
     ~Game();

@@ -163,12 +163,6 @@ int set_shaders(GLuint* block_attribute_coord,
         return -1;
     }
     
-    //TODO move this outside somewhere
-    //Always detach shaders after a successful link.
-    //glDetachShader(program, vertexShader);
-    //glDetachShader(program, fragmentShader);
-    
-    
     const char* attribute_name = "coord";
     *block_attribute_coord = glGetAttribLocation(*program, attribute_name);
     if (*block_attribute_coord == -1) {

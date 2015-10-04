@@ -14,14 +14,19 @@ enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD
 };
 
+int toggleable_keys[] = {GLFW_KEY_SPACE,
+                            GLFW_KEY_Z, GLFW_KEY_A, GLFW_KEY_D,
+                            GLFW_KEY_W, GLFW_KEY_S};
+
 std::map<int, Action> key_to_action;
+std::map<int, bool> key_toggled;
 
 // if the player moves more than 1 dimension away from previous location, update
 float CHUNK_UPDATE_TRIGGER_DISTANCE = 16.0f;
 
 // initializes all needed game variables. This should be called before render()
 int Game::init() {
-    world = new World();
+    world = new World("testworld");
     
     // load resources for the world
     if (world->load_resources()) {
@@ -43,6 +48,10 @@ int Game::init() {
     key_to_action[GLFW_KEY_W] = MOVE_FORWARD;
     key_to_action[GLFW_KEY_S] = MOVE_BACKWARD;
     
+    for (unsigned int i = 0; i < sizeof(toggleable_keys); i++) {
+        key_toggled[toggleable_keys[i]] = false;
+    }
+    
     return 0;
 }
     
@@ -50,6 +59,44 @@ int Game::init() {
 void Game::render() {
     fmat4* transform = player->set_camera();
     world->render(transform);
+}
+
+// runs one frame of the game
+void Game::frame() {
+    bool need_update = false;
+    for (auto& key : key_toggled) {
+        if (key.second) {
+            bool this_key_need_update = true;
+            Action do_this = key_to_action[key.first];
+            switch (do_this) {
+                case MOVE_UP:
+                    player->move_up();
+                    break;
+                case MOVE_DOWN:
+                    player->move_down();
+                    break;
+                case MOVE_LEFT:
+                    player->move_left();
+                    break;
+                case MOVE_RIGHT:
+                    player->move_right();
+                    break;
+                case MOVE_FORWARD:
+                    player->move_forward();
+                    break;
+                case MOVE_BACKWARD:
+                    player->move_backward();
+                    break;
+                default:
+                    // do nothing
+                    this_key_need_update = false;
+                    ;
+            }
+            need_update = need_update | this_key_need_update;
+        }
+    }
+    if (need_update)
+        check_need_update();
 }
 
 float get_dst(fvec3* a, fvec3* b) {
@@ -73,34 +120,17 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE) {
         exit_game();
     }
+    if (key_toggled.count(key)) {
+        if (action == GLFW_PRESS) {
+            key_toggled[key] = true;
+        }
+        else if (action == GLFW_RELEASE) {
+            key_toggled[key] = false;
+        }
+    }
     
     if (action == GLFW_REPEAT) {
-        Action todo = key_to_action[key];
         
-        switch (todo) {
-            case MOVE_UP:
-                player->move_up();
-                break;
-            case MOVE_DOWN:
-                player->move_down();
-                break;
-            case MOVE_LEFT:
-                player->move_left();
-                break;
-            case MOVE_RIGHT:
-                player->move_right();
-                break;
-            case MOVE_FORWARD:
-                player->move_forward();
-                break;
-            case MOVE_BACKWARD:
-                player->move_backward();
-                break;
-            default:
-                // do nothing
-                ;
-        }
-        check_need_update();
     }
 }
 

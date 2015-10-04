@@ -38,11 +38,11 @@ class RenderableChunk {
     int elements;               // number of blocks that need rendering
     int slot;                   // which slot it is using for the VBO?
     double lastused;
-    uint16_t blk[CX][CY][CZ];   // blk type for each block
     bool isblocked(int x1, int y1, int z1, int x2, int y2, int z2);
 public:
     // these set public for ease of setting
     RenderableChunk *left, *right, *below, *above, *front, *back;
+    uint16_t blk[CX][CY][CZ];   // blk type for each block
     bool changed;               // if chunk is updated, set this
     //RenderableChunk();
     ~RenderableChunk();

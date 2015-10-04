@@ -42,7 +42,7 @@ class RenderableSuperObject {
     int load_chunk(int x, int y, int z);
     void delete_chunk(int x, int y, int z);
 public:
-    ~RenderableSuperObject();
+    void remove_self();
     uint16_t get_block(int x, int y, int z);
     void set_block(int x, int y, int z, uint16_t type);
     void render(fmat4* transform);
@@ -51,9 +51,11 @@ public:
     // called when a request to load a chunk from disk is made
     virtual int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) = 0;
     // called when a chunk goes out of scope and no longer needs to be rendered
-    virtual void save_chunk(int x, int y, int z) = 0;
+    virtual int save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) = 0;
     // checks if a chunk at x, y, z is within the superobject dimensions
     virtual bool within_dimensions(int x, int y, int z) = 0;
+    // updates the superobject dimensions
+    virtual void update_dimensions(ivec3* pos) = 0;
 };
 
 #endif /* defined(__Bawk__superobjectrender__) */

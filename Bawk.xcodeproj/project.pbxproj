@@ -31,6 +31,8 @@
 		0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFB1BBF7DBE00477144 /* SOIL.c */; };
 		0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */; };
 		0766EB091BBF9CC900477144 /* base_world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB071BBF9CC900477144 /* base_world.cpp */; };
+		0766EB0F1BC043FF00477144 /* boundedsuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB0D1BC043FF00477144 /* boundedsuperobject.cpp */; };
+		0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB101BC0BE9800477144 /* block_loader.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -101,6 +103,10 @@
 		0766EB061BBF7E7200477144 /* stbi_DDS_aug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stbi_DDS_aug.h; sourceTree = "<group>"; };
 		0766EB071BBF9CC900477144 /* base_world.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base_world.cpp; sourceTree = "<group>"; };
 		0766EB081BBF9CC900477144 /* base_world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_world.h; sourceTree = "<group>"; };
+		0766EB0D1BC043FF00477144 /* boundedsuperobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = boundedsuperobject.cpp; sourceTree = "<group>"; };
+		0766EB0E1BC043FF00477144 /* boundedsuperobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boundedsuperobject.h; sourceTree = "<group>"; };
+		0766EB101BC0BE9800477144 /* block_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_loader.cpp; sourceTree = "<group>"; };
+		0766EB111BC0BE9800477144 /* block_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_loader.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -204,6 +210,8 @@
 				0766EAED1BBF74FD00477144 /* block.h */,
 				0766EB071BBF9CC900477144 /* base_world.cpp */,
 				0766EB081BBF9CC900477144 /* base_world.h */,
+				0766EB0D1BC043FF00477144 /* boundedsuperobject.cpp */,
+				0766EB0E1BC043FF00477144 /* boundedsuperobject.h */,
 			);
 			name = entities;
 			sourceTree = "<group>";
@@ -230,6 +238,8 @@
 				075C67521BBA603D00CB87DE /* shader_loader.h */,
 				0766EAF61BBF7D1300477144 /* texture_loader.cpp */,
 				0766EAF71BBF7D1300477144 /* texture_loader.h */,
+				0766EB101BC0BE9800477144 /* block_loader.cpp */,
+				0766EB111BC0BE9800477144 /* block_loader.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";
@@ -301,6 +311,7 @@
 			files = (
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */,
+				0766EB0F1BC043FF00477144 /* boundedsuperobject.cpp in Sources */,
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
@@ -310,6 +321,7 @@
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
 				0766EAEE1BBF74FD00477144 /* block.cpp in Sources */,
+				0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,

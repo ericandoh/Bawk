@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <string>
 #include "basic_types.h"
 #include "worldrender.h"
 
@@ -31,11 +32,13 @@ class World {
     // how many cycles the world has lived through
     unsigned long age;
     
+    std::string name;
+    
     // vector of objects
     std::vector<SuperObject*> superobjects;
     
 public:
-    World();
+    World(std::string id);
     ~World();
     int load_resources();
     void free_resources();

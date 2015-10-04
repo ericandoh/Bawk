@@ -10,15 +10,15 @@
 #include "worldrender.h"
 #include "superobjectrender.h"
 
-
-RenderableSuperObject::~RenderableSuperObject() {
+void RenderableSuperObject::remove_self() {
     for (auto kv : chunks) {
+        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
         delete kv.second;
     }
 }
 
 int RenderableSuperObject::load_chunk(int x, int y, int z) {
-    printf("Loading chunk for %d %d %d\n", x, y, z);
+    //printf("Loading chunk for %d %d %d\n", x, y, z);
     uint16_t raw_chunk[CX][CY][CZ];
     if (get_chunk(raw_chunk, x, y, z)) {
         // failed to load chunk
@@ -32,7 +32,7 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     ivec3 below(x, y - 1, z);
     ivec3 above(x, y + 1, z);
     ivec3 front(x, y, z - 1);
-    ivec3 back(x, y, z);
+    ivec3 back(x, y, z + 1);
 
     if (chunks.count(left)) {
         chunk->left = chunks[left];
@@ -77,6 +77,11 @@ uint16_t RenderableSuperObject::get_block(int x, int y, int z) {
     int y_offset = (y % CY + CY) % CY;
     int z_offset = (z % CZ + CZ) % CZ;
     ivec3 pos = ivec3((x - x_offset) / CX, (y - y_offset) / CY, (z - z_offset) / CZ);
+
+    if (!within_dimensions(pos.x, pos.y, pos.z)) {
+        // there's no block outside the dimensions of the object
+        return 0;
+    }
     
     if (chunks.count(pos)) {
         // the superobject has the object within its range
@@ -96,6 +101,8 @@ void RenderableSuperObject::set_block(int x, int y, int z, uint16_t type) {
     int y_offset = (y % CY + CY) % CY;
     int z_offset = (z % CZ + CZ) % CZ;
     ivec3 pos = ivec3((x - x_offset) / CX, (y - y_offset) / CY, (z - z_offset) / CZ);
+    
+    update_dimensions(&pos);
     
     if (chunks.count(pos)) {
         // the superobject has the object within its range
@@ -138,14 +145,6 @@ void RenderableSuperObject::render(fmat4* transform) {
         set_transform_matrix(mvp);
         iterator->second->render();
     }
-}
-
-int minimum(int a, int b) {
-    return a < b ? a : b;
-}
-
-int maximum(int a, int b) {
-    return a > b ? a : b;
 }
 
 bool is_within_range(ivec3* chunk_pos, int x, int y, int z) {
@@ -195,6 +194,9 @@ void RenderableSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
     for (int x = xmin; x < xmax; x++) {
         for (int y = ymin; y < ymax; y++) {
             for (int z = zmin; z < zmax; z++) {
+                if (!within_dimensions(x, y, z)) {
+                    continue;
+                }
                 within_old = check_old && is_within_range(&old_chunk_pos, x, y, z);
                 within_new = is_within_range(&new_chunk_pos, x, y, z);
                 if (within_old && !within_new) {

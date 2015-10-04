@@ -10,7 +10,14 @@
 
 #include "display.h"
 
+// 30 fps
+const double FRAME_RATE=30.0;
+const double TIME_PER_FRAME = 1.0 / FRAME_RATE;
+
 GLFWwindow* window;
+
+// if current time is bigger than this, run the frame()
+double need_refresh_time = 0.0;
 
 // input related variables
 double xprev, yprev = 0;
@@ -104,9 +111,16 @@ void display_close() {
 int display_run()
 {
     should_exit = false;
+    need_refresh_time = glfwGetTime() + TIME_PER_FRAME;
     /* Loop until the user closes the window */
     while (!(glfwWindowShouldClose(window) || should_exit))
     {
+        // change to while to make it catch up to events
+        if (glfwGetTime() > need_refresh_time) {
+            need_refresh_time += TIME_PER_FRAME;
+            current_display->frame();
+        }
+        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_POLYGON_OFFSET_FILL);

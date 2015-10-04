@@ -10,7 +10,7 @@
 
 #define GROUND_DEPTH 4
 
-BaseWorld::BaseWorld() {
+BaseWorld::BaseWorld(std::string wid): SuperObject(wid) {
     memset(air, 0, sizeof(air[0][0][0])*CX*CY*CZ);
     memset(ground, 0, sizeof(ground[0][0][0])*CX*CY*CZ);
     for (int x = 0; x < CX; x++) {
@@ -23,8 +23,16 @@ BaseWorld::BaseWorld() {
 }
 
 int BaseWorld::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
+    // try getting the chunk first, to see if it already exists in disk
+    int result = SuperObject::get_chunk(to_arr, x, y, z);
+    if (!result) {
+        // we got the chunk successfully from disk
+        return 0;
+    }
+    // chunk doesn't exist in disk, so it must not exist at all
+    // create a new chunk with random parameters
     if (y == 0) {
-        printf("Loading ground\n");
+        //printf("Loading ground\n");
         memcpy(&to_arr[0][0][0], &ground[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
         for (int x = 0; x < CX; x++) {
             for (int z = 0; z < CZ; z++) {
@@ -34,7 +42,7 @@ int BaseWorld::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
         }
     }
     else {
-        printf("Loading air\n");
+        //printf("Loading air\n");
         memcpy(&to_arr[0][0][0], &air[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
         for (int x = 0; x < CX; x++) {
             for (int z = 0; z < CZ; z++) {
@@ -46,12 +54,11 @@ int BaseWorld::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
     return 0;
 }
 
-void BaseWorld::save_chunk(int x, int y, int z) {
-    // this world doesn't save (yet)!
-    // shit
-}
-
 bool BaseWorld::within_dimensions(int x, int y, int z) {
     // all the world is within dimensions technically
     return true;
+}
+
+void BaseWorld::update_dimensions(ivec3* pos) {
+    // do nothing
 }

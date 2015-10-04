@@ -7,18 +7,23 @@
 
 #include "world.h"
 #include "base_world.h"
+#include "block_loader.h"
 
 // constructor
-World::World() {
+World::World(std::string id) {
     printf("Adding World\n");
     age = 0;
     
-    BaseWorld* world = new BaseWorld();
+    name = id;
+    make_world_folder(name);
+    
+    BaseWorld* world = new BaseWorld(name);
     superobjects.push_back(world);
 }
 
 World::~World() {
     for (int i = 0; i < superobjects.size(); i++) {
+        superobjects[i]->remove_self();
         delete superobjects[i];
     }
 }
