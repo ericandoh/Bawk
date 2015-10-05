@@ -24,6 +24,8 @@ static GLint uniform_texture;
 
 int CHUNK_RENDER_DIST = 3;
 
+int mx, my, mz, face;
+
 int world_load_resources() {
     if (set_shaders(&block_attribute_coord,
                     &texture_attribute_coord,
@@ -56,4 +58,15 @@ void world_free_resources() {
 
 void set_transform_matrix(fmat4 mvp) {
     glUniformMatrix4fv(block_uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+}
+
+void set_look_at(int x, int y, int z, int side) {
+    mx = x;
+    my = y;
+    mz = z;
+    face = side;
+}
+
+ivec4 get_look_at() {
+    return ivec4(mx, my, mz, face);
 }

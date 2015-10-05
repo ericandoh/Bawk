@@ -17,6 +17,9 @@ typedef glm::vec3 fvec3;
 // float vec2
 typedef glm::vec2 fvec2;
 
+// float vec4
+typedef glm::tvec4<int> ivec4;
+
 // INPUT: ABC
 // OUTPUT: 00A00B00C
 uint32_t spread_bits(uint32_t val);

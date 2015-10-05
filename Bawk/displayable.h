@@ -31,6 +31,7 @@ public:
     virtual void frame() = 0;
     virtual void key_callback(int key, int scancode, int action, int mods) = 0;
     virtual void mouse_move_callback(double xdiff, double ydiff) = 0;
+    virtual void mouse_button_callback(int button, int action, int mods) = 0;
 };
 
 #endif

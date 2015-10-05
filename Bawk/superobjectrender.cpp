@@ -11,10 +11,13 @@
 #include "superobjectrender.h"
 
 void RenderableSuperObject::remove_self() {
+    int counter = 0;
     for (auto kv : chunks) {
+        counter++;
         save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
         delete kv.second;
     }
+    printf("Saved %d chunks\n", counter);
 }
 
 int RenderableSuperObject::load_chunk(int x, int y, int z) {

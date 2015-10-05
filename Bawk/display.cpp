@@ -31,7 +31,7 @@ Displayable* current_display;
 bool should_exit = 0;
 
 void get_window_size(int* width, int* height) {
-    glfwGetWindowSize(window, width, height);
+    glfwGetFramebufferSize(window, width, height);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -65,13 +65,18 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos) {
     }
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if (current_display)
+        current_display->mouse_button_callback(button, action, mods);
+}
+
 int init_display() {
     /* Initialize the library */
     if (!glfwInit())
         return -1;
     
-    int width = 640;
-    int height = 480;
+    int width = 1080;
+    int height = 640;
     
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(width, height, "Bawk", NULL, NULL);
@@ -92,6 +97,7 @@ int init_display() {
     
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_move_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
     
     return 0;
 }

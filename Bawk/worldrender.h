@@ -39,5 +39,7 @@ extern int CHUNK_RENDER_DIST;
 int world_load_resources();
 void world_free_resources();
 void set_transform_matrix(fmat4 mvp);
+void set_look_at(int x, int y, int z, int side);
+ivec4 get_look_at();
 
 #endif /* defined(__Bawk__worldrender__) */

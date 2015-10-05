@@ -59,6 +59,7 @@ int Game::init() {
 void Game::render() {
     fmat4* transform = player->set_camera();
     world->render(transform);
+    player->render();
 }
 
 // runs one frame of the game
@@ -136,6 +137,17 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
 
 void Game::mouse_move_callback(double xdiff, double ydiff) {
     player->update_direction(xdiff, ydiff);
+}
+
+void Game::mouse_button_callback(int button, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        if (button == GLFW_MOUSE_BUTTON_LEFT) {
+            world->kill_block();
+        }
+        else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+            world->place_block();
+        }
+    }
 }
 
 Game::~Game() {

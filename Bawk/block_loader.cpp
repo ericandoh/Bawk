@@ -23,8 +23,8 @@ std::string get_chunk_path(std::string world_name,
     
     // pos for positive, not position!
     unsigned int xpos = chunk_pos->x > 0;
-    unsigned int ypos = chunk_pos->x > 0;
-    unsigned int zpos = chunk_pos->x > 0;
+    unsigned int ypos = chunk_pos->y > 0;
+    unsigned int zpos = chunk_pos->z > 0;
     
     unsigned int pos_bits = (xpos << 0x2) + (ypos << 0x1) + zpos;
     

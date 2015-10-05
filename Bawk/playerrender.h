@@ -23,18 +23,20 @@
 #define __Bawk__playerrender__
 
 #include <stdio.h>
+#include <GLFW/glfw3.h>
 #include "basic_types.h"
 #include "math.h"
 
 class RenderablePlayer {
     fmat4 mvp;
+    fmat4 view, projection;
+    GLuint cursor_vbo;
 protected:
     fvec3 pos;
     fvec3 forward;
     //fvec3 right;
     fvec3 up;
     fvec3 dir;
-    
 public:
     RenderablePlayer();
     void move_forward();
@@ -45,6 +47,9 @@ public:
     void move_down();
     fvec3* get_pos();
     fmat4* set_camera();
+    // renders a box around the selection
+    // also updates appropriate variables marking the selection
+    void render();
 };
 
 #endif /* defined(__Bawk__playerrender__) */
