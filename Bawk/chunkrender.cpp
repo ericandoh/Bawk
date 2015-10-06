@@ -429,9 +429,6 @@ void RenderableChunk::render() {
     if(!elements)
         return;
     
-    // lets us know to use this program shaders
-    glUseProgram(program);
-    
     // Render the VBO here
     glBindBuffer(GL_ARRAY_BUFFER, coord_vbo);
     glVertexAttribPointer(block_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);

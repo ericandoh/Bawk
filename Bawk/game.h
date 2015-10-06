@@ -1,8 +1,9 @@
 //
-//  Main game class
+//  Represents the game
 //  - Holds the World, other entity information
 //  - Multiplexes all functions together
 //  - Holds a reference to the current Player playing this game
+//  - Main function to handle inputs related to the game and pass them to the right entities
 //
 //  Used by:
 //  - display.cpp (displays this)

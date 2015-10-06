@@ -180,17 +180,17 @@ void RenderablePlayer::render() {
     /* Draw a cross in the center of the screen */
     
     float cross[4][3] = {
-        {-0.05, 0, 0},
-        {+0.05, 0, 0},
-        {0, -0.05, 0},
-        {0, +0.05, 0},
+        {-0.05f, 0, 0},
+        {+0.05f, 0, 0},
+        {0, -0.05f * width/height, 0},
+        {0, +0.05f * width/height, 0},
     };
     
     glDisable(GL_DEPTH_TEST);
     glm::mat4 one(1);
     set_transform_matrix(one);
     glBufferData(GL_ARRAY_BUFFER, sizeof cross, cross, GL_DYNAMIC_DRAW);
+    glVertexPointer(4, GL_FLOAT, 0, cross);
     glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_LINES, 0, 4);
-    
 }

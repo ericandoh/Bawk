@@ -15,6 +15,8 @@ BoundedSuperObject::BoundedSuperObject(std::string id, std::string wid): SuperOb
     id = object_counter++;
 }
 
+// TODO (override set method to update bounds)
+
 int BoundedSuperObject::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
     if (!within_dimensions(x, y, z)) {
         // not within dimensions, unable to fetch

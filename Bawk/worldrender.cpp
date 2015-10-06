@@ -47,6 +47,8 @@ int world_load_resources() {
     
     glPolygonOffset(1, 1);
     
+    set_up_for_world_render();
+    
     return 0;
 }
 
@@ -69,4 +71,9 @@ void set_look_at(int x, int y, int z, int side) {
 
 ivec4 get_look_at() {
     return ivec4(mx, my, mz, face);
+}
+
+void set_up_for_world_render() {
+    // lets us know to use this program shaders
+    glUseProgram(program);
 }
