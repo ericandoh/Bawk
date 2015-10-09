@@ -45,6 +45,36 @@ void Player::update_direction(double xdiff, double ydiff) {
     //up = glm::cross(right, lookat);
 }
 
+ivec3 Player::get_rounded_left() {
+    if (fabsf(dir.x) > fabsf(dir.z)) {
+        if (dir.x < 0) {
+            return ivec3(0, 0, -1);
+        }
+        return ivec3(0, 0, 1);
+    }
+    else {
+        if (dir.z < 0) {
+            return ivec3(1, 0, 0);
+        }
+        return ivec3(-1, 0, 0);
+    }
+}
+
+ivec3 Player::get_rounded_forward() {
+    if (fabsf(dir.x) > fabsf(dir.z)) {
+        if (dir.x < 0) {
+            return ivec3(-1, 0, 0);
+        }
+        return ivec3(1, 0, 0);
+    }
+    else {
+        if (dir.z < 0) {
+            return ivec3(0, 0, -1);
+        }
+        return ivec3(0, 0, 1);
+    }
+}
+
 void Player::debug() {
     printf("Player at %f,%f,%f pointing at %f,%f,%f\n",
             pos.x, pos.y, pos.z,

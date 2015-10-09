@@ -34,6 +34,8 @@ class Player : public RenderablePlayer {
 public:
     Player();
     void update_direction(double xdiff, double ydiff);
+    ivec3 get_rounded_left();
+    ivec3 get_rounded_forward();
     void debug();
 };
 

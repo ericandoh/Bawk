@@ -9,6 +9,7 @@
 #include "base_world.h"
 #include "block_loader.h"
 #include "worldrender.h"    // used for getting which block to place
+#include "superobject.h"
 
 // constructor
 World::World(std::string id) {
@@ -18,8 +19,8 @@ World::World(std::string id) {
     name = id;
     make_world_folder(name);
     
-    BaseWorld* world = new BaseWorld(name);
-    superobjects.push_back(world);
+    base_world = new BaseWorld(name);
+    superobjects.push_back(base_world);
 }
 
 World::~World() {
@@ -50,41 +51,50 @@ void World::update_chunks(fvec3* old_pos, fvec3* new_pos) {
     }
 }
 
-void World::place_block() {
+void World::place_block(ivec3 position, uint16_t block) {
+    // TODO (check for colision with other superobjects...?)
+    // (other superobjects including baseworld!)
+    /*
+    // TODO
     ivec4 looking_at = get_look_at();
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
     int face = looking_at.w;
     if(face == 0)
-        mx++;
+    mx++;
     if(face == 3)
-        mx--;
+    mx--;
     if(face == 1)
-        my++;
+    my++;
     if(face == 4)
-        my--;
+    my--;
     if(face == 2)
-        mz++;
+    mz++;
     if(face == 5)
-        mz--;
-    superobjects.front()->set_block(mx, my, mz, 15);
-    printf("Placing at (%d, %d, %d)   (face %d)\n",
-           mx, my, mz, face);
+    mz--;*/
+    base_world->set_block(position.x, position.y, position.z, block);
 }
 
-void World::kill_block() {
+ivec3 World::kill_block() {
     ivec4 looking_at = get_look_at();
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
     int face = looking_at.w;
-    superobjects.front()->set_block(mx, my, mz, 0);
+    // TODO do a check to see if any objects in the way
+    // TODO do a distance check
+    base_world->set_block(mx, my, mz, 0);
     printf("Removing at (%d, %d, %d)   (face %d)\n",
            mx, my, mz, face);
+    return ivec3(mx, my, mz);
 }
 
 // cycles one timestep for the world
 void World::step() {
     age++;
+}
+
+SuperObject* World::make_bounded_super_object() {
+    return new SuperObject(name);
 }

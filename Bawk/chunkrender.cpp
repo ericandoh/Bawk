@@ -47,28 +47,6 @@ void set_coord_and_texture(GLbyte coord[][3],
     texture[index][2] = flags;
 }
 
-/*RenderableChunk::RenderableChunk() {
-    memset(blk, 0, sizeof(blk[0][0][0])*CX*CY*CZ);
-    elements = 0;
-    slot = 0;
-    lastused = glfwGetTime();
-    changed = true;
-    
-    left = right = below = above = front = back = 0;
-    
-    for (int x = 0; x < CX; x++) {
-        for (int y = 0; y < CY; y++) {
-            for (int z = 0; z < CZ; z++) {
-                if (rand() % 10 < 3) {
-                    //blk[x][y][z] = (uint16_t)(rand() * sizeof(uint16_t));
-                    // pick a random block 0, 1, or 2
-                    blk[x][y][z] = rand() % 3;
-                }
-            }
-        }
-    }
-}*/
-
 RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
     memset(blk, 0, sizeof blk);
     elements = 0;
@@ -77,6 +55,7 @@ RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
     changed = true;
     left = right = below = above = front = back = 0;
     memcpy(&blk[0][0][0], &from[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
+    update_dimensions();
 }
 
 RenderableChunk::~RenderableChunk() {
@@ -161,7 +140,34 @@ uint16_t RenderableChunk::get(int x, int y, int z) {
 }
 
 void RenderableChunk::set(int x, int y, int z, uint16_t type) {
+    uint16_t prev = blk[x][y][z];
     blk[x][y][z] = type;
+    if (!prev) {
+        // assume i'm adding a block
+        elements++;
+    }
+    if (!type) {
+        // pysch i'm actually not adding a block
+        elements--;
+        if (prev) {
+            // i removed a block. dude...
+            bool anyMatchingLower = (x == lower_bound.x) || (y == lower_bound.y) || (z == lower_bound.z);
+            bool anyMatchingUpper = (x == upper_bound.x) || (y == upper_bound.y) || (z == upper_bound.z);
+            if (anyMatchingLower || anyMatchingUpper) {
+                // we removed a block on the periphery. update dimensions!
+                update_dimensions();
+            }
+        }
+    }
+    else {
+        // update lower_bound, upper_bound
+        lower_bound.x = minimum(x, lower_bound.x);
+        lower_bound.y = minimum(y, lower_bound.y);
+        lower_bound.z = minimum(z, lower_bound.z);
+        upper_bound.x = maximum(x, upper_bound.x);
+        upper_bound.y = maximum(y, upper_bound.y);
+        upper_bound.z = maximum(z, upper_bound.z);
+    }
     // When updating blocks at the edge of this chunk,
     // visibility of blocks in the neighbouring chunk might change.
     if(x == 0 && left)
@@ -179,6 +185,35 @@ void RenderableChunk::set(int x, int y, int z, uint16_t type) {
     changed = true;
 }
 
+void RenderableChunk::update_dimensions() {
+    // TODO could this be slightly more efficient? a loop over 4k elements isnt the most efficient...
+    // small, large: inclusive-inclusive
+    lower_bound = ivec3(CX, CY, CZ);
+    upper_bound = ivec3(0, 0, 0);
+    if (!elements && !changed) {
+        return;
+    }
+    for (int x = 0; x < CX; x++) {
+        for (int y = 0; y < CY; y++) {
+            for (int z = 0; z < CZ; z++) {
+                if (blk[x][y][z]) {
+                    lower_bound.x = minimum(x, lower_bound.x);
+                    lower_bound.y = minimum(y, lower_bound.y);
+                    lower_bound.z = minimum(z, lower_bound.z);
+                    upper_bound.x = maximum(x, upper_bound.x);
+                    upper_bound.y = maximum(y, upper_bound.y);
+                    upper_bound.z = maximum(z, upper_bound.z);
+                }
+            }
+        }
+    }
+}
+
+bool RenderableChunk::intersects_my_bounds(ivec3 lower_corner, ivec3 upper_corner) {
+    return     lower_bound.x > upper_corner.x || lower_corner.x > upper_bound.x
+            || lower_bound.y > upper_corner.y || lower_corner.y > upper_bound.y
+            || lower_bound.z > upper_corner.z || lower_corner.z > upper_bound.z;
+}
 
 void RenderableChunk::update() {
     changed = false;
@@ -437,4 +472,8 @@ void RenderableChunk::render() {
     glVertexAttribPointer(texture_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, elements);
+}
+
+void get_empty_chunk(uint16_t source[CX][CY][CZ]) {
+    memset(source, 0, sizeof(source[0][0][0])*CX*CY*CZ);
 }

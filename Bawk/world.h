@@ -37,6 +37,8 @@ class World {
     // vector of objects
     std::vector<SuperObject*> superobjects;
     
+    SuperObject* base_world;
+    
 public:
     World(std::string id);
     ~World();
@@ -44,9 +46,12 @@ public:
     void free_resources();
     void render(fmat4* transform);
     void update_chunks(fvec3* old_pos, fvec3* new_pos);
-    void place_block();
-    void kill_block();
+    // called by cursor item, places block into baseworld
+    void place_block(ivec3 position, uint16_t block);
+    // called by game to kill a block directly. then effects are propogated to the appropriate entities
+    ivec3 kill_block();
     void step();
+    SuperObject* make_bounded_super_object();
 };
 
 #endif /* defined(__Bawk__world__) */

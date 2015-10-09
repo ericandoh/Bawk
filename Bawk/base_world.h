@@ -19,10 +19,7 @@ class BaseWorld: public SuperObject {
 public:
     BaseWorld(std::string wid);
     int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) override;
-    // no need to override saving of the chunk
-    //int save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) override;
-    bool within_dimensions(int x, int y, int z) override;
-    void update_dimensions(ivec3* pos) override;
+    bool within_dimensions_chunk(int x, int y, int z);
 };
 
 #endif /* defined(__Bawk__base_world__) */

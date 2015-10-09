@@ -75,8 +75,8 @@ int init_display() {
     if (!glfwInit())
         return -1;
     
-    int width = 1080;
-    int height = 640;
+    int width = 640;   //1080
+    int height = 320;   //640
     
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(width, height, "Bawk", NULL, NULL);

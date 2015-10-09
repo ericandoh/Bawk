@@ -22,6 +22,10 @@
 		075C67661BBA78D600CB87DE /* display.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075C67641BBA78D600CB87DE /* display.cpp */; };
 		075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075EA6D41BBDBE26001CC402 /* superobject.cpp */; };
 		075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075EA6D81BBE078B001CC402 /* basic_types.cpp */; };
+		076410711BC45EA300135EDC /* temporarytemplate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0764106F1BC45EA300135EDC /* temporarytemplate.cpp */; };
+		076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410721BC48F7B00135EDC /* cursorblock.cpp */; };
+		076410771BC48F8B00135EDC /* cursoritem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410751BC48F8B00135EDC /* cursoritem.cpp */; };
+		0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410781BC48F9B00135EDC /* cursorsuperobject.cpp */; };
 		0766EAEE1BBF74FD00477144 /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAEC1BBF74FD00477144 /* block.cpp */; };
 		0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAEF1BBF75E900477144 /* superobjectrender.cpp */; };
 		0766EAF51BBF7CDA00477144 /* tiles.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0766EAF41BBF7CDA00477144 /* tiles.png */; };
@@ -31,7 +35,6 @@
 		0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFB1BBF7DBE00477144 /* SOIL.c */; };
 		0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */; };
 		0766EB091BBF9CC900477144 /* base_world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB071BBF9CC900477144 /* base_world.cpp */; };
-		0766EB0F1BC043FF00477144 /* boundedsuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB0D1BC043FF00477144 /* boundedsuperobject.cpp */; };
 		0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB101BC0BE9800477144 /* block_loader.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
@@ -84,6 +87,14 @@
 		075EA6D51BBDBE26001CC402 /* superobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = superobject.h; sourceTree = "<group>"; };
 		075EA6D71BBDC878001CC402 /* basic_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = basic_types.h; sourceTree = "<group>"; };
 		075EA6D81BBE078B001CC402 /* basic_types.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = basic_types.cpp; sourceTree = "<group>"; };
+		0764106F1BC45EA300135EDC /* temporarytemplate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = temporarytemplate.cpp; sourceTree = "<group>"; };
+		076410701BC45EA300135EDC /* temporarytemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = temporarytemplate.h; sourceTree = "<group>"; };
+		076410721BC48F7B00135EDC /* cursorblock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorblock.cpp; sourceTree = "<group>"; };
+		076410731BC48F7B00135EDC /* cursorblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorblock.h; sourceTree = "<group>"; };
+		076410751BC48F8B00135EDC /* cursoritem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursoritem.cpp; sourceTree = "<group>"; };
+		076410761BC48F8B00135EDC /* cursoritem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursoritem.h; sourceTree = "<group>"; };
+		076410781BC48F9B00135EDC /* cursorsuperobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorsuperobject.cpp; sourceTree = "<group>"; };
+		076410791BC48F9B00135EDC /* cursorsuperobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorsuperobject.h; sourceTree = "<group>"; };
 		0766EAEC1BBF74FD00477144 /* block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block.cpp; sourceTree = "<group>"; };
 		0766EAED1BBF74FD00477144 /* block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block.h; sourceTree = "<group>"; };
 		0766EAEF1BBF75E900477144 /* superobjectrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = superobjectrender.cpp; sourceTree = "<group>"; };
@@ -103,8 +114,6 @@
 		0766EB061BBF7E7200477144 /* stbi_DDS_aug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stbi_DDS_aug.h; sourceTree = "<group>"; };
 		0766EB071BBF9CC900477144 /* base_world.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base_world.cpp; sourceTree = "<group>"; };
 		0766EB081BBF9CC900477144 /* base_world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_world.h; sourceTree = "<group>"; };
-		0766EB0D1BC043FF00477144 /* boundedsuperobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = boundedsuperobject.cpp; sourceTree = "<group>"; };
-		0766EB0E1BC043FF00477144 /* boundedsuperobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boundedsuperobject.h; sourceTree = "<group>"; };
 		0766EB101BC0BE9800477144 /* block_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_loader.cpp; sourceTree = "<group>"; };
 		0766EB111BC0BE9800477144 /* block_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_loader.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
@@ -210,8 +219,14 @@
 				0766EAED1BBF74FD00477144 /* block.h */,
 				0766EB071BBF9CC900477144 /* base_world.cpp */,
 				0766EB081BBF9CC900477144 /* base_world.h */,
-				0766EB0D1BC043FF00477144 /* boundedsuperobject.cpp */,
-				0766EB0E1BC043FF00477144 /* boundedsuperobject.h */,
+				0764106F1BC45EA300135EDC /* temporarytemplate.cpp */,
+				076410701BC45EA300135EDC /* temporarytemplate.h */,
+				076410721BC48F7B00135EDC /* cursorblock.cpp */,
+				076410731BC48F7B00135EDC /* cursorblock.h */,
+				076410751BC48F8B00135EDC /* cursoritem.cpp */,
+				076410761BC48F8B00135EDC /* cursoritem.h */,
+				076410781BC48F9B00135EDC /* cursorsuperobject.cpp */,
+				076410791BC48F9B00135EDC /* cursorsuperobject.h */,
 			);
 			name = entities;
 			sourceTree = "<group>";
@@ -311,7 +326,7 @@
 			files = (
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */,
-				0766EB0F1BC043FF00477144 /* boundedsuperobject.cpp in Sources */,
+				0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */,
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
@@ -326,8 +341,11 @@
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,
 				074B6C9C1BB9D2380065192B /* main.cpp in Sources */,
+				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
 				0766EAF81BBF7D1300477144 /* texture_loader.cpp in Sources */,
+				076410711BC45EA300135EDC /* temporarytemplate.cpp in Sources */,
 				075C67401BBA3EE800CB87DE /* world.cpp in Sources */,
+				076410771BC48F8B00135EDC /* cursoritem.cpp in Sources */,
 				075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */,
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
 				07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */,

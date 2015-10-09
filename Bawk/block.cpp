@@ -16,3 +16,7 @@ int get_transparency(uint16_t block) {
     // later return an integer if not transparent
     return 0;
 }
+
+int creates_independence(uint16_t block) {
+    return 0;
+}
