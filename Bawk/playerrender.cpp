@@ -61,7 +61,7 @@ static float dti(float val) {
     return fabsf(val - roundf(val));
 }
 
-void RenderablePlayer::render() {
+void RenderablePlayer::query_depth() {
     int width, height;
     float depth;
     get_window_size(&width, &height);
@@ -132,12 +132,17 @@ void RenderablePlayer::render() {
     }
     // call to save mx, my, mz, and face here to a global var
     set_look_at(mx, my, mz, face);
-    
+}
+
+void RenderablePlayer::render() {
+    int width, height;
+    get_window_size(&width, &height);
+    /*
     float bx = mx;
     float by = my;
     float bz = mz;
     
-    /* Render a box around the block we are pointing at */
+    // Render a box around the block we are pointing at
     float box[24][3] = {
         {bx + 0, by + 0, bz + 0},
         {bx + 1, by + 0, bz + 0},
@@ -175,9 +180,12 @@ void RenderablePlayer::render() {
     glBindBuffer(GL_ARRAY_BUFFER, cursor_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glDrawArrays(GL_LINES, 0, 24);
+    glDrawArrays(GL_LINES, 0, 24);*/
     
     /* Draw a cross in the center of the screen */
+    
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glDisable(GL_CULL_FACE);
     
     float cross[4][3] = {
         {-0.05f, 0, 0},

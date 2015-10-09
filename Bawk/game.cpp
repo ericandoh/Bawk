@@ -80,10 +80,20 @@ int Game::init() {
     
 // Called in the main render loop. Pass the rendering to the appropriate entries
 void Game::render() {
+    // get transform from player's perspective
     fmat4* transform = player->set_camera();
+    // render world in player's perspective
     world->render(transform);
-    // add code to render the current_item ghost, outside player->render
+    // get depth coordinates
+    player->query_depth();
+    // render current item based on those depth coordinates
+    if (current_item) {
+        current_item->render_and_position(transform);
+    }
+    // render the cursor
     player->render();
+    
+    // TODO render UI elements here
 }
 
 // runs one frame of the game
@@ -279,8 +289,6 @@ void Game::mouse_button_callback(int button, int action, int mods) {
         }
         else if (do_this == CLICK_CREATE) {
             // get block here instead of outside
-            // TODO update this
-            //world->place_block(player->get_current_item());
             if (placed_current_item) {
                 if (place_into) {
                     printf("Placing template into template!\n");
@@ -301,6 +309,7 @@ void Game::mouse_button_callback(int button, int action, int mods) {
 }
 
 // TODO if we scroll mouse, make sure to set placed_current_item to false
+// use switch_current_item(index) to switch
 
 Game::~Game() {
     printf("Cleaning up game\n");

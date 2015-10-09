@@ -47,6 +47,7 @@ public:
     void move_down();
     fvec3* get_pos();
     fmat4* set_camera();
+    void query_depth();
     // renders a box around the selection
     // also updates appropriate variables marking the selection
     void render();

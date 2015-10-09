@@ -35,7 +35,8 @@ void delete_all_buffers();
 class RenderableChunk {
     GLuint coord_vbo;           // VBO (vertex buffer object) for coordinates
     GLuint texture_vbo;         // VBO (vertex buffer object) for textures/flags
-    int elements;               // number of blocks that need rendering
+    int elements;               // number of triangles that need rendering
+    int block_counter;          // number of blocks in this chunk
     int slot;                   // which slot it is using for the VBO?
     double lastused;
     // internal function used to optimize rendering of blocks

@@ -161,7 +161,7 @@ void RenderableSuperObject::set_block(float x, float y, float z, uint16_t type) 
 
 bool RenderableSuperObject::set_position(fvec3 to_pos) {
     // TODO do position check here
-    printf("Setting position to (%d %d %d)\n", to_pos.x, to_pos.y, to_pos.z);
+    //printf("Setting position to (%f %f %f)\n", to_pos.x, to_pos.y, to_pos.z);
     pos = to_pos;
     return true;
 }

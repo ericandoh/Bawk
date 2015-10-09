@@ -18,6 +18,7 @@ class CursorBlock: public CursorItem {
     uint16_t block;
 public:
     CursorBlock(uint16_t type);
+    ~CursorBlock();
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
     void set_blocks(World* world, TemporaryTemplate* temp) override;
@@ -27,6 +28,7 @@ public:
     bool place_blocks(World* world, TemporaryTemplate* temp) override;
     // only needed for instances of template. the default does jack shit
     void move_block(ivec3 dir) override;
+    void render_and_position(fmat4* transform);
 };
 
 #endif /* defined(__Bawk__cursorblock__) */

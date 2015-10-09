@@ -25,6 +25,7 @@ public:
     virtual bool place_blocks(World* world, TemporaryTemplate* temp) = 0;
     // only needed for instances of template. the default does jack shit
     virtual void move_block(ivec3 dir) = 0;
+    virtual void render_and_position(fmat4* transform) = 0;
     void unlock();
 };
 

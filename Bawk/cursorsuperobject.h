@@ -31,6 +31,7 @@ public:
     bool place_blocks(World* world, TemporaryTemplate* temp) override;
     // only needed for instances of template. the default does jack shit
     void move_block(ivec3 dir) override;
+    void render_and_position(fmat4* transform) override;
     void unlock();
     
     // --- rendersuperobject methods ---

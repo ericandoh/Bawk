@@ -40,7 +40,7 @@ void set_coord_and_texture(GLbyte coord[][3],
     coord[index][2] = z;
     
     // first 8 bits. Represents the x-axis in our texture atlas
-    texture[index][0] = type;
+    texture[index][0] = type & 0xFF;
     // last 8 bits. Represents the y-axis in our texture atlas
     texture[index][1] = type >> 0x8;
     // some extra flags we can set to let shader know how to render this
@@ -50,6 +50,7 @@ void set_coord_and_texture(GLbyte coord[][3],
 RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
     memset(blk, 0, sizeof blk);
     elements = 0;
+    block_counter = -1;
     slot = 0;
     lastused = glfwGetTime();
     changed = true;
@@ -144,11 +145,11 @@ void RenderableChunk::set(int x, int y, int z, uint16_t type) {
     blk[x][y][z] = type;
     if (!prev) {
         // assume i'm adding a block
-        elements++;
+        block_counter++;
     }
     if (!type) {
         // pysch i'm actually not adding a block
-        elements--;
+        block_counter--;
         if (prev) {
             // i removed a block. dude...
             bool anyMatchingLower = (x == lower_bound.x) || (y == lower_bound.y) || (z == lower_bound.z);
@@ -190,13 +191,14 @@ void RenderableChunk::update_dimensions() {
     // small, large: inclusive-inclusive
     lower_bound = ivec3(CX, CY, CZ);
     upper_bound = ivec3(0, 0, 0);
-    if (!elements && !changed) {
+    if (block_counter == 0)
         return;
-    }
+    block_counter = 0;
     for (int x = 0; x < CX; x++) {
         for (int y = 0; y < CY; y++) {
             for (int z = 0; z < CZ; z++) {
                 if (blk[x][y][z]) {
+                    block_counter++;
                     lower_bound.x = minimum(x, lower_bound.x);
                     lower_bound.y = minimum(y, lower_bound.y);
                     lower_bound.z = minimum(z, lower_bound.z);

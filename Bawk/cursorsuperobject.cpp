@@ -51,12 +51,15 @@ void CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
         }
     }
     printf("Set %d blocks\n", counter);
+    locked = false;
 }
 
 // for a single block, this will call set_blocks (above) directly.
 // for a template block, this will lock the position of the current cursoritem template
 // then a call to set_blocks will be made later
 bool CursorSuperObject::place_blocks(World* world, TemporaryTemplate* temp) {
+    if (locked)
+        return true;
     ivec4 looking_at = get_look_at();
     int mx = looking_at.x;
     int my = looking_at.y;
@@ -84,10 +87,39 @@ bool CursorSuperObject::place_blocks(World* world, TemporaryTemplate* temp) {
 
 // only needed for instances of template. the default does jack shit
 void CursorSuperObject::move_block(ivec3 dir) {
+    if (!locked) {
+        return;
+    }
     pos = fvec3(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
 }
 
-
+void CursorSuperObject::render_and_position(fmat4* transform) {
+    if (!locked) {
+        ivec4 looking_at = get_look_at();
+        int mx = looking_at.x;
+        int my = looking_at.y;
+        int mz = looking_at.z;
+        int face = looking_at.w;
+        // TODO make sure my lookat is from the world and the world only
+        // ie query the world here
+        if(face == 0)
+            mx++;
+        if(face == 3)
+            mx--;
+        if(face == 1)
+            my++;
+        if(face == 4)
+            my--;
+        if(face == 2)
+            mz++;
+        if(face == 5)
+            mz--;
+        // TODO if it is too far away don't render it!
+        // save position
+        set_position(fvec3(mx, my, mz));
+    }
+    render(transform);
+}
 
 void CursorSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
     // always render all objects in this cursorsuperobject
