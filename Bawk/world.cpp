@@ -56,7 +56,10 @@ void World::place_block(ivec3 position, uint16_t block) {
     // (other superobjects including baseworld!)
     /*
     // TODO
-    ivec4 looking_at = get_look_at();
+    ivec4 looking_at;
+    if (!get_look_at(&looking_at)) {
+        return false;
+    }
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
@@ -76,8 +79,11 @@ void World::place_block(ivec3 position, uint16_t block) {
     base_world->set_block(position.x, position.y, position.z, block);
 }
 
-ivec3 World::kill_block() {
-    ivec4 looking_at = get_look_at();
+bool World::kill_block(ivec3* src) {
+    ivec4 looking_at;
+    if (!get_look_at(&looking_at)) {
+        return false;
+    }
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
@@ -87,7 +93,10 @@ ivec3 World::kill_block() {
     base_world->set_block(mx, my, mz, 0);
     printf("Removing at (%d, %d, %d)   (face %d)\n",
            mx, my, mz, face);
-    return ivec3(mx, my, mz);
+    src->x = mx;
+    src->y = my;
+    src->z = mz;
+    return true;
 }
 
 // cycles one timestep for the world

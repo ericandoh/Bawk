@@ -294,10 +294,12 @@ void Game::mouse_button_callback(int button, int action, int mods) {
             else {
                 // get block here instead of outside
                 printf("Destroying block from world\n");
-                ivec3 removed_at = world->kill_block();
-                if (place_into) {
-                    printf("Destroying it from the template as well rofl\n");
-                    place_into->remove_block(removed_at);
+                ivec3 removed_at;
+                if (world->kill_block(&removed_at)) {
+                    if (place_into) {
+                        printf("Destroying it from the template as well rofl\n");
+                        place_into->remove_block(removed_at);
+                    }
                 }
             }
         }

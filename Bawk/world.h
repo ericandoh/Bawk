@@ -49,7 +49,7 @@ public:
     // called by cursor item, places block into baseworld
     void place_block(ivec3 position, uint16_t block);
     // called by game to kill a block directly. then effects are propogated to the appropriate entities
-    ivec3 kill_block();
+    bool kill_block(ivec3* src);
     void step();
     SuperObject* make_bounded_super_object();
     bool will_collide_with_anything(RenderableSuperObject* superobject);

@@ -23,8 +23,10 @@ GLuint program;
 static GLint uniform_texture;
 
 int CHUNK_RENDER_DIST = 3;
+float BLOCK_PLACE_DST = 10.0f;
 
 int mx, my, mz, face;
+bool in_range;
 
 int world_load_resources() {
     if (set_shaders(&block_attribute_coord,
@@ -47,6 +49,9 @@ int world_load_resources() {
     
     glPolygonOffset(1, 1);
     
+    mx = my = mz = 0;
+    in_range = false;
+    
     set_up_for_world_render();
     
     return 0;
@@ -62,15 +67,25 @@ void set_transform_matrix(fmat4 mvp) {
     glUniformMatrix4fv(block_uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
 }
 
-void set_look_at(int x, int y, int z, int side) {
+void set_look_at(float depth, int x, int y, int z, int side) {
+    in_range = depth <= BLOCK_PLACE_DST;
+    if (!in_range) {
+        return;
+    }
     mx = x;
     my = y;
     mz = z;
     face = side;
 }
 
-ivec4 get_look_at() {
-    return ivec4(mx, my, mz, face);
+bool get_look_at(ivec4* src) {
+    if (in_range) {
+        src->x = mx;
+        src->y = my;
+        src->z = mz;
+        src->w = face;
+    }
+    return in_range;
 }
 
 void set_up_for_world_render() {

@@ -25,7 +25,10 @@ CursorBlock::CursorBlock(uint16_t type) {
 // sets the blocks in this representation into the world, and if template is not null, into the
 // template as well
 bool CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
-    ivec4 looking_at = get_look_at();
+    ivec4 looking_at;
+    if (!get_look_at(&looking_at)) {
+        return false;
+    }
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
@@ -71,7 +74,10 @@ void CursorBlock::render_and_position(fmat4* transform) {
     if (block == 0)
         return;
     // TODO if it is too far away don't render it!
-    ivec4 looking_at = get_look_at();
+    ivec4 looking_at;
+    if (!get_look_at(&looking_at)) {
+        return;
+    }
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;

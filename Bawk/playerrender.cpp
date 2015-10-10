@@ -83,6 +83,8 @@ void RenderablePlayer::query_depth() {
     int my = floorf(objcoord.y);
     int mz = floorf(objcoord.z);
     
+    float distance = sqrtf((mx-pos.x)*(mx-pos.x) + (my-pos.y)*(my-pos.y) + (mz-pos.z)*(mz-pos.z));
+    
     //int nx = roundf(objcoord.x);
     //int ny = roundf(objcoord.y);
     //int nz = roundf(objcoord.z);
@@ -131,7 +133,7 @@ void RenderablePlayer::query_depth() {
         }
     }
     // call to save mx, my, mz, and face here to a global var
-    set_look_at(mx, my, mz, face);
+    set_look_at(distance, mx, my, mz, face);
 }
 
 void RenderablePlayer::render() {

@@ -66,7 +66,10 @@ bool CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
 bool CursorSuperObject::place_blocks(World* world, TemporaryTemplate* temp) {
     if (locked)
         return true;
-    ivec4 looking_at = get_look_at();
+    ivec4 looking_at;
+    if (!get_look_at(&looking_at)) {
+        return false;
+    }
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
@@ -101,7 +104,10 @@ void CursorSuperObject::move_block(ivec3 dir) {
 
 void CursorSuperObject::render_and_position(fmat4* transform) {
     if (!locked) {
-        ivec4 looking_at = get_look_at();
+        ivec4 looking_at;
+        if (!get_look_at(&looking_at)) {
+            return;
+        }
         int mx = looking_at.x;
         int my = looking_at.y;
         int mz = looking_at.z;
