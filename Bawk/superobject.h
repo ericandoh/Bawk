@@ -19,9 +19,10 @@ class SuperObject : public RenderableSuperObject {
 public:
     SuperObject(std::string wid);
     SuperObject(std::string id, std::string wid);
+    void remove_self();
     int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) override;
     int save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) override;
-    bool within_dimensions_chunk(int x, int y, int z) override;
+    virtual bool within_dimensions_chunk(int x, int y, int z) override;
 };
 
 #endif /* defined(__Bawk__Superobject__) */

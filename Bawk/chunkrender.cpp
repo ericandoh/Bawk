@@ -212,9 +212,9 @@ void RenderableChunk::update_dimensions() {
 }
 
 bool RenderableChunk::intersects_my_bounds(ivec3 lower_corner, ivec3 upper_corner) {
-    return     lower_bound.x > upper_corner.x || lower_corner.x > upper_bound.x
+    return   !(lower_bound.x > upper_corner.x || lower_corner.x > upper_bound.x
             || lower_bound.y > upper_corner.y || lower_corner.y > upper_bound.y
-            || lower_bound.z > upper_corner.z || lower_corner.z > upper_bound.z;
+            || lower_bound.z > upper_corner.z || lower_corner.z > upper_bound.z);
 }
 
 void RenderableChunk::update() {

@@ -18,7 +18,7 @@ class CursorItem {
 public:
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
-    virtual void set_blocks(World* world, TemporaryTemplate* temp) = 0;
+    virtual bool set_blocks(World* world, TemporaryTemplate* temp) = 0;
     // for a single block, this will call set_blocks (above) directly.
     // for a template block, this will lock the position of the current cursoritem template
     // then a call to set_blocks will be made later
@@ -26,7 +26,7 @@ public:
     // only needed for instances of template. the default does jack shit
     virtual void move_block(ivec3 dir) = 0;
     virtual void render_and_position(fmat4* transform) = 0;
-    void unlock();
+    virtual void unlock();
     
     virtual void cleanup_all() = 0;
 };

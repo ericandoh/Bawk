@@ -10,16 +10,23 @@
 #include "block_loader.h"
 
 SuperObject::SuperObject(std::string wid) {
-    // TODO this is sketch. use a global counter instead
-    name = std::to_string(rand());
+    // this constructor should be only called to construct a world
+    name = "";
     world_name = wid;
     make_object_in_world_folder(wid, name);
+    // TODO load data into chunk_bounds
 }
 
 SuperObject::SuperObject(std::string id, std::string wid) {
     name = id;
     world_name = wid;
     make_object_in_world_folder(wid, name);
+    // TODO load data into chunk_bounds
+}
+
+void SuperObject::remove_self() {
+    RenderableSuperObject::remove_self();
+    // TODO save data from chunk_bounds (or from the chunk directly) here
 }
 
 int SuperObject::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {

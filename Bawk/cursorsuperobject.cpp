@@ -23,7 +23,12 @@ CursorSuperObject::CursorSuperObject() {
 
 // sets the blocks in this representation into the world, and if template is not null, into the
 // template as well
-void CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
+bool CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
+    
+    if (world->will_collide_with_anything(this)) {
+        return false;
+    }
+    
     printf("Publishing blocks from a template!\n");
     int counter = 0;
     for (auto& kv : chunks) {
@@ -52,6 +57,7 @@ void CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
     }
     printf("Set %d blocks\n", counter);
     locked = false;
+    return true;
 }
 
 // for a single block, this will call set_blocks (above) directly.

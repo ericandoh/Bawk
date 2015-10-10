@@ -58,3 +58,11 @@ bool BaseWorld::within_dimensions_chunk(int x, int y, int z) {
     // all the world is within dimensions technically
     return true;
 }
+
+void BaseWorld::update_dimensions_from_chunk(ivec3 chunk_pos) {
+    // do nothing
+}
+
+bool BaseWorld::intersects_with_my_bounds(ivec3 lower_corner, ivec3 upper_corner) {
+    return true;
+}

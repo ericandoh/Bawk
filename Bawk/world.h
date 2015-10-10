@@ -52,6 +52,7 @@ public:
     ivec3 kill_block();
     void step();
     SuperObject* make_bounded_super_object();
+    bool will_collide_with_anything(RenderableSuperObject* superobject);
 };
 
 #endif /* defined(__Bawk__world__) */

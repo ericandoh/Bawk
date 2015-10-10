@@ -15,12 +15,14 @@ RenderableSuperObject::RenderableSuperObject() {
     pos = fvec3(0.0, 0.0, 0.0);
     lower_bound = ivec3(INT_MAX, INT_MAX, INT_MAX);
     upper_bound = ivec3(INT_MIN, INT_MIN, INT_MIN);
+    // TODO recalculate bound here, or load bound from memory
 }
 
 RenderableSuperObject::RenderableSuperObject(fvec3 p) {
     pos = p;
     lower_bound = ivec3(INT_MAX, INT_MAX, INT_MAX);
     upper_bound = ivec3(INT_MIN, INT_MIN, INT_MIN);
+    // TODO recalculate bound here, or load bound from memory
 }
 
 void RenderableSuperObject::transform_into_my_coordinates(ivec3* src, float x, float y, float z) {
@@ -71,6 +73,8 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     }
     RenderableChunk* chunk = new RenderableChunk(raw_chunk);
     chunks[ivec3(x, y, z)] = chunk;
+    // we load data from disk so this should be consistent, but just to be safe do a check
+    update_dimensions_from_chunk(ivec3(x, y, z));
     
     ivec3 left(x - 1, y, z);
     ivec3 right(x + 1, y, z);
@@ -156,6 +160,8 @@ void RenderableSuperObject::set_block(float x, float y, float z, uint16_t type) 
     // try loading the chunk (if it doesn't exist) then set block
     if (!load_chunk(cac.x, cac.y, cac.z)) {
         chunks[cac]->set(crc.x, crc.y, crc.z, type);
+        // update the dimension vectors
+        update_dimensions_from_chunk(cac);
     }
     // loading the chunk failed, probably because this is out of bounds
 }
@@ -268,6 +274,50 @@ void RenderableSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
     }
 }
 
+void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
+    if (!chunks.count(chunk_pos))
+        return;
+    ivec3 chunk_lower = chunks[chunk_pos]->lower_bound;
+    ivec3 chunk_upper = chunks[chunk_pos]->upper_bound;
+    bool recalculate_needed = false;
+    if (chunk_bounds.count(chunk_pos)) {
+        ivec3 old_chunk_lower = chunk_bounds[chunk_pos].lower_bound;
+        ivec3 old_chunk_upper = chunk_bounds[chunk_pos].upper_bound;
+        // we need to recalculate if any of our total bounds depended on this chunk, or seemed to
+        recalculate_needed = lower_bound.x == old_chunk_lower.x  ||
+                            lower_bound.y == old_chunk_lower.y ||
+                            lower_bound.z == old_chunk_lower.z;
+        recalculate_needed = recalculate_needed ||
+                            upper_bound.x == old_chunk_upper.x  ||
+                            upper_bound.y == old_chunk_upper.y ||
+                            upper_bound.z == old_chunk_upper.z;
+    }
+    else {
+        recalculate_needed = true;
+    }
+    chunk_bounds[chunk_pos] = {chunk_lower, chunk_upper};
+    
+    // iterate through all our chunks and update dimensions
+    if (recalculate_needed) {
+        lower_bound = ivec3(INT_MAX, INT_MAX, INT_MAX);
+        upper_bound = ivec3(INT_MIN, INT_MIN, INT_MIN);
+        for (auto &i : chunk_bounds) {
+            lower_bound.x = minimum(i.second.lower_bound.x, lower_bound.x);
+            lower_bound.y = minimum(i.second.lower_bound.y, lower_bound.y);
+            lower_bound.z = minimum(i.second.lower_bound.z, lower_bound.z);
+            upper_bound.x = maximum(i.second.upper_bound.x, upper_bound.x);
+            upper_bound.y = maximum(i.second.upper_bound.y, upper_bound.y);
+            upper_bound.z = maximum(i.second.upper_bound.z, upper_bound.z);
+        }
+    }
+}
+
+bool RenderableSuperObject::intersects_with_my_bounds(ivec3 lower_corner, ivec3 upper_corner) {
+    return   !(lower_bound.x > upper_corner.x || lower_corner.x > upper_bound.x
+            || lower_bound.y > upper_corner.y || lower_corner.y > upper_bound.y
+            || lower_bound.z > upper_corner.z || lower_corner.z > upper_bound.z);
+}
+
 bool RenderableSuperObject::collides_with(RenderableSuperObject* other) {
     // calculate RWC of other's bounds
     fvec3 lower, upper;
@@ -296,11 +346,14 @@ bool RenderableSuperObject::collides_with(RenderableSuperObject* other) {
     transform_into_chunk_bounds(&upper_cac, &upper_crc, upper_oac.x, upper_oac.y, upper_oac.z);
     
     // see if lower_oac, upper_oac intersect with lower, upper
+    if (!intersects_with_my_bounds(lower_oac, upper_oac)) {
+        return false;
+    }
     
     // iterate through chunks directly and see if there is intersection
     // if so, return region of conflict
     
-    // iterate through our region and see if it exists in our mapping
+    // iterate through our chunk region and see if it exists in our mapping
     for (int x = lower_cac.x; x <= upper_cac.x; x++) {
         for (int y = lower_cac.y; y <= upper_cac.y; y++) {
             for (int z = lower_cac.z; z <= upper_cac.z; z++) {
@@ -339,6 +392,7 @@ bool RenderableSuperObject::collides_with(RenderableSuperObject* other) {
                                         if (other->get_block(world_coord.x,
                                                              world_coord.y,
                                                              world_coord.z)) {
+                                            // break here to debug
                                             return true;
                                         }
                                     }

@@ -24,7 +24,7 @@ public:
     
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
-    void set_blocks(World* world, TemporaryTemplate* temp) override;
+    bool set_blocks(World* world, TemporaryTemplate* temp) override;
     // for a single block, this will call set_blocks (above) directly.
     // for a template block, this will lock the position of the current cursoritem template
     // then a call to set_blocks will be made later

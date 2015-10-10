@@ -96,5 +96,17 @@ void World::step() {
 }
 
 SuperObject* World::make_bounded_super_object() {
-    return new SuperObject(name);
+    return new SuperObject("item", name);
+}
+
+bool World::will_collide_with_anything(RenderableSuperObject* other) {
+    for (int i = 0; i < superobjects.size(); i++) {
+        if (superobjects[i] == other) {
+            continue;
+        }
+        if (superobjects[i]->collides_with(other)) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -81,7 +81,7 @@ int Game::init() {
     second->set_block(0.0f, 1.0f, 0.0f, 2);
     second->set_block(0.0f, 1.0f, 1.0f, 2);
     cursor_items.push_back(second);
-    cursor_item_index = 1;
+    //cursor_item_index = 1;
     
     current_item = cursor_items.at(cursor_item_index);
         
@@ -194,8 +194,11 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                     printf("Placing template into world!\n");
                 }
                 // we need to place this object into the world
-                current_item->set_blocks(world, place_into);
-                placed_current_item = false;
+                // if we can't place this object, this should fail
+                if (current_item->set_blocks(world, place_into)) {
+                    // placing blocks was successful
+                    placed_current_item = false;
+                }
             }
             else if (place_into) {
                 printf("Exporting template to current cursor!\n");

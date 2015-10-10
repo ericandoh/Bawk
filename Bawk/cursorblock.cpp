@@ -24,7 +24,7 @@ CursorBlock::CursorBlock(uint16_t type) {
 
 // sets the blocks in this representation into the world, and if template is not null, into the
 // template as well
-void CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
+bool CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
     ivec4 looking_at = get_look_at();
     int mx = looking_at.x;
     int my = looking_at.y;
@@ -51,6 +51,7 @@ void CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
     //       mx, my, mz, face);
     if (temp)
         temp->add_block(block_pos, block);
+    return true;
 }
 // for a single block, this will call set_blocks (above) directly.
 // for a template block, this will lock the position of the current cursoritem template
