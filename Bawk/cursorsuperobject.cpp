@@ -116,7 +116,9 @@ void CursorSuperObject::render_and_position(fmat4* transform) {
             mz--;
         // TODO if it is too far away don't render it!
         // save position
-        set_position(fvec3(mx, my, mz));
+        if (pos != fvec3(mx, my, mz)) {
+            set_position(fvec3(mx, my, mz));
+        }
     }
     render(transform);
 }
@@ -190,5 +192,8 @@ CursorSuperObject* create_from_template(World* world, TemporaryTemplate* temp) {
     return object;
 }
 
+void CursorSuperObject::cleanup_all() {
+    remove_self();
+}
 
 

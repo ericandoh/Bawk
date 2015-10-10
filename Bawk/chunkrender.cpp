@@ -28,7 +28,7 @@ struct vboholder {
 };
 
 // slots for VBO for the chunks. This gets cycled if we don't have enough
-static struct vboholder chunk_slot[CHUNKSLOTS] = {0};
+static vboholder chunk_slot[CHUNKSLOTS] = {0};
 
 void set_coord_and_texture(GLbyte coord[][3],
                            GLbyte texture[][3],
@@ -59,7 +59,7 @@ RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
     update_dimensions();
 }
 
-RenderableChunk::~RenderableChunk() {
+void RenderableChunk::cleanup() {
     // removing this chunk
     // free its slot
     if(chunk_slot[slot].owner == this) {
@@ -439,8 +439,10 @@ void RenderableChunk::update() {
         
         // If the slot is empty, create a new VBO
         if(!chunk_slot[lru].owner) {
-            glGenBuffers(1, &chunk_slot[lru].coord_vbo);
-            glGenBuffers(1, &chunk_slot[lru].texture_vbo);
+            if (!(chunk_slot[lru].coord_vbo) || !(chunk_slot[lru].texture_vbo)) {
+                glGenBuffers(1, &chunk_slot[lru].texture_vbo);
+                glGenBuffers(1, &chunk_slot[lru].coord_vbo);
+            }
         } else {
             // Otherwise, steal it from the previous slot owner
             chunk_slot[lru].owner->changed = true;
@@ -462,6 +464,9 @@ void RenderableChunk::update() {
 void RenderableChunk::render() {
     if(changed)
         update();
+    
+    lastused = glfwGetTime();
+    
     // If this chunk is empty, we don't need to draw anything.
     if(!elements)
         return;

@@ -52,7 +52,7 @@ void RenderableSuperObject::remove_self() {
     for (auto kv : chunks) {
         counter++;
         save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
-        delete kv.second;
+        kv.second->cleanup();
     }
     printf("Saved %d chunks\n", counter);
 }
@@ -114,6 +114,7 @@ void RenderableSuperObject::delete_chunk(int x, int y, int z) {
         return;
     }
     // this will call destructor which will (hopefully) cleanly erase/detach the chunk!
+    chunks[pos]->cleanup();
     chunks.erase(pos);
 }
 
@@ -192,7 +193,6 @@ void RenderableSuperObject::render(fmat4* transform) {
         // If it is outside the screen, don't bother drawing it
         if(fabsf(center.x) > 1 + fabsf(CY * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CY * 2 / center.w))
             continue;
-        
         
         set_transform_matrix(mvp);
         iterator->second->render();

@@ -25,4 +25,5 @@ void main(void) {
         discard;
     color.xyz *= intensity;
     gl_FragColor = color;
+    //gl_FragColor = vec4(texcoord.xyz, 1.0);
 }

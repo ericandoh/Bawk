@@ -197,6 +197,7 @@ void RenderablePlayer::render() {
     glDisable(GL_DEPTH_TEST);
     glm::mat4 one(1);
     set_transform_matrix(one);
+    glBindBuffer(GL_ARRAY_BUFFER, cursor_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof cross, cross, GL_DYNAMIC_DRAW);
     glVertexPointer(4, GL_FLOAT, 0, cross);
     glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);

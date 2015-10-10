@@ -15,7 +15,7 @@
 
 // Represents a template that can be put down
 
-class CursorSuperObject: public CursorItem, public RenderableSuperObject {
+class CursorSuperObject: public RenderableSuperObject, public CursorItem {
     bool locked;
 public:
     CursorSuperObject();
@@ -42,6 +42,8 @@ public:
     int save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;
     void remove_self();
+    
+    void cleanup_all() override;
 };
 
 CursorSuperObject* create_from_template(World* world, TemporaryTemplate* temp);

@@ -70,11 +70,21 @@ int Game::init() {
         key_toggled[toggleable_keys[i]] = false;
     }
     
+    place_into = 0;
+    
     CursorItem* first = new CursorBlock(9);
     cursor_items.push_back(first);
     cursor_item_index = 0;
-    current_item = cursor_items.at(cursor_item_index);
     
+    CursorSuperObject* second = new CursorSuperObject();
+    second->set_block(0.0f, 0.0f, 0.0f, 2);
+    second->set_block(0.0f, 1.0f, 0.0f, 2);
+    second->set_block(0.0f, 1.0f, 1.0f, 2);
+    cursor_items.push_back(second);
+    cursor_item_index = 1;
+    
+    current_item = cursor_items.at(cursor_item_index);
+        
     return 0;
 }
     
@@ -90,6 +100,7 @@ void Game::render() {
     if (current_item) {
         current_item->render_and_position(transform);
     }
+    
     // render the cursor
     player->render();
     
@@ -193,7 +204,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 // do we need to free? what if its already in inventory
                 // let's not free this l8 on, since we still need to render if its in inventory
                 // then l8 we can have a separate memory scheme for if this is in memory or not
-                delete current_item;
+                current_item->cleanup_all();
                 current_item = create_from_template(world, place_into);
                 cursor_items[cursor_item_index] = current_item;
                 delete place_into;
@@ -237,14 +248,14 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         else if (do_this == MOVE_BLOCK_LEFT) {
             if (placed_current_item) {
                 printf("Moving placed template\n");
-                current_item->move_block(player->get_rounded_left());
+                ivec3 left = player->get_rounded_left();
+                current_item->move_block(ivec3(-left.x, 0, -left.z));
             }
         }
         else if (do_this == MOVE_BLOCK_RIGHT) {
             if (placed_current_item) {
                 printf("Moving placed template\n");
-                ivec3 left = player->get_rounded_left();
-                current_item->move_block(ivec3(-left.x, 0, -left.z));
+                current_item->move_block(player->get_rounded_left());
             }
         }
         else if (do_this == MOVE_BLOCK_FORWARD) {

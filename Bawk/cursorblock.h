@@ -29,6 +29,8 @@ public:
     // only needed for instances of template. the default does jack shit
     void move_block(ivec3 dir) override;
     void render_and_position(fmat4* transform);
+    
+    void cleanup_all() override;
 };
 
 #endif /* defined(__Bawk__cursorblock__) */

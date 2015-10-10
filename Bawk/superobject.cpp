@@ -33,7 +33,7 @@ int SuperObject::save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) 
 }
 
 bool SuperObject::within_dimensions_chunk(int x, int y, int z) {
-    ivec3 pos = ivec3(x, y, z);
+    //ivec3 pos = ivec3(x, y, z);
     printf("Optimize me by saving a list of the valid chunks xyz in a chunk data object");
     printf("Without it it still works for now but it's janky!");
     return true;

@@ -48,6 +48,7 @@ class Game : public Displayable {
     
     // the item on the cursor right now. Clicking will place this item down
     CursorItem* current_item;
+    
     // all our cursor items
     std::vector<CursorItem*> cursor_items;
     // the index of the current cursor item

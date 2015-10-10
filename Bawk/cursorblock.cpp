@@ -22,13 +22,6 @@ CursorBlock::CursorBlock(uint16_t type) {
     block = type;
 }
 
-CursorBlock::~CursorBlock() {
-    if (block_vbo_slot[0].block == this) {
-        glDeleteBuffers(1, &block_vbo_slot[0].coord_vbo);
-        glDeleteBuffers(1, &block_vbo_slot[0].texture_vbo);
-    }
-}
-
 // sets the blocks in this representation into the world, and if template is not null, into the
 // template as well
 void CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
@@ -213,4 +206,11 @@ void CursorBlock::render_and_position(fmat4* transform) {
     glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(texture_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void CursorBlock::cleanup_all() {
+    if (block_vbo_slot[0].block == this) {
+        glDeleteBuffers(1, &block_vbo_slot[0].coord_vbo);
+        glDeleteBuffers(1, &block_vbo_slot[0].texture_vbo);
+    }
 }

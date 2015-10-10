@@ -27,6 +27,8 @@ public:
     virtual void move_block(ivec3 dir) = 0;
     virtual void render_and_position(fmat4* transform) = 0;
     void unlock();
+    
+    virtual void cleanup_all() = 0;
 };
 
 #endif /* defined(__Bawk__cursoritem__) */

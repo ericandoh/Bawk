@@ -50,8 +50,8 @@ public:
     ivec3 lower_bound, upper_bound;
     // if chunk is updated, set this
     bool changed;
-    ~RenderableChunk();
     RenderableChunk(uint16_t from[CX][CY][CZ]);
+    void cleanup();
     // get block at x, y, z in chunk's coordinates
     uint16_t get(int x, int y, int z);
     // set block at x, y, z in chunk's coordinates
