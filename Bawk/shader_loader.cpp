@@ -35,6 +35,7 @@ void load_file(std::string& str, std::string file_name) {
 int set_shaders(GLuint* block_attribute_coord,
                 GLuint* texture_attribute_coord,
                 GLuint* block_uniform_mvp,
+                GLuint* block_uniform_draw_mode,
                 GLuint* program)
 {
     
@@ -181,6 +182,13 @@ int set_shaders(GLuint* block_attribute_coord,
     *block_uniform_mvp = glGetUniformLocation(*program, uniform_name);
     if (*block_uniform_mvp == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_name);
+        return false;
+    }
+    
+    const char* uniform_draw_mode_name = "draw_mode";
+    *block_uniform_draw_mode = glGetUniformLocation(*program, uniform_draw_mode_name);
+    if (*block_uniform_draw_mode == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n",uniform_draw_mode_name);
         return false;
     }
     

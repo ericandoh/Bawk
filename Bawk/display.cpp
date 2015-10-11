@@ -75,8 +75,8 @@ int init_display() {
     if (!glfwInit())
         return -1;
     
-    int width = 640;   //1080
-    int height = 320;   //640
+    int width = 1080;   //1080
+    int height = 640;   //640
     
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(width, height, "Bawk", NULL, NULL);
@@ -119,6 +119,7 @@ int display_run()
     should_exit = false;
     need_refresh_time = glfwGetTime() + TIME_PER_FRAME;
     /* Loop until the user closes the window */
+    int width, height;
     while (!(glfwWindowShouldClose(window) || should_exit))
     {
         // change to while to make it catch up to events
@@ -126,6 +127,9 @@ int display_run()
             need_refresh_time += TIME_PER_FRAME;
             current_display->frame();
         }
+        
+        glfwGetFramebufferSize(window, &width, &height);
+        glViewport(0, 0, width, height);
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);

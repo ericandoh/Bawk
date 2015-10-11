@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF6F1BC98D300050EE52 /* base_widget.cpp */; };
+		0704CF741BC997550050EE52 /* item_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF721BC997550050EE52 /* item_bar.cpp */; };
+		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
 		074B6C9C1BB9D2380065192B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074B6C9B1BB9D2380065192B /* main.cpp */; };
 		074B6CA31BB9D2780065192B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA21BB9D2780065192B /* Cocoa.framework */; };
 		074B6CA51BB9D27D0065192B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA41BB9D27D0065192B /* OpenGL.framework */; };
@@ -58,6 +61,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0704CF6F1BC98D300050EE52 /* base_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base_widget.cpp; sourceTree = "<group>"; };
+		0704CF701BC98D300050EE52 /* base_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_widget.h; sourceTree = "<group>"; };
+		0704CF721BC997550050EE52 /* item_bar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = item_bar.cpp; sourceTree = "<group>"; };
+		0704CF731BC997550050EE52 /* item_bar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_bar.h; sourceTree = "<group>"; };
+		0704CF751BC997DE0050EE52 /* item_barlet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = item_barlet.cpp; sourceTree = "<group>"; };
+		0704CF761BC997DE0050EE52 /* item_barlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_barlet.h; sourceTree = "<group>"; };
 		074B6C981BB9D2380065192B /* Bawk */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bawk; sourceTree = BUILT_PRODUCTS_DIR; };
 		074B6C9B1BB9D2380065192B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		074B6CA21BB9D2780065192B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -141,6 +150,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0704CF6E1BC98CEE0050EE52 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				0704CF6F1BC98D300050EE52 /* base_widget.cpp */,
+				0704CF701BC98D300050EE52 /* base_widget.h */,
+				0704CF721BC997550050EE52 /* item_bar.cpp */,
+				0704CF731BC997550050EE52 /* item_bar.h */,
+				0704CF751BC997DE0050EE52 /* item_barlet.cpp */,
+				0704CF761BC997DE0050EE52 /* item_barlet.h */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
 		074B6C8F1BB9D2380065192B = {
 			isa = PBXGroup;
 			children = (
@@ -179,6 +201,7 @@
 		074B6C9A1BB9D2380065192B /* Bawk */ = {
 			isa = PBXGroup;
 			children = (
+				0704CF6E1BC98CEE0050EE52 /* ui */,
 				074B6CA21BB9D2780065192B /* Cocoa.framework */,
 				075C67631BBA78C800CB87DE /* display */,
 				075C67551BBA695900CB87DE /* asset_loaders */,
@@ -327,9 +350,12 @@
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */,
 				0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */,
+				0704CF741BC997550050EE52 /* item_bar.cpp in Sources */,
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
+				0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */,
+				0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */,
 				0766EB091BBF9CC900477144 /* base_world.cpp in Sources */,
 				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,

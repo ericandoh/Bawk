@@ -102,6 +102,19 @@ void CursorSuperObject::move_block(ivec3 dir) {
     pos = fvec3(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
 }
 
+void CursorSuperObject::get_bounds(ivec3* upper) {
+    upper->x = upper_bound.x - lower_bound.x;
+    upper->y = upper_bound.y - lower_bound.y;
+    upper->z = upper_bound.z - lower_bound.z;
+}
+
+void CursorSuperObject::render_at_zero(fmat4* transform) {
+    fvec3 old_pos = pos;
+    set_position(fvec3(0, 0, 0));
+    render(transform);
+    pos = old_pos;
+}
+
 void CursorSuperObject::render_and_position(fmat4* transform) {
     if (!locked) {
         ivec4 looking_at;

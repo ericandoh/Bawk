@@ -16,6 +16,7 @@
 
 class CursorBlock: public CursorItem {
     uint16_t block;
+    void render_block(fmat4* transform, float bx, float by, float bz);
 public:
     CursorBlock(uint16_t type);
     ~CursorBlock();
@@ -28,7 +29,9 @@ public:
     bool place_blocks(World* world, TemporaryTemplate* temp) override;
     // only needed for instances of template. the default does jack shit
     void move_block(ivec3 dir) override;
-    void render_and_position(fmat4* transform);
+    void get_bounds(ivec3* upper) override;
+    void render_at_zero(fmat4* transform) override;
+    void render_and_position(fmat4* transform) override;
     
     void cleanup_all() override;
 };

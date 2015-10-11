@@ -17,6 +17,7 @@
 GLuint block_attribute_coord;
 GLuint texture_attribute_coord;
 GLuint block_uniform_mvp;
+GLuint block_uniform_draw_mode;
 GLuint tile_texture;
 GLuint program;
 
@@ -32,6 +33,7 @@ int world_load_resources() {
     if (set_shaders(&block_attribute_coord,
                     &texture_attribute_coord,
                     &block_uniform_mvp,
+                    &block_uniform_draw_mode,
                     &program)) {
         return -1;
     }
@@ -61,6 +63,10 @@ void world_free_resources() {
     delete_all_buffers();
     glDeleteProgram(program);
     glDeleteTextures(1, &tile_texture);
+}
+
+void set_block_draw_mode(int v) {
+    glUniform1i(block_uniform_draw_mode, v);
 }
 
 void set_transform_matrix(fmat4 mvp) {

@@ -32,6 +32,7 @@
 #include "displayable.h"
 #include "temporarytemplate.h"
 #include "cursoritem.h"
+#include "item_bar.h"
 
 class Game : public Displayable {
     // game data objects
@@ -47,14 +48,16 @@ class Game : public Displayable {
     TemporaryTemplate* place_into;
     
     // the item on the cursor right now. Clicking will place this item down
-    CursorItem* current_item;
+    // CursorItem* current_item;
     
     // all our cursor items
-    std::vector<CursorItem*> cursor_items;
+    // std::vector<CursorItem*> cursor_items;
     // the index of the current cursor item
-    int cursor_item_index;
+    // int cursor_item_index;
     // if we've just placed down a cursor item that is a template, and are now in template move mode
     bool placed_current_item;
+    
+    ItemBar* bar;
     
     void check_need_update();
 public:

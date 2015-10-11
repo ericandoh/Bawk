@@ -18,6 +18,7 @@ RenderablePlayer::RenderablePlayer() {
     forward = dir;
     up = fvec3(0.0f, 1.0f, 0.0f);
     glGenBuffers(1, &cursor_vbo);
+    // TODO do we ever free this...
 }
 
 // movement methods. Move these to class Entity
@@ -201,7 +202,7 @@ void RenderablePlayer::render() {
     set_transform_matrix(one);
     glBindBuffer(GL_ARRAY_BUFFER, cursor_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof cross, cross, GL_DYNAMIC_DRAW);
-    glVertexPointer(4, GL_FLOAT, 0, cross);
+    //glVertexPointer(4, GL_FLOAT, 0, cross);
     glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_LINES, 0, 4);
 }

@@ -70,66 +70,13 @@ void CursorBlock::move_block(ivec3 dir) {
     printf("Warning: Move block called on a singe block entity");
 }
 
-void CursorBlock::render_and_position(fmat4* transform) {
-    if (block == 0)
-        return;
-    // TODO if it is too far away don't render it!
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
-        return;
-    }
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    int face = looking_at.w;
-    if(face == 0)
-        mx++;
-    if(face == 3)
-        mx--;
-    if(face == 1)
-        my++;
-    if(face == 4)
-        my--;
-    if(face == 2)
-        mz++;
-    if(face == 5)
-        mz--;
-    
-    float bx = mx;
-    float by = my;
-    float bz = mz;
-    
-    /*
-    // Render a box around the block we are pointing at
-    float box[24][3] = {
-        {bx + 0, by + 0, bz + 0},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 0, by + 1, bz + 0},
-        {bx + 1, by + 1, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 1, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 1},
-        
-        {bx + 0, by + 0, bz + 0},
-        {bx + 0, by + 1, bz + 0},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 1, by + 1, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 0, bz + 1},
-        {bx + 1, by + 1, bz + 1},
-        
-        {bx + 0, by + 0, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 1, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 0},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 0},
-        {bx + 1, by + 1, bz + 1},
-    };*/
-    
+void CursorBlock::get_bounds(ivec3* upper) {
+    upper->x = 1;
+    upper->y = 1;
+    upper->z = 1;
+}
+
+void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
     // Render a box around the block we are pointing at
     float box[36][3] = {
         // x
@@ -213,6 +160,40 @@ void CursorBlock::render_and_position(fmat4* transform) {
     glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(texture_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
+}
+
+void CursorBlock::render_at_zero(fmat4* transform) {
+    if (block == 0)
+        return;
+    render_block(transform, 0, 0, 0);
+}
+
+void CursorBlock::render_and_position(fmat4* transform) {
+    if (block == 0)
+        return;
+    // TODO if it is too far away don't render it!
+    ivec4 looking_at;
+    if (!get_look_at(&looking_at)) {
+        return;
+    }
+    int mx = looking_at.x;
+    int my = looking_at.y;
+    int mz = looking_at.z;
+    int face = looking_at.w;
+    if(face == 0)
+        mx++;
+    if(face == 3)
+        mx--;
+    if(face == 1)
+        my++;
+    if(face == 4)
+        my--;
+    if(face == 2)
+        mz++;
+    if(face == 5)
+        mz--;
+    render_block(transform, mx, my, mz);
 }
 
 void CursorBlock::cleanup_all() {
