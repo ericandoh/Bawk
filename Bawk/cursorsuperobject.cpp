@@ -103,9 +103,9 @@ void CursorSuperObject::move_block(ivec3 dir) {
 }
 
 void CursorSuperObject::get_bounds(ivec3* upper) {
-    upper->x = upper_bound.x - lower_bound.x;
-    upper->y = upper_bound.y - lower_bound.y;
-    upper->z = upper_bound.z - lower_bound.z;
+    upper->x = upper_bound.x - lower_bound.x + 1;
+    upper->y = upper_bound.y - lower_bound.y + 1;
+    upper->z = upper_bound.z - lower_bound.z + 1;
 }
 
 void CursorSuperObject::render_at_zero(fmat4* transform) {

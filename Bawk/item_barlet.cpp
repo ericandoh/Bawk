@@ -60,20 +60,28 @@ void ItemBarlet::render_elements() {
         set_block_draw_mode(1);
         ivec3 upper;
         entity->get_bounds(&upper);
-        fvec3 upper_pos = fvec3(upper.x*3.0f, upper.y*3.0f, upper.z*3.0f);
+        
+        fvec3 v1 = fvec3(-upper.x, 0, upper.z);
+        fvec3 v2 = fvec3(0, -upper.y, upper.z);
+        fvec3 perp = glm::cross(v1, v2);
+        
+        fvec3 upper_pos = fvec3(perp.x*2.0f, perp.y*2.0f, perp.z*2.0f);
         fvec3 toward_pos = fvec3(upper.x/2.0f, upper.y/2.0f, upper.z/2.0f);
         
         fmat4 view = glm::lookAt(upper_pos, toward_pos, fvec3(0, 1, 0));
-        fmat4 projection = glm::perspective(45.0f, 1.0f, 0.01f, 100.0f); //1.0f * width/height
+        //fmat4 projection = glm::perspective(45.0f, 1.0f, 0.01f, 100.0f); //1.0f * width/height
+        
+        // left, right, bottom, top
+        float length = sqrtf(upper.x*upper.x + upper.y*upper.y + upper.z*upper.z) / 1.4f;
+        fmat4 projection = glm::ortho(-length, length, -length, length, 0.01f, 100.0f);
         fmat4 mvp = projection * view;
         
-        glm::vec4 blah = mvp * glm::vec4(0, 0, 0, 1);
-        glm::vec4 blah2 = mvp * glm::vec4(0, 0, 1, 1);
-        printf("%f %f %f %f\n", blah.x, blah.y, blah.z, blah.w);
-        printf("%f %f %f %f\n", blah2.x, blah2.y, blah2.z, blah2.w);
         
-        //entity->render_at_zero(&one);
+        glEnable(GL_DEPTH_TEST);
+        
         entity->render_at_zero(&mvp);
+        glDisable(GL_DEPTH_TEST);
+
     }
 }
 
