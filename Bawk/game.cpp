@@ -285,6 +285,9 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
             int to_index = key - GLFW_KEY_1;
             switch_current_item(to_index);
         }
+        else if (key == GLFW_KEY_0) {
+            switch_current_item(9);
+        }
     }
 }
 
