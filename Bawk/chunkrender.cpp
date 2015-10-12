@@ -187,7 +187,7 @@ void RenderableChunk::set(int x, int y, int z, uint16_t type) {
 }
 
 void RenderableChunk::update_dimensions() {
-    // TODO could this be slightly more efficient? a loop over 4k elements isnt the most efficient...
+    // TOFU could this be slightly more efficient? a loop over 4k elements isnt the most efficient...
     // small, large: inclusive-inclusive
     lower_bound = ivec3(CX, CY, CZ);
     upper_bound = ivec3(0, 0, 0);

@@ -48,6 +48,7 @@ public:
     void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // called by cursor item, places block into baseworld
     void place_block(ivec3 position, uint16_t block);
+    uint16_t get_block(float x, float y, float z);
     // called by game to kill a block directly. then effects are propogated to the appropriate entities
     bool kill_block(ivec3* src);
     void step();

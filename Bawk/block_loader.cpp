@@ -46,7 +46,7 @@ void make_world_folder(std::string world_name) {
     // this is unix specific. not sure if this works on windows...
     // later just import in boost and deal with it that way
     std::string command = "mkdir " + BLOCK_DATA_PATH + "/" + world_name;
-    std::system(command.c_str());   // this might fail...TODO handle
+    std::system(command.c_str());   // this might fail...TOFU handle
 }
 
 void make_object_in_world_folder(std::string world_name,
@@ -57,7 +57,7 @@ void make_object_in_world_folder(std::string world_name,
     // this is unix specific. not sure if this works on windows...
     // later just import in boost and deal with it that way
     std::string command = "mkdir " + BLOCK_DATA_PATH + "/" + world_name + "/" + object_name;
-    std::system(command.c_str());   // this might fail...TODO handle
+    std::system(command.c_str());   // this might fail...TOFU handle
 }
 
 
@@ -77,7 +77,7 @@ int save_chunk_to_file(std::string world_name,
     }
     
     // use any encoding/decoding function here
-    // TODO use run length encoding
+    // TOFU use run length encoding
     
     out.write((char*)&block[0][0][0], sizeof(block[0][0][0])*CX*CY*CZ);
     

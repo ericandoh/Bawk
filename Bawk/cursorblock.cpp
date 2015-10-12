@@ -33,7 +33,6 @@ bool CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
     int my = looking_at.y;
     int mz = looking_at.z;
     int face = looking_at.w;
-    // TODO check that the block picked by world is valid
     if (block) {
         if(face == 0)
             mx++;
@@ -50,8 +49,6 @@ bool CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
     }
     ivec3 block_pos = ivec3(mx, my, mz);
     world->place_block(block_pos, block);
-    //printf("Placing at (%d, %d, %d)   (face %d)\n",
-    //       mx, my, mz, face);
     if (temp)
         temp->add_block(block_pos, block);
     return true;
@@ -172,7 +169,6 @@ void CursorBlock::render_at_zero(fmat4* transform) {
 void CursorBlock::render_and_position(fmat4* transform) {
     if (block == 0)
         return;
-    // TODO if it is too far away don't render it!
     ivec4 looking_at;
     if (!get_look_at(&looking_at)) {
         return;

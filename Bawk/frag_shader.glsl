@@ -28,6 +28,6 @@ void main(void) {
         gl_FragColor = color;
     }
     else {
-        gl_FragColor = vec4(0.5, 0.4, 0.6, 1.0);
+        gl_FragColor = vec4(texcoord.xyz, 1.0);
     }
 }

@@ -277,6 +277,7 @@ void RenderableSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
 void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
     if (!chunks.count(chunk_pos))
         return;
+    // these are the new bounds, they should be updated
     ivec3 chunk_lower = chunks[chunk_pos]->lower_bound;
     ivec3 chunk_upper = chunks[chunk_pos]->upper_bound;
     bool recalculate_needed = false;
@@ -284,13 +285,13 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
         ivec3 old_chunk_lower = chunk_bounds[chunk_pos].lower_bound;
         ivec3 old_chunk_upper = chunk_bounds[chunk_pos].upper_bound;
         // we need to recalculate if any of our total bounds depended on this chunk, or seemed to
-        recalculate_needed = lower_bound.x == old_chunk_lower.x  ||
-                            lower_bound.y == old_chunk_lower.y ||
-                            lower_bound.z == old_chunk_lower.z;
+        recalculate_needed = lower_bound.x == (old_chunk_lower.x + CX*chunk_pos.x)  ||
+                            lower_bound.y == (old_chunk_lower.y + CY*chunk_pos.y) ||
+                            lower_bound.z == (old_chunk_lower.z + CZ*chunk_pos.z);
         recalculate_needed = recalculate_needed ||
-                            upper_bound.x == old_chunk_upper.x  ||
-                            upper_bound.y == old_chunk_upper.y ||
-                            upper_bound.z == old_chunk_upper.z;
+                            upper_bound.x == (old_chunk_upper.x + CX*chunk_pos.x)  ||
+                            upper_bound.y == (old_chunk_upper.y + CY*chunk_pos.y) ||
+                            upper_bound.z == (old_chunk_upper.z + CZ*chunk_pos.z);
     }
     else {
         recalculate_needed = true;
@@ -302,12 +303,14 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
         lower_bound = ivec3(INT_MAX, INT_MAX, INT_MAX);
         upper_bound = ivec3(INT_MIN, INT_MIN, INT_MIN);
         for (auto &i : chunk_bounds) {
-            lower_bound.x = minimum(i.second.lower_bound.x, lower_bound.x);
-            lower_bound.y = minimum(i.second.lower_bound.y, lower_bound.y);
-            lower_bound.z = minimum(i.second.lower_bound.z, lower_bound.z);
-            upper_bound.x = maximum(i.second.upper_bound.x, upper_bound.x);
-            upper_bound.y = maximum(i.second.upper_bound.y, upper_bound.y);
-            upper_bound.z = maximum(i.second.upper_bound.z, upper_bound.z);
+            ivec3 cpos = i.first;
+            struct chunk_bounds bounds = i.second;
+            lower_bound.x = minimum((bounds.lower_bound.x + CX*cpos.x), lower_bound.x);
+            lower_bound.y = minimum((bounds.lower_bound.y + CY*cpos.y), lower_bound.y);
+            lower_bound.z = minimum((bounds.lower_bound.z + CZ*cpos.z), lower_bound.z);
+            upper_bound.x = maximum((bounds.upper_bound.x + CX*cpos.x), upper_bound.x);
+            upper_bound.y = maximum((bounds.upper_bound.y + CY*cpos.y), upper_bound.y);
+            upper_bound.z = maximum((bounds.upper_bound.z + CZ*cpos.z), upper_bound.z);
         }
     }
 }

@@ -15,11 +15,14 @@
 
 class ItemBarlet: public BaseWidget {
     CursorItem* entity;
+    bool current;
+    fmat4 mvp;
 public:
     ItemBarlet(int x, int y, int width, int height);
     void render_elements() override;
     CursorItem* get_cursor_item();
     void set_cursor_item(CursorItem* item);
+    void set_current(bool curr);
 };
 
 #endif /* defined(__Bawk__item_barlet__) */

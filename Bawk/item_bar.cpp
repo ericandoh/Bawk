@@ -27,6 +27,8 @@ ItemBar::ItemBar(int width, int height): BaseWidget(width, height) {
     for (int i = 0; i < BAR_ITEMS; i++) {
         barlets[i] = new ItemBarlet(x_offset + i*barlet_n_gap, this->y, per_barlet_width, height);
     }
+    index = 0;
+    set_index(0);
 }
 
 ItemBar::~ItemBar() {
@@ -39,7 +41,6 @@ void ItemBar::render_elements() {
     for (int i = 0; i < 10; i++) {
         barlets[i]->render();
     }
-    // TODO draw a box around our current item
 }
 
 CursorItem* ItemBar::get_current() {
@@ -51,7 +52,9 @@ void ItemBar::set_current(CursorItem* item) {
 }
 
 void ItemBar::set_index(int new_index) {
+    barlets[index]->set_current(false);
     index = (new_index % BAR_ITEMS + BAR_ITEMS) % BAR_ITEMS;
+    barlets[index]->set_current(true);
 }
 
 void ItemBar::set_to_left() {

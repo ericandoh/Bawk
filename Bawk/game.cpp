@@ -103,14 +103,14 @@ void Game::render() {
     player->query_depth();
     // render current item based on those depth coordinates
     if (bar->get_current()) {
-        // TODO removeme
         bar->get_current()->render_and_position(transform);
     }
     
     // render the cursor
     player->render();
     
-    // TODO render UI elements here
+    // Render UI elements here
+    // always render the item bar (for now)
     bar->render();
 }
 
@@ -334,6 +334,15 @@ void Game::mouse_button_callback(int button, int action, int mods) {
     }
 }
 
+void Game::scroll_callback(double xoffset, double yoffset) {
+    if (yoffset < 0) {
+        bar->set_to_right();
+    }
+    else if (yoffset > 0) {
+        bar->set_to_left();
+    }
+}
+
 // TODO if we scroll mouse, make sure to set placed_current_item to false
 // use switch_current_item(index) to switch
 
@@ -347,6 +356,7 @@ Game::~Game() {
     world->free_resources();
     clean_vbo_for_widgets();
     delete bar;
+    delete place_into;
     delete player;
     delete world;
 }

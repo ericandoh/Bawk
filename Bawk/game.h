@@ -68,6 +68,7 @@ public:
     void key_callback(int key, int scancode, int action, int mods) override;
     void mouse_move_callback(double xdiff, double ydiff) override;
     void mouse_button_callback(int button, int action, int mods) override;
+    void scroll_callback(double xoffset, double yoffset) override;
     ~Game();
 };
 

@@ -74,8 +74,6 @@ bool CursorSuperObject::place_blocks(World* world, TemporaryTemplate* temp) {
     int my = looking_at.y;
     int mz = looking_at.z;
     int face = looking_at.w;
-    // TODO make sure my lookat is from the world and the world only
-    // ie query the world here
     if(face == 0)
         mx++;
     if(face == 3)
@@ -125,8 +123,6 @@ void CursorSuperObject::render_and_position(fmat4* transform) {
         int my = looking_at.y;
         int mz = looking_at.z;
         int face = looking_at.w;
-        // TODO make sure my lookat is from the world and the world only
-        // ie query the world here
         if(face == 0)
             mx++;
         if(face == 3)
@@ -139,7 +135,6 @@ void CursorSuperObject::render_and_position(fmat4* transform) {
             mz++;
         if(face == 5)
             mz--;
-        // TODO if it is too far away don't render it!
         // save position
         if (pos != fvec3(mx, my, mz)) {
             set_position(fvec3(mx, my, mz));

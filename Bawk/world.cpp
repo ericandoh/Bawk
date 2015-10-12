@@ -80,6 +80,10 @@ void World::place_block(ivec3 position, uint16_t block) {
     base_world->set_block(position.x, position.y, position.z, block);
 }
 
+uint16_t World::get_block(float x, float y, float z) {
+    return base_world->get_block(x, y, z);
+}
+
 bool World::kill_block(ivec3* src) {
     ivec4 looking_at;
     if (!get_look_at(&looking_at)) {
