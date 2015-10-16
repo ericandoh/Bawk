@@ -195,8 +195,6 @@ int set_shaders(GLuint* block_attribute_coord,
     glEnableVertexAttribArray(*block_attribute_coord);
     glEnableVertexAttribArray(*texture_attribute_coord);
     
-    //glEnable(GL_CULL_FACE);
-    
     printf("Done loading shaders\n");
     return 0;
 }

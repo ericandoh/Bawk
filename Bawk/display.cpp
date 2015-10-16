@@ -134,12 +134,11 @@ int display_run()
             current_display->frame();
         }
         
+        // reset viewport to window width, assume we're rendering on the whole screen
         glfwGetFramebufferSize(window, &width, &height);
         glViewport(0, 0, width, height);
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_POLYGON_OFFSET_FILL);
         
         /* Render here */
         current_display->render();

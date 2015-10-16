@@ -187,9 +187,6 @@ void RenderablePlayer::render() {
     
     /* Draw a cross in the center of the screen */
     
-    glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_CULL_FACE);
-    
     float cross[4][3] = {
         {-0.05f, 0, 0},
         {+0.05f, 0, 0},
@@ -197,7 +194,7 @@ void RenderablePlayer::render() {
         {0, +0.05f * width/height, 0},
     };
     
-    glDisable(GL_DEPTH_TEST);
+    //glDisable(GL_DEPTH_TEST);
     glm::mat4 one(1);
     set_transform_matrix(one);
     glBindBuffer(GL_ARRAY_BUFFER, cursor_vbo);

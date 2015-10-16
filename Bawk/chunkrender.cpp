@@ -471,6 +471,9 @@ void RenderableChunk::render() {
     if(!elements)
         return;
     
+    // we're drawing blocks
+    set_block_draw_mode(1);
+    
     // Render the VBO here
     glBindBuffer(GL_ARRAY_BUFFER, coord_vbo);
     glVertexAttribPointer(block_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);

@@ -64,11 +64,7 @@ void ItemBarlet::render_elements() {
     
     if (entity) {
         set_block_draw_mode(1);
-        
-        glEnable(GL_DEPTH_TEST);
-        
         entity->render_at_zero(&mvp);
-        glDisable(GL_DEPTH_TEST);
     }
 }
 

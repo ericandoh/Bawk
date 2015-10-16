@@ -95,6 +95,8 @@ int Game::init() {
     
 // Called in the main render loop. Pass the rendering to the appropriate entries
 void Game::render() {
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_POLYGON_OFFSET_FILL);
     // get transform from player's perspective
     fmat4* transform = player->set_camera();
     // render world in player's perspective
@@ -106,8 +108,13 @@ void Game::render() {
         bar->get_current()->render_and_position(transform);
     }
     
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glDisable(GL_CULL_FACE);
+    
     // render the cursor
     player->render();
+    
+    glEnable(GL_POLYGON_OFFSET_FILL);
     
     // Render UI elements here
     // always render the item bar (for now)

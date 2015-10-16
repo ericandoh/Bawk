@@ -40,7 +40,6 @@ void World::free_resources() {
 
 // renders the world
 void World::render(fmat4* transform) {
-    set_block_draw_mode(1);
     for (int i = 0; i < superobjects.size(); i++) {
         superobjects[i]->render(transform);
     }
