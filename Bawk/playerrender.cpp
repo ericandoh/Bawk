@@ -10,6 +10,7 @@
 #include "display.h"    // for get_window_size
 #include "worldrender.h"
 #include "playerrender.h"
+#include "block.h"
 
 RenderablePlayer::RenderablePlayer() {
     // initialize things
@@ -86,50 +87,38 @@ void RenderablePlayer::query_depth() {
     
     float distance = sqrtf((mx-pos.x)*(mx-pos.x) + (my-pos.y)*(my-pos.y) + (mz-pos.z)*(mz-pos.z));
     
-    //int nx = roundf(objcoord.x);
-    //int ny = roundf(objcoord.y);
-    //int nz = roundf(objcoord.z);
-    
-    int face;
+    BlockOrientation face;
     
     if(dti(objcoord.x) < dti(objcoord.y)) {
         if(dti(objcoord.x) < dti(objcoord.z)) {
             // face is perpendicular to x-axis (most likely)
             if(dir.x > 0) {
-                //mx = nx;
-                face = 3;
+                face = BlockOrientation::BACK;
             } else {
-                //mx = nx;
-                face = 0;
+                face = BlockOrientation::FRONT;
             }
         } else {
             // face is perpendicular to z-axis (most likely)
             if(dir.z > 0) {
-                //mz = nz;
-                face = 5;
+                face = BlockOrientation::LEFT;
             } else {
-                //mz = nz;
-                face = 2;
+                face = BlockOrientation::RIGHT;
             }
         }
     } else {
         if(dti(objcoord.y) < dti(objcoord.z)) {
             // face is perpendicular to y-axis (most likely)
             if(dir.y > 0) {
-                //my = ny;
-                face = 4;
+                face = BlockOrientation::BOTTOM;
             } else {
-                //my = ny;
-                face = 1;
+                face = BlockOrientation::TOP;
             }
         } else {
             // face is perpendicular to z-axis (most likely)
             if(dir.z > 0) {
-                //mz = nz;
-                face = 5;
+                face = BlockOrientation::LEFT;
             } else {
-                //mz = nz;
-                face = 2;
+                face = BlockOrientation::RIGHT;
             }
         }
     }

@@ -13,16 +13,17 @@
 #include <string>
 #include "basic_types.h"
 #include "chunkrender.h"    // for CX, CY, CZ
+#include "block.h"
 
 void make_world_folder(std::string world_name);
 void make_object_in_world_folder(std::string world_name, std::string object_name);
 int save_chunk_to_file(std::string world_name,
                 std::string object_name,
                 ivec3* chunk_pos,
-                uint16_t block[CX][CY][CZ]);
+                block_type block[CX][CY][CZ]);
 int load_chunk_from_file(std::string world_name,
                 std::string object_name,
                 ivec3* chunk_pos,
-                uint16_t block[CX][CY][CZ]);
+                block_type block[CX][CY][CZ]);
 
 #endif /* defined(__Bawk__block_loader__) */

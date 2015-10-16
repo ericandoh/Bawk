@@ -11,7 +11,7 @@
 #include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 #include "worldrender.h"
-#include "block.h"
+#include "blockrender.h"
 
 // dimensions of a chunk
 #define CX 16
@@ -30,24 +30,7 @@ struct vboholder {
 // slots for VBO for the chunks. This gets cycled if we don't have enough
 static vboholder chunk_slot[CHUNKSLOTS] = {0};
 
-void set_coord_and_texture(GLbyte coord[][3],
-                           GLbyte texture[][3],
-                           int index,
-                           int x, int y, int z,
-                           uint16_t type, uint8_t flags) {
-    coord[index][0] = x;
-    coord[index][1] = y;
-    coord[index][2] = z;
-    
-    // first 8 bits. Represents the x-axis in our texture atlas
-    texture[index][0] = type & 0xFF;
-    // last 8 bits. Represents the y-axis in our texture atlas
-    texture[index][1] = type >> 0x8;
-    // some extra flags we can set to let shader know how to render this
-    texture[index][2] = flags;
-}
-
-RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
+RenderableChunk::RenderableChunk(block_type from[CX][CY][CZ]) {
     memset(blk, 0, sizeof blk);
     elements = 0;
     block_counter = -1;
@@ -55,7 +38,7 @@ RenderableChunk::RenderableChunk(uint16_t from[CX][CY][CZ]) {
     lastused = glfwGetTime();
     changed = true;
     left = right = below = above = front = back = 0;
-    memcpy(&blk[0][0][0], &from[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
+    memcpy(&blk[0][0][0], &from[0][0][0], sizeof(block_type)*CX*CY*CZ);
     update_dimensions();
 }
 
@@ -107,23 +90,23 @@ void delete_all_buffers() {
 
 bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) {
     // Air (0) is always "blocked"
-    if(!blk[x1][y1][z1])
+    if(!blk[x1][y1][z1].type)
         return true;
     
     // Leaves do not block any other block, including themselves
-    if(get_transparency(get(x2, y2, z2)) == 1)
+    if(get_transparency(get(x2, y2, z2).type) == 1)
         return false;
     
     // Non-transparent blocks always block line of sight
-    if(!get_transparency(get(x2, y2, z2)))
+    if(!get_transparency(get(x2, y2, z2).type))
         return true;
     
     // Otherwise, LOS is only blocked by blocks if the same transparency type
-    return get_transparency(get(x2, y2, z2)) == get_transparency(blk[x1][y1][z1]);
+    return get_transparency(get(x2, y2, z2).type) == get_transparency(blk[x1][y1][z1].type);
 }
 
 
-uint16_t RenderableChunk::get(int x, int y, int z) {
+block_type RenderableChunk::get(int x, int y, int z) {
     if(x < 0)
         return left ? left->blk[x + CX][y][z] : 0;
     if(x >= CX)
@@ -140,14 +123,14 @@ uint16_t RenderableChunk::get(int x, int y, int z) {
     return blk[x][y][z];
 }
 
-void RenderableChunk::set(int x, int y, int z, uint16_t type) {
-    uint16_t prev = blk[x][y][z];
+void RenderableChunk::set(int x, int y, int z, block_type type) {
+    uint16_t prev = blk[x][y][z].type;
     blk[x][y][z] = type;
     if (!prev) {
         // assume i'm adding a block
         block_counter++;
     }
-    if (!type) {
+    if (!type.type) {
         // pysch i'm actually not adding a block
         block_counter--;
         if (prev) {
@@ -197,7 +180,7 @@ void RenderableChunk::update_dimensions() {
     for (int x = 0; x < CX; x++) {
         for (int y = 0; y < CY; y++) {
             for (int z = 0; z < CZ; z++) {
-                if (blk[x][y][z]) {
+                if (blk[x][y][z].type) {
                     block_counter++;
                     lower_bound.x = minimum(x, lower_bound.x);
                     lower_bound.y = minimum(y, lower_bound.y);
@@ -239,11 +222,11 @@ void RenderableChunk::update() {
                     vis = false;
                     continue;
                 }
-                uint16_t type = blk[x][y][z];
-                uint8_t flags = 0;
+                block_type type = blk[x][y][z];
+                BlockOrientation flags = BlockOrientation::BACK;
                 
                 // Same block as previous one? Extend it.
-                if(vis && z != 0 && blk[x][y][z] == blk[x][y][z - 1]) {
+                if(vis && z != 0 && blk[x][y][z].equals(blk[x][y][z - 1])) {
                     set_coord_and_texture(vertex, texture, i - 5, x, y, z + 1, type, flags);
                     
                     set_coord_and_texture(vertex, texture, i - 2, x, y, z + 1, type, flags);
@@ -273,10 +256,10 @@ void RenderableChunk::update() {
                     vis = false;
                     continue;
                 }
-                uint16_t type = blk[x][y][z];
-                uint8_t flags = 0;
+                block_type type = blk[x][y][z];
+                BlockOrientation flags = BlockOrientation::FRONT;
                 
-                if(vis && z != 0 && blk[x][y][z] == blk[x][y][z - 1]) {
+                if(vis && z != 0 && blk[x][y][z].equals(blk[x][y][z - 1])) {
                     set_coord_and_texture(vertex, texture, i - 4, x + 1, y, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 2, x + 1, y + 1, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 1, x + 1, y, z + 1, type, flags);
@@ -303,10 +286,10 @@ void RenderableChunk::update() {
                     vis = false;
                     continue;
                 }
-                uint16_t type = blk[x][y][z];
-                uint8_t flags = 0x1;
+                block_type type = blk[x][y][z];
+                BlockOrientation flags = BlockOrientation::BOTTOM;
                 
-                if(vis && z != 0 && blk[x][y][z] == blk[x][y][z - 1]) {
+                if(vis && z != 0 && blk[x][y][z].equals(blk[x][y][z - 1])) {
                     set_coord_and_texture(vertex, texture, i - 4, x, y, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 2, x + 1, y, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 1, x, y, z + 1, type, flags);
@@ -333,10 +316,10 @@ void RenderableChunk::update() {
                     vis = false;
                     continue;
                 }
-                uint16_t type = blk[x][y][z];
-                uint8_t flags = 0x1;
+                block_type type = blk[x][y][z];
+                BlockOrientation flags = BlockOrientation::TOP;
                 
-                if(vis && z != 0 && blk[x][y][z] == blk[x][y][z - 1]) {
+                if(vis && z != 0 && blk[x][y][z].equals(blk[x][y][z - 1])) {
                     set_coord_and_texture(vertex, texture, i - 5, x, y + 1, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 2, x, y + 1, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 1, x + 1, y + 1, z + 1, type, flags);
@@ -363,10 +346,10 @@ void RenderableChunk::update() {
                     vis = false;
                     continue;
                 }
-                uint16_t type = blk[x][y][z];
-                uint8_t flags = 0;
+                block_type type = blk[x][y][z];
+                BlockOrientation flags = BlockOrientation::LEFT;
                 
-                if(vis && y != 0 && blk[x][y][z] == blk[x][y - 1][z]) {
+                if(vis && y != 0 && blk[x][y][z].equals(blk[x][y - 1][z])) {
                     set_coord_and_texture(vertex, texture, i - 5, x, y + 1, z, type, flags);
                     set_coord_and_texture(vertex, texture, i - 3, x, y + 1, z, type, flags);
                     set_coord_and_texture(vertex, texture, i - 2, x + 1, y + 1, z, type, flags);
@@ -393,10 +376,10 @@ void RenderableChunk::update() {
                     vis = false;
                     continue;
                 }
-                uint16_t type = blk[x][y][z];
-                uint8_t flags = 0;
+                block_type type = blk[x][y][z];
+                BlockOrientation flags = BlockOrientation::RIGHT;
                 
-                if(vis && y != 0 && blk[x][y][z] == blk[x][y - 1][z]) {
+                if(vis && y != 0 && blk[x][y][z].equals(blk[x][y - 1][z])) {
                     set_coord_and_texture(vertex, texture, i - 4, x, y + 1, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 3, x, y + 1, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 1, x + 1, y + 1, z + 1, type, flags);
@@ -484,6 +467,6 @@ void RenderableChunk::render() {
     glDrawArrays(GL_TRIANGLES, 0, elements);
 }
 
-void get_empty_chunk(uint16_t source[CX][CY][CZ]) {
+void get_empty_chunk(block_type source[CX][CY][CZ]) {
     memset(source, 0, sizeof(source[0][0][0])*CX*CY*CZ);
 }

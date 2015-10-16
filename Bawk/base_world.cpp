@@ -16,13 +16,13 @@ BaseWorld::BaseWorld(std::string wid): SuperObject(wid) {
     for (int x = 0; x < CX; x++) {
         for (int z = 0; z < CZ; z++) {
             for (int y = 0; y < GROUND_DEPTH; y++) {
-                ground[x][y][z] = 2;
+                ground[x][y][z].type = 2;
             }
         }
     }
 }
 
-int BaseWorld::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
+int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     // try getting the chunk first, to see if it already exists in disk
     int result = SuperObject::get_chunk(to_arr, x, y, z);
     if (!result) {
@@ -33,21 +33,21 @@ int BaseWorld::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
     // create a new chunk with random parameters
     if (y == 0) {
         //printf("Loading ground\n");
-        memcpy(&to_arr[0][0][0], &ground[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
+        memcpy(&to_arr[0][0][0], &ground[0][0][0], sizeof(block_type)*CX*CY*CZ);
         for (int x = 0; x < CX; x++) {
             for (int z = 0; z < CZ; z++) {
                 if (rand() % 10 <=1)
-                    to_arr[x][GROUND_DEPTH][z] = rand() % 4 + 2;
+                    to_arr[x][GROUND_DEPTH][z].type = rand() % 4 + 2;
             }
         }
     }
     else {
         //printf("Loading air\n");
-        memcpy(&to_arr[0][0][0], &air[0][0][0], sizeof(uint16_t)*CX*CY*CZ);
+        memcpy(&to_arr[0][0][0], &air[0][0][0], sizeof(block_type)*CX*CY*CZ);
         for (int x = 0; x < CX; x++) {
             for (int z = 0; z < CZ; z++) {
                 if (rand() % 100 <=1)
-                    to_arr[x][rand() % 16][z] = rand() % 4 + 7;
+                    to_arr[x][rand() % 16][z].type = rand() % 4 + 7;
             }
         }
     }

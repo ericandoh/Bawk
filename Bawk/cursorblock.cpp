@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include "cursorblock.h"
 #include "worldrender.h"
+#include "blockrender.h"
 
 struct blockvboholder {
     CursorBlock* block;
@@ -18,34 +19,16 @@ struct blockvboholder {
 
 static struct blockvboholder block_vbo_slot[1] = {0};
 
-CursorBlock::CursorBlock(uint16_t type) {
+CursorBlock::CursorBlock(block_type type) {
     block = type;
 }
 
 // sets the blocks in this representation into the world, and if template is not null, into the
 // template as well
 bool CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
+    int mx, my, mz;
+    if (!update_pointing_position(&mx, &my, &mz, block.type)) {
         return false;
-    }
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    int face = looking_at.w;
-    if (block) {
-        if(face == 0)
-            mx++;
-        if(face == 3)
-            mx--;
-        if(face == 1)
-            my++;
-        if(face == 4)
-            my--;
-        if(face == 2)
-            mz++;
-        if(face == 5)
-            mz--;
     }
     ivec3 block_pos = ivec3(mx, my, mz);
     world->place_block(block_pos, block);
@@ -74,68 +57,62 @@ void CursorBlock::get_bounds(ivec3* upper) {
 }
 
 void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
+    
     // Render a box around the block we are pointing at
-    float box[36][3] = {
-        // x
-        {bx + 0, by + 0, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 0},
-        
-        {bx + 0, by + 1, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 1},
-        
-        {bx + 1, by + 0, bz + 0},
-        {bx + 1, by + 1, bz + 0},
-        {bx + 1, by + 0, bz + 1},
-        
-        {bx + 1, by + 1, bz + 0},
-        {bx + 1, by + 1, bz + 1},
-        {bx + 1, by + 0, bz + 1},
-        
-        // y
-        {bx + 0, by + 0, bz + 0},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        
-        {bx + 0, by + 0, bz + 1},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 1, by + 0, bz + 1},
-        
-        {bx + 0, by + 1, bz + 0},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 0},
-        
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 0},
-        
-        // z
-        {bx + 0, by + 0, bz + 0},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 0, by + 1, bz + 0},
-        
-        {bx + 0, by + 1, bz + 0},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 1, by + 1, bz + 0},
-        
-        {bx + 0, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 0, bz + 1},
-        
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 1},
-        {bx + 1, by + 0, bz + 1},
-        
-    };
-    float box_texture[36][3];
-    for (int p = 0; p < 36; p++) {
-        // first 8 bits. Represents the x-axis in our texture atlas
-        box_texture[p][0] = block & 0xFF;
-        // last 8 bits. Represents the y-axis in our texture atlas
-        box_texture[p][1] = block >> 0x8;
-        box_texture[p][2] = (p >= 12 && p < 24) ? 1 : 0;
-    }
+    GLbyte box[36][3];
+    GLbyte box_texture[36][3];
+    
+    int i = 0;
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 0, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::BACK);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::BACK);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::FRONT);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 1, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::FRONT);
+    
+    // y
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 0, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BOTTOM);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::BOTTOM);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::TOP);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 1, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::TOP);
+    
+    // z
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::LEFT);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::LEFT);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::RIGHT);
+    
+    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::RIGHT);
     
     set_transform_matrix(*transform);
     
@@ -149,46 +126,32 @@ void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
         block_vbo_slot[0].block = this;
     }
     
+    set_block_draw_mode(1);
+    
     glBindBuffer(GL_ARRAY_BUFFER, block_vbo_slot[0].coord_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(block_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
     glBindBuffer(GL_ARRAY_BUFFER, block_vbo_slot[0].texture_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(texture_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(texture_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
 }
 
 void CursorBlock::render_at_zero(fmat4* transform) {
-    if (block == 0)
+    if (block.type == 0)
         return;
     render_block(transform, 0, 0, 0);
 }
 
 void CursorBlock::render_and_position(fmat4* transform) {
-    if (block == 0)
+    if (block.type == 0)
         return;
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
+    int mx, my, mz;
+    if (!update_pointing_position(&mx, &my, &mz, block.type)) {
         return;
     }
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    int face = looking_at.w;
-    if(face == 0)
-        mx++;
-    if(face == 3)
-        mx--;
-    if(face == 1)
-        my++;
-    if(face == 4)
-        my--;
-    if(face == 2)
-        mz++;
-    if(face == 5)
-        mz--;
     render_block(transform, mx, my, mz);
 }
 

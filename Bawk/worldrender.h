@@ -27,6 +27,7 @@
 #include <GLFW/glfw3.h>
 #include "basic_types.h"
 #include "superobject.h"
+#include "block.h"
 
 extern GLuint block_attribute_coord;
 extern GLuint texture_attribute_coord;
@@ -41,7 +42,7 @@ int world_load_resources();
 void world_free_resources();
 void set_block_draw_mode(int v);
 void set_transform_matrix(fmat4 mvp);
-void set_look_at(float depth, int x, int y, int z, int side);
+void set_look_at(float depth, int x, int y, int z, BlockOrientation side);
 bool get_look_at(ivec4* src);
 void set_up_for_world_render();
 

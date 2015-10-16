@@ -20,8 +20,8 @@ public:
     SuperObject(std::string wid);
     SuperObject(std::string id, std::string wid);
     void remove_self();
-    int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) override;
-    int save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) override;
+    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
+    int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     virtual bool within_dimensions_chunk(int x, int y, int z) override;
 };
 

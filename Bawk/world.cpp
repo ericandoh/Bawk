@@ -51,7 +51,7 @@ void World::update_chunks(fvec3* old_pos, fvec3* new_pos) {
     }
 }
 
-void World::place_block(ivec3 position, uint16_t block) {
+void World::place_block(ivec3 position, block_type block) {
     // TODO (check for colision with other superobjects...?)
     // (other superobjects including baseworld!)
     /*
@@ -79,7 +79,7 @@ void World::place_block(ivec3 position, uint16_t block) {
     base_world->set_block(position.x, position.y, position.z, block);
 }
 
-uint16_t World::get_block(float x, float y, float z) {
+block_type World::get_block(float x, float y, float z) {
     return base_world->get_block(x, y, z);
 }
 

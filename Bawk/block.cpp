@@ -8,6 +8,42 @@
 
 #include "block.h"
 
+block_type::block_type() {
+    type = 0;
+    orientation = BlockOrientation::TOP;
+    life = 0;
+    block_id = 0;
+    owner = 0;
+}
+
+block_type::block_type(uint16_t t) {
+    type = t;
+    orientation = BlockOrientation::TOP;
+    life = 0;
+    block_id = 0;
+    owner = 0;
+}
+
+block_type::block_type(uint16_t t, BlockOrientation orient, Player* me) {
+    type = t;
+    orientation = orient;
+    life = 0;
+    block_id = 0;
+    owner = me;
+}
+
+block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t bid, Player* me) {
+    type = t;
+    orientation = orient;
+    life = h;
+    block_id = bid;
+    owner = me;
+}
+
+bool block_type::equals(block_type other) {
+    return type == other.type && orientation == other.orientation && life == other.life;
+}
+
 int get_transparency(uint16_t block) {
     if (block == 0) {
         return 2;

@@ -6,8 +6,11 @@ uniform sampler2D tile_texture;
 uniform int draw_mode;
 
 void main(void) {
-    //gl_FragColor = vec4(0.5, 0.4, 0.6, 1.0);
-    if (draw_mode == 1) {
+    if (draw_mode == 0) {
+        // use the texture coordinates given to us directly
+        gl_FragColor = texture2D(tile_texture, texcoord.xy);
+    }
+    else if (draw_mode == 1) {
         vec2 imgcoord;
         float intensity;
         

@@ -39,9 +39,9 @@ public:
     // --- rendersuperobject methods ---
     void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // called when a request to load a chunk from disk is made
-    int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) override;
+    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     // called when a chunk goes out of scope and no longer needs to be rendered
-    int save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) override;
+    int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;
     void remove_self();
     

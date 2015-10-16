@@ -64,7 +64,7 @@ void make_object_in_world_folder(std::string world_name,
 int save_chunk_to_file(std::string world_name,
                 std::string object_name,
                 ivec3* chunk_pos,
-                uint16_t block[CX][CY][CZ]) {
+                block_type block[CX][CY][CZ]) {
     std::ofstream out;
     out.open(get_chunk_path(world_name, object_name, chunk_pos),
              std::ios::out | std::ios::trunc | std::ios::binary);
@@ -88,7 +88,7 @@ int save_chunk_to_file(std::string world_name,
 int load_chunk_from_file(std::string world_name,
                 std::string object_name,
                 ivec3* chunk_pos,
-                uint16_t block[CX][CY][CZ]) {
+                block_type block[CX][CY][CZ]) {
     std::ifstream in;
     in.open(get_chunk_path(world_name, object_name, chunk_pos),
             std::ios::in | std::ios::binary);

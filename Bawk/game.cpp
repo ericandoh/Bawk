@@ -239,11 +239,14 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
             if (placed_current_item) {
                 printf("Cancelling current template placing 1\n");
                 placed_current_item = false;
+                bar->get_current()->unlock();
             }
             else if (place_into) {
                 // we're canceling making this template
                 printf("Cancelling current template\n");
                 place_into->unpublish(world);
+                delete place_into;
+                place_into = 0;
             }
             else {
                 printf("Escape pressed with no context. Exitting\n");

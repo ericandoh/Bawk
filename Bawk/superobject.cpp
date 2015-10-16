@@ -29,12 +29,12 @@ void SuperObject::remove_self() {
     // TODO save data from chunk_bounds (or from the chunk directly) here
 }
 
-int SuperObject::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
+int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
     return load_chunk_from_file(world_name, name, &pos, to_arr);
 }
 
-int SuperObject::save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) {
+int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
     return save_chunk_to_file(world_name, name, &pos, from_arr);
 }

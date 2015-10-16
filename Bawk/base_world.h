@@ -14,11 +14,11 @@
 #include "superobject.h"
 
 class BaseWorld: public SuperObject {
-    uint16_t air[CX][CY][CZ];
-    uint16_t ground[CX][CY][CZ];
+    block_type air[CX][CY][CZ];
+    block_type ground[CX][CY][CZ];
 public:
     BaseWorld(std::string wid);
-    int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) override;
+    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z);
     void update_dimensions_from_chunk(ivec3 chunk_pos);
     bool intersects_with_my_bounds(ivec3 lower_corner, ivec3 upper_corner);

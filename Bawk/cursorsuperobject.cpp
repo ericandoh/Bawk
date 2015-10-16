@@ -35,8 +35,8 @@ bool CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
         for (int x = 0; x < CX; x++) {
             for (int y = 0; y < CY; y++) {
                 for (int z = 0; z < CZ; z++) {
-                    uint16_t block = kv.second->blk[x][y][z];
-                    if (block) {
+                    block_type block = kv.second->blk[x][y][z];
+                    if (block.type) {
                         counter++;
                         fvec3 world_coord;
                         ivec3 chunk_pos = kv.first;
@@ -66,26 +66,10 @@ bool CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
 bool CursorSuperObject::place_blocks(World* world, TemporaryTemplate* temp) {
     if (locked)
         return true;
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
+    int mx, my, mz;
+    if (!update_pointing_position(&mx, &my, &mz, true)) {
         return false;
     }
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    int face = looking_at.w;
-    if(face == 0)
-        mx++;
-    if(face == 3)
-        mx--;
-    if(face == 1)
-        my++;
-    if(face == 4)
-        my--;
-    if(face == 2)
-        mz++;
-    if(face == 5)
-        mz--;
     // save position
     set_position(fvec3(mx, my, mz));
     locked = true;
@@ -115,26 +99,10 @@ void CursorSuperObject::render_at_zero(fmat4* transform) {
 
 void CursorSuperObject::render_and_position(fmat4* transform) {
     if (!locked) {
-        ivec4 looking_at;
-        if (!get_look_at(&looking_at)) {
+        int mx, my, mz;
+        if (!update_pointing_position(&mx, &my, &mz, true)) {
             return;
         }
-        int mx = looking_at.x;
-        int my = looking_at.y;
-        int mz = looking_at.z;
-        int face = looking_at.w;
-        if(face == 0)
-            mx++;
-        if(face == 3)
-            mx--;
-        if(face == 1)
-            my++;
-        if(face == 4)
-            my--;
-        if(face == 2)
-            mz++;
-        if(face == 5)
-            mz--;
         // save position
         if (pos != fvec3(mx, my, mz)) {
             set_position(fvec3(mx, my, mz));
@@ -151,14 +119,14 @@ void CursorSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
 // called when a request to load a chunk from disk is made
 // in this case, we'll keep all chunks in memory, so this should be only called
 // if the chunk didn't exist before, in which case we give back an empty chunk
-int CursorSuperObject::get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) {
+int CursorSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     get_empty_chunk(to_arr);
     return 0;
 }
 
 
 // called when a chunk goes out of scope and no longer needs to be rendered
-int CursorSuperObject::save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) {
+int CursorSuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
     // do nothing. in fact, this shouldn't ever be called, ever. bro.
     printf("Tried to save a cursorsuperobject chunk %d,%d,%d\n", x, y, z);
     return 0;
@@ -205,7 +173,7 @@ CursorSuperObject* create_from_template(World* world, TemporaryTemplate* temp) {
         ivec3 position = ivec3(i.position.x - lower_corner.x,
                                i.position.y - lower_corner.y,
                                i.position.z - lower_corner.z);
-        printf("Publishing block %d at (%d,%d,%d)\n", i.block, position.x, position.y, position.z);
+        printf("Publishing block %d at (%d,%d,%d)\n", i.block.type, position.x, position.y, position.z);
         object->set_block(position.x, position.y, position.z, i.block);
     }
     

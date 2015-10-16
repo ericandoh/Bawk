@@ -66,7 +66,7 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     }
     
     //printf("Loading chunk for %d %d %d\n", x, y, z);
-    uint16_t raw_chunk[CX][CY][CZ];
+    block_type raw_chunk[CX][CY][CZ];
     if (get_chunk(raw_chunk, x, y, z)) {
         // failed to load chunk
         return 1;
@@ -122,7 +122,7 @@ void RenderableSuperObject::delete_chunk(int x, int y, int z) {
     chunks.erase(pos);
 }
 
-uint16_t RenderableSuperObject::get_block(float x, float y, float z) {
+block_type RenderableSuperObject::get_block(float x, float y, float z) {
     
     // first transform to OAC
     ivec3 oac;
@@ -133,7 +133,7 @@ uint16_t RenderableSuperObject::get_block(float x, float y, float z) {
    
     if (!within_dimensions_chunk(cac.x, cac.y, cac.z)) {
         // there's no block outside the dimensions of the object
-        return 0;
+        return block_type();
     }
     
     // try loading the chunk (if it doesn't exist) then get block
@@ -141,10 +141,10 @@ uint16_t RenderableSuperObject::get_block(float x, float y, float z) {
         return chunks[cac]->get(crc.x, crc.y, crc.z);
     }
     // loading the chunk failed...return air
-    return 0;
+    return block_type();
 }
 
-void RenderableSuperObject::set_block(float x, float y, float z, uint16_t type) {
+void RenderableSuperObject::set_block(float x, float y, float z, block_type type) {
     // first transform to OAC
     ivec3 oac;
     transform_into_my_coordinates(&oac, x, y, z);
@@ -152,7 +152,7 @@ void RenderableSuperObject::set_block(float x, float y, float z, uint16_t type) 
     ivec3 cac, crc;
     transform_into_chunk_bounds(&cac, &crc, oac.x, oac.y, oac.z);
     
-    if (type == 0 && !within_dimensions_chunk(cac.x, cac.y, cac.z)) {
+    if (type.type == 0 && !within_dimensions_chunk(cac.x, cac.y, cac.z)) {
         // no point setting a block to 0 outside chunk bounds
         return;
     }
@@ -385,7 +385,7 @@ bool RenderableSuperObject::collides_with(RenderableSuperObject* other) {
                         for (int xt = lower_corner.x; xt <= upper_corner.x; xt++) {
                             for (int yt = lower_corner.y; yt <= upper_corner.y; yt++) {
                                 for (int zt = lower_corner.z; zt <= upper_corner.z; zt++) {
-                                    if (chunk->blk[xt][yt][zt]) {
+                                    if (chunk->blk[xt][yt][zt].type) {
                                         // if any block other than air intersects we fucked
                                         fvec3 world_coord;
                                         transform_into_world_coordinates(&world_coord,
@@ -394,7 +394,7 @@ bool RenderableSuperObject::collides_with(RenderableSuperObject* other) {
                                                                          zt + CZ*z);
                                         if (other->get_block(world_coord.x,
                                                              world_coord.y,
-                                                             world_coord.z)) {
+                                                             world_coord.z).type) {
                                             // break here to debug
                                             return true;
                                         }

@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include "basic_types.h"
 #include "chunkrender.h"
+#include "block.h"
 
 namespace std
 {
@@ -74,9 +75,9 @@ public:
     // TODO investigate if this needs overriding
     virtual void remove_self();
     // gets the block at (RWC) xyz
-    uint16_t get_block(float x, float y, float z);
+    block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz
-    void set_block(float x, float y, float z, uint16_t type);
+    void set_block(float x, float y, float z, block_type type);
     // tries to set my position to (RWC) to_pos, return false if you can't
     bool set_position(fvec3 to_pos);
     // renders the object, given a player viewpoint transform matrix
@@ -85,9 +86,9 @@ public:
     // former and new (RWC) coordinates of the player
     virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // this should be overriden to provide chunk data at (CAC) xyz
-    virtual int get_chunk(uint16_t to_arr[CX][CY][CZ], int x, int y, int z) = 0;
+    virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) = 0;
     // this should be overriden to save chunk data at (CAC) xyz
-    virtual int save_chunk(uint16_t from_arr[CX][CY][CZ], int x, int y, int z) = 0;
+    virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) = 0;
     
     // check if a chunk coordinate (CAC) xyz is a chunk held by this object
     virtual bool within_dimensions_chunk(int x, int y, int z) = 0;

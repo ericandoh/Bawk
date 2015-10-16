@@ -15,10 +15,10 @@
 // Represents a block that can be put down
 
 class CursorBlock: public CursorItem {
-    uint16_t block;
+    block_type block;
     void render_block(fmat4* transform, float bx, float by, float bz);
 public:
-    CursorBlock(uint16_t type);
+    CursorBlock(block_type type);
     ~CursorBlock();
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well

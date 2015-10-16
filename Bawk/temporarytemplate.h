@@ -16,8 +16,8 @@
 
 struct block_data {
     ivec3 position;
-    uint16_t block;
-    block_data(ivec3 pos, uint16_t b) {
+    block_type block;
+    block_data(ivec3 pos, block_type b) {
         position= pos;
         block = b;
     }
@@ -31,7 +31,7 @@ class TemporaryTemplate {
     int will_be_independent;
 public:
     TemporaryTemplate();
-    void add_block(ivec3 position, uint16_t block);
+    void add_block(ivec3 position, block_type block);
     void remove_block(ivec3 position);
     std::vector<block_data> publish(World* world);
     void unpublish(World* world);

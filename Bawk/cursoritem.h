@@ -16,6 +16,7 @@
 // represents an item (either a single block or a template, pretty much)
 class CursorItem {
 public:
+    bool update_pointing_position(int* tx, int* ty, int* tz, bool nonempty);
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
     virtual bool set_blocks(World* world, TemporaryTemplate* temp) = 0;

@@ -17,7 +17,7 @@ ItemBarlet::ItemBarlet(int x, int y, int width, int height): BaseWidget(x, y, wi
 
 void ItemBarlet::render_elements() {
     // first, fill with black box
-    set_block_draw_mode(0);
+    set_block_draw_mode(2);
     float vertex[6][3] = {
         {-1, -1, 0},
         {1, -1, 0},
@@ -63,7 +63,6 @@ void ItemBarlet::render_elements() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     if (entity) {
-        set_block_draw_mode(1);
         entity->render_at_zero(&mvp);
     }
 }

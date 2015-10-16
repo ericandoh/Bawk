@@ -39,6 +39,7 @@
 		0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */; };
 		0766EB091BBF9CC900477144 /* base_world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB071BBF9CC900477144 /* base_world.cpp */; };
 		0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB101BC0BE9800477144 /* block_loader.cpp */; };
+		076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFD91BD184DF00D68C8F /* blockrender.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -125,6 +126,8 @@
 		0766EB081BBF9CC900477144 /* base_world.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_world.h; sourceTree = "<group>"; };
 		0766EB101BC0BE9800477144 /* block_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_loader.cpp; sourceTree = "<group>"; };
 		0766EB111BC0BE9800477144 /* block_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_loader.h; sourceTree = "<group>"; };
+		076BEFD91BD184DF00D68C8F /* blockrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blockrender.cpp; sourceTree = "<group>"; };
+		076BEFDA1BD184DF00D68C8F /* blockrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blockrender.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -265,6 +268,8 @@
 				07C4263A1BBCC5700045D796 /* chunkrender.cpp */,
 				0766EAEF1BBF75E900477144 /* superobjectrender.cpp */,
 				0766EAF01BBF75E900477144 /* superobjectrender.h */,
+				076BEFD91BD184DF00D68C8F /* blockrender.cpp */,
+				076BEFDA1BD184DF00D68C8F /* blockrender.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -353,6 +358,7 @@
 				0704CF741BC997550050EE52 /* item_bar.cpp in Sources */,
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,
+				076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
 				0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */,
 				0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */,

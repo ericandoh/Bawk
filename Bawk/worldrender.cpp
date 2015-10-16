@@ -26,7 +26,8 @@ static GLint uniform_texture;
 int CHUNK_RENDER_DIST = 3;
 float BLOCK_PLACE_DST = 10.0f;
 
-int mx, my, mz, face;
+int mx, my, mz;
+BlockOrientation face;
 bool in_range;
 
 int world_load_resources() {
@@ -73,7 +74,7 @@ void set_transform_matrix(fmat4 mvp) {
     glUniformMatrix4fv(block_uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
 }
 
-void set_look_at(float depth, int x, int y, int z, int side) {
+void set_look_at(float depth, int x, int y, int z, BlockOrientation side) {
     in_range = depth <= BLOCK_PLACE_DST;
     if (!in_range) {
         return;
