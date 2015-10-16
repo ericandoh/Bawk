@@ -1,6 +1,20 @@
 //
-//  block_loader.h
-//  Bawk
+//  Loads and saves chunk data (blocks)
+//  -
+//  -
+//  -
+//
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  -
+//  -
 //
 //  Created by Eric Oh on 10/3/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.

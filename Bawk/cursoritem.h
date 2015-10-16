@@ -1,6 +1,20 @@
 //
-//  cursoritem.h
-//  Bawk
+//  Represents a quick selectable entity that can be placed down. Made of blocks
+//  - Either a single block (cursoritem) or multiple blocks
+//  -
+//  -
+//
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  -
+//  -
 //
 //  Created by Eric Oh on 10/6/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.

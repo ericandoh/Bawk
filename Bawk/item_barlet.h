@@ -1,6 +1,20 @@
 //
-//  item_barlet.h
-//  Bawk
+//  The individual box showing a quick selectable item, in the item bar
+//  - Shows one item
+//  -
+//  -
+//
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  -
+//  -
 //
 //  Created by Eric Oh on 10/10/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.

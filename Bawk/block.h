@@ -1,6 +1,20 @@
 //
-//  block.h
-//  Bawk
+//  The basic cube unit that makes up this game!
+//  - Has a type, orientation (not always needed)
+//  -
+//  -
+//
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  -
+//  -
 //
 //  Created by Eric Oh on 10/2/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.

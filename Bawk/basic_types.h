@@ -1,7 +1,20 @@
 //
-//  basic_types.h
-//  Bawk
+//  Holds basic types/typedefs used in the game
+//  -
+//  -
+//  -
 //
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  -
+//  -
 //  Created by Eric Oh on 10/1/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //

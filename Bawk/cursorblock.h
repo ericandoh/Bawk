@@ -1,6 +1,21 @@
 //
-//  cursorblock.h
-//  Bawk
+//  Represents a cursoritem holding a single block
+//  -
+//  -
+//  -
+//
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  - The only class outside "render" that uses OpenGL stuff
+//  - That might change later but too much of a hassle right now
+//  - Could have just used a cursorsuperobject with a single block, but I felt like that was a waste :\
 //
 //  Created by Eric Oh on 10/6/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.

@@ -1,6 +1,20 @@
 //
-//  Superobject.h
-//  Bawk
+//  A superobject represents an entity of blocks that will be saved/loaded ingame
+//  -
+//  -
+//  -
+//
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  -
+//  -
 //
 //  Created by Eric Oh on 10/1/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.

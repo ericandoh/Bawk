@@ -1,6 +1,20 @@
 //
-//  texture_loader.h
-//  Bawk
+//  Loads textures for the game and binds them to OpenGL
+//  -
+//  -
+//  -
+//
+//  Used by:
+//  -
+//
+//  Uses:
+//  -
+//  -
+//  -
+//
+//  Notes
+//  -
+//  -
 //  http://www.lonesock.net/soil.html
 //
 //  Created by Eric Oh on 10/2/15.
