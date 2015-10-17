@@ -21,16 +21,21 @@ RenderableSuperObject::RenderableSuperObject(fvec3 p): Entity() {
     // TODO recalculate bound here, or load bound from memory
 }
 
-void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac, ivec3* crc, int x, int y, int z) {
+void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
+                                                        ivec3* crc,
+                                                        float x, float y, float z) {
+    int xr = int(floorf(x));
+    int yr = int(floorf(y));
+    int zr = int(floorf(z));
     // chunk relative coordinates
-    crc->x = (x % CX + CX) % CX;
-    crc->y = (y % CY + CY) % CY;
-    crc->z = (z % CZ + CZ) % CZ;
+    crc->x = (xr % CX + CX) % CX;
+    crc->y = (yr % CY + CY) % CY;
+    crc->z = (zr % CZ + CZ) % CZ;
     
     // chunk aligned coordinates
-    cac->x = (x - crc->x) / CX;
-    cac->y = (y - crc->y) / CY;
-    cac->z = (z - crc->z) / CZ;
+    cac->x = (xr - crc->x) / CX;
+    cac->y = (yr - crc->y) / CY;
+    cac->z = (zr - crc->z) / CZ;
 }
 
 void RenderableSuperObject::remove_self() {

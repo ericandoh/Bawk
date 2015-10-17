@@ -57,7 +57,7 @@ protected:
     // mapping from CAC position to the actual physical bound of that chunk, for ALL chunks
     chunk_bound_map chunk_bounds;
     // internal function to transform OAC xyz to CAC cac, CRC crc
-    void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, int x, int y, int z);
+    void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, float x, float y, float z);
 public:
     // makes a renderable super object that is presumed to be empty initially
     RenderableSuperObject();
