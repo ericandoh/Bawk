@@ -17,10 +17,10 @@ uint32_t spread_bits(uint32_t val)
     return result;
 }
 
-int minimum(int a, int b) {
+int imin(int a, int b) {
     return a < b ? a : b;
 }
 
-int maximum(int a, int b) {
+int imax(int a, int b) {
     return a > b ? a : b;
 }

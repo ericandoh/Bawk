@@ -145,12 +145,13 @@ void RenderableChunk::set(int x, int y, int z, block_type type) {
     }
     else {
         // update lower_bound, upper_bound
-        lower_bound.x = minimum(x, lower_bound.x);
-        lower_bound.y = minimum(y, lower_bound.y);
-        lower_bound.z = minimum(z, lower_bound.z);
-        upper_bound.x = maximum(x, upper_bound.x);
-        upper_bound.y = maximum(y, upper_bound.y);
-        upper_bound.z = maximum(z, upper_bound.z);
+        
+        lower_bound.x = imin(x, lower_bound.x);
+        lower_bound.y = imin(y, lower_bound.y);
+        lower_bound.z = imin(z, lower_bound.z);
+        upper_bound.x = imax(x, upper_bound.x);
+        upper_bound.y = imax(y, upper_bound.y);
+        upper_bound.z = imax(z, upper_bound.z);
     }
     // When updating blocks at the edge of this chunk,
     // visibility of blocks in the neighbouring chunk might change.
@@ -182,12 +183,12 @@ void RenderableChunk::update_dimensions() {
             for (int z = 0; z < CZ; z++) {
                 if (blk[x][y][z].type) {
                     block_counter++;
-                    lower_bound.x = minimum(x, lower_bound.x);
-                    lower_bound.y = minimum(y, lower_bound.y);
-                    lower_bound.z = minimum(z, lower_bound.z);
-                    upper_bound.x = maximum(x, upper_bound.x);
-                    upper_bound.y = maximum(y, upper_bound.y);
-                    upper_bound.z = maximum(z, upper_bound.z);
+                    lower_bound.x = imin(x, lower_bound.x);
+                    lower_bound.y = imin(y, lower_bound.y);
+                    lower_bound.z = imin(z, lower_bound.z);
+                    upper_bound.x = imax(x, upper_bound.x);
+                    upper_bound.y = imax(y, upper_bound.y);
+                    upper_bound.z = imax(z, upper_bound.z);
                 }
             }
         }

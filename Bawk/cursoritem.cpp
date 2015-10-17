@@ -8,7 +8,9 @@
 
 #include "cursoritem.h"
 
-bool CursorItem::update_pointing_position(int* tx, int* ty, int* tz, bool nonempty) {
+bool CursorItem::update_pointing_position(int* tx, int* ty, int* tz,
+                                          BlockOrientation* orient,
+                                          bool nonempty) {
     ivec4 looking_at;
     if (!get_look_at(&looking_at)) {
         return false;
@@ -36,7 +38,7 @@ bool CursorItem::update_pointing_position(int* tx, int* ty, int* tz, bool nonemp
     *tx = mx;
     *ty = my;
     *tz = mz;
-    
+    *orient = face;
     return true;
 }
 

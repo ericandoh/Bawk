@@ -25,12 +25,15 @@ CursorBlock::CursorBlock(block_type type) {
 
 // sets the blocks in this representation into the world, and if template is not null, into the
 // template as well
-bool CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
+bool CursorBlock::set_blocks(Player* player, World* world, TemporaryTemplate* temp) {
     int mx, my, mz;
-    if (!update_pointing_position(&mx, &my, &mz, block.type)) {
+    BlockOrientation orient;
+    if (!update_pointing_position(&mx, &my, &mz, &orient, block.type)) {
         return false;
     }
     ivec3 block_pos = ivec3(mx, my, mz);
+    block.orientation = orient;
+    block.owner = player;
     world->place_block(block_pos, block);
     if (temp)
         temp->add_block(block_pos, block);
@@ -39,8 +42,8 @@ bool CursorBlock::set_blocks(World* world, TemporaryTemplate* temp) {
 // for a single block, this will call set_blocks (above) directly.
 // for a template block, this will lock the position of the current cursoritem template
 // then a call to set_blocks will be made later
-bool CursorBlock::place_blocks(World* world, TemporaryTemplate* temp) {
-    set_blocks(world, temp);
+bool CursorBlock::place_blocks(Player* player, World* world, TemporaryTemplate* temp) {
+    set_blocks(player, world, temp);
     // this gets passed to placed_current_item, that needs to be set to false
     // since this is a single block and is already placed
     return false;
@@ -149,7 +152,8 @@ void CursorBlock::render_and_position(fmat4* transform) {
     if (block.type == 0)
         return;
     int mx, my, mz;
-    if (!update_pointing_position(&mx, &my, &mz, block.type)) {
+    BlockOrientation orient;
+    if (!update_pointing_position(&mx, &my, &mz, &orient, block.type)) {
         return;
     }
     render_block(transform, mx, my, mz);

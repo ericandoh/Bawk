@@ -34,5 +34,8 @@ void set_coord_and_texture(GLbyte coord[][3],
     if (face == BlockOrientation::TOP || face == BlockOrientation::BOTTOM) {
         flags += 0x1;
     }
+    if (face == block.orientation) {
+        flags += 0x2;
+    }
     texture[index][2] = flags;
 }

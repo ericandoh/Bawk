@@ -24,5 +24,17 @@
 #define __Bawk__entityholder__
 
 #include <stdio.h>
+#include <vector>
+#include "entity.h"
+
+class EntityHolder {
+    // this is the baseworld. the baseworld is dimensionless so we must always check against this
+    Entity* global_entity;
+    // some data structure to hold all (nonbaseworld) entities in a efficient manner
+    std::vector<Entity*> entities;
+public:
+    // given that an entity got updated, sees if this entity collided with anything else
+    bool any_collided(Entity* updated);
+};
 
 #endif /* defined(__Bawk__entityholder__) */

@@ -88,6 +88,11 @@ int Game::init() {
     second->set_block(0.0f, 1.0f, 1.0f, 2);
     bar->set_current(second);
     
+    /*bar->set_index(2);
+    CursorSuperObject* third = new CursorSuperObject();
+    third->set_block(0.0f, 0.0f, 0.0f, 2);
+    bar->set_current(third);*/
+    
     bar->set_index(0);
         
     return 0;
@@ -208,7 +213,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 }
                 // we need to place this object into the world
                 // if we can't place this object, this should fail
-                if (bar->get_current()->set_blocks(world, place_into)) {
+                if (bar->get_current()->set_blocks(player, world, place_into)) {
                     // placing blocks was successful
                     placed_current_item = false;
                 }
@@ -336,12 +341,12 @@ void Game::mouse_button_callback(int button, int action, int mods) {
                     printf("Placing template into world!\n");
                 }
                 // we need to place this object into the world
-                bar->get_current()->set_blocks(world, place_into);
+                bar->get_current()->set_blocks(player, world, place_into);
                 placed_current_item = false;
             }
             else if (bar->get_current()) {
                 printf("Placing block\n");
-                placed_current_item = bar->get_current()->place_blocks(world, place_into);
+                placed_current_item = bar->get_current()->place_blocks(player, world, place_into);
             }
         }
     }

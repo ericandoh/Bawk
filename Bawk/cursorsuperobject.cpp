@@ -23,8 +23,8 @@ CursorSuperObject::CursorSuperObject() {
 
 // sets the blocks in this representation into the world, and if template is not null, into the
 // template as well
-bool CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
-    
+bool CursorSuperObject::set_blocks(Player* player, World* world, TemporaryTemplate* temp) {
+    // TODO if we rotated this object, update individual block orientations
     if (world->will_collide_with_anything(this)) {
         return false;
     }
@@ -46,8 +46,9 @@ bool CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
                         ivec3 block_pos = ivec3(int(world_coord.x),
                                                 int(world_coord.y),
                                                 int(world_coord.z));
+                        block.owner = player;
                         world->place_block(block_pos, block);
-                        printf("Placing to (%d, %d, %d)\n", block_pos.x, block_pos.y, block_pos.z);
+                        //printf("Placing to (%d, %d, %d)\n", block_pos.x, block_pos.y, block_pos.z);
                         if (temp)
                             temp->add_block(block_pos, block);
                     }
@@ -63,15 +64,16 @@ bool CursorSuperObject::set_blocks(World* world, TemporaryTemplate* temp) {
 // for a single block, this will call set_blocks (above) directly.
 // for a template block, this will lock the position of the current cursoritem template
 // then a call to set_blocks will be made later
-bool CursorSuperObject::place_blocks(World* world, TemporaryTemplate* temp) {
+bool CursorSuperObject::place_blocks(Player* player, World* world, TemporaryTemplate* temp) {
     if (locked)
         return true;
     int mx, my, mz;
-    if (!update_pointing_position(&mx, &my, &mz, true)) {
+    BlockOrientation orient;
+    if (!update_pointing_position(&mx, &my, &mz, &orient, true)) {
         return false;
     }
     // save position
-    set_position(fvec3(mx, my, mz));
+    set_pos(fvec3(mx, my, mz));
     locked = true;
     return true;
 }
@@ -92,7 +94,7 @@ void CursorSuperObject::get_bounds(ivec3* upper) {
 
 void CursorSuperObject::render_at_zero(fmat4* transform) {
     fvec3 old_pos = pos;
-    set_position(fvec3(0, 0, 0));
+    set_pos(fvec3(0, 0, 0));
     render(transform);
     pos = old_pos;
 }
@@ -100,12 +102,13 @@ void CursorSuperObject::render_at_zero(fmat4* transform) {
 void CursorSuperObject::render_and_position(fmat4* transform) {
     if (!locked) {
         int mx, my, mz;
-        if (!update_pointing_position(&mx, &my, &mz, true)) {
+        BlockOrientation orient;
+        if (!update_pointing_position(&mx, &my, &mz, &orient, true)) {
             return;
         }
         // save position
         if (pos != fvec3(mx, my, mz)) {
-            set_position(fvec3(mx, my, mz));
+            set_pos(fvec3(mx, my, mz));
         }
     }
     render(transform);
@@ -164,9 +167,9 @@ CursorSuperObject* create_from_template(World* world, TemporaryTemplate* temp) {
     ivec3 lower_corner = blocks[0].position;
     for (auto &i : blocks) {
         ivec3 position = i.position;
-        lower_corner.x = minimum(lower_corner.x, position.x);
-        lower_corner.y = minimum(lower_corner.y, position.y);
-        lower_corner.z = minimum(lower_corner.z, position.z);
+        lower_corner.x = imin(lower_corner.x, position.x);
+        lower_corner.y = imin(lower_corner.y, position.y);
+        lower_corner.z = imin(lower_corner.z, position.z);
     }
     
     for (auto &i : blocks) {

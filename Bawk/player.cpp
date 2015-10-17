@@ -30,10 +30,6 @@ void Player::update_direction(double xdiff, double ydiff) {
     if(angle.y > M_PI / 2)
         angle.y = M_PI / 2;
     
-    forward.x = sinf(angle.x);
-    forward.y = 0;
-    forward.z = cosf(angle.x);
-    
     //right.x = -cosf(angle.x);
     //right.y = 0;
     //right.z = sinf(angle.x);

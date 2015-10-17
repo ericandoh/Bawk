@@ -11,10 +11,10 @@ void main(void) {
         gl_FragColor = texture2D(tile_texture, texcoord.xy);
     }
     else if (draw_mode == 1) {
+        int shaderflags = int(texcoord.z);
         vec2 imgcoord;
         float intensity;
-        
-        if (texcoord.z > 0.0) {
+        if (mod(shaderflags, 0x2) > 0) {
             // we have a top or bottom face (texture_coord.z = 1)
             imgcoord = vec2((fract(v_coord.x) + texcoord.x) / 16.0, 1.0 - (fract(v_coord.z) + texcoord.y) / 16.0);
             intensity = 1.0;
@@ -23,6 +23,10 @@ void main(void) {
             imgcoord = vec2((fract(v_coord.x + v_coord.z) + texcoord.x) / 16.0, 1.0 - (fract(v_coord.y) + texcoord.y) / 16.0);
             intensity = 0.85;
         }
+        
+        //if (mod(shaderflags / 0x2, 0x2) > 0) {
+        //    intensity = intensity / 3.0;
+        //}
         
         vec4 color = texture2D(tile_texture, imgcoord);
         if(color.a < 0.4)

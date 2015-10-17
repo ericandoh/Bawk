@@ -16,37 +16,13 @@ RenderablePlayer::RenderablePlayer() {
     // initialize things
     pos = fvec3(0.0f, 8.0f, 0.0f);
     dir = fvec3(1.0f, 0.0f, 0.0f);
-    forward = dir;
     up = fvec3(0.0f, 1.0f, 0.0f);
+    
+    lower_bound = fvec3(-0.5f, -0.9f, -0.5f);
+    upper_bound = fvec3(0.5f, 0.9f, 0.5f);
+    
     glGenBuffers(1, &cursor_vbo);
     // TODO do we ever free this...
-}
-
-// movement methods. Move these to class Entity
-void RenderablePlayer::move_forward() {
-    // override this if flying/on land
-    pos += forward;
-}
-void RenderablePlayer::move_backward() {
-    pos -= forward;
-}
-void RenderablePlayer::move_left() {
-    pos.x += forward.z;
-    pos.z -= forward.x;
-}
-void RenderablePlayer::move_right() {
-    pos.x -= forward.z;
-    pos.z += forward.x;
-}
-void RenderablePlayer::move_up() {
-    pos.y += 1.0f;
-}
-void RenderablePlayer::move_down() {
-    pos.y -= 1.0f;
-}
-
-fvec3* RenderablePlayer::get_pos() {
-    return &pos;
 }
 
 fmat4* RenderablePlayer::set_camera() {
@@ -129,53 +105,8 @@ void RenderablePlayer::query_depth() {
 void RenderablePlayer::render() {
     int width, height;
     get_window_size(&width, &height);
-    /*
-    float bx = mx;
-    float by = my;
-    float bz = mz;
-    
-    // Render a box around the block we are pointing at
-    float box[24][3] = {
-        {bx + 0, by + 0, bz + 0},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 0, by + 1, bz + 0},
-        {bx + 1, by + 1, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 1, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 1},
-        
-        {bx + 0, by + 0, bz + 0},
-        {bx + 0, by + 1, bz + 0},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 1, by + 1, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 0, bz + 1},
-        {bx + 1, by + 1, bz + 1},
-        
-        {bx + 0, by + 0, bz + 0},
-        {bx + 0, by + 0, bz + 1},
-        {bx + 1, by + 0, bz + 0},
-        {bx + 1, by + 0, bz + 1},
-        {bx + 0, by + 1, bz + 0},
-        {bx + 0, by + 1, bz + 1},
-        {bx + 1, by + 1, bz + 0},
-        {bx + 1, by + 1, bz + 1},
-    };
-    
-    glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_CULL_FACE);
-    
-    set_transform_matrix(mvp);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, cursor_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glDrawArrays(GL_LINES, 0, 24);*/
     
     /* Draw a cross in the center of the screen */
-    
     float cross[4][3] = {
         {-0.05f, 0, 0},
         {+0.05f, 0, 0},
@@ -183,12 +114,10 @@ void RenderablePlayer::render() {
         {0, +0.05f * width/height, 0},
     };
     
-    //glDisable(GL_DEPTH_TEST);
     glm::mat4 one(1);
     set_transform_matrix(one);
     glBindBuffer(GL_ARRAY_BUFFER, cursor_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof cross, cross, GL_DYNAMIC_DRAW);
-    //glVertexPointer(4, GL_FLOAT, 0, cross);
     glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glDrawArrays(GL_LINES, 0, 4);
 }

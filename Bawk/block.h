@@ -39,6 +39,7 @@ enum BlockOrientation: uint8_t {
 
 struct block_type {
     // the physical type of the block
+    // properties such as block resistance, block weight, etc can be calculated from this
     uint16_t type;
     // the orientation of the block
     BlockOrientation orientation;

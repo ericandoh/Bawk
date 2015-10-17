@@ -37,11 +37,11 @@ public:
     ~CursorBlock();
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
-    bool set_blocks(World* world, TemporaryTemplate* temp) override;
+    bool set_blocks(Player* player, World* world, TemporaryTemplate* temp) override;
     // for a single block, this will call set_blocks (above) directly.
     // for a template block, this will lock the position of the current cursoritem template
     // then a call to set_blocks will be made later
-    bool place_blocks(World* world, TemporaryTemplate* temp) override;
+    bool place_blocks(Player* player, World* world, TemporaryTemplate* temp) override;
     // only needed for instances of template. the default does jack shit
     void move_block(ivec3 dir) override;
     void get_bounds(ivec3* upper) override;

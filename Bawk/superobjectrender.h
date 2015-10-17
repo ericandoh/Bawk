@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include "basic_types.h"
 #include "chunkrender.h"
+#include "entity.h"
 #include "block.h"
 
 namespace std
@@ -45,7 +46,7 @@ struct chunk_bounds {
 typedef std::unordered_map<ivec3, RenderableChunk*> chunk_map;
 typedef std::unordered_map<ivec3, chunk_bounds> chunk_bound_map;
 
-class RenderableSuperObject {
+class RenderableSuperObject: public Entity {
     // internal function that will make calls to load and save a chunk given CAC xyz
     int load_chunk(int x, int y, int z);
     void delete_chunk(int x, int y, int z);
@@ -55,14 +56,6 @@ protected:
     chunk_map chunks;
     // mapping from CAC position to the actual physical bound of that chunk, for ALL chunks
     chunk_bound_map chunk_bounds;
-    // position of the superobject, in RWC
-    fvec3 pos;
-    // the bounding box over contents of all chunks, in OAC
-    ivec3 lower_bound, upper_bound;
-    // internal function to transform RWC xyz to OAC src
-    void transform_into_my_coordinates(ivec3* src, float x, float y, float z);
-    // internal function to transform OAC xyz to RWC src
-    void transform_into_world_coordinates(fvec3* src, int x, int y, int z);
     // internal function to transform OAC xyz to CAC cac, CRC crc
     void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, int x, int y, int z);
 public:
@@ -78,8 +71,6 @@ public:
     block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz
     void set_block(float x, float y, float z, block_type type);
-    // tries to set my position to (RWC) to_pos, return false if you can't
-    bool set_position(fvec3 to_pos);
     // renders the object, given a player viewpoint transform matrix
     void render(fmat4* transform);
     // makes calls to load in/free chunks depending on the
@@ -95,13 +86,17 @@ public:
     // updates the dimensions of my object, given a chunk at chunk_pos (CAC) is updated
     // call when initializing from scratch with a lot of blocks, or when removing a block at a periphery
     virtual void update_dimensions_from_chunk(ivec3 chunk_pos);
-    // check if a bounding box (OAC) (lower, upper) intersects with my own bounds
-    // override this for baseworld
-    virtual bool intersects_with_my_bounds(ivec3 lower_corner, ivec3 upper_corner);
+    
+    int get_collision_priority() override;
+    bool check_collision_vs(Entity* other) override;
+    
     // checks if this superobject collides with this other superobject
     // other superobject should NEVER be the baseworld (or other dimensionless entity)
     // to check against dimensionless entities like that, set the dimensionless as the callee
-    bool collides_with(RenderableSuperObject* other);
+    bool collides_with_entity(Entity* other);
+    bool collides_with_superobject(RenderableSuperObject* other);
+    
+   
 };
 
 #endif /* defined(__Bawk__superobjectrender__) */

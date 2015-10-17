@@ -63,6 +63,10 @@ void BaseWorld::update_dimensions_from_chunk(ivec3 chunk_pos) {
     // do nothing
 }
 
-bool BaseWorld::intersects_with_my_bounds(ivec3 lower_corner, ivec3 upper_corner) {
+bool BaseWorld::intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner) {
     return true;
+}
+
+int BaseWorld::get_collision_priority() {
+    return 2;
 }

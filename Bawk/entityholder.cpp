@@ -7,3 +7,8 @@
 //
 
 #include "entityholder.h"
+
+bool EntityHolder::any_collided(Entity* updated) {
+    // TODO implement this
+    return false;
+}

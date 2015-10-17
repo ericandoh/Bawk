@@ -41,8 +41,8 @@ struct fvec6 {
 // OUTPUT: 00A00B00C
 uint32_t spread_bits(uint32_t val);
 
-int minimum(int a, int b);
-int maximum(int a, int b);
+int imin(int a, int b);
+int imax(int a, int b);
 
 // a vec3 of ints that can be hashed (with coordinate locality)
 struct ivec3 : glm::tvec3<int> {
