@@ -27,6 +27,9 @@
 #include "basic_types.h"
 
 class Entity {
+    fvec3 velocity;
+    float speed;
+    // TODO support rotation later on, if you're coolbeans
 protected:
     // position of the superobject, in RWC
     fvec3 pos;
@@ -38,7 +41,7 @@ public:
     // public for convenience of access
     fvec3 lower_bound, upper_bound;
     Entity();
-    Entity(fvec3 p, fvec3 u, fvec3 d, fvec3 lower, fvec3 upper);
+    Entity(fvec3 p, fvec3 v, fvec3 u, fvec3 d, fvec3 lower, fvec3 upper);
     // internal function to transform RWC xyz to OAC src
     void transform_into_my_coordinates(fvec3* src, float x, float y, float z);
     // internal function to transform OAC xyz to RWC src
@@ -51,7 +54,13 @@ public:
     void move_up();
     void move_down();
     fvec3* get_pos();
-    bool set_pos(fvec3 to);
+    fvec3 set_pos(fvec3 to);
+    bool has_moved();
+    virtual fvec3 step();
+    virtual void render(fmat4* transform);
+    virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);
+    
+    virtual void remove_self();
 
     bool collides_with(Entity* other);
     // override this with your own int for up to what class of Entities you can handle collision

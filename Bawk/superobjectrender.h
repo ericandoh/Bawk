@@ -66,16 +66,16 @@ public:
     RenderableSuperObject(fvec3 p);
     // cleans up the chunk data held by this object.
     // TODO investigate if this needs overriding
-    virtual void remove_self();
+    void remove_self() override;
     // gets the block at (RWC) xyz
     block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz
     void set_block(float x, float y, float z, block_type type);
     // renders the object, given a player viewpoint transform matrix
-    void render(fmat4* transform);
+    void render(fmat4* transform) override;
     // makes calls to load in/free chunks depending on the
     // former and new (RWC) coordinates of the player
-    virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);
+    void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
     // this should be overriden to provide chunk data at (CAC) xyz
     virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) = 0;
     // this should be overriden to save chunk data at (CAC) xyz

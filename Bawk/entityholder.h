@@ -33,8 +33,15 @@ class EntityHolder {
     // some data structure to hold all (nonbaseworld) entities in a efficient manner
     std::vector<Entity*> entities;
 public:
-    // given that an entity got updated, sees if this entity collided with anything else
-    bool any_collided(Entity* updated);
+    ~EntityHolder();
+    void set_global_entity(Entity* entity);
+    void add_entity(Entity* entity);
+    void remove_entity(Entity* entity);
+    void step();
+    void render(fmat4* transform);
+    void update_chunks(fvec3* old_pos, fvec3* new_pos);
+    // checks if an entity not being held will collide if added
+    bool collides_with(Entity* entity);
 };
 
 #endif /* defined(__Bawk__entityholder__) */

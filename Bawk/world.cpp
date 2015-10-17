@@ -20,14 +20,8 @@ World::World(std::string id) {
     make_world_folder(name);
     
     base_world = new BaseWorld(name);
-    superobjects.push_back(base_world);
-}
-
-World::~World() {
-    for (int i = 0; i < superobjects.size(); i++) {
-        superobjects[i]->remove_self();
-        delete superobjects[i];
-    }
+    
+    holder.set_global_entity(base_world);
 }
 
 int World::load_resources() {
@@ -40,42 +34,14 @@ void World::free_resources() {
 
 // renders the world
 void World::render(fmat4* transform) {
-    for (int i = 0; i < superobjects.size(); i++) {
-        superobjects[i]->render(transform);
-    }
+    holder.render(transform);
 }
 
 void World::update_chunks(fvec3* old_pos, fvec3* new_pos) {
-    for (int i = 0; i < superobjects.size(); i++) {
-        superobjects[i]->update_chunks(old_pos, new_pos);
-    }
+    holder.update_chunks(old_pos, new_pos);
 }
 
 void World::place_block(ivec3 position, block_type block) {
-    // TODO (check for colision with other superobjects...?)
-    // (other superobjects including baseworld!)
-    /*
-    // TODO
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
-        return false;
-    }
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    int face = looking_at.w;
-    if(face == 0)
-    mx++;
-    if(face == 3)
-    mx--;
-    if(face == 1)
-    my++;
-    if(face == 4)
-    my--;
-    if(face == 2)
-    mz++;
-    if(face == 5)
-    mz--;*/
     base_world->set_block(position.x, position.y, position.z, block);
 }
 
@@ -103,8 +69,13 @@ bool World::kill_block(ivec3* src) {
     return true;
 }
 
+void World::add_player(Player* player) {
+    holder.add_entity(player);
+}
+
 // cycles one timestep for the world
 void World::step() {
+    holder.step();
     age++;
 }
 
@@ -113,13 +84,5 @@ SuperObject* World::make_bounded_super_object() {
 }
 
 bool World::will_collide_with_anything(RenderableSuperObject* other) {
-    for (int i = 0; i < superobjects.size(); i++) {
-        if (superobjects[i] == other) {
-            continue;
-        }
-        if (superobjects[i]->collides_with(other)) {
-            return true;
-        }
-    }
-    return false;
+    return holder.collides_with(other);
 }

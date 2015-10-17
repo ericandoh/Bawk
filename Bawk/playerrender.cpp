@@ -18,8 +18,8 @@ RenderablePlayer::RenderablePlayer() {
     dir = fvec3(1.0f, 0.0f, 0.0f);
     up = fvec3(0.0f, 1.0f, 0.0f);
     
-    lower_bound = fvec3(-0.5f, -0.9f, -0.5f);
-    upper_bound = fvec3(0.5f, 0.9f, 0.5f);
+    lower_bound = fvec3(-1.0f, -1.0f, -1.0f);
+    upper_bound = fvec3(0.0f, 0.0f, 0.0f);
     
     glGenBuffers(1, &cursor_vbo);
     // TODO do we ever free this...

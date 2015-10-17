@@ -50,7 +50,7 @@ public:
     void unlock();
     
     // --- rendersuperobject methods ---
-    void update_chunks(fvec3* old_pos, fvec3* new_pos);
+    void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
     // called when a request to load a chunk from disk is made
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     // called when a chunk goes out of scope and no longer needs to be rendered

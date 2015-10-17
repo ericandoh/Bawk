@@ -46,6 +46,7 @@ int Game::init() {
     fvec3* player_pos = player->get_pos();
     last_player_pos = fvec3(player_pos->x, player_pos->y, player_pos->z);
     
+    world->add_player(player);
     world->update_chunks(0, player_pos);
     
     // set key mappings
@@ -162,6 +163,7 @@ void Game::frame() {
     }
     if (need_update)
         check_need_update();
+    world->step();
 }
 
 float get_dst(fvec3* a, fvec3* b) {
@@ -375,7 +377,7 @@ Game::~Game() {
     clean_vbo_for_widgets();
     delete bar;
     delete place_into;
-    delete player;
+    //delete player;
     delete world;
 }
 

@@ -26,6 +26,7 @@
 #include <string>
 #include "basic_types.h"
 #include "worldrender.h"
+#include "entityholder.h"
 
 class World {
     
@@ -34,14 +35,11 @@ class World {
     
     std::string name;
     
-    // vector of objects
-    std::vector<SuperObject*> superobjects;
-    
     SuperObject* base_world;
+    EntityHolder holder;
     
 public:
     World(std::string id);
-    ~World();
     int load_resources();
     void free_resources();
     void render(fmat4* transform);
@@ -51,6 +49,7 @@ public:
     block_type get_block(float x, float y, float z);
     // called by game to kill a block directly. then effects are propogated to the appropriate entities
     bool kill_block(ivec3* src);
+    void add_player(Player* player);
     void step();
     SuperObject* make_bounded_super_object();
     bool will_collide_with_anything(RenderableSuperObject* superobject);
