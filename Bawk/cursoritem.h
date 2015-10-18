@@ -43,6 +43,7 @@ public:
     virtual void get_bounds(ivec3* upper) = 0;
     virtual void render_at_zero(fmat4* transform) = 0;
     virtual void render_and_position(fmat4* transform) = 0;
+    virtual bool is_locked_in();
     virtual void unlock();
     
     virtual void cleanup_all() = 0;

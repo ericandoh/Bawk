@@ -47,7 +47,8 @@ public:
     void get_bounds(ivec3* upper) override;
     void render_at_zero(fmat4* transform) override;
     void render_and_position(fmat4* transform) override;
-    void unlock();
+    bool is_locked_in() override;
+    void unlock() override;
     
     // --- rendersuperobject methods ---
     void update_chunks(fvec3* old_pos, fvec3* new_pos) override;

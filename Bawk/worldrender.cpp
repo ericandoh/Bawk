@@ -36,7 +36,7 @@ int world_load_resources() {
                     &block_uniform_mvp,
                     &block_uniform_draw_mode,
                     &program)) {
-        return -1;
+        return 1;
     }
     glActiveTexture(GL_TEXTURE0);
     // Load textures

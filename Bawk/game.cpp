@@ -12,6 +12,7 @@
 #include "cursorsuperobject.h"
 #include "cursorblock.h"
 #include "base_widget.h"
+#include "block_loader.h"
 
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
@@ -30,17 +31,27 @@ std::map<int, bool> key_toggled;
 // if the player moves more than 1 dimension away from previous location, update
 float CHUNK_UPDATE_TRIGGER_DISTANCE = 16.0f;
 
+void Game::set_parameters(std::string wn, uint32_t p) {
+    world_name = wn;
+    pid = p;
+}
+
 // initializes all needed game variables. This should be called before render()
 int Game::init() {
-    world = new World("testworld");
     
     // load resources for the world
-    if (world->load_resources()) {
-        return -1;
+    if (world_load_resources()) {
+        return 1;
     }
     
+    // load resources for widgets/misc stuff
     initialize_vbo_for_widgets();
     
+    // load game-related data
+    if (load_game_data())
+        return 1;
+    
+    world = new World("testworld");
     // later separate loading the player and the world - this might get complicated!
     player = new Player();
     fvec3* player_pos = player->get_pos();
@@ -180,7 +191,6 @@ void Game::check_need_update() {
 
 void Game::switch_current_item(int to_index) {
     bar->set_index(to_index);
-    placed_current_item = false;
 }
 
 // Calls an action depending on key pressed
@@ -205,7 +215,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
     else if (action == GLFW_PRESS) {
         Action do_this = key_to_action[key];
         if (do_this == CONFIRM) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 // this code is duplicated somewhere else!
                 if (place_into) {
                     printf("Placing template into template!\n");
@@ -215,10 +225,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 }
                 // we need to place this object into the world
                 // if we can't place this object, this should fail
-                if (bar->get_current()->set_blocks(player, world, place_into)) {
-                    // placing blocks was successful
-                    placed_current_item = false;
-                }
+                bar->get_current()->set_blocks(player, world, place_into);
             }
             else if (place_into) {
                 printf("Exporting template to current cursor!\n");
@@ -243,9 +250,8 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
             }
         }
         else if (do_this == CANCEL) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Cancelling current template placing 1\n");
-                placed_current_item = false;
                 bar->get_current()->unlock();
             }
             else if (place_into) {
@@ -261,38 +267,38 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
             }
         }
         else if (do_this == MOVE_BLOCK_UP) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Moving placed template\n");
                 bar->get_current()->move_block(ivec3(0, 1, 0));
             }
         }
         else if (do_this == MOVE_BLOCK_DOWN) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Moving placed template\n");
                 bar->get_current()->move_block(ivec3(0, -1, 0));
             }
         }
         else if (do_this == MOVE_BLOCK_LEFT) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Moving placed template\n");
                 ivec3 left = player->get_rounded_left();
                 bar->get_current()->move_block(ivec3(-left.x, 0, -left.z));
             }
         }
         else if (do_this == MOVE_BLOCK_RIGHT) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Moving placed template\n");
                 bar->get_current()->move_block(player->get_rounded_left());
             }
         }
         else if (do_this == MOVE_BLOCK_FORWARD) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Moving placed template\n");
                 bar->get_current()->move_block(player->get_rounded_forward());
             }
         }
         else if (do_this == MOVE_BLOCK_BACKWARD) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Moving placed template\n");
                 ivec3 forward = player->get_rounded_forward();
                 bar->get_current()->move_block(ivec3(-forward.x, 0, -forward.z));
@@ -316,9 +322,8 @@ void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         Action do_this = mouse_to_action[button];
         if (do_this == CLICK_DESTROY) {
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Cancelling current template placing2\n");
-                placed_current_item = false;
                 bar->get_current()->unlock();
             }
             else {
@@ -335,7 +340,7 @@ void Game::mouse_button_callback(int button, int action, int mods) {
         }
         else if (do_this == CLICK_CREATE) {
             // get block here instead of outside
-            if (placed_current_item) {
+            if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 if (place_into) {
                     printf("Placing template into template!\n");
                 }
@@ -344,11 +349,10 @@ void Game::mouse_button_callback(int button, int action, int mods) {
                 }
                 // we need to place this object into the world
                 bar->get_current()->set_blocks(player, world, place_into);
-                placed_current_item = false;
             }
             else if (bar->get_current()) {
                 printf("Placing block\n");
-                placed_current_item = bar->get_current()->place_blocks(player, world, place_into);
+                bar->get_current()->place_blocks(player, world, place_into);
             }
         }
     }
@@ -363,21 +367,40 @@ void Game::scroll_callback(double xoffset, double yoffset) {
     }
 }
 
-// TODO if we scroll mouse, make sure to set placed_current_item to false
-// use switch_current_item(index) to switch
+int Game::load_game_data() {
+    IODataObject* read = new IODataObject();
+    if (read->read_from_game()) {
+        printf("Game data missing\n");
+        return 0;
+    }
+    
+    int version = read->read_value<int>();
+    printf("Loading game from version %d\n", version);
+    printf("Current game version %d\n", VERSION);
+    read->close();
+    delete read;
+    return 0;
+}
+
+int Game::save_game_data() {
+    IODataObject* write = new IODataObject();
+    if (write->save_to_game())
+        return 1;
+    
+    write->save_value(VERSION);
+    write->close();
+    delete write;
+    return 0;
+}
 
 Game::~Game() {
     printf("Cleaning up game\n");
-    // cleanup assets
-    // TODO make sure below works
-    //for (auto i : cursor_items) {
-    //    delete i;
-    //}
-    world->free_resources();
-    clean_vbo_for_widgets();
-    delete bar;
+    save_game_data();
     delete place_into;
-    //delete player;
+    // player deleted as part of world...?
     delete world;
+    delete bar;
+    world_free_resources();
+    clean_vbo_for_widgets();
 }
 

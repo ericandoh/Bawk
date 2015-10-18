@@ -17,19 +17,10 @@ World::World(std::string id) {
     age = 0;
     
     name = id;
-    make_world_folder(name);
     
     base_world = new BaseWorld(name);
     
     holder.set_global_entity(base_world);
-}
-
-int World::load_resources() {
-    return world_load_resources();
-}
-
-void World::free_resources() {
-    world_free_resources();
 }
 
 // renders the world

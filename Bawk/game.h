@@ -3,6 +3,7 @@
 //  - Main function is to handle inputs from the game and pass them to the right entities
 //  - Holds the World (which has the BaseWorld and other objects)
 //  - Holds a reference to the current Player playing this game
+//  - Makes calls to lads resources and free them
 //
 //  Used by:
 //  - display.cpp (displays this)
@@ -27,6 +28,7 @@
 #include <stdio.h>
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <string>
 #include "world.h"
 #include "player.h"
 #include "displayable.h"
@@ -34,10 +36,15 @@
 #include "cursoritem.h"
 #include "item_bar.h"
 
+const int VERSION = 3.0;
+
 class Game : public Displayable {
     // game data objects
     World* world;
     Player* player;
+    
+    std::string world_name;
+    uint32_t pid;
     
     // used for updating player pos/chunk loading
     fvec3 last_player_pos;
@@ -47,20 +54,13 @@ class Game : public Displayable {
     // template holding current template we're working on (if any)
     TemporaryTemplate* place_into;
     
-    // the item on the cursor right now. Clicking will place this item down
-    // CursorItem* current_item;
-    
-    // all our cursor items
-    // std::vector<CursorItem*> cursor_items;
-    // the index of the current cursor item
-    // int cursor_item_index;
-    // if we've just placed down a cursor item that is a template, and are now in template move mode
-    bool placed_current_item;
-    
     ItemBar* bar;
     
     void check_need_update();
+    int load_game_data();
+    int save_game_data();
 public:
+    void set_parameters(std::string wn, uint32_t p);
     int init() override;
     void render() override;
     void frame() override;

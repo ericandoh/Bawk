@@ -147,6 +147,10 @@ bool CursorSuperObject::within_dimensions_chunk(int x, int y, int z) {
     return false;
 }
 
+bool CursorSuperObject::is_locked_in() {
+    return locked;
+}
+
 void CursorSuperObject::unlock() {
     locked = false;
 }

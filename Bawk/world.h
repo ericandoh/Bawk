@@ -40,8 +40,6 @@ class World {
     
 public:
     World(std::string id);
-    int load_resources();
-    void free_resources();
     void render(fmat4* transform);
     void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // called by cursor item, places block into baseworld

@@ -42,6 +42,10 @@ bool CursorItem::update_pointing_position(int* tx, int* ty, int* tz,
     return true;
 }
 
+bool CursorItem::is_locked_in() {
+    return false;
+}
+
 void CursorItem::unlock() {
     // does nothing
 }

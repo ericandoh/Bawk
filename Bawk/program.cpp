@@ -24,6 +24,7 @@ void start_display() {
     switch (current) {
         case GAME: {
             Game game;
+            game.set_parameters("testworld", 0);
             if (game.init()) {
                 failed_init();
             }
