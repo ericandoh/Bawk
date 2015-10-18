@@ -36,8 +36,9 @@ public:
     SuperObject(std::string w);
     SuperObject(std::string w, uint32_t p, uint32_t v);
     SuperObject(std::string w, uint32_t p, uint32_t v, int* err);
-    int load_self();
-    virtual void remove_self() override;
+    
+    virtual std::string get_save_path() override;
+    
     virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     virtual bool within_dimensions_chunk(int x, int y, int z) override;

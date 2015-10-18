@@ -30,6 +30,9 @@
 
 class CursorSuperObject: public RenderableSuperObject, public CursorItem {
     bool locked;
+    
+    bool from_inventory;
+    
 public:
     CursorSuperObject();
     
@@ -57,7 +60,6 @@ public:
     // called when a chunk goes out of scope and no longer needs to be rendered
     int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;
-    void remove_self();
     
     void cleanup_all() override;
 };

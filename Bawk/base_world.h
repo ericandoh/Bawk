@@ -32,7 +32,7 @@ class BaseWorld: public SuperObject {
     block_type ground[CX][CY][CZ];
 public:
     BaseWorld(std::string wid);
-    void remove_self() override;
+    std::string get_save_path() override;
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;

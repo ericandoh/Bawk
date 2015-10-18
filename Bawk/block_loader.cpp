@@ -98,6 +98,8 @@ long get_file_length_c(std::string file_name) {
     return t.tellg();
 }
 
+
+
 /*
 // ----- GENERIC WRITE METHOD -----
 // the below is UNSAFE and should be only called INTERNALLY!!!
@@ -177,11 +179,61 @@ int validate_read_write_path(std::string path) {
     return 0;
 }
 
-IODataObject::IODataObject() {
+
+
+
+// read/write methods
+std::string get_path_to_world(std::string world_name) {
+    return get_metadata_path(get_named_object_path(get_world_save_path(), world_name));
+}
+
+std::string get_path_to_world_chunk(std::string world_name, ivec3* chunk_pos) {
+    return get_chunk_path(
+                               get_named_object_path(get_world_save_path(), world_name),
+                               chunk_pos
+                          );
+}
+
+std::string get_path_to_superobj(uint32_t pid, uint32_t vid) {
+    return get_metadata_path(get_idid_path(get_superobject_save_path(), pid, vid));
+}
+
+std::string get_path_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
+    return get_chunk_path(
+                               get_idid_path(get_superobject_save_path(), pid, vid),
+                               chunk_pos
+                          );
+}
+
+std::string get_path_to_template(uint32_t pid, uint32_t vid) {
+    return get_metadata_path(get_idid_path(get_template_save_path(), pid, vid));
+}
+
+std::string get_path_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
+    return get_chunk_path(
+                               get_idid_path(get_template_save_path(), pid, vid),
+                               chunk_pos
+                               );
+}
+
+std::string get_path_to_player(uint32_t pid) {
+    return get_metadata_path(get_id_path(get_player_save_path(), pid));
+}
+
+std::string get_path_to_game() {
+    return get_metadata_path(get_game_save_path());
+}
+
+
+
+
+
+IODataObject::IODataObject(std::string p) {
     i = 0;
     mode = SaveMode::READ;
     succeeded = false;
     read_data = 0;
+    path = p;
 }
 
 IODataObject::~IODataObject() {
@@ -199,7 +251,7 @@ void IODataObject::close() {
     }
 }
 
-int IODataObject::save(std::string path, bool needs_validation=true) {
+int IODataObject::save(bool needs_validation) {
     if (needs_validation)
         validate_read_write_path(path);
     outfile.open(path,
@@ -213,7 +265,7 @@ int IODataObject::save(std::string path, bool needs_validation=true) {
     return 0;
 }
 
-int IODataObject::read(std::string path, bool needs_validation=true) {
+int IODataObject::read(bool needs_validation) {
     if (needs_validation)
         validate_read_write_path(path);
     
@@ -234,103 +286,5 @@ int IODataObject::read(std::string path, bool needs_validation=true) {
     
     return 0;
 }
-
-// read/write methods
-int IODataObject::save_to_world(std::string world_name) {
-    return save(get_metadata_path(get_named_object_path(get_world_save_path(), world_name)));
-}
-
-int IODataObject::read_from_world(std::string world_name) {
-    return read(get_metadata_path(get_named_object_path(get_world_save_path(), world_name)));
-}
-
-int IODataObject::save_to_world_chunk(std::string world_name, ivec3* chunk_pos) {
-    return save(
-                get_chunk_path(
-                               get_named_object_path(get_world_save_path(), world_name),
-                               chunk_pos
-                               )
-                , false);
-}
-
-int IODataObject::read_from_world_chunk(std::string world_name, ivec3* chunk_pos) {
-    return read(
-                get_chunk_path(
-                               get_named_object_path(get_world_save_path(), world_name),
-                               chunk_pos
-                               )
-                , false);
-}
-
-int IODataObject::save_to_superobj(uint32_t pid, uint32_t vid) {
-    return save(get_metadata_path(get_idid_path(get_superobject_save_path(), pid, vid)));
-}
-
-int IODataObject::read_from_superobj(uint32_t pid, uint32_t vid) {
-    return read(get_metadata_path(get_idid_path(get_superobject_save_path(), pid, vid)));
-}
-
-int IODataObject::save_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
-    return save(
-                get_chunk_path(
-                               get_idid_path(get_superobject_save_path(), pid, vid),
-                               chunk_pos
-                )
-    ,false);
-}
-
-int IODataObject::read_from_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
-    return read(
-         get_chunk_path(
-                        get_idid_path(get_superobject_save_path(), pid, vid),
-                        chunk_pos
-                        )
-    ,false);
-}
-
-int IODataObject::save_to_template(uint32_t pid, uint32_t vid) {
-    return save(get_metadata_path(get_idid_path(get_template_save_path(), pid, vid)));
-}
-
-int IODataObject::read_from_template(uint32_t pid, uint32_t vid) {
-    return read(get_metadata_path(get_idid_path(get_template_save_path(), pid, vid)));
-}
-
-int IODataObject::save_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
-    return save(
-                get_chunk_path(
-                               get_idid_path(get_template_save_path(), pid, vid),
-                               chunk_pos
-                               )
-                ,false);
-}
-
-int IODataObject::read_from_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
-    return read(
-         get_chunk_path(
-                        get_idid_path(get_template_save_path(), pid, vid),
-                        chunk_pos
-                        )
-         ,false);
-}
-
-int IODataObject::save_to_player(uint32_t pid) {
-    return save(get_metadata_path(get_id_path(get_player_save_path(), pid)));
-}
-
-int IODataObject::read_from_player(uint32_t pid) {
-    return read(get_metadata_path(get_id_path(get_player_save_path(), pid)));
-}
-
-int IODataObject::save_to_game() {
-    return save(get_metadata_path(get_game_save_path()));
-}
-
-int IODataObject::read_from_game() {
-    return read(get_metadata_path(get_game_save_path()));
-}
-
-
-//out.write((char*)&block[0][0][0], sizeof(block[0][0][0])*CX*CY*CZ);
 
 

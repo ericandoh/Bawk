@@ -38,16 +38,6 @@ void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
     cac->z = (zr - crc->z) / CZ;
 }
 
-void RenderableSuperObject::remove_self() {
-    int counter = 0;
-    for (auto kv : chunks) {
-        counter++;
-        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
-        kv.second->cleanup();
-    }
-    printf("Saved %d chunks\n", counter);
-}
-
 int RenderableSuperObject::load_chunk(int x, int y, int z) {
     if (chunks.count(ivec3(x, y, z))) {
         // chunk is already loaded
@@ -528,4 +518,41 @@ bool RenderableSuperObject::collides_with_superobject(RenderableSuperObject* oth
         }
     }
     return false;
+}
+
+
+int RenderableSuperObject::load_self(IODataObject* obj) {
+    if (Entity::load_self(obj))
+        return 1;
+    
+    // read in existing chunk bounds
+    int chunk_count = obj->read_value<int>();
+    for (int i = 0; i < chunk_count; i++) {
+        ivec3 pos = obj->read_value<ivec3>();
+        struct chunk_bounds bounds = obj->read_value<struct chunk_bounds>();
+        chunk_bounds[pos] = bounds;
+    }
+
+    return 0;
+}
+
+void RenderableSuperObject::remove_self(IODataObject* obj) {
+    Entity::remove_self(obj);
+    
+    // save chunk bounds
+    int chunk_count = (int)chunk_bounds.size();
+    obj->save_value(chunk_count);
+    for (auto &i : chunk_bounds) {
+        obj->save_value(i.first);
+        obj->save_value(i.second);
+    }
+    
+    // save chunks not in memory
+    int counter = 0;
+    for (auto kv : chunks) {
+        counter++;
+        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
+        kv.second->cleanup();
+    }
+    printf("Saved %d chunks\n", counter);
 }

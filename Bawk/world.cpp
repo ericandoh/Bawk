@@ -25,8 +25,8 @@ World::World(std::string id) {
 }
 
 int World::load_self() {
-    IODataObject reader;
-    if (reader.read_from_world(name)) {
+    IODataObject reader(get_path_to_world(name));
+    if (reader.read()) {
         return 1;
     }
     age = reader.read_value<unsigned long>();
@@ -35,8 +35,8 @@ int World::load_self() {
 }
 
 void World::remove_self() {
-    IODataObject writer;
-    if (writer.save_to_world(name)) {
+    IODataObject writer(get_path_to_world(name));
+    if (writer.save()) {
         return;
     }
     writer.save_value(age);

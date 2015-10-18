@@ -135,11 +135,6 @@ int CursorSuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y,
     return 0;
 }
 
-void CursorSuperObject::remove_self() {
-    // do nothing - when removing self, no chunks should be saved to disk
-    // maybe save the template or something but thats about it
-}
-
 bool CursorSuperObject::within_dimensions_chunk(int x, int y, int z) {
     if (chunks.count(ivec3(x, y, z))) {
         return true;
@@ -188,7 +183,7 @@ CursorSuperObject* create_from_template(Player* player, World* world, TemporaryT
 }
 
 void CursorSuperObject::cleanup_all() {
-    remove_self();
+    printf("frog\n");
 }
 
 

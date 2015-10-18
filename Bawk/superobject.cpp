@@ -30,45 +30,18 @@ SuperObject::SuperObject(std::string wid, uint32_t p, uint32_t v, int* err) {
     vid = v;
     pid = p;
     world_name = wid;
-    *err = load_self();
+    // call load_self() externally
+    printf("frog\n");
 }
 
-int SuperObject::load_self() {
-    IODataObject reader;
-    if (reader.read_from_superobj(pid, vid))
-        return 1;
-    // save chunk_bounds
-    int chunk_count = reader.read_value<int>();
-    for (int i = 0; i < chunk_count; i++) {
-        ivec3 pos = reader.read_value<ivec3>();
-        struct chunk_bounds bounds = reader.read_value<struct chunk_bounds>();
-        chunk_bounds[pos] = bounds;
-    }
-    reader.close();
-    return 0;
-}
-
-void SuperObject::remove_self() {
-    RenderableSuperObject::remove_self();
-    
-    IODataObject writer;
-    if (writer.save_to_superobj(pid, vid)) {
-        printf("Failed to save superobject %d,%d\n", pid, vid);
-        return;
-    }
-    int chunk_count = (int)chunk_bounds.size();
-    writer.save_value(chunk_count);
-    for (auto &i : chunk_bounds) {
-        writer.save_value(i.first);
-        writer.save_value(i.second);
-    }
-    writer.close();
+std::string SuperObject::get_save_path() {
+    return get_path_to_superobj(pid, vid);
 }
 
 int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
-    IODataObject reader;
-    if (reader.read_from_superobj_chunk(pid, vid, &pos))
+    IODataObject reader(get_path_to_superobj_chunk(pid, vid, &pos));
+    if (reader.read(false))
         return 1;
     reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
     reader.close();
@@ -77,8 +50,8 @@ int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
 
 int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
-    IODataObject writer;
-    if (writer.save_to_superobj_chunk(pid, vid, &pos))
+    IODataObject writer(get_path_to_superobj_chunk(pid, vid, &pos));
+    if (writer.save(false))
         return 1;
     writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
     writer.close();

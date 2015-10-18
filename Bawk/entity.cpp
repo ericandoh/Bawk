@@ -163,6 +163,53 @@ bool Entity::collides_with_entity(Entity* other) {
     return true;
 }
 
-void Entity::remove_self() {
-    
+std::string Entity::get_save_path() {
+    return "";
+}
+
+int Entity::load_selfs() {
+    std::string path = this->get_save_path();
+    if (path.compare("") == 0)
+        return 1;
+    IODataObject read(path);
+    if (read.read())
+        return 1;
+    if (load_self(&read)) {
+        read.close();
+        return 1;
+    }
+    read.close();
+    return 0;
+}
+
+int Entity::load_self(IODataObject* obj) {
+    velocity = obj->read_value<fvec3>();
+    speed = obj->read_value<float>();
+    pos = obj->read_value<fvec3>();
+    up = obj->read_value<fvec3>();
+    dir = obj->read_value<fvec3>();
+    lower_bound = obj->read_value<fvec3>();
+    upper_bound = obj->read_value<fvec3>();
+    return 0;
+}
+
+void Entity::remove_selfs() {
+    std::string path = this->get_save_path();
+    if (path.compare("") == 0)
+        return;
+    IODataObject write(path);
+    if (write.save())
+        return;
+    remove_self(&write);
+    write.close();
+}
+
+void Entity::remove_self(IODataObject* obj) {
+    obj->save_value(velocity);
+    obj->save_value(speed);
+    obj->save_value(pos);
+    obj->save_value(up);
+    obj->save_value(dir);
+    obj->save_value(lower_bound);
+    obj->save_value(upper_bound);
 }

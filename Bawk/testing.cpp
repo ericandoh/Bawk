@@ -29,8 +29,8 @@ void do_shit() {
 // COPY FUNCTION DOWN VVV
 
 void do_shit() {
-    IODataObject* make = new IODataObject();
-    make->save_to_game();
+    IODataObject* make = new IODataObject(get_path_to_game());
+    make->save();
     int x = 78;
     make->save_value(x);
     char c = 'u';
@@ -43,9 +43,8 @@ void do_shit() {
     
     delete make;
     
-    IODataObject* make2 = new IODataObject();
-    make2->read_from_game();
-    
+    IODataObject* make2 = new IODataObject(get_path_to_game());
+    make->read();
     int xr = make2->read_value<int>();
     char cr = make2->read_value<char>();
     int arr_size = make2->read_value<int>();

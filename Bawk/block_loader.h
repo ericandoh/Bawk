@@ -30,6 +30,15 @@
 #include <fstream>
 #include "basic_types.h"
 
+std::string get_path_to_world(std::string world_name);
+std::string get_path_to_world_chunk(std::string world_name, ivec3* chunk_pos);
+std::string get_path_to_superobj(uint32_t pid, uint32_t vid);
+std::string get_path_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
+std::string get_path_to_template(uint32_t pid, uint32_t vid);
+std::string get_path_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
+std::string get_path_to_player(uint32_t pid);
+std::string get_path_to_game();
+
 enum SaveMode {
     READ, WRITE,
 };
@@ -37,13 +46,14 @@ enum SaveMode {
 class IODataObject {
     std::ifstream infile;
     std::ofstream outfile;
+    std::string path;
     SaveMode mode;
     unsigned long i;
     bool succeeded;
     char* read_data;
     long size;
 public:
-    IODataObject();
+    IODataObject(std::string p);
     ~IODataObject();
     
     void close();
@@ -78,32 +88,8 @@ public:
     }
     
     // read/write methods
-    int save(std::string path, bool needs_validation);
-    int read(std::string path, bool needs_validation);
-    
-    int save_to_world(std::string world_name);
-    int read_from_world(std::string world_name);
-    
-    int save_to_world_chunk(std::string world_name, ivec3* chunk_pos);
-    int read_from_world_chunk(std::string world_name, ivec3* chunk_pos);
-    
-    int save_to_superobj(uint32_t pid, uint32_t vid);
-    int read_from_superobj(uint32_t pid, uint32_t vid);
-    
-    int save_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
-    int read_from_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
-    
-    int save_to_template(uint32_t pid, uint32_t vid);
-    int read_from_template(uint32_t pid, uint32_t vid);
-    
-    int save_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
-    int read_from_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
-    
-    int save_to_player(uint32_t pid);
-    int read_from_player(uint32_t pid);
-    
-    int save_to_game();
-    int read_from_game();
+    int save(bool needs_validation=true);
+    int read(bool needs_validation=true);
 };
 
 #endif /* defined(__Bawk__block_loader__) */

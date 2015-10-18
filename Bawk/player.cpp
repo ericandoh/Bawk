@@ -6,15 +6,16 @@
 //
 
 #include "player.h"
+#include "block_loader.h"
 
 #define PI 3.14159265358979323846
 
-Player::Player() {
+Player::Player(uint32_t p) {
     // replace these with vectors later on
     angle = fvec2(0.0f, 0.0f);
     update_direction(0.0, 0.0);
     // TODO randomly generate pid from name of player
-    pid = 0;
+    pid = p;
     id_assign = 0;
 }
 
@@ -79,6 +80,24 @@ ivec3 Player::get_rounded_forward() {
         }
         return ivec3(0, 0, 1);
     }
+}
+
+std::string Player::get_save_path() {
+    return get_path_to_player(pid);
+}
+
+int Player::load_self(IODataObject* obj) {
+    if (RenderablePlayer::load_self(obj))
+        return 1;
+    angle = obj->read_value<fvec2>();
+    // load player stuff here
+    return 0;
+}
+
+void Player::remove_self(IODataObject* obj) {
+    RenderablePlayer::remove_self(obj);
+    // save player stuff here
+    obj->save_value(angle);
 }
 
 void Player::debug() {

@@ -24,7 +24,9 @@
 #define __Bawk__entity__
 
 #include <stdio.h>
+#include <string>
 #include "basic_types.h"
+#include "block_loader.h"
 
 class Entity {
     fvec3 velocity;
@@ -60,7 +62,11 @@ public:
     virtual void render(fmat4* transform);
     virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);
     
-    virtual void remove_self();
+    int load_selfs();
+    void remove_selfs();
+    virtual std::string get_save_path();
+    virtual int load_self(IODataObject* obj);
+    virtual void remove_self(IODataObject* obj);
 
     bool collides_with(Entity* other);
     // override this with your own int for up to what class of Entities you can handle collision

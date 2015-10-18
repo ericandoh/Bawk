@@ -64,9 +64,6 @@ public:
     // make a renderable super object with some specified bounds (OAC) and position (RWC)
     // TODO call this at initialization of the game, for when loading in existing objects
     RenderableSuperObject(fvec3 p);
-    // cleans up the chunk data held by this object.
-    // TODO investigate if this needs overriding
-    void remove_self() override;
     // gets the block at (RWC) xyz
     block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz
@@ -96,7 +93,8 @@ public:
     bool collides_with_entity(Entity* other);
     bool collides_with_superobject(RenderableSuperObject* other);
     
-   
+    int load_self(IODataObject* obj) override;
+    void remove_self(IODataObject* obj) override;
 };
 
 #endif /* defined(__Bawk__superobjectrender__) */

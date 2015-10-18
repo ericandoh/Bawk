@@ -23,15 +23,16 @@ BaseWorld::BaseWorld(std::string wid): SuperObject(wid) {
     }
 }
 
-void BaseWorld::remove_self() {
-    RenderableSuperObject::remove_self();
+std::string BaseWorld::get_save_path() {
+    // don't save this world
+    return "";
 }
 
 int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     // try getting the chunk first, to see if it already exists in disk
     ivec3 pos = ivec3(x, y, z);
-    IODataObject reader;
-    if (!reader.read_from_world_chunk(world_name, &pos)) {
+    IODataObject reader(get_path_to_world_chunk(world_name, &pos));
+    if (!reader.read(false)) {
         // reading was successful
         reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
         reader.close();
@@ -64,8 +65,8 @@ int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
 
 int BaseWorld::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
-    IODataObject writer;
-    if (writer.save_to_world_chunk(world_name, &pos))
+    IODataObject writer(get_path_to_world_chunk(world_name, &pos));
+    if (writer.save(false))
         return 1;
     writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
     writer.close();

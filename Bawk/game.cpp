@@ -51,9 +51,10 @@ int Game::init() {
     if (load_game_data())
         return 1;
     
-    world = new World("testworld");
+    world = new World(world_name);
     // later separate loading the player and the world - this might get complicated!
-    player = new Player();
+    player = new Player(pid);
+    player->load_selfs();
     fvec3* player_pos = player->get_pos();
     last_player_pos = fvec3(player_pos->x, player_pos->y, player_pos->z);
     
@@ -368,8 +369,8 @@ void Game::scroll_callback(double xoffset, double yoffset) {
 }
 
 int Game::load_game_data() {
-    IODataObject read;
-    if (read.read_from_game()) {
+    IODataObject read(get_path_to_game());
+    if (read.read()) {
         printf("Game data missing\n");
         return 0;
     }
@@ -382,8 +383,8 @@ int Game::load_game_data() {
 }
 
 int Game::save_game_data() {
-    IODataObject write;
-    if (write.save_to_game())
+    IODataObject write(get_path_to_game());
+    if (write.save())
         return 1;
     
     write.save_value(VERSION);
@@ -394,6 +395,8 @@ int Game::save_game_data() {
 Game::~Game() {
     printf("Cleaning up game\n");
     save_game_data();
+    world->remove_self();
+    player->remove_selfs();
     delete place_into;
     // player deleted as part of world...?
     delete world;

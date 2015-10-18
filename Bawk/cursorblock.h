@@ -34,7 +34,6 @@ class CursorBlock: public CursorItem {
     void render_block(fmat4* transform, float bx, float by, float bz);
 public:
     CursorBlock(block_type type);
-    ~CursorBlock();
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
     bool set_blocks(Player* player, World* world, TemporaryTemplate* temp) override;

@@ -34,12 +34,17 @@ class Player : public RenderablePlayer {
     fvec2 angle;
     uint32_t id_assign;
 public:
-    Player();
+    Player(uint32_t p);
     uint32_t getID();
     uint32_t assignID();
     void update_direction(double xdiff, double ydiff);
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();
+    
+    std::string get_save_path() override;
+    int load_self(IODataObject* obj) override;
+    void remove_self(IODataObject* obj) override;
+    
     void debug();
 };
 

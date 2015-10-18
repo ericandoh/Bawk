@@ -10,7 +10,7 @@
 
 EntityHolder::~EntityHolder() {
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->remove_self();
+        entities[i]->remove_selfs();
         delete entities[i];
     }
 }
