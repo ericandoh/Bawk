@@ -46,7 +46,7 @@ bool CursorSuperObject::set_blocks(Player* player, World* world, TemporaryTempla
                         ivec3 block_pos = ivec3(int(world_coord.x),
                                                 int(world_coord.y),
                                                 int(world_coord.z));
-                        block.owner = player;
+                        block.owner = player->getID();
                         world->place_block(block_pos, block);
                         //printf("Placing to (%d, %d, %d)\n", block_pos.x, block_pos.y, block_pos.z);
                         if (temp)

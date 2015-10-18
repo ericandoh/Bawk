@@ -33,7 +33,7 @@ bool CursorBlock::set_blocks(Player* player, World* world, TemporaryTemplate* te
     }
     ivec3 block_pos = ivec3(mx, my, mz);
     block.orientation = orient;
-    block.owner = player;
+    block.owner = player->getID();
     world->place_block(block_pos, block);
     if (temp)
         temp->add_block(block_pos, block);

@@ -30,9 +30,11 @@
 #include "basic_types.h"
 
 class Player : public RenderablePlayer {
+    uint32_t pid;
     fvec2 angle;
 public:
     Player();
+    uint32_t getID();
     void update_direction(double xdiff, double ydiff);
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();

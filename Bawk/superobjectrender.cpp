@@ -152,7 +152,54 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         // update the dimension vectors
         update_dimensions_from_chunk(cac);
     }
-    // loading the chunk failed, probably because this is out of bounds
+    else {
+        // loading the chunk failed, probably because this is out of bounds
+        // make a new chunk here
+        // this should only be called while creating vehicles from blocks while
+        // finishing up a template
+        
+        block_type raw_chunk[CX][CY][CZ];
+        get_empty_chunk(raw_chunk);
+        RenderableChunk* chunk = new RenderableChunk(raw_chunk);
+        chunks[cac] = chunk;
+        chunks[cac]->set(crc.x, crc.y, crc.z, type);
+        // we load data from disk so this should be consistent, but just to be safe do a check
+        update_dimensions_from_chunk(ivec3(x, y, z));
+        
+        ivec3 left(cac.x - 1, cac.y, cac.z);
+        ivec3 right(cac.x + 1, cac.y, cac.z);
+        ivec3 below(cac.x, cac.y - 1, cac.z);
+        ivec3 above(cac.x, cac.y + 1, cac.z);
+        ivec3 front(cac.x, cac.y, cac.z - 1);
+        ivec3 back(cac.x, cac.y, cac.z + 1);
+        
+        if (chunks.count(left)) {
+            chunk->left = chunks[left];
+            chunk->left->changed = true;
+        }
+        if (chunks.count(right)) {
+            chunk->right = chunks[right];
+            chunk->right->changed = true;
+        }
+        if (chunks.count(below)) {
+            chunk->below = chunks[below];
+            chunk->below->changed = true;
+        }
+        if (chunks.count(above)) {
+            chunk->above = chunks[above];
+            chunk->above->changed = true;
+        }
+        if (chunks.count(front)) {
+            chunk->front = chunks[front];
+            chunk->front->changed = true;
+        }
+        if (chunks.count(back)) {
+            chunk->back = chunks[back];
+            chunk->back->changed = true;
+        }
+        
+    }
+    
 }
 
 void RenderableSuperObject::render(fmat4* transform) {

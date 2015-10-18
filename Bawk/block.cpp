@@ -24,20 +24,20 @@ block_type::block_type(uint16_t t) {
     owner = 0;
 }
 
-block_type::block_type(uint16_t t, BlockOrientation orient, Player* me) {
+block_type::block_type(uint16_t t, BlockOrientation orient, uint32_t pid) {
     type = t;
     orientation = orient;
     life = 0;
     block_id = 0;
-    owner = me;
+    owner = pid;
 }
 
-block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t bid, Player* me) {
+block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t bid, uint32_t pid) {
     type = t;
     orientation = orient;
     life = h;
     block_id = bid;
-    owner = me;
+    owner = pid;
 }
 
 bool block_type::equals(block_type other) {

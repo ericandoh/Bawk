@@ -48,14 +48,15 @@ struct block_type {
     // (its kind of like aging okay?)
     uint16_t life;
     uint64_t block_id;
-    Player* owner;
+    // id for owner. 0 indicates the WORLD
+    uint32_t owner;
     block_type();
     // used by world to make generic blocks
     block_type(uint16_t t);
     // used by player when placing a block
-    block_type(uint16_t t, BlockOrientation orient, Player* me);
+    block_type(uint16_t t, BlockOrientation orient, uint32_t pid);
     // used by world loader when loading a pre-existing memory
-    block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t bid, Player* me);
+    block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t bid, uint32_t pid);
     // two blocks are equal if they have the same type, orientation, and life
     // (those are the factors that will affect rendering)
     bool equals(block_type other);

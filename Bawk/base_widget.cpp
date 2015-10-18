@@ -30,6 +30,13 @@ void clean_vbo_for_widgets() {
     glDeleteBuffers(1, &widget_texture_vbo);
 }
 
+BaseWidget::BaseWidget() {
+    x = 0;
+    y = 0;
+    width = 1;
+    height = 1;
+}
+
 BaseWidget::BaseWidget(int x, int y, int width, int height) {
     this->x = x;
     this->y = y;
@@ -50,7 +57,26 @@ BaseWidget::BaseWidget(int width, int height) {
     this->height = height;
 }
 
+void BaseWidget::set_dimensions(int x, int y, int width, int height) {
+    this->x = x;
+    this->y = y;
+    this->width = width;
+    this->height = height;
+}
+
 void BaseWidget::render() {
     glViewport(x, y, width, height);
     render_elements();
+}
+
+bool BaseWidget::is_clicked(int mx, int my) {
+    if (mx >= x && my >= y && x <= (x + width) && y <= (y + height)) {
+        onclick();
+        return true;
+    }
+    return false;
+}
+
+void BaseWidget::onclick() {
+    // do nothing
 }

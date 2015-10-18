@@ -36,17 +36,22 @@ GLuint get_widget_texture_attribute_vbo();
 void clean_vbo_for_widgets();
 
 class BaseWidget {
-protected:
-    int x, y, width, height;
 public:
+    int x, y, width, height;
+    BaseWidget();
     // makes a widget of the following size
     BaseWidget(int x, int y, int width, int height);
     // makes the widget below, but keeps it centered
     BaseWidget(int width, int height);
+    void set_dimensions(int x, int y, int width, int height);
     // renders the widget, making sure to set the viewport
     void render();
+    // sees if a press at mx, my clicked this widget
+    bool is_clicked(int mx, int my);
     // this should be overriden
     virtual void render_elements() = 0;
+    // action to do when clicked
+    virtual void onclick();
 };
 
 #endif /* defined(__Bawk__base_widget__) */

@@ -42,6 +42,9 @@
 		076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFD91BD184DF00D68C8F /* blockrender.cpp */; };
 		076BEFE21BD19E9F00D68C8F /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE01BD19E9F00D68C8F /* entity.cpp */; };
 		076BEFE51BD1A09A00D68C8F /* entityholder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE31BD1A09A00D68C8F /* entityholder.cpp */; };
+		076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE61BD1FE0E00D68C8F /* inventory.cpp */; };
+		076BEFEE1BD204D200D68C8F /* inventory_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFEC1BD204D200D68C8F /* inventory_widget.cpp */; };
+		076BEFF41BD213B900D68C8F /* scrolling_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFF21BD213B900D68C8F /* scrolling_widget.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -134,6 +137,12 @@
 		076BEFE11BD19E9F00D68C8F /* entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity.h; sourceTree = "<group>"; };
 		076BEFE31BD1A09A00D68C8F /* entityholder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entityholder.cpp; sourceTree = "<group>"; };
 		076BEFE41BD1A09A00D68C8F /* entityholder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entityholder.h; sourceTree = "<group>"; };
+		076BEFE61BD1FE0E00D68C8F /* inventory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inventory.cpp; sourceTree = "<group>"; };
+		076BEFE71BD1FE0E00D68C8F /* inventory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inventory.h; sourceTree = "<group>"; };
+		076BEFEC1BD204D200D68C8F /* inventory_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inventory_widget.cpp; sourceTree = "<group>"; };
+		076BEFED1BD204D200D68C8F /* inventory_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inventory_widget.h; sourceTree = "<group>"; };
+		076BEFF21BD213B900D68C8F /* scrolling_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scrolling_widget.cpp; sourceTree = "<group>"; };
+		076BEFF31BD213B900D68C8F /* scrolling_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = scrolling_widget.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -168,6 +177,10 @@
 				0704CF731BC997550050EE52 /* item_bar.h */,
 				0704CF751BC997DE0050EE52 /* item_barlet.cpp */,
 				0704CF761BC997DE0050EE52 /* item_barlet.h */,
+				076BEFEC1BD204D200D68C8F /* inventory_widget.cpp */,
+				076BEFED1BD204D200D68C8F /* inventory_widget.h */,
+				076BEFF21BD213B900D68C8F /* scrolling_widget.cpp */,
+				076BEFF31BD213B900D68C8F /* scrolling_widget.h */,
 			);
 			name = ui;
 			sourceTree = "<group>";
@@ -260,6 +273,8 @@
 				076410761BC48F8B00135EDC /* cursoritem.h */,
 				076410781BC48F9B00135EDC /* cursorsuperobject.cpp */,
 				076410791BC48F9B00135EDC /* cursorsuperobject.h */,
+				076BEFE61BD1FE0E00D68C8F /* inventory.cpp */,
+				076BEFE71BD1FE0E00D68C8F /* inventory.h */,
 			);
 			name = entities;
 			sourceTree = "<group>";
@@ -375,6 +390,7 @@
 				0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */,
 				0704CF741BC997550050EE52 /* item_bar.cpp in Sources */,
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
+				076BEFF41BD213B900D68C8F /* scrolling_widget.cpp in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,
 				076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
@@ -382,6 +398,7 @@
 				0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */,
 				076BEFE21BD19E9F00D68C8F /* entity.cpp in Sources */,
 				0766EB091BBF9CC900477144 /* base_world.cpp in Sources */,
+				076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */,
 				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
@@ -396,6 +413,7 @@
 				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
 				0766EAF81BBF7D1300477144 /* texture_loader.cpp in Sources */,
 				076410711BC45EA300135EDC /* temporarytemplate.cpp in Sources */,
+				076BEFEE1BD204D200D68C8F /* inventory_widget.cpp in Sources */,
 				075C67401BBA3EE800CB87DE /* world.cpp in Sources */,
 				076410771BC48F8B00135EDC /* cursoritem.cpp in Sources */,
 				075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */,
