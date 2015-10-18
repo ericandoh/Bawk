@@ -32,9 +32,11 @@
 class Player : public RenderablePlayer {
     uint32_t pid;
     fvec2 angle;
+    uint32_t id_assign;
 public:
     Player();
     uint32_t getID();
+    uint32_t assignID();
     void update_direction(double xdiff, double ydiff);
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();

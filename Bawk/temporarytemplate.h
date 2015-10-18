@@ -46,7 +46,7 @@ public:
     TemporaryTemplate();
     void add_block(ivec3 position, block_type block);
     void remove_block(ivec3 position);
-    std::vector<block_data> publish(World* world);
+    std::vector<block_data> publish(Player* player, World* world);
     void unpublish(World* world);
 };
 

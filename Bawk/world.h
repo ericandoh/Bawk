@@ -33,13 +33,13 @@ class World {
     // how many cycles the world has lived through
     unsigned long age;
     
-    std::string name;
-    
     SuperObject* base_world;
     EntityHolder holder;
-    
 public:
+    std::string name;
     World(std::string id);
+    int load_self();
+    void remove_self();
     void render(fmat4* transform);
     void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // called by cursor item, places block into baseworld
@@ -49,8 +49,8 @@ public:
     bool kill_block(ivec3* src);
     void add_player(Player* player);
     void step();
-    SuperObject* make_bounded_super_object();
     bool will_collide_with_anything(RenderableSuperObject* superobject);
+    SuperObject* create_superobject(Player* player);
 };
 
 #endif /* defined(__Bawk__world__) */

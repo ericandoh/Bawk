@@ -32,7 +32,9 @@ class BaseWorld: public SuperObject {
     block_type ground[CX][CY][CZ];
 public:
     BaseWorld(std::string wid);
+    void remove_self() override;
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
+    int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;
     void update_dimensions_from_chunk(ivec3 chunk_pos) override;
     bool intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner) override;

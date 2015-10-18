@@ -62,7 +62,7 @@ public:
     
     template <typename T> T read_value() {
         if (i + sizeof(T) > size)
-            return 0;
+            return T();
         T v;
         memcpy(&v, &(read_data[i]), sizeof(T));
         i += sizeof(T);
@@ -78,8 +78,8 @@ public:
     }
     
     // read/write methods
-    int save(std::string path);
-    int read(std::string path);
+    int save(std::string path, bool needs_validation);
+    int read(std::string path, bool needs_validation);
     
     int save_to_world(std::string world_name);
     int read_from_world(std::string world_name);

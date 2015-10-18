@@ -199,8 +199,9 @@ void IODataObject::close() {
     }
 }
 
-int IODataObject::save(std::string path) {
-    validate_read_write_path(path);
+int IODataObject::save(std::string path, bool needs_validation=true) {
+    if (needs_validation)
+        validate_read_write_path(path);
     outfile.open(path,
                  std::ios::out | std::ios::trunc | std::ios::binary);
     
@@ -212,8 +213,9 @@ int IODataObject::save(std::string path) {
     return 0;
 }
 
-int IODataObject::read(std::string path) {
-    validate_read_write_path(path);
+int IODataObject::read(std::string path, bool needs_validation=true) {
+    if (needs_validation)
+        validate_read_write_path(path);
     
     size = get_file_length_c(path);
     if (size <= 0)
@@ -242,6 +244,24 @@ int IODataObject::read_from_world(std::string world_name) {
     return read(get_metadata_path(get_named_object_path(get_world_save_path(), world_name)));
 }
 
+int IODataObject::save_to_world_chunk(std::string world_name, ivec3* chunk_pos) {
+    return save(
+                get_chunk_path(
+                               get_named_object_path(get_world_save_path(), world_name),
+                               chunk_pos
+                               )
+                , false);
+}
+
+int IODataObject::read_from_world_chunk(std::string world_name, ivec3* chunk_pos) {
+    return read(
+                get_chunk_path(
+                               get_named_object_path(get_world_save_path(), world_name),
+                               chunk_pos
+                               )
+                , false);
+}
+
 int IODataObject::save_to_superobj(uint32_t pid, uint32_t vid) {
     return save(get_metadata_path(get_idid_path(get_superobject_save_path(), pid, vid)));
 }
@@ -256,7 +276,7 @@ int IODataObject::save_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chun
                                get_idid_path(get_superobject_save_path(), pid, vid),
                                chunk_pos
                 )
-    );
+    ,false);
 }
 
 int IODataObject::read_from_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
@@ -265,7 +285,7 @@ int IODataObject::read_from_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* ch
                         get_idid_path(get_superobject_save_path(), pid, vid),
                         chunk_pos
                         )
-    );
+    ,false);
 }
 
 int IODataObject::save_to_template(uint32_t pid, uint32_t vid) {
@@ -282,7 +302,7 @@ int IODataObject::save_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chun
                                get_idid_path(get_template_save_path(), pid, vid),
                                chunk_pos
                                )
-                );
+                ,false);
 }
 
 int IODataObject::read_from_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
@@ -291,7 +311,7 @@ int IODataObject::read_from_template_chunk(uint32_t pid, uint32_t vid, ivec3* ch
                         get_idid_path(get_template_save_path(), pid, vid),
                         chunk_pos
                         )
-         );
+         ,false);
 }
 
 int IODataObject::save_to_player(uint32_t pid) {

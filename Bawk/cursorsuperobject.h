@@ -62,6 +62,6 @@ public:
     void cleanup_all() override;
 };
 
-CursorSuperObject* create_from_template(World* world, TemporaryTemplate* temp);
+CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp);
 
 #endif /* defined(__Bawk__cursorsuperobject__) */

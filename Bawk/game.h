@@ -36,7 +36,7 @@
 #include "cursoritem.h"
 #include "item_bar.h"
 
-const int VERSION = 3.0;
+const int VERSION = 4;
 
 class Game : public Displayable {
     // game data objects

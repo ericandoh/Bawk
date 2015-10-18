@@ -155,12 +155,12 @@ void CursorSuperObject::unlock() {
     locked = false;
 }
 
-CursorSuperObject* create_from_template(World* world, TemporaryTemplate* temp) {
+CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp) {
     printf("Publishing template!\n");
     // package our blocks into a cursorsuperobject
     CursorSuperObject* object = new CursorSuperObject();
     
-    std::vector<block_data> blocks = temp->publish(world);
+    std::vector<block_data> blocks = temp->publish(player, world);
     
     if (!blocks.size()) {
         // we published an empty template...brah wtf you doing

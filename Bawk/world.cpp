@@ -15,12 +15,32 @@
 World::World(std::string id) {
     printf("Adding World\n");
     age = 0;
-    
     name = id;
+    // try loading itself
+    load_self();
     
     base_world = new BaseWorld(name);
     
     holder.set_global_entity(base_world);
+}
+
+int World::load_self() {
+    IODataObject reader;
+    if (reader.read_from_world(name)) {
+        return 1;
+    }
+    age = reader.read_value<unsigned long>();
+    reader.close();
+    return 0;
+}
+
+void World::remove_self() {
+    IODataObject writer;
+    if (writer.save_to_world(name)) {
+        return;
+    }
+    writer.save_value(age);
+    writer.close();
 }
 
 // renders the world
@@ -70,10 +90,10 @@ void World::step() {
     age++;
 }
 
-SuperObject* World::make_bounded_super_object() {
-    return new SuperObject("item", name);
-}
-
 bool World::will_collide_with_anything(RenderableSuperObject* other) {
     return holder.collides_with(other);
+}
+
+SuperObject* World::create_superobject(Player* player) {
+    return new SuperObject(name, player->getID(), player->assignID());
 }

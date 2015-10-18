@@ -7,6 +7,7 @@
 //
 
 #include "base_world.h"
+#include "block_loader.h"
 
 #define GROUND_DEPTH 4
 
@@ -22,11 +23,18 @@ BaseWorld::BaseWorld(std::string wid): SuperObject(wid) {
     }
 }
 
+void BaseWorld::remove_self() {
+    RenderableSuperObject::remove_self();
+}
+
 int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     // try getting the chunk first, to see if it already exists in disk
-    int result = SuperObject::get_chunk(to_arr, x, y, z);
-    if (!result) {
-        // we got the chunk successfully from disk
+    ivec3 pos = ivec3(x, y, z);
+    IODataObject reader;
+    if (!reader.read_from_world_chunk(world_name, &pos)) {
+        // reading was successful
+        reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
+        reader.close();
         return 0;
     }
     // chunk doesn't exist in disk, so it must not exist at all
@@ -51,6 +59,16 @@ int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
             }
         }
     }
+    return 0;
+}
+
+int BaseWorld::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
+    ivec3 pos = ivec3(x, y, z);
+    IODataObject writer;
+    if (writer.save_to_world_chunk(world_name, &pos))
+        return 1;
+    writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
+    writer.close();
     return 0;
 }
 

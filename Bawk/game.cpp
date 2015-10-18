@@ -237,7 +237,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 if (bar->get_current()) {
                     bar->get_current()->cleanup_all();
                 }
-                bar->set_current(create_from_template(world, place_into));
+                bar->set_current(create_from_template(player, world, place_into));
                 delete place_into;
                 place_into = 0;
             }
@@ -368,28 +368,26 @@ void Game::scroll_callback(double xoffset, double yoffset) {
 }
 
 int Game::load_game_data() {
-    IODataObject* read = new IODataObject();
-    if (read->read_from_game()) {
+    IODataObject read;
+    if (read.read_from_game()) {
         printf("Game data missing\n");
         return 0;
     }
     
-    int version = read->read_value<int>();
+    int version = read.read_value<int>();
     printf("Loading game from version %d\n", version);
     printf("Current game version %d\n", VERSION);
-    read->close();
-    delete read;
+    read.close();
     return 0;
 }
 
 int Game::save_game_data() {
-    IODataObject* write = new IODataObject();
-    if (write->save_to_game())
+    IODataObject write;
+    if (write.save_to_game())
         return 1;
     
-    write->save_value(VERSION);
-    write->close();
-    delete write;
+    write.save_value(VERSION);
+    write.close();
     return 0;
 }
 

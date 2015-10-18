@@ -14,11 +14,16 @@ Player::Player() {
     angle = fvec2(0.0f, 0.0f);
     update_direction(0.0, 0.0);
     // TODO randomly generate pid from name of player
-    pid = 7;
+    pid = 0;
+    id_assign = 0;
 }
 
 uint32_t Player::getID() {
     return pid;
+}
+
+uint32_t Player::assignID() {
+    return (id_assign++);
 }
 
 void Player::update_direction(double xdiff, double ydiff) {

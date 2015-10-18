@@ -32,7 +32,7 @@ void TemporaryTemplate::remove_block(ivec3 position) {
     }
 }
 
-std::vector<block_data> TemporaryTemplate::publish(World* world) {
+std::vector<block_data> TemporaryTemplate::publish(Player* player, World* world) {
     if (will_be_independent) {
         // first, remove all blocks from the baseworld
         unpublish(world);
@@ -40,7 +40,7 @@ std::vector<block_data> TemporaryTemplate::publish(World* world) {
         // then use that to find the translation/other properties of this object
         
         // now package it into a superobject
-        SuperObject* superobject = world->make_bounded_super_object();
+        SuperObject* superobject = world->create_superobject(player);
         // and add the blocks in this template to the superobject. There should be no conflicts here
         
         for (auto &i : blocks) {
