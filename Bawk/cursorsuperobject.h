@@ -64,6 +64,8 @@ public:
     void read_in_all() override;
     void add_to(bool is_bar) override;
     void cleanup_all(bool removing_from_bar, bool removing_from_inv) override;
+    
+    cursor_item_distinguisher get_distinguisher() override;
 };
 
 CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp);

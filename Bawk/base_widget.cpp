@@ -71,12 +71,17 @@ void BaseWidget::render() {
 
 bool BaseWidget::is_clicked(int mx, int my) {
     if (mx >= x && my >= y && x <= (x + width) && y <= (y + height)) {
-        onclick();
         return true;
     }
     return false;
 }
 
-void BaseWidget::onclick() {
+bool BaseWidget::scrolled(int mx, int my, int px) {
     // do nothing
+    return false;
+}
+
+bool BaseWidget::onclick(int mx, int my, int button) {
+    // do nothing
+    return false;
 }

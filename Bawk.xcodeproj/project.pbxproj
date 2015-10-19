@@ -10,6 +10,7 @@
 		0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF6F1BC98D300050EE52 /* base_widget.cpp */; };
 		0704CF741BC997550050EE52 /* item_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF721BC997550050EE52 /* item_bar.cpp */; };
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
+		073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 073A507C1BD4893F002AA73F /* parent_widget.cpp */; };
 		074B6C9C1BB9D2380065192B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074B6C9B1BB9D2380065192B /* main.cpp */; };
 		074B6CA31BB9D2780065192B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA21BB9D2780065192B /* Cocoa.framework */; };
 		074B6CA51BB9D27D0065192B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA41BB9D27D0065192B /* OpenGL.framework */; };
@@ -74,6 +75,8 @@
 		0704CF731BC997550050EE52 /* item_bar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_bar.h; sourceTree = "<group>"; };
 		0704CF751BC997DE0050EE52 /* item_barlet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = item_barlet.cpp; sourceTree = "<group>"; };
 		0704CF761BC997DE0050EE52 /* item_barlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_barlet.h; sourceTree = "<group>"; };
+		073A507C1BD4893F002AA73F /* parent_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parent_widget.cpp; sourceTree = "<group>"; };
+		073A507D1BD4893F002AA73F /* parent_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parent_widget.h; sourceTree = "<group>"; };
 		074B6C981BB9D2380065192B /* Bawk */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bawk; sourceTree = BUILT_PRODUCTS_DIR; };
 		074B6C9B1BB9D2380065192B /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		074B6CA21BB9D2780065192B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -184,6 +187,8 @@
 				076BEFED1BD204D200D68C8F /* inventory_widget.h */,
 				076BEFF21BD213B900D68C8F /* scrolling_widget.cpp */,
 				076BEFF31BD213B900D68C8F /* scrolling_widget.h */,
+				073A507C1BD4893F002AA73F /* parent_widget.cpp */,
+				073A507D1BD4893F002AA73F /* parent_widget.h */,
 			);
 			name = ui;
 			sourceTree = "<group>";
@@ -423,6 +428,7 @@
 				075C67401BBA3EE800CB87DE /* world.cpp in Sources */,
 				076410771BC48F8B00135EDC /* cursoritem.cpp in Sources */,
 				075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */,
+				073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */,
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
 				07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */,
 			);

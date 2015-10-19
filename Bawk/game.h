@@ -35,6 +35,7 @@
 #include "temporarytemplate.h"
 #include "cursoritem.h"
 #include "item_bar.h"
+#include "parent_widget.h"
 
 const int VERSION = 4;
 
@@ -55,6 +56,7 @@ class Game : public Displayable {
     TemporaryTemplate* place_into;
     
     ItemBar* bar;
+    ParentWidget* story;
     
     void check_need_update();
     int load_game_data();

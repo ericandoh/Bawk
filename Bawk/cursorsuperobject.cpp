@@ -191,6 +191,16 @@ void CursorSuperObject::cleanup_all(bool removing_from_bar, bool removing_from_i
     }
 }
 
+cursor_item_distinguisher CursorSuperObject::get_distinguisher() {
+    cursor_item_distinguisher val;
+    val.is_blk = false;
+    val.is_recipe = false;
+    val.bid = 0;
+    val.pid = pid;
+    val.vid = vid;
+    return val;
+}
+
 CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp) {
     printf("Publishing template!\n");
     // package our blocks into a cursorsuperobject

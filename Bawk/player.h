@@ -28,13 +28,16 @@
 #include "math.h"
 #include "playerrender.h"
 #include "basic_types.h"
+#include "inventory.h"
 
 class Player : public RenderablePlayer {
     uint32_t pid;
     fvec2 angle;
     uint32_t id_assign;
 public:
+    PlayerInventory* inventory;
     Player(uint32_t p);
+    ~Player();
     uint32_t getID();
     uint32_t assignID();
     void update_direction(double xdiff, double ydiff);

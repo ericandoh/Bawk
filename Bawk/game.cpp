@@ -13,6 +13,7 @@
 #include "cursorblock.h"
 #include "base_widget.h"
 #include "block_loader.h"
+#include "display.h"
 
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
@@ -88,18 +89,24 @@ int Game::init() {
     
     place_into = 0;
     
-    bar = new ItemBar(128*10, 128);
+    int width, height;
+    get_window_size(&width, &height);
+    story = new ParentWidget(0, 0, width, height);
+    bar = new ItemBar(player->inventory, 128*10, 128);
+    story->add_child(bar);
     
-    bar->set_index(0);
-    CursorItem* first = new CursorBlock(9);
-    bar->set_current(first);
+    // tell bar to load info from player
+    //bar->set_index(1);
+    //CursorItem* first = new CursorBlock(6);
+    //bar->set_current(first);
     
+    /*
     bar->set_index(1);
     CursorSuperObject* second = new CursorSuperObject(0, 37, false, true);
     second->set_block(0.0f, 0.0f, 0.0f, 2);
     second->set_block(0.0f, 1.0f, 0.0f, 2);
     second->set_block(0.0f, 1.0f, 1.0f, 2);
-    bar->set_current(second);
+    bar->set_current(second);*/
     
     /*bar->set_index(2);
     CursorSuperObject* third = new CursorSuperObject();
@@ -136,7 +143,7 @@ void Game::render() {
     
     // Render UI elements here
     // always render the item bar (for now)
-    bar->render();
+    story->render();
 }
 
 // runs one frame of the game
@@ -400,6 +407,7 @@ Game::~Game() {
     delete place_into;
     // player deleted as part of world...?
     delete world;
+    delete story;
     delete bar;
     world_free_resources();
     clean_vbo_for_widgets();

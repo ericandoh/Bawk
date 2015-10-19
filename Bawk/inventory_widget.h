@@ -31,29 +31,30 @@ class SwitchInventoryButton: public BaseWidget {
 public:
     SwitchInventoryButton(MainInventoryWidget* o, InventoryButtonAction b,
                           int x, int y, int width, int height);
-    void onclick() override;
+    bool onclick(int mx, int my, int button) override;
     void render_elements() override;
 };
 
 class ScrollInventoryWidget: public ScrollingWidget {
     PlayerInventory* inventory;
     InventoryButtonAction fetch;
+    int total_count;
 public:
-    ScrollInventoryWidget(InventoryButtonAction t, PlayerInventory* inv, int rh, int x, int y, int width, int height);
-    void set_row(int row, std::vector<BaseWidget*> row_widgets) override;
+    ScrollInventoryWidget(InventoryButtonAction t, PlayerInventory* inv,
+                          int rw, int rh, int mr,
+                          int x, int y, int width, int height);
+    ~ScrollInventoryWidget();
+    BaseWidget* set_row(int row, int col, BaseWidget* current) override;
     void switch_button_action(InventoryButtonAction to);
 };
 
-class MainInventoryWidget: public BaseWidget {
+class MainInventoryWidget: public ParentWidget {
     PlayerInventory* inventory;
-    SwitchInventoryButton* buttons[INVENTORY_BUTTON_ITEMS];
-    ScrollInventoryWidget* scrolling;
-    
     InventoryButtonAction current_view;
 public:
     MainInventoryWidget(PlayerInventory* inv, int width, int height);
+    ~MainInventoryWidget();
     void switch_view(InventoryButtonAction action);
-    void render_elements() override;
 };
 
 #endif /* defined(__Bawk__inventory_widget__) */

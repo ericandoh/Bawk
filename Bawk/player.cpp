@@ -17,6 +17,12 @@ Player::Player(uint32_t p) {
     // TODO randomly generate pid from name of player
     pid = p;
     id_assign = 0;
+    inventory = new PlayerInventory();
+}
+
+Player::~Player() {
+    if (inventory)
+        delete inventory;
 }
 
 uint32_t Player::getID() {
@@ -87,10 +93,14 @@ std::string Player::get_save_path() {
 }
 
 int Player::load_self(IODataObject* obj) {
-    if (RenderablePlayer::load_self(obj))
+    if (RenderablePlayer::load_self(obj)) {
+        inventory->new_inv();
         return 1;
+    }
     angle = obj->read_value<fvec2>();
     // load player stuff here
+    
+    inventory->load_self(obj);
     return 0;
 }
 
@@ -98,6 +108,8 @@ void Player::remove_self(IODataObject* obj) {
     RenderablePlayer::remove_self(obj);
     // save player stuff here
     obj->save_value(angle);
+    
+    inventory->remove_self(obj);
 }
 
 void Player::debug() {

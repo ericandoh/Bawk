@@ -48,10 +48,12 @@ public:
     void render();
     // sees if a press at mx, my clicked this widget
     bool is_clicked(int mx, int my);
+    // called when this is scrolled
+    virtual bool scrolled(int mx, int my, int px);
     // this should be overriden
     virtual void render_elements() = 0;
     // action to do when clicked
-    virtual void onclick();
+    virtual bool onclick(int mx, int my, int button);
 };
 
 #endif /* defined(__Bawk__base_widget__) */

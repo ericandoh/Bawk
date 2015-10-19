@@ -46,6 +46,8 @@ public:
     virtual bool is_locked_in();
     virtual void unlock();
     
+    virtual cursor_item_distinguisher get_distinguisher() = 0;
+    
     virtual void read_in_all();
     virtual void add_to(bool is_bar);
     virtual void cleanup_all(bool removing_from_bar, bool removing_from_inv);

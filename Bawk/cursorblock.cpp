@@ -159,6 +159,16 @@ void CursorBlock::render_and_position(fmat4* transform) {
     render_block(transform, mx, my, mz);
 }
 
+cursor_item_distinguisher CursorBlock::get_distinguisher() {
+    cursor_item_distinguisher val;
+    val.is_blk = true;
+    val.is_recipe = false;
+    val.bid = block.type;
+    val.pid = 0;
+    val.vid = 0;
+    return val;
+}
+
 void delete_cursorblockvbos() {
     glDeleteBuffers(1, &block_vbo_slot[0].coord_vbo);
     glDeleteBuffers(1, &block_vbo_slot[0].texture_vbo);

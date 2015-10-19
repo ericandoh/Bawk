@@ -8,6 +8,7 @@
 
 #include "scrolling_widget.h"
 
+/*
 ScrollingWidget::ScrollingWidget(int rh, int x, int y, int width, int height) {
     rowheight = rh;
     maxrows = 0;
@@ -16,73 +17,105 @@ ScrollingWidget::ScrollingWidget(int rh, int x, int y, int width, int height) {
     for (int i = 0; i < numrows; i++) {
         widgets.push_back(std::vector<BaseWidget*>());
     }
-}
+}*/
 
-ScrollingWidget::ScrollingWidget(int rh, int mr,
-                                 int x, int y, int width, int height): BaseWidget(x, y, width, height) {
+ScrollingWidget::ScrollingWidget(int rw, int rh, int mr,
+                                 int x, int y,
+                                 int width, int height): ParentWidget(x, y, width, height) {
+    rowwidth = rw;
     rowheight = rh;
     maxrows = mr;
-    int numrows = int(width / rowheight) + 1;
-    
-    for (int i = 0; i < numrows; i++) {
-        widgets.push_back(std::vector<BaseWidget*>());
-    }
+    maxcols = width / rw;
+    xoffset = (width - maxcols * rw) / 2;
+    scroll = 0;
+    showrows = height / rowheight + 1;
 }
 
 void ScrollingWidget::setup() {
-    for (int i = 0; i < widgets.size(); i++) {
-        set_row(i, widgets[i % widgets.size()]);
-    }
+    refresh();
 }
 
-void ScrollingWidget::scroll(int px) {
-    int old_startindex = offset / rowheight;
-    offset += px;
-    if (offset < 0) {
-        offset = 0;
+BaseWidget* ScrollingWidget::get_child_at(int x, int y) {
+    x = x % showrows;
+    if (children.size() > x * maxcols + y) {
+        return children.at(x * maxcols + y);
+    }
+    return 0;
+}
+
+void ScrollingWidget::set_child_at(BaseWidget* child, int x, int y) {
+    x = x % showrows;
+    if (children.size() <= x * maxcols + y) {
+        while (children.size() > x * maxcols + y) {
+            children.push_back(0);
+        }
+    }
+    children[x * maxcols + y] = child;
+}
+
+bool ScrollingWidget::scrolled(int mx, int my, int px) {
+    int oldstart = scroll / rowheight;
+    scroll += px;
+    if (scroll < 0) {
+        scroll = 0;
     }
     // TODO refine this so that the bottom row will show at the bottom not at the top
-    if (offset >= rowheight * get_max_rows()) {
-        offset = rowheight * get_max_rows();
+    if (scroll >= rowheight * maxrows) {
+        scroll = rowheight * maxrows;
     }
-    int new_startindex = offset / rowheight;
+    int newstart = scroll / rowheight;
     
-    if (new_startindex != old_startindex) {
-        if (new_startindex > old_startindex) {
-            int start = imax(old_startindex + (int)widgets.size(), new_startindex);
-            for (int i = start; i < new_startindex + widgets.size(); i++) {
-                set_row(i, widgets[i % widgets.size()]);
-            }
-        }
-        else {
-            int end = imin(new_startindex + (int)widgets.size(), old_startindex);
-            for (int i = new_startindex; i < end; i++) {
-                set_row(i, widgets[i % widgets.size()]);
+    if (newstart > oldstart) {
+        int start = imax(oldstart + showrows, newstart);
+        for (int i = start; i < newstart + showrows; i++) {
+            for (int j = 0; j < maxcols; j++) {
+                set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
             }
         }
     }
-    for (int i = 0; i < widgets.size(); i++) {
-        for (int j = 0; j < widgets[i].size(); j++) {
-            widgets[(i + new_startindex) % widgets.size()][j]->y = (i + new_startindex) * rowheight - offset;
+    else if (newstart < oldstart) {
+        int end = imin(newstart + showrows, oldstart);
+        for (int i = newstart; i < end; i++) {
+            for (int j = 0; j < maxcols; j++) {
+                set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
+            }
         }
     }
+    
+    for (int i = newstart; i < showrows + newstart; i++) {
+        for (int j = 0; j < maxcols; j++) {
+            BaseWidget* widget = get_child_at(i, j);
+            if (widget) {
+                widget->x = xoffset + rowwidth*j;
+                widget->y = scroll + height - rowheight*i;
+                widget->width = rowwidth;
+                widget->height = rowheight;
+            }
+        }
+    }
+    return true;
 }
 
 void ScrollingWidget::refresh() {
-    int new_startindex = offset / rowheight;
-    for (int i = 0; i < widgets.size(); i++) {
-        set_row(i + new_startindex, widgets[(i + new_startindex) % widgets.size()]);
+    int newstart = scroll / rowheight;
+    for (int i = newstart; i < showrows + newstart; i++) {
+        for (int j = 0; j < maxcols; j++) {
+            set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
+        }
+    }
+    for (int i = newstart; i < showrows + newstart; i++) {
+        for (int j = 0; j < maxcols; j++) {
+            BaseWidget* widget = get_child_at(i, j);
+            if (widget) {
+                widget->x = xoffset + rowwidth*j;
+                widget->y = scroll + height - rowheight*i;
+                widget->width = rowwidth;
+                widget->height = rowheight;
+            }
+        }
     }
 }
 
 int ScrollingWidget::get_max_rows() {
     return maxrows;
-}
-
-void ScrollingWidget::render_elements() {
-    for (auto &i: widgets) {
-        for (auto &j: i) {
-            j->render();
-        }
-    }
 }

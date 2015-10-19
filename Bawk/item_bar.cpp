@@ -8,7 +8,8 @@
 
 #include "item_bar.h"
 
-ItemBar::ItemBar(int width, int height): BaseWidget(width, height) {
+ItemBar::ItemBar(PlayerInventory* inv, int width, int height): ParentWidget(width, height) {
+    inventory = inv;
     // pixel distance between each barlet
     int gaps_per_barlet = 1;
     // distance sum of all gaps we need
@@ -25,7 +26,9 @@ ItemBar::ItemBar(int width, int height): BaseWidget(width, height) {
     this->y = 10;
     
     for (int i = 0; i < BAR_ITEMS; i++) {
-        barlets[i] = new ItemBarlet(x_offset + i*barlet_n_gap, this->y, per_barlet_width, height);
+        ItemBarlet* barlet = new ItemBarlet(x_offset + i*barlet_n_gap, this->y, per_barlet_width, height);
+        barlet->set_cursor_item(inventory->get_cursoritem_at(i));
+        add_child(barlet);
     }
     index = 0;
     set_index(0);
@@ -33,28 +36,23 @@ ItemBar::ItemBar(int width, int height): BaseWidget(width, height) {
 
 ItemBar::~ItemBar() {
     for (int i = 0; i < BAR_ITEMS; i++) {
-        delete barlets[i];
-    }
-}
-
-void ItemBar::render_elements() {
-    for (int i = 0; i < 10; i++) {
-        barlets[i]->render();
+        delete (ItemBarlet*)children[i];
     }
 }
 
 CursorItem* ItemBar::get_current() {
-    return barlets[index]->get_cursor_item();
+    return ((ItemBarlet*)children[index])->get_cursor_item();
 }
 
 void ItemBar::set_current(CursorItem* item) {
-    barlets[index]->set_cursor_item(item);
+    inventory->set_cursoritem_at(item, index);
+    ((ItemBarlet*)children[index])->set_cursor_item(item);
 }
 
 void ItemBar::set_index(int new_index) {
-    barlets[index]->set_current(false);
+    ((ItemBarlet*)children[index])->set_current(false);
     index = (new_index % BAR_ITEMS + BAR_ITEMS) % BAR_ITEMS;
-    barlets[index]->set_current(true);
+    ((ItemBarlet*)children[index])->set_current(true);
 }
 
 void ItemBar::set_to_left() {

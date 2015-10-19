@@ -24,19 +24,19 @@
 #define __Bawk__item_bar__
 
 #include <stdio.h>
-#include "base_widget.h"
+#include "parent_widget.h"
 #include "item_barlet.h"
 #include "cursoritem.h"
+#include "inventory.h"
 
 const int BAR_ITEMS = 10;
 
-class ItemBar: public BaseWidget {
-    ItemBarlet* barlets[BAR_ITEMS];
+class ItemBar: public ParentWidget {
     int index;
+    PlayerInventory* inventory;
 public:
-    ItemBar(int width, int height);
+    ItemBar(PlayerInventory* inv, int width, int height);
     ~ItemBar();
-    void render_elements() override;
     CursorItem* get_current();
     void set_current(CursorItem* item);
     void set_index(int new_index);

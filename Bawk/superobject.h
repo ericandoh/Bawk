@@ -30,9 +30,9 @@
 class SuperObject : public RenderableSuperObject {
 protected:
     std::string world_name;
+public:
     uint32_t vid;
     uint32_t pid;
-public:
     SuperObject(std::string w);
     SuperObject(uint32_t p, uint32_t v);
     SuperObject(std::string w, uint32_t p, uint32_t v);

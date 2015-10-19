@@ -30,9 +30,9 @@
 // Represents a block that can be put down
 
 class CursorBlock: public CursorItem {
-    block_type block;
     void render_block(fmat4* transform, float bx, float by, float bz);
 public:
+    block_type block;
     CursorBlock(block_type type);
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
@@ -46,6 +46,9 @@ public:
     void get_bounds(ivec3* upper) override;
     void render_at_zero(fmat4* transform) override;
     void render_and_position(fmat4* transform) override;
+    
+    cursor_item_distinguisher get_distinguisher() override;
+
 };
 
 void delete_cursorblockvbos();
