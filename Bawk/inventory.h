@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <vector>
 #include "cursoritem.h"
+#include "basic_types.h"
 
 struct block_and_count {
     uint16_t type;
@@ -20,11 +21,6 @@ struct block_and_count {
         type = t;
         count = c;
     }
-};
-
-struct player_and_id {
-    uint32_t pid;
-    uint32_t sid;
 };
 
 class PlayerInventory {

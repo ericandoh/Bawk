@@ -159,9 +159,7 @@ void CursorBlock::render_and_position(fmat4* transform) {
     render_block(transform, mx, my, mz);
 }
 
-void CursorBlock::cleanup_all() {
-    if (block_vbo_slot[0].block == this) {
-        glDeleteBuffers(1, &block_vbo_slot[0].coord_vbo);
-        glDeleteBuffers(1, &block_vbo_slot[0].texture_vbo);
-    }
+void delete_cursorblockvbos() {
+    glDeleteBuffers(1, &block_vbo_slot[0].coord_vbo);
+    glDeleteBuffers(1, &block_vbo_slot[0].texture_vbo);
 }

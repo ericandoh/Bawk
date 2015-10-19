@@ -73,6 +73,16 @@ struct ivec3 : glm::tvec3<int> {
     }*/
 };
 
+struct player_and_id {
+    uint32_t pid;
+    uint32_t sid;
+    bool operator==(const player_and_id &other) const
+    {
+        return (pid == other.pid
+                && sid == other.sid);
+    }
+};
+
 // 4x4 matrix, for rendering calculations
 typedef glm::mat4 fmat4;
 

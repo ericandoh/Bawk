@@ -12,6 +12,7 @@
 #include "texture_loader.h"
 #include "worldrender.h"
 #include "chunkrender.h"
+#include "cursorblock.h"
 
 // shaders and attributes set by shader loading program
 GLuint block_attribute_coord;
@@ -64,6 +65,8 @@ void world_free_resources() {
     delete_all_buffers();
     glDeleteProgram(program);
     glDeleteTextures(1, &tile_texture);
+    
+    delete_cursorblockvbos();
 }
 
 void set_block_draw_mode(int v) {

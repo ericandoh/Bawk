@@ -95,7 +95,7 @@ int Game::init() {
     bar->set_current(first);
     
     bar->set_index(1);
-    CursorSuperObject* second = new CursorSuperObject();
+    CursorSuperObject* second = new CursorSuperObject(0, 37, false, true);
     second->set_block(0.0f, 0.0f, 0.0f, 2);
     second->set_block(0.0f, 1.0f, 0.0f, 2);
     second->set_block(0.0f, 1.0f, 1.0f, 2);
@@ -236,7 +236,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 // let's not free this l8 on, since we still need to render if its in inventory
                 // then l8 we can have a separate memory scheme for if this is in memory or not
                 if (bar->get_current()) {
-                    bar->get_current()->cleanup_all();
+                    bar->get_current()->cleanup_all(true, false);
                 }
                 bar->set_current(create_from_template(player, world, place_into));
                 delete place_into;

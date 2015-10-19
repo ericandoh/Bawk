@@ -54,5 +54,7 @@ CursorItem* PlayerInventory::get_custom_at(int index) {
     uint32_t pid = customs[index].pid;
     uint32_t custom_id = customs[index].sid;
     // TODO fetch custom build by pid and custom_id
-    return 0;
+    CursorSuperObject* superobject = new CursorSuperObject(pid, custom_id, true, false);
+    superobject->read_in_all();
+    return superobject;
 }

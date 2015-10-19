@@ -17,8 +17,13 @@
 // 3. override SuperObjectRender directly instead
 // 4. give superobjectrender a position attribute to scale stuff
 // 5. we'll handle rotation later (fuck that shit mate)
-CursorSuperObject::CursorSuperObject() {
+CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s, bool fromi, bool fromb) {
     locked = false;
+    from_inventory = fromi;
+    from_bar = fromb;
+    is_new = true;
+    pid = p;
+    sid = s;
 }
 
 // sets the blocks in this representation into the world, and if template is not null, into the
@@ -123,15 +128,27 @@ void CursorSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
 // in this case, we'll keep all chunks in memory, so this should be only called
 // if the chunk didn't exist before, in which case we give back an empty chunk
 int CursorSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
+    ivec3 pos = ivec3(x, y, z);
+    IODataObject reader(get_chunk_save_path(&pos));
+    if (!reader.read(false)) {
+        reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
+        reader.close();
+        return 0;
+    }
     get_empty_chunk(to_arr);
     return 0;
 }
 
 
 // called when a chunk goes out of scope and no longer needs to be rendered
+// or, when the object itself is saved at the end
 int CursorSuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
-    // do nothing. in fact, this shouldn't ever be called, ever. bro.
-    printf("Tried to save a cursorsuperobject chunk %d,%d,%d\n", x, y, z);
+    ivec3 pos = ivec3(x, y, z);
+    IODataObject writer(get_chunk_save_path(&pos));
+    if (writer.save(false))
+        return 1;
+    writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
+    writer.close();
     return 0;
 }
 
@@ -150,10 +167,57 @@ void CursorSuperObject::unlock() {
     locked = false;
 }
 
+std::string CursorSuperObject::get_save_path() {
+    return get_path_to_template(pid, sid);
+}
+
+std::string CursorSuperObject::get_chunk_save_path(ivec3* pos) {
+    return get_path_to_template_chunk(pid, sid, pos);
+}
+
+void CursorSuperObject::read_in_all() {
+    this->load_selfs();
+    is_new = false;
+}
+
+void CursorSuperObject::add_to(bool is_bar) {
+    if (is_bar) {
+        from_bar = true;
+    }
+    else {
+        from_inventory = true;
+    }
+}
+
+// if calling from bar, set from_bar to true
+// if just closing inventory and freeing objects, we're not removing it
+void CursorSuperObject::cleanup_all(bool removing_from_bar, bool removing_from_inv) {
+    if (removing_from_bar)
+        from_bar = false;
+    if (removing_from_inv)
+        from_inventory = false;
+    
+    if (is_new) {
+        if (from_bar || from_inventory) {
+            // this cursor item is still found in either bar or inventory
+            // save it
+            this->remove_selfs();
+        }
+        is_new = false;
+    }
+    if ((!from_bar) && (!from_inventory)) {
+        delete this;
+    }
+}
+
 CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp) {
     printf("Publishing template!\n");
     // package our blocks into a cursorsuperobject
-    CursorSuperObject* object = new CursorSuperObject();
+    
+    CursorSuperObject* object = new CursorSuperObject(player->getID(),
+                                                      player->assignID(),
+                                                      false,// all templates are initially not in inventory
+                                                      true);// all templates are made on the bar
     
     std::vector<block_data> blocks = temp->publish(player, world);
     
@@ -180,10 +244,6 @@ CursorSuperObject* create_from_template(Player* player, World* world, TemporaryT
     }
     
     return object;
-}
-
-void CursorSuperObject::cleanup_all() {
-    printf("frog\n");
 }
 
 

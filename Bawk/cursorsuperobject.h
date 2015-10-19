@@ -31,10 +31,11 @@
 class CursorSuperObject: public RenderableSuperObject, public CursorItem {
     bool locked;
     
-    bool from_inventory;
+    bool from_inventory, from_bar, is_new;
+    uint32_t pid, sid;
     
 public:
-    CursorSuperObject();
+    CursorSuperObject(uint32_t p, uint32_t s, bool fromi, bool fromb);
     
     // --- cursoritem methods ---
     
@@ -61,7 +62,11 @@ public:
     int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;
     
-    void cleanup_all() override;
+    std::string get_save_path() override;
+    std::string get_chunk_save_path(ivec3* pos);
+    void read_in_all() override;
+    void add_to(bool is_bar) override;
+    void cleanup_all(bool removing_from_bar, bool removing_from_inv) override;
 };
 
 CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp);

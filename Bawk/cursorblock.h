@@ -46,8 +46,8 @@ public:
     void get_bounds(ivec3* upper) override;
     void render_at_zero(fmat4* transform) override;
     void render_and_position(fmat4* transform) override;
-    
-    void cleanup_all() override;
 };
+
+void delete_cursorblockvbos();
 
 #endif /* defined(__Bawk__cursorblock__) */

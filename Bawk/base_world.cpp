@@ -28,14 +28,12 @@ std::string BaseWorld::get_save_path() {
     return "";
 }
 
+std::string BaseWorld::get_chunk_save_path(ivec3* pos) {
+    return get_path_to_world_chunk(world_name, pos);
+}
+
 int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
-    // try getting the chunk first, to see if it already exists in disk
-    ivec3 pos = ivec3(x, y, z);
-    IODataObject reader(get_path_to_world_chunk(world_name, &pos));
-    if (!reader.read(false)) {
-        // reading was successful
-        reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
-        reader.close();
+    if (!SuperObject::get_chunk(to_arr, x, y, z)) {
         return 0;
     }
     // chunk doesn't exist in disk, so it must not exist at all
@@ -60,16 +58,6 @@ int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
             }
         }
     }
-    return 0;
-}
-
-int BaseWorld::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
-    ivec3 pos = ivec3(x, y, z);
-    IODataObject writer(get_path_to_world_chunk(world_name, &pos));
-    if (writer.save(false))
-        return 1;
-    writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
-    writer.close();
     return 0;
 }
 

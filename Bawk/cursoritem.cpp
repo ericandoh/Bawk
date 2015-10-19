@@ -49,3 +49,15 @@ bool CursorItem::is_locked_in() {
 void CursorItem::unlock() {
     // does nothing
 }
+
+void CursorItem::read_in_all() {
+    // do nothing
+}
+
+void CursorItem::add_to(bool is_bar) {
+    
+}
+
+void CursorItem::cleanup_all(bool removing_from_bar, bool removing_from_inv) {
+    // do nothing
+}

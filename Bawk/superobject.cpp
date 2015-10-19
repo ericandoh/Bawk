@@ -38,9 +38,13 @@ std::string SuperObject::get_save_path() {
     return get_path_to_superobj(pid, vid);
 }
 
+std::string SuperObject::get_chunk_save_path(ivec3* pos) {
+    return get_path_to_superobj_chunk(pid, vid, pos);
+}
+
 int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
-    IODataObject reader(get_path_to_superobj_chunk(pid, vid, &pos));
+    IODataObject reader(get_chunk_save_path(&pos));
     if (reader.read(false))
         return 1;
     reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
@@ -50,7 +54,7 @@ int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
 
 int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
-    IODataObject writer(get_path_to_superobj_chunk(pid, vid, &pos));
+    IODataObject writer(get_chunk_save_path(&pos));
     if (writer.save(false))
         return 1;
     writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
