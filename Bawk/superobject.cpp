@@ -16,6 +16,13 @@ SuperObject::SuperObject(std::string w) {
     world_name = w;
 }
 
+SuperObject::SuperObject(uint32_t p, uint32_t v) {
+    // this constructor should be called for world-less, cursor objects
+    vid = v;
+    pid = p;
+    world_name = "";
+}
+
 SuperObject::SuperObject(std::string wid, uint32_t p, uint32_t v) {
     // this constructor should be called by a player wanting to make a new object
     // the player will assign the object an ID

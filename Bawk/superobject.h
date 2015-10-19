@@ -28,12 +28,13 @@
 #include "superobjectrender.h"
 
 class SuperObject : public RenderableSuperObject {
-    uint32_t vid;
-    uint32_t pid;
 protected:
     std::string world_name;
+    uint32_t vid;
+    uint32_t pid;
 public:
     SuperObject(std::string w);
+    SuperObject(uint32_t p, uint32_t v);
     SuperObject(std::string w, uint32_t p, uint32_t v);
     SuperObject(std::string w, uint32_t p, uint32_t v, int* err);
     

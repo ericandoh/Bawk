@@ -24,15 +24,14 @@
 
 #include <stdio.h>
 #include "cursoritem.h"
-#include "superobjectrender.h"
+#include "superobject.h"
 
 // Represents a template that can be put down
 
-class CursorSuperObject: public RenderableSuperObject, public CursorItem {
+class CursorSuperObject: public SuperObject, public CursorItem {
     bool locked;
     
     bool from_inventory, from_bar, is_new;
-    uint32_t pid, sid;
     
 public:
     CursorSuperObject(uint32_t p, uint32_t s, bool fromi, bool fromb);
@@ -58,12 +57,10 @@ public:
     void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
     // called when a request to load a chunk from disk is made
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
-    // called when a chunk goes out of scope and no longer needs to be rendered
-    int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;
     
     std::string get_save_path() override;
-    std::string get_chunk_save_path(ivec3* pos);
+    std::string get_chunk_save_path(ivec3* pos) override;
     void read_in_all() override;
     void add_to(bool is_bar) override;
     void cleanup_all(bool removing_from_bar, bool removing_from_inv) override;
