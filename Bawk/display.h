@@ -27,6 +27,8 @@
 #include "displayable.h"
 
 void get_window_size(int* width, int* height);
+void display_enable_cursor();
+void display_disable_cursor();
 
 int init_display();
 void set_current_game(Displayable* display);

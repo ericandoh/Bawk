@@ -27,6 +27,24 @@ void ParentWidget::close_child(BaseWidget* child) {
     }
 }
 
+bool ParentWidget::has_child(BaseWidget* child) {
+    for (unsigned int i = 0; i < children.size(); i++) {
+        if (children.at(i) == child) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void ParentWidget::toggle_child(BaseWidget* child) {
+    if (has_child(child)) {
+        close_child(child);
+    }
+    else {
+        add_child(child);
+    }
+}
+
 void ParentWidget::close_latest_child() {
     if (children.size() > 0)
         children.erase(children.begin() + children.size() - 1);
@@ -36,8 +54,7 @@ void ParentWidget::close_latest_child() {
 bool ParentWidget::scrolled(int mx, int my, int px) {
     for (int i = (int)children.size() - 1; i >= 0; i--) {
         if (children.at(i)->is_clicked(mx, my)) {
-            children.at(i)->scrolled(mx, my, px);
-            return true;
+            return children.at(i)->scrolled(mx, my, px);
         }
     }
     return false;
@@ -55,8 +72,7 @@ bool ParentWidget::onclick(int mx, int my, int button) {
     // latest widget gets input first
     for (int i = (int)children.size() - 1; i >= 0; i--) {
         if (children.at(i)->is_clicked(mx, my)) {
-            children.at(i)->onclick(mx, my, button);
-            return true;
+            return children.at(i)->onclick(mx, my, button);
         }
     }
     return false;

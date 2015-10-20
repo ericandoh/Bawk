@@ -62,7 +62,7 @@ public:
     virtual void render(fmat4* transform);
     virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);
     
-    int load_selfs();
+    virtual int load_selfs();
     void remove_selfs();
     virtual std::string get_save_path();
     virtual int load_self(IODataObject* obj);

@@ -179,9 +179,6 @@ int validate_read_write_path(std::string path) {
     return 0;
 }
 
-
-
-
 // read/write methods
 std::string get_path_to_world(std::string world_name) {
     return get_metadata_path(get_named_object_path(get_world_save_path(), world_name));

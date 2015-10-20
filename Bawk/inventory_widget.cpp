@@ -138,6 +138,16 @@ void ScrollInventoryWidget::switch_button_action(InventoryButtonAction to) {
     if (fetch == to)
         return;
     fetch = to;
+    if (fetch == InventoryButtonAction::TO_BLOCKS) {
+        total_count = inventory->get_block_count();
+    }
+    else if (fetch == InventoryButtonAction::TO_RECIPES) {
+        total_count = inventory->get_recipe_count();
+    }
+    else if (fetch == InventoryButtonAction::TO_CUSTOM) {
+        total_count = inventory->get_custom_count();
+    }
+    maxrows = int(ceil(total_count / maxcols));
     refresh();
 }
 
@@ -151,7 +161,7 @@ MainInventoryWidget::MainInventoryWidget(PlayerInventory* inv,
     int bw, bh;
     
     bh = height / 10 - 4;
-    by = height - (height / 10) + 2;
+    by = height - (height / 10) + 2 + y;
     bw = (width - 8) / 3;
     bx1 = x;
     bx2 = x + bw + 4;
@@ -171,7 +181,7 @@ MainInventoryWidget::MainInventoryWidget(PlayerInventory* inv,
     int rh = rw;
     
     ScrollInventoryWidget* scrolling = new ScrollInventoryWidget(InventoryButtonAction::SETUP, inventory, rw, rh, 0, x, y, width, scrh);
-    
+    scrolling->setup();
     add_child(scrolling);
 }
 

@@ -23,6 +23,8 @@ public:
     ParentWidget(int width, int height);
     void add_child(BaseWidget* child);
     void close_child(BaseWidget* child);
+    bool has_child(BaseWidget* child);
+    void toggle_child(BaseWidget* child);
     void close_latest_child();
     // called when this is scrolled
     virtual bool scrolled(int mx, int my, int px) override;

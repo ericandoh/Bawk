@@ -18,7 +18,7 @@
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
     MOVE_BLOCK_UP, MOVE_BLOCK_DOWN, MOVE_BLOCK_LEFT, MOVE_BLOCK_RIGHT, MOVE_BLOCK_FORWARD,
-    MOVE_BLOCK_BACKWARD, CLICK_CREATE, CLICK_DESTROY
+    MOVE_BLOCK_BACKWARD, OPEN_INV, CLICK_CREATE, CLICK_DESTROY
 };
 
 int toggleable_keys[] = {GLFW_KEY_SPACE,
@@ -80,6 +80,8 @@ int Game::init() {
     key_to_action[GLFW_KEY_UP] = MOVE_BLOCK_FORWARD;
     key_to_action[GLFW_KEY_DOWN] = MOVE_BLOCK_BACKWARD;
     
+    key_to_action[GLFW_KEY_I] = OPEN_INV;
+    
     mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
     mouse_to_action[GLFW_MOUSE_BUTTON_RIGHT] = CLICK_CREATE;
     
@@ -94,6 +96,8 @@ int Game::init() {
     story = new ParentWidget(0, 0, width, height);
     bar = new ItemBar(player->inventory, 128*10, 128);
     story->add_child(bar);
+    
+    inventory_ui = new MainInventoryWidget(player->inventory, width / 2, height / 2);
     
     // tell bar to load info from player
     //bar->set_index(1);
@@ -311,6 +315,9 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 ivec3 forward = player->get_rounded_forward();
                 bar->get_current()->move_block(ivec3(-forward.x, 0, -forward.z));
             }
+        }
+        else if (do_this == OPEN_INV) {
+            story->add_child(inventory_ui);
         }
         else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
             int to_index = key - GLFW_KEY_1;

@@ -39,17 +39,25 @@ PlayerInventory::PlayerInventory() {
 
 void PlayerInventory::new_inv() {
     // this is what a noob starts out with if he hasn't got jack shit
-    
     // but hey, at least let's get you some basic blocks
     // now you can place air! by breathing it out! ...
     add_blocks(0, 0);
     // let's get you 3 blocks of 1 as well, why not
     add_blocks(1, 3);
+    // lucky 7
+    add_blocks(7, 3);
     
     // you haven't discovered any templates, fuck off
     // discovered_templates.push(...);
     // you haven't created any either, fuck off
     // created_templates.push(...);
+    cursor_item_distinguisher val;
+    val.is_blk = true;
+    val.is_recipe = false;
+    val.bid = 7;
+    val.pid = 0;
+    val.vid = 0;
+    cursor_items.push_back(val);
 }
 
 int PlayerInventory::get_block_count() {

@@ -36,6 +36,7 @@
 #include "cursoritem.h"
 #include "item_bar.h"
 #include "parent_widget.h"
+#include "inventory_widget.h"
 
 const int VERSION = 4;
 
@@ -56,6 +57,7 @@ class Game : public Displayable {
     TemporaryTemplate* place_into;
     
     ItemBar* bar;
+    MainInventoryWidget* inventory_ui;
     ParentWidget* story;
     
     void check_need_update();

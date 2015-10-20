@@ -92,14 +92,19 @@ std::string Player::get_save_path() {
     return get_path_to_player(pid);
 }
 
-int Player::load_self(IODataObject* obj) {
-    if (RenderablePlayer::load_self(obj)) {
+int Player::load_selfs() {
+    if (RenderablePlayer::load_selfs()) {
         inventory->new_inv();
         return 1;
     }
+    return 0;
+}
+
+int Player::load_self(IODataObject* obj) {
+    if (RenderablePlayer::load_self(obj))
+        return 1;
     angle = obj->read_value<fvec2>();
     // load player stuff here
-    
     inventory->load_self(obj);
     return 0;
 }

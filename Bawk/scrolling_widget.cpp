@@ -46,7 +46,7 @@ BaseWidget* ScrollingWidget::get_child_at(int x, int y) {
 void ScrollingWidget::set_child_at(BaseWidget* child, int x, int y) {
     x = x % showrows;
     if (children.size() <= x * maxcols + y) {
-        while (children.size() > x * maxcols + y) {
+        while (children.size() <= x * maxcols + y) {
             children.push_back(0);
         }
     }
@@ -86,8 +86,8 @@ bool ScrollingWidget::scrolled(int mx, int my, int px) {
         for (int j = 0; j < maxcols; j++) {
             BaseWidget* widget = get_child_at(i, j);
             if (widget) {
-                widget->x = xoffset + rowwidth*j;
-                widget->y = scroll + height - rowheight*i;
+                widget->x = xoffset + rowwidth*j + x;
+                widget->y = scroll + height - rowheight*i + y;
                 widget->width = rowwidth;
                 widget->height = rowheight;
             }
@@ -107,8 +107,8 @@ void ScrollingWidget::refresh() {
         for (int j = 0; j < maxcols; j++) {
             BaseWidget* widget = get_child_at(i, j);
             if (widget) {
-                widget->x = xoffset + rowwidth*j;
-                widget->y = scroll + height - rowheight*i;
+                widget->x = xoffset + rowwidth*j + x;
+                widget->y = scroll + height - rowheight*i + y;
                 widget->width = rowwidth;
                 widget->height = rowheight;
             }

@@ -35,6 +35,7 @@ BaseWidget::BaseWidget() {
     y = 0;
     width = 1;
     height = 1;
+    printf("Making widget at (%d,%d) by (%d, %d)\n", x, y, width, height);
 }
 
 BaseWidget::BaseWidget(int x, int y, int width, int height) {
@@ -42,6 +43,7 @@ BaseWidget::BaseWidget(int x, int y, int width, int height) {
     this->y = y;
     this->width = width;
     this->height = height;
+    printf("Making widget at (%d,%d) by (%d, %d)\n", x, y, width, height);
 }
 
 BaseWidget::BaseWidget(int width, int height) {
@@ -55,6 +57,7 @@ BaseWidget::BaseWidget(int width, int height) {
     this->y = ygap / 2;
     this->width = width;
     this->height = height;
+    printf("Making widget at (%d,%d) by (%d, %d)\n", x, y, width, height);
 }
 
 void BaseWidget::set_dimensions(int x, int y, int width, int height) {
@@ -71,6 +74,7 @@ void BaseWidget::render() {
 
 bool BaseWidget::is_clicked(int mx, int my) {
     if (mx >= x && my >= y && x <= (x + width) && y <= (y + height)) {
+        printf("Click triggered at %d %d\n", mx, my);
         return true;
     }
     return false;
