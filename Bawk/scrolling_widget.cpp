@@ -19,16 +19,22 @@ ScrollingWidget::ScrollingWidget(int rh, int x, int y, int width, int height) {
     }
 }*/
 
-ScrollingWidget::ScrollingWidget(int rw, int rh, int mr,
+ScrollingWidget::ScrollingWidget(int rw, int rh, int mc,
                                  int x, int y,
                                  int width, int height): ParentWidget(x, y, width, height) {
     rowwidth = rw;
     rowheight = rh;
-    maxrows = mr;
+    maxcount = mc;
     maxcols = width / rw;
+    maxrows = (int)ceil(1.0 * maxcount / maxcols);
     xoffset = (width - maxcols * rw) / 2;
     scroll = 0;
     showrows = height / rowheight + 1;
+}
+
+void ScrollingWidget::set_max_count(int mc) {
+    maxcount = mc;
+    maxrows = (int)ceil(1.0 * maxcount / maxcols);
 }
 
 void ScrollingWidget::setup() {
@@ -69,7 +75,8 @@ bool ScrollingWidget::scrolled(int mx, int my, int px) {
         int start = imax(oldstart + showrows, newstart);
         for (int i = start; i < newstart + showrows; i++) {
             for (int j = 0; j < maxcols; j++) {
-                set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
+                if (i * maxcols + j < maxcount)
+                    set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
             }
         }
     }
@@ -77,19 +84,22 @@ bool ScrollingWidget::scrolled(int mx, int my, int px) {
         int end = imin(newstart + showrows, oldstart);
         for (int i = newstart; i < end; i++) {
             for (int j = 0; j < maxcols; j++) {
-                set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
+                if (i * maxcols + j < maxcount)
+                    set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
             }
         }
     }
     
     for (int i = newstart; i < showrows + newstart; i++) {
         for (int j = 0; j < maxcols; j++) {
-            BaseWidget* widget = get_child_at(i, j);
-            if (widget) {
-                widget->x = xoffset + rowwidth*j + x;
-                widget->y = scroll + height - rowheight*i + y;
-                widget->width = rowwidth;
-                widget->height = rowheight;
+            if (i * maxcols + j < maxcount) {
+                BaseWidget* widget = get_child_at(i, j);
+                if (widget) {
+                    widget->x = xoffset + rowwidth*j + x;
+                    widget->y = scroll + height - rowheight*(i+1) + y;
+                    widget->width = rowwidth;
+                    widget->height = rowheight;
+                }
             }
         }
     }
@@ -97,20 +107,29 @@ bool ScrollingWidget::scrolled(int mx, int my, int px) {
 }
 
 void ScrollingWidget::refresh() {
+    // MURDER all the children >:D
+    printf("refreshing\n");
+    for (int i = 0; i < children.size(); i++) {
+        clear_child(children[i]);
+    }
+    
     int newstart = scroll / rowheight;
     for (int i = newstart; i < showrows + newstart; i++) {
         for (int j = 0; j < maxcols; j++) {
-            set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
+            if (i * maxcols + j < maxcount)
+                set_child_at(set_row(i, j, get_child_at(i, j)), i, j);
         }
     }
     for (int i = newstart; i < showrows + newstart; i++) {
         for (int j = 0; j < maxcols; j++) {
-            BaseWidget* widget = get_child_at(i, j);
-            if (widget) {
-                widget->x = xoffset + rowwidth*j + x;
-                widget->y = scroll + height - rowheight*i + y;
-                widget->width = rowwidth;
-                widget->height = rowheight;
+            if (i * maxcols + j < maxcount) {
+                BaseWidget* widget = get_child_at(i, j);
+                if (widget) {
+                    widget->x = xoffset + rowwidth*j + x;
+                    widget->y = scroll + height - rowheight*(i+1) + y;
+                    widget->width = rowwidth;
+                    widget->height = rowheight;
+                }
             }
         }
     }
@@ -118,4 +137,23 @@ void ScrollingWidget::refresh() {
 
 int ScrollingWidget::get_max_rows() {
     return maxrows;
+}
+
+BaseWidget* ScrollingWidget::set_row(int row, int col, BaseWidget* current) {
+    if (row * maxcols + col >= maxcount) {
+        clear_child(current);
+        return current;
+    }
+    return set_row(row * maxcols + col, current);
+}
+
+void ScrollingWidget::render_elements() {
+    int newstart = scroll / rowheight;
+    for (int i = newstart; i < showrows + newstart; i++) {
+        for (int j = 0; j < maxcols; j++) {
+            if (i * maxcols + j < maxcount) {
+                get_child_at(i, j)->render();
+            }
+        }
+    }
 }

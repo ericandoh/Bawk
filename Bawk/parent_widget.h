@@ -26,6 +26,7 @@ public:
     bool has_child(BaseWidget* child);
     void toggle_child(BaseWidget* child);
     void close_latest_child();
+    int count_children();
     // called when this is scrolled
     virtual bool scrolled(int mx, int my, int px) override;
     // render the children

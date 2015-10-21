@@ -60,6 +60,8 @@ class Game : public Displayable {
     MainInventoryWidget* inventory_ui;
     ParentWidget* story;
     
+    bool in_game;
+    
     void check_need_update();
     int load_game_data();
     int save_game_data();

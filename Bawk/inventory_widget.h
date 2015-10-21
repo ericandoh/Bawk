@@ -44,7 +44,8 @@ public:
                           int rw, int rh, int mr,
                           int x, int y, int width, int height);
     ~ScrollInventoryWidget();
-    BaseWidget* set_row(int row, int col, BaseWidget* current) override;
+    BaseWidget* set_row(int index, BaseWidget* current) override;
+    void clear_child(BaseWidget* child) override;
     void switch_button_action(InventoryButtonAction to);
 };
 

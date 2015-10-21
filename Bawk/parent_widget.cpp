@@ -50,6 +50,10 @@ void ParentWidget::close_latest_child() {
         children.erase(children.begin() + children.size() - 1);
 }
 
+int ParentWidget::count_children() {
+    return (int)children.size();
+}
+
 // called when this is scrolled
 bool ParentWidget::scrolled(int mx, int my, int px) {
     for (int i = (int)children.size() - 1; i >= 0; i--) {

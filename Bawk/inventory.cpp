@@ -44,6 +44,12 @@ void PlayerInventory::new_inv() {
     add_blocks(0, 0);
     // let's get you 3 blocks of 1 as well, why not
     add_blocks(1, 3);
+    
+    // let's get you all the blocks from 2 to 20, but give you only 1 of each
+    for (int i = 2; i < 20; i++) {
+        add_blocks(i, 1);
+    }
+    
     // lucky 7
     add_blocks(7, 3);
     

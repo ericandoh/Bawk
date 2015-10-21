@@ -39,6 +39,7 @@ void Game::set_parameters(std::string wn, uint32_t p) {
 
 // initializes all needed game variables. This should be called before render()
 int Game::init() {
+    in_game = true;
     
     // load resources for the world
     if (world_load_resources()) {
@@ -262,7 +263,14 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
             }
         }
         else if (do_this == CANCEL) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            if (!in_game) {
+                story->close_latest_child();
+                if (story->count_children() == 1) {
+                    display_disable_cursor();
+                    in_game = true;
+                }
+            }
+            else if (bar->get_current() && bar->get_current()->is_locked_in()) {
                 printf("Cancelling current template placing 1\n");
                 bar->get_current()->unlock();
             }
@@ -317,7 +325,15 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
             }
         }
         else if (do_this == OPEN_INV) {
-            story->add_child(inventory_ui);
+            story->toggle_child(inventory_ui);
+            if (story->count_children() > 1) {
+                display_enable_cursor();
+                in_game = false;
+            }
+            else {
+                display_disable_cursor();
+                in_game = true;
+            }
         }
         else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
             int to_index = key - GLFW_KEY_1;
@@ -330,55 +346,72 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
 }
 
 void Game::mouse_move_callback(double xdiff, double ydiff) {
-    player->update_direction(xdiff, ydiff);
+    if (in_game)
+        player->update_direction(xdiff, ydiff);
 }
 
 void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
-        Action do_this = mouse_to_action[button];
-        if (do_this == CLICK_DESTROY) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Cancelling current template placing2\n");
-                bar->get_current()->unlock();
-            }
-            else {
-                // get block here instead of outside
-                printf("Destroying block from world\n");
-                ivec3 removed_at;
-                if (world->kill_block(&removed_at)) {
-                    if (place_into) {
-                        printf("Destroying it from the template as well rofl\n");
-                        place_into->remove_block(removed_at);
+        if (in_game) {
+            Action do_this = mouse_to_action[button];
+            if (do_this == CLICK_DESTROY) {
+                if (bar->get_current() && bar->get_current()->is_locked_in()) {
+                    printf("Cancelling current template placing2\n");
+                    bar->get_current()->unlock();
+                }
+                else {
+                    // get block here instead of outside
+                    printf("Destroying block from world\n");
+                    ivec3 removed_at;
+                    if (world->kill_block(&removed_at)) {
+                        if (place_into) {
+                            printf("Destroying it from the template as well rofl\n");
+                            place_into->remove_block(removed_at);
+                        }
                     }
                 }
             }
+            else if (do_this == CLICK_CREATE) {
+                // get block here instead of outside
+                if (bar->get_current() && bar->get_current()->is_locked_in()) {
+                    if (place_into) {
+                        printf("Placing template into template!\n");
+                    }
+                    else {
+                        printf("Placing template into world!\n");
+                    }
+                    // we need to place this object into the world
+                    bar->get_current()->set_blocks(player, world, place_into);
+                }
+                else if (bar->get_current()) {
+                    printf("Placing block\n");
+                    bar->get_current()->place_blocks(player, world, place_into);
+                }
+            }
         }
-        else if (do_this == CLICK_CREATE) {
-            // get block here instead of outside
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                if (place_into) {
-                    printf("Placing template into template!\n");
-                }
-                else {
-                    printf("Placing template into world!\n");
-                }
-                // we need to place this object into the world
-                bar->get_current()->set_blocks(player, world, place_into);
-            }
-            else if (bar->get_current()) {
-                printf("Placing block\n");
-                bar->get_current()->place_blocks(player, world, place_into);
-            }
+        else {
+            double mx, my;
+            display_get_cursor_position(&mx, &my);
+            story->onclick((int)mx, (int)my, button);
         }
     }
 }
 
 void Game::scroll_callback(double xoffset, double yoffset) {
-    if (yoffset < 0) {
-        bar->set_to_right();
+    if (!in_game) {
+        if (yoffset != 0) {
+            double mx, my;
+            display_get_cursor_position(&mx, &my);
+            story->scrolled((int)mx, (int)my, yoffset * 30);
+        }
     }
-    else if (yoffset > 0) {
-        bar->set_to_left();
+    else {
+        if (yoffset < 0) {
+            bar->set_to_right();
+        }
+        else if (yoffset > 0) {
+            bar->set_to_left();
+        }
     }
 }
 

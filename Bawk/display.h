@@ -29,6 +29,7 @@
 void get_window_size(int* width, int* height);
 void display_enable_cursor();
 void display_disable_cursor();
+void display_get_cursor_position(double* x, double* y);
 
 int init_display();
 void set_current_game(Displayable* display);

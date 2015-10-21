@@ -97,7 +97,7 @@ ScrollingWidget(rw, rh, mr, x, y, width, height) {
     else if (fetch == InventoryButtonAction::TO_CUSTOM) {
         total_count = inventory->get_custom_count();
     }
-    maxrows = int(ceil(total_count / maxcols));
+    set_max_count(total_count);
 }
 
 ScrollInventoryWidget::~ScrollInventoryWidget() {
@@ -106,9 +106,8 @@ ScrollInventoryWidget::~ScrollInventoryWidget() {
     }
 }
 
-BaseWidget* ScrollInventoryWidget::set_row(int row, int col, BaseWidget* current) {
-    int index = row * maxcols + col;
-    
+BaseWidget* ScrollInventoryWidget::set_row(int index, BaseWidget* current) {
+    clear_child(current);
     ItemBarlet* barlet;
     if (current) {
         barlet = (ItemBarlet*) current;
@@ -134,10 +133,21 @@ BaseWidget* ScrollInventoryWidget::set_row(int row, int col, BaseWidget* current
     return barlet;
 }
 
+void ScrollInventoryWidget::clear_child(BaseWidget* child) {
+    if (!child)
+        return;
+    CursorItem* item = ((ItemBarlet*)child)->get_cursor_item();
+    // see if item is on bar
+    if (item)
+        item->cleanup_all(false, true);
+    ((ItemBarlet*)child)->set_cursor_item(0);
+}
+
 void ScrollInventoryWidget::switch_button_action(InventoryButtonAction to) {
     if (fetch == to)
         return;
     fetch = to;
+    total_count = 0;
     if (fetch == InventoryButtonAction::TO_BLOCKS) {
         total_count = inventory->get_block_count();
     }
@@ -147,7 +157,7 @@ void ScrollInventoryWidget::switch_button_action(InventoryButtonAction to) {
     else if (fetch == InventoryButtonAction::TO_CUSTOM) {
         total_count = inventory->get_custom_count();
     }
-    maxrows = int(ceil(total_count / maxcols));
+    set_max_count(total_count);
     refresh();
 }
 
@@ -167,8 +177,8 @@ MainInventoryWidget::MainInventoryWidget(PlayerInventory* inv,
     bx2 = x + bw + 4;
     bx3 = x + bw * 2 + 8;
     SwitchInventoryButton* bt0 = new SwitchInventoryButton(this, InventoryButtonAction::TO_BLOCKS, bx1, by, bw, bh);
-    SwitchInventoryButton* bt1 = new SwitchInventoryButton(this, InventoryButtonAction::TO_BLOCKS, bx2, by, bw, bh);
-    SwitchInventoryButton* bt2 = new SwitchInventoryButton(this, InventoryButtonAction::TO_BLOCKS, bx3, by, bw, bh);
+    SwitchInventoryButton* bt1 = new SwitchInventoryButton(this, InventoryButtonAction::TO_CUSTOM, bx2, by, bw, bh);
+    SwitchInventoryButton* bt2 = new SwitchInventoryButton(this, InventoryButtonAction::TO_RECIPES, bx3, by, bw, bh);
     
     add_child(bt0);
     add_child(bt1);
@@ -189,7 +199,7 @@ MainInventoryWidget::~MainInventoryWidget() {
     delete (SwitchInventoryButton*)children[0];
     delete (SwitchInventoryButton*)children[1];
     delete (SwitchInventoryButton*)children[2];
-    delete (ScrollInventoryWidget*)children[0];
+    delete (ScrollInventoryWidget*)children[3];
 }
 
 void MainInventoryWidget::switch_view(InventoryButtonAction action) {

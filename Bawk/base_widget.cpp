@@ -73,7 +73,7 @@ void BaseWidget::render() {
 }
 
 bool BaseWidget::is_clicked(int mx, int my) {
-    if (mx >= x && my >= y && x <= (x + width) && y <= (y + height)) {
+    if (mx >= x && my >= y && mx <= (x + width) && my <= (y + height)) {
         printf("Click triggered at %d %d\n", mx, my);
         return true;
     }

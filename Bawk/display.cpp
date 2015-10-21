@@ -42,6 +42,16 @@ void display_disable_cursor() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
+void display_get_cursor_position(double* x, double* y) {
+    int wwidth, wheight, fwidth, fheight;
+    glfwGetWindowSize(window, &wwidth, &wheight);
+    glfwGetFramebufferSize(window, &fwidth, &fheight);
+    glfwGetCursorPos(window, x, y);
+    *y = wheight - *y;
+    *x = (*x * fwidth) / wwidth;
+    *y = (*y * fheight) / wheight;
+}
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (current_display) {
         current_display->key_callback(key, scancode, action, mods);
