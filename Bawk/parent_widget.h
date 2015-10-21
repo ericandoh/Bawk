@@ -32,7 +32,8 @@ public:
     // render the children
     virtual void render_elements() override;
     // action to do when clicked
-    virtual bool onclick(int mx, int my, int button) override;
+    bool onclick(int mx, int my, int button) override;
+    virtual bool onclick(BaseWidget* clicked_child, int mx, int my, int button);
 };
 
 #endif /* defined(__Bawk__parent_widget__) */

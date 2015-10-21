@@ -18,7 +18,7 @@
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
     MOVE_BLOCK_UP, MOVE_BLOCK_DOWN, MOVE_BLOCK_LEFT, MOVE_BLOCK_RIGHT, MOVE_BLOCK_FORWARD,
-    MOVE_BLOCK_BACKWARD, OPEN_INV, CLICK_CREATE, CLICK_DESTROY
+    MOVE_BLOCK_BACKWARD, OPEN_INV, CLICK_CREATE, CLICK_DESTROY, SAVE_TEMPLATE
 };
 
 int toggleable_keys[] = {GLFW_KEY_SPACE,
@@ -82,6 +82,7 @@ int Game::init() {
     key_to_action[GLFW_KEY_DOWN] = MOVE_BLOCK_BACKWARD;
     
     key_to_action[GLFW_KEY_I] = OPEN_INV;
+    key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
     
     mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
     mouse_to_action[GLFW_MOUSE_BUTTON_RIGHT] = CLICK_CREATE;
@@ -98,7 +99,7 @@ int Game::init() {
     bar = new ItemBar(player->inventory, 128*10, 128);
     story->add_child(bar);
     
-    inventory_ui = new MainInventoryWidget(player->inventory, width / 2, height / 2);
+    inventory_ui = new MainInventoryWidget(bar, player->inventory, width / 2, height / 2);
     
     // tell bar to load info from player
     //bar->set_index(1);
@@ -247,9 +248,6 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 // do we need to free? what if its already in inventory
                 // let's not free this l8 on, since we still need to render if its in inventory
                 // then l8 we can have a separate memory scheme for if this is in memory or not
-                if (bar->get_current()) {
-                    bar->get_current()->cleanup_all(true, false);
-                }
                 bar->set_current(create_from_template(player, world, place_into));
                 delete place_into;
                 place_into = 0;
@@ -322,6 +320,12 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 printf("Moving placed template\n");
                 ivec3 forward = player->get_rounded_forward();
                 bar->get_current()->move_block(ivec3(-forward.x, 0, -forward.z));
+            }
+        }
+        else if (do_this == SAVE_TEMPLATE) {
+            player->inventory->add_custom_at(bar->get_current());
+            if (story->has_child(inventory_ui)) {
+                inventory_ui->refresh();
             }
         }
         else if (do_this == OPEN_INV) {

@@ -46,6 +46,9 @@ CursorItem* ItemBar::get_current() {
 
 void ItemBar::set_current(CursorItem* item) {
     inventory->set_cursoritem_at(item, index);
+    if (((ItemBarlet*)children[index])->get_cursor_item()) {
+        ((ItemBarlet*)children[index])->get_cursor_item()->cleanup_all(true, false);
+    }
     ((ItemBarlet*)children[index])->set_cursor_item(item);
 }
 

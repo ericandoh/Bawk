@@ -47,6 +47,8 @@ public:
     CursorItem* get_custom_at(int index);
     CursorItem* get_cursoritem_at(int index);
     
+    bool has_custom(CursorItem* to);
+    
     void add_blocks(uint16_t type, int count);
     void add_recipe_at(uint16_t type, int count);
     void add_custom_at(CursorItem* to);
@@ -55,7 +57,7 @@ public:
     void set_cursoritem_at(CursorItem* to, int index);
     
     // can't unlearn blocks/recipes, but can have 0 count
-    void del_custom_at(int index);
+    void del_custom_at(CursorItem* item);
     
     int load_self(IODataObject* obj);
     void remove_self(IODataObject* obj);

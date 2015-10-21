@@ -82,6 +82,8 @@ CursorItem* PlayerInventory::get_block_at(int index) {
     if (index >= found_blocks.size())
         return 0;
     // this is slightly inefficient but whatevers
+    if (found_blocks[index] == 0)
+        return 0;
     return new CursorBlock(found_blocks[index]);
 }
 
@@ -122,6 +124,20 @@ CursorItem* PlayerInventory::get_cursoritem_at(int index) {
     }
 }
 
+bool PlayerInventory::has_custom(CursorItem* to) {
+    cursor_item_distinguisher distinguish = to->get_distinguisher();
+    if (distinguish.is_blk || distinguish.is_recipe) {
+        // this is not a custom item
+        return false;
+    }
+    for (auto& i: customs) {
+        if (i.pid == distinguish.pid && i.sid == distinguish.vid) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void PlayerInventory::add_blocks(uint16_t type, int count) {
     if (blocks.count(type)) {
         blocks[type] += count;
@@ -142,19 +158,37 @@ void PlayerInventory::add_recipe_at(uint16_t type, int count) {
     }
 }
 
+// for adding a custom item that previously didn't exist
 void PlayerInventory::add_custom_at(CursorItem* to) {
+    cursor_item_distinguisher distinguish = to->get_distinguisher();
+    if (distinguish.is_blk || distinguish.is_recipe) {
+        // this is not a custom item
+        return;
+    }
+    // see if there already exists a custom with the same pid/sid
+    if (has_custom(to))
+        return;
     CursorSuperObject* custom = (CursorSuperObject*)to;
+    // save custom if not saved
+    custom->cleanup_all(false, false);
     player_and_id val;
     val.pid = custom->pid;
     val.sid = custom->vid;
     customs.push_back(val);
 }
 
+// assume this is for a reordering
+// later modify this to be insert_custom_at and remove the existing from the current index
 void PlayerInventory::set_custom_at(CursorItem* to, int index) {
-    CursorSuperObject* custom = (CursorSuperObject*)to;
+    printf("frog\n");
+    cursor_item_distinguisher distinguish = to->get_distinguisher();
+    if (distinguish.is_blk || distinguish.is_recipe) {
+        // this is not a custom item
+        return;
+    }
     player_and_id val;
-    val.pid = custom->pid;
-    val.sid = custom->vid;
+    val.pid = distinguish.pid;
+    val.sid = distinguish.vid;
     customs.insert(customs.begin() + index, val);
 }
 
@@ -183,10 +217,24 @@ void PlayerInventory::set_cursoritem_at(CursorItem* to, int index) {
     }
 }
 
-void PlayerInventory::del_custom_at(int index) {
-    customs.erase(customs.begin() + index);
-    // TODO make a call to delete the object in disk, if it exists
-    printf("frog\n");
+void PlayerInventory::del_custom_at(CursorItem* item) {
+    cursor_item_distinguisher distinguish = item->get_distinguisher();
+    if (distinguish.is_blk || distinguish.is_recipe) {
+        // this is not a custom item
+        return;
+    }
+    player_and_id val;
+    val.pid = distinguish.pid;
+    val.sid = distinguish.vid;
+    
+    for (int i = 0; i < customs.size(); i++) {
+        if (customs[i].pid == distinguish.pid &&
+            customs[i].sid == distinguish.vid) {
+            customs.erase(customs.begin() + i);
+            delete_at_path(get_path_to_template_folder(distinguish.pid, distinguish.vid));
+            break;
+        }
+    }
 }
 
 int PlayerInventory::load_self(IODataObject* obj) {

@@ -27,7 +27,7 @@ public:
     void set_max_count(int mc);
     void setup();
     bool scrolled(int mx, int my, int px) override;
-    void refresh();
+    virtual void refresh();
     BaseWidget* get_child_at(int x, int y);
     void set_child_at(BaseWidget* child, int x, int y);
     virtual void clear_child(BaseWidget* child) = 0;

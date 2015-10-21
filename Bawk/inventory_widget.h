@@ -15,6 +15,7 @@
 #include "inventory.h"
 #include "item_barlet.h"
 #include "scrolling_widget.h"
+#include "item_bar.h"
 
 const int INVENTORY_BUTTON_ITEMS = 3;
 
@@ -38,23 +39,26 @@ public:
 class ScrollInventoryWidget: public ScrollingWidget {
     PlayerInventory* inventory;
     InventoryButtonAction fetch;
+    ItemBar* itembar;
     int total_count;
 public:
-    ScrollInventoryWidget(InventoryButtonAction t, PlayerInventory* inv,
+    ScrollInventoryWidget(ItemBar* ib, InventoryButtonAction t, PlayerInventory* inv,
                           int rw, int rh, int mr,
                           int x, int y, int width, int height);
     ~ScrollInventoryWidget();
     BaseWidget* set_row(int index, BaseWidget* current) override;
     void clear_child(BaseWidget* child) override;
     void switch_button_action(InventoryButtonAction to);
+    bool onclick(BaseWidget* clicked_child, int mx, int my, int button) override;
+    void refresh() override;
 };
 
 class MainInventoryWidget: public ParentWidget {
-    PlayerInventory* inventory;
     InventoryButtonAction current_view;
 public:
-    MainInventoryWidget(PlayerInventory* inv, int width, int height);
+    MainInventoryWidget(ItemBar* ib, PlayerInventory* inv, int width, int height);
     ~MainInventoryWidget();
+    void refresh();
     void switch_view(InventoryButtonAction action);
 };
 

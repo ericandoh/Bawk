@@ -103,8 +103,9 @@ int Player::load_selfs() {
 int Player::load_self(IODataObject* obj) {
     if (RenderablePlayer::load_self(obj))
         return 1;
-    angle = obj->read_value<fvec2>();
     // load player stuff here
+    angle = obj->read_value<fvec2>();
+    obj->save_value(id_assign);
     inventory->load_self(obj);
     return 0;
 }
@@ -113,6 +114,7 @@ void Player::remove_self(IODataObject* obj) {
     RenderablePlayer::remove_self(obj);
     // save player stuff here
     obj->save_value(angle);
+    obj->save_value(id_assign);
     
     inventory->remove_self(obj);
 }

@@ -179,46 +179,73 @@ int validate_read_write_path(std::string path) {
     return 0;
 }
 
+// deletes object at path. CAREFUL
+void delete_at_path(std::string path) {
+    std::string command = "rm -rf " + path;
+    std::system(command.c_str());   // this might fail...TOFU handle
+    return;
+}
+
+std::string get_path_to_world_folder(std::string world_name) {
+    return get_named_object_path(get_world_save_path(), world_name);
+}
+
 // read/write methods
 std::string get_path_to_world(std::string world_name) {
-    return get_metadata_path(get_named_object_path(get_world_save_path(), world_name));
+    return get_metadata_path(get_path_to_world_folder(world_name));
 }
 
 std::string get_path_to_world_chunk(std::string world_name, ivec3* chunk_pos) {
     return get_chunk_path(
-                               get_named_object_path(get_world_save_path(), world_name),
+                               get_path_to_world_folder(world_name),
                                chunk_pos
                           );
 }
 
+std::string get_path_to_superobj_folder(uint32_t pid, uint32_t vid) {
+    return get_idid_path(get_superobject_save_path(), pid, vid);
+}
+
 std::string get_path_to_superobj(uint32_t pid, uint32_t vid) {
-    return get_metadata_path(get_idid_path(get_superobject_save_path(), pid, vid));
+    return get_metadata_path(get_path_to_superobj_folder(pid, vid));
 }
 
 std::string get_path_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
     return get_chunk_path(
-                               get_idid_path(get_superobject_save_path(), pid, vid),
+                               get_path_to_superobj_folder(pid, vid),
                                chunk_pos
                           );
 }
 
+std::string get_path_to_template_folder(uint32_t pid, uint32_t vid) {
+    return get_idid_path(get_template_save_path(), pid, vid);
+}
+
 std::string get_path_to_template(uint32_t pid, uint32_t vid) {
-    return get_metadata_path(get_idid_path(get_template_save_path(), pid, vid));
+    return get_metadata_path(get_path_to_template_folder(pid, vid));
 }
 
 std::string get_path_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos) {
     return get_chunk_path(
-                               get_idid_path(get_template_save_path(), pid, vid),
+                               get_path_to_template_folder(pid, vid),
                                chunk_pos
                                );
 }
 
+std::string get_path_to_player_folder(uint32_t pid) {
+    return get_id_path(get_player_save_path(), pid);
+}
+
 std::string get_path_to_player(uint32_t pid) {
-    return get_metadata_path(get_id_path(get_player_save_path(), pid));
+    return get_metadata_path(get_path_to_player_folder(pid));
+}
+
+std::string get_path_to_game_folder() {
+    return get_game_save_path();
 }
 
 std::string get_path_to_game() {
-    return get_metadata_path(get_game_save_path());
+    return get_metadata_path(get_path_to_game_folder());
 }
 
 

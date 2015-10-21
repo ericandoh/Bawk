@@ -76,8 +76,12 @@ bool ParentWidget::onclick(int mx, int my, int button) {
     // latest widget gets input first
     for (int i = (int)children.size() - 1; i >= 0; i--) {
         if (children.at(i)->is_clicked(mx, my)) {
-            return children.at(i)->onclick(mx, my, button);
+            return onclick(children[i], mx, my, button);
         }
     }
     return false;
+}
+
+bool ParentWidget::onclick(BaseWidget* clicked_child, int mx, int my, int button) {
+    return clicked_child->onclick(mx, my, button);
 }

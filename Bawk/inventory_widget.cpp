@@ -80,10 +80,11 @@ void SwitchInventoryButton::render_elements() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-ScrollInventoryWidget::ScrollInventoryWidget(InventoryButtonAction t, PlayerInventory* inv,
+ScrollInventoryWidget::ScrollInventoryWidget(ItemBar* ib, InventoryButtonAction t, PlayerInventory* inv,
                                              int rw, int rh, int mr,
                                              int x, int y, int width, int height):
 ScrollingWidget(rw, rh, mr, x, y, width, height) {
+    itembar = ib;
     inventory = inv;
     fetch = t;
     maxrows = 0;
@@ -147,6 +148,29 @@ void ScrollInventoryWidget::switch_button_action(InventoryButtonAction to) {
     if (fetch == to)
         return;
     fetch = to;
+    refresh();
+}
+
+bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, int button) {
+    // TOFU move this to a mouse binding method...
+    // move item that is here onto the item bar
+    ItemBarlet* barlet = (ItemBarlet*)clicked_child;
+    CursorItem* item = barlet->get_cursor_item();
+    if (item) {
+        if (button == GLFW_MOUSE_BUTTON_LEFT) {
+            // TOFU discard this template, later add in a warning button or some shizzle
+            inventory->del_custom_at(item);
+            refresh();
+        }
+        else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+            // move item to bar
+            itembar->set_current(item);
+        }
+    }
+    return true;
+}
+
+void ScrollInventoryWidget::refresh() {
     total_count = 0;
     if (fetch == InventoryButtonAction::TO_BLOCKS) {
         total_count = inventory->get_block_count();
@@ -158,12 +182,11 @@ void ScrollInventoryWidget::switch_button_action(InventoryButtonAction to) {
         total_count = inventory->get_custom_count();
     }
     set_max_count(total_count);
-    refresh();
+    ScrollingWidget::refresh();
 }
 
-MainInventoryWidget::MainInventoryWidget(PlayerInventory* inv,
+MainInventoryWidget::MainInventoryWidget(ItemBar* ib, PlayerInventory* inv,
                                          int width, int height): ParentWidget(width, height) {
-    inventory = inv;
     current_view = InventoryButtonAction::SETUP;
     
     int bx1, bx2, bx3;
@@ -190,7 +213,7 @@ MainInventoryWidget::MainInventoryWidget(PlayerInventory* inv,
     int rw = width / 8;
     int rh = rw;
     
-    ScrollInventoryWidget* scrolling = new ScrollInventoryWidget(InventoryButtonAction::SETUP, inventory, rw, rh, 0, x, y, width, scrh);
+    ScrollInventoryWidget* scrolling = new ScrollInventoryWidget(ib, InventoryButtonAction::SETUP, inv, rw, rh, 0, x, y, width, scrh);
     scrolling->setup();
     add_child(scrolling);
 }
@@ -200,6 +223,10 @@ MainInventoryWidget::~MainInventoryWidget() {
     delete (SwitchInventoryButton*)children[1];
     delete (SwitchInventoryButton*)children[2];
     delete (ScrollInventoryWidget*)children[3];
+}
+
+void MainInventoryWidget::refresh() {
+    ((ScrollInventoryWidget*)children[3])->refresh();
 }
 
 void MainInventoryWidget::switch_view(InventoryButtonAction action) {

@@ -159,6 +159,10 @@ std::string CursorSuperObject::get_chunk_save_path(ivec3* pos) {
 void CursorSuperObject::read_in_all() {
     this->load_selfs();
     is_new = false;
+    // load in all chunks
+    for (auto &i: chunk_bounds) {
+        this->load_chunk(i.first.x, i.first.y, i.first.z);
+    }
 }
 
 void CursorSuperObject::add_to(bool is_bar) {
