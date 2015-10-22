@@ -15,6 +15,12 @@ ItemBarlet::ItemBarlet(int x, int y, int width, int height): BaseWidget(x, y, wi
     current = false;
 }
 
+ItemBarlet::~ItemBarlet() {
+    if (entity) {
+        entity->delete_self();
+    }
+}
+
 void ItemBarlet::render_elements() {
     // first, fill with black box
     set_block_draw_mode(2);
@@ -72,6 +78,9 @@ CursorItem* ItemBarlet::get_cursor_item() {
 }
 
 void ItemBarlet::set_cursor_item(CursorItem* item) {
+    if (entity)
+        entity->delete_self();
+    
     entity = item;
     
     if (!entity) {

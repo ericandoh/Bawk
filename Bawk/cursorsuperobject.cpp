@@ -17,11 +17,9 @@
 // 3. override SuperObjectRender directly instead
 // 4. give superobjectrender a position attribute to scale stuff
 // 5. we'll handle rotation later (fuck that shit mate)
-CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s, bool fromi, bool fromb): SuperObject(p, s) {
+CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): SuperObject(p, s) {
     locked = false;
-    from_inventory = fromi;
-    from_bar = fromb;
-    is_new = true;
+    loaded = false;
 }
 
 // sets the blocks in this representation into the world, and if template is not null, into the
@@ -156,42 +154,11 @@ std::string CursorSuperObject::get_chunk_save_path(ivec3* pos) {
     return get_path_to_template_chunk(pid, vid, pos);
 }
 
-void CursorSuperObject::read_in_all() {
+void CursorSuperObject::load_all() {
     this->load_selfs();
-    is_new = false;
     // load in all chunks
     for (auto &i: chunk_bounds) {
         this->load_chunk(i.first.x, i.first.y, i.first.z);
-    }
-}
-
-void CursorSuperObject::add_to(bool is_bar) {
-    if (is_bar) {
-        from_bar = true;
-    }
-    else {
-        from_inventory = true;
-    }
-}
-
-// if calling from bar, set from_bar to true
-// if just closing inventory and freeing objects, we're not removing it
-void CursorSuperObject::cleanup_all(bool removing_from_bar, bool removing_from_inv) {
-    if (removing_from_bar)
-        from_bar = false;
-    if (removing_from_inv)
-        from_inventory = false;
-    
-    if (is_new) {
-        if (from_bar || from_inventory) {
-            // this cursor item is still found in either bar or inventory
-            // save it
-            this->remove_selfs();
-        }
-        is_new = false;
-    }
-    if ((!from_bar) && (!from_inventory)) {
-        delete this;
     }
 }
 
@@ -205,14 +172,16 @@ cursor_item_distinguisher CursorSuperObject::get_distinguisher() {
     return val;
 }
 
+void CursorSuperObject::delete_self() {
+    delete this;
+}
+
 CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp) {
     printf("Publishing template!\n");
     // package our blocks into a cursorsuperobject
     
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
-                                                      player->assignID(),
-                                                      false,// all templates are initially not in inventory
-                                                      true);// all templates are made on the bar
+                                                      player->assignID());// all templates are made on the bar
     
     std::vector<block_data> blocks = temp->publish(player, world);
     
@@ -229,14 +198,17 @@ CursorSuperObject* create_from_template(Player* player, World* world, TemporaryT
         lower_corner.y = imin(lower_corner.y, position.y);
         lower_corner.z = imin(lower_corner.z, position.z);
     }
-    
-    for (auto &i : blocks) {
+        for (auto &i : blocks) {
         ivec3 position = ivec3(i.position.x - lower_corner.x,
                                i.position.y - lower_corner.y,
                                i.position.z - lower_corner.z);
-        printf("Publishing block %d at (%d,%d,%d)\n", i.block.type, position.x, position.y, position.z);
         object->set_block(position.x, position.y, position.z, i.block);
     }
+    printf("Set %d blocks\n", (int)blocks.size());
+    
+    // save the object to disk
+    // this doesn't actually delete the object from memory
+    object->remove_selfs();
     
     return object;
 }

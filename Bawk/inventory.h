@@ -45,9 +45,11 @@ public:
     CursorItem* get_block_at(int index);
     CursorItem* get_recipe_at(int index);
     CursorItem* get_custom_at(int index);
+    CursorItem* get_item_from(cursor_item_distinguisher distinguish);
     CursorItem* get_cursoritem_at(int index);
     
-    bool has_custom(CursorItem* to);
+    bool has_custom(uint32_t pid, uint32_t vid);
+    bool has_cursor_item(uint32_t pid, uint32_t vid);
     
     void add_blocks(uint16_t type, int count);
     void add_recipe_at(uint16_t type, int count);

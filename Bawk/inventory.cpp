@@ -100,38 +100,48 @@ CursorItem* PlayerInventory::get_custom_at(int index) {
         return 0;
     uint32_t pid = customs[index].pid;
     uint32_t custom_id = customs[index].sid;
-    CursorSuperObject* superobject = new CursorSuperObject(pid, custom_id, true, false);
-    superobject->read_in_all();
+    CursorSuperObject* superobject = new CursorSuperObject(pid, custom_id);
+    superobject->load_all();
     return superobject;
+}
+
+CursorItem* PlayerInventory::get_item_from(cursor_item_distinguisher distinguish) {
+    if (distinguish.is_blk) {
+        return new CursorBlock(distinguish.bid);
+    }
+    else if (distinguish.is_recipe) {
+        // TODO fetch recipe by item.bid
+        return 0;
+    }
+    else {
+        // must be a custom superobject
+        CursorSuperObject* superobject = new CursorSuperObject(distinguish.pid, distinguish.vid);
+        superobject->load_all();
+        return superobject;
+    }
 }
 
 CursorItem* PlayerInventory::get_cursoritem_at(int index) {
     if (index >= cursor_items.size())
         return 0;
     cursor_item_distinguisher item = cursor_items[index];
-    if (item.is_blk) {
-        return new CursorBlock(item.bid);
-    }
-    else if (item.is_recipe) {
-        // TODO fetch recipe by item.bid
-        return 0;
-    }
-    else {
-        // must be a custom superobject
-        CursorSuperObject* superobject = new CursorSuperObject(item.pid, item.vid, false, true);
-        superobject->read_in_all();
-        return superobject;
-    }
+    return get_item_from(item);
 }
 
-bool PlayerInventory::has_custom(CursorItem* to) {
-    cursor_item_distinguisher distinguish = to->get_distinguisher();
-    if (distinguish.is_blk || distinguish.is_recipe) {
-        // this is not a custom item
-        return false;
-    }
+bool PlayerInventory::has_custom(uint32_t pid, uint32_t vid) {
     for (auto& i: customs) {
-        if (i.pid == distinguish.pid && i.sid == distinguish.vid) {
+        if (i.pid == pid && i.sid == vid) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool PlayerInventory::has_cursor_item(uint32_t pid, uint32_t vid) {
+    for (auto &i: cursor_items) {
+        if (i.is_blk || i.is_recipe)
+            continue;
+        if (i.pid == pid && i.vid == vid) {
             return true;
         }
     }
@@ -166,14 +176,11 @@ void PlayerInventory::add_custom_at(CursorItem* to) {
         return;
     }
     // see if there already exists a custom with the same pid/sid
-    if (has_custom(to))
+    if (has_custom(distinguish.pid, distinguish.vid))
         return;
-    CursorSuperObject* custom = (CursorSuperObject*)to;
-    // save custom if not saved
-    custom->cleanup_all(false, false);
     player_and_id val;
-    val.pid = custom->pid;
-    val.sid = custom->vid;
+    val.pid = distinguish.pid;
+    val.sid = distinguish.vid;
     customs.push_back(val);
 }
 
@@ -204,6 +211,15 @@ void PlayerInventory::set_cursoritem_at(CursorItem* to, int index) {
             cursor_items.push_back(val);
         }
     }
+    if ((!cursor_items[index].is_blk) && (!cursor_items[index].is_recipe)) {
+        // not a block, not a recipe, so must be a custom item
+        // see if this cursor item is in our inventory
+        if (!has_custom(cursor_items[index].pid, cursor_items[index].vid)) {
+            // if not in inventory, we're removing this object altogether from life and the universe
+            delete_at_path(get_path_to_template_folder(cursor_items[index].pid, cursor_items[index].vid));
+        }
+    }
+    
     if (!to) {
         cursor_item_distinguisher val;
         val.is_blk = true;
@@ -231,7 +247,10 @@ void PlayerInventory::del_custom_at(CursorItem* item) {
         if (customs[i].pid == distinguish.pid &&
             customs[i].sid == distinguish.vid) {
             customs.erase(customs.begin() + i);
-            delete_at_path(get_path_to_template_folder(distinguish.pid, distinguish.vid));
+            if (!has_cursor_item(val.pid, val.sid)) {
+                // delete from memory as well. we can't find our custom item on the item bar
+                delete_at_path(get_path_to_template_folder(distinguish.pid, distinguish.vid));
+            }
             break;
         }
     }

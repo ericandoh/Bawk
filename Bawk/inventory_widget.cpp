@@ -89,16 +89,7 @@ ScrollingWidget(rw, rh, mr, x, y, width, height) {
     fetch = t;
     maxrows = 0;
     total_count = 0;
-    if (fetch == InventoryButtonAction::TO_BLOCKS) {
-        total_count = inventory->get_block_count();
-    }
-    else if (fetch == InventoryButtonAction::TO_RECIPES) {
-        total_count = inventory->get_recipe_count();
-    }
-    else if (fetch == InventoryButtonAction::TO_CUSTOM) {
-        total_count = inventory->get_custom_count();
-    }
-    set_max_count(total_count);
+    switch_button_action(InventoryButtonAction::TO_BLOCKS);
 }
 
 ScrollInventoryWidget::~ScrollInventoryWidget() {
@@ -137,10 +128,6 @@ BaseWidget* ScrollInventoryWidget::set_row(int index, BaseWidget* current) {
 void ScrollInventoryWidget::clear_child(BaseWidget* child) {
     if (!child)
         return;
-    CursorItem* item = ((ItemBarlet*)child)->get_cursor_item();
-    // see if item is on bar
-    if (item)
-        item->cleanup_all(false, true);
     ((ItemBarlet*)child)->set_cursor_item(0);
 }
 
@@ -156,15 +143,20 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
     // move item that is here onto the item bar
     ItemBarlet* barlet = (ItemBarlet*)clicked_child;
     CursorItem* item = barlet->get_cursor_item();
-    if (item) {
-        if (button == GLFW_MOUSE_BUTTON_LEFT) {
-            // TOFU discard this template, later add in a warning button or some shizzle
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        // TOFU discard this template, later add in a warning button or some shizzle
+        if (fetch == InventoryButtonAction::TO_CUSTOM) {
             inventory->del_custom_at(item);
             refresh();
         }
-        else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-            // move item to bar
-            itembar->set_current(item);
+    }
+    else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        // move item to bar
+        if (item) {
+            itembar->set_current(inventory->get_item_from(item->get_distinguisher()));
+        }
+        else {
+            itembar->set_current(0);
         }
     }
     return true;

@@ -29,12 +29,12 @@
 // Represents a template that can be put down
 
 class CursorSuperObject: public SuperObject, public CursorItem {
+    // if this object needs to be loaded from memory
+    bool loaded;
     bool locked;
     
-    bool from_inventory, from_bar, is_new;
-    
 public:
-    CursorSuperObject(uint32_t p, uint32_t s, bool fromi, bool fromb);
+    CursorSuperObject(uint32_t p, uint32_t s);
     
     // --- cursoritem methods ---
     
@@ -61,11 +61,12 @@ public:
     
     std::string get_save_path() override;
     std::string get_chunk_save_path(ivec3* pos) override;
-    void read_in_all() override;
-    void add_to(bool is_bar) override;
-    void cleanup_all(bool removing_from_bar, bool removing_from_inv) override;
+    
+    
+    void load_all() override;
     
     cursor_item_distinguisher get_distinguisher() override;
+    void delete_self() override;
 };
 
 CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp);

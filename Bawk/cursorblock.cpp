@@ -169,6 +169,10 @@ cursor_item_distinguisher CursorBlock::get_distinguisher() {
     return val;
 }
 
+void CursorBlock::delete_self() {
+    delete this;
+}
+
 void delete_cursorblockvbos() {
     glDeleteBuffers(1, &block_vbo_slot[0].coord_vbo);
     glDeleteBuffers(1, &block_vbo_slot[0].texture_vbo);

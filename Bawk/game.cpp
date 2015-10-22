@@ -331,6 +331,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         else if (do_this == OPEN_INV) {
             story->toggle_child(inventory_ui);
             if (story->count_children() > 1) {
+                inventory_ui->refresh();
                 display_enable_cursor();
                 in_game = false;
             }

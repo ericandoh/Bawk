@@ -255,6 +255,14 @@
 		075C67381BBA34C700CB87DE /* game */ = {
 			isa = PBXGroup;
 			children = (
+				0764106F1BC45EA300135EDC /* temporarytemplate.cpp */,
+				076410701BC45EA300135EDC /* temporarytemplate.h */,
+				076410721BC48F7B00135EDC /* cursorblock.cpp */,
+				076410731BC48F7B00135EDC /* cursorblock.h */,
+				076410751BC48F8B00135EDC /* cursoritem.cpp */,
+				076410761BC48F8B00135EDC /* cursoritem.h */,
+				076410781BC48F9B00135EDC /* cursorsuperobject.cpp */,
+				076410791BC48F9B00135EDC /* cursorsuperobject.h */,
 				075C67391BBA350200CB87DE /* game.cpp */,
 				075C673A1BBA350200CB87DE /* game.h */,
 				07C426361BBCB2060045D796 /* displayable.h */,
@@ -275,14 +283,6 @@
 				0766EAED1BBF74FD00477144 /* block.h */,
 				0766EB071BBF9CC900477144 /* base_world.cpp */,
 				0766EB081BBF9CC900477144 /* base_world.h */,
-				0764106F1BC45EA300135EDC /* temporarytemplate.cpp */,
-				076410701BC45EA300135EDC /* temporarytemplate.h */,
-				076410721BC48F7B00135EDC /* cursorblock.cpp */,
-				076410731BC48F7B00135EDC /* cursorblock.h */,
-				076410751BC48F8B00135EDC /* cursoritem.cpp */,
-				076410761BC48F8B00135EDC /* cursoritem.h */,
-				076410781BC48F9B00135EDC /* cursorsuperobject.cpp */,
-				076410791BC48F9B00135EDC /* cursorsuperobject.h */,
 				076BEFE61BD1FE0E00D68C8F /* inventory.cpp */,
 				076BEFE71BD1FE0E00D68C8F /* inventory.h */,
 			);

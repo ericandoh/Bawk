@@ -30,7 +30,7 @@ uint32_t Player::getID() {
 }
 
 uint32_t Player::assignID() {
-    return (id_assign++);
+    return (uint32_t)(id_assign++);
 }
 
 void Player::update_direction(double xdiff, double ydiff) {
@@ -105,7 +105,7 @@ int Player::load_self(IODataObject* obj) {
         return 1;
     // load player stuff here
     angle = obj->read_value<fvec2>();
-    obj->save_value(id_assign);
+    id_assign = obj->read_value<long>();
     inventory->load_self(obj);
     return 0;
 }

@@ -33,7 +33,7 @@
 class Player : public RenderablePlayer {
     uint32_t pid;
     fvec2 angle;
-    uint32_t id_assign;
+    long id_assign;
 public:
     PlayerInventory* inventory;
     Player(uint32_t p);

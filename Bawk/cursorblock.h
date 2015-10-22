@@ -48,7 +48,7 @@ public:
     void render_and_position(fmat4* transform) override;
     
     cursor_item_distinguisher get_distinguisher() override;
-
+    void delete_self() override;
 };
 
 void delete_cursorblockvbos();

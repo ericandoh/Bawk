@@ -33,6 +33,7 @@ class ItemBarlet: public BaseWidget {
     fmat4 mvp;
 public:
     ItemBarlet(int x, int y, int width, int height);
+    ~ItemBarlet();
     void render_elements() override;
     CursorItem* get_cursor_item();
     void set_cursor_item(CursorItem* item);
