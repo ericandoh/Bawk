@@ -47,12 +47,9 @@ std::string get_path_to_player(uint32_t pid);
 
 std::string get_path_to_game_folder();
 std::string get_path_to_game();
+std::string get_path_to_game_json();
 
 void delete_at_path(std::string path);
-
-enum SaveMode {
-    READ, WRITE,
-};
 
 class IODataObject {
     std::ifstream infile;

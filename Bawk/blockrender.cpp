@@ -24,6 +24,18 @@ void set_coord_and_texture(GLbyte coord[][3],
     // BlockOrientation transformed_block = transform_orientation(block.orientation, face);
     // uint16_t tile_index = get_tile_index(block.type, transformed_oreintation);
     
+    // TODO
+    /*if (!block.is_recipe) {
+        // render normally
+    }
+    else if (block.is_recipe == 1) {
+        // render a texture here instead
+    }
+    else {
+        // skip this block
+    }*/
+    
+    
     // first 8 bits. Represents the x-axis in our texture atlas
     texture[index][0] = block.type % TILES_PER_TEXTURE;
     // last 8 bits. Represents the y-axis in our texture atlas

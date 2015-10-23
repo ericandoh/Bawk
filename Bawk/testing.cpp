@@ -8,7 +8,7 @@
 
 #include "testing.h"
 // clear imports every once in a while
-#include "block_loader.h"
+#include "game_info_loader.h"
 
 void do_shit();
 
@@ -27,39 +27,46 @@ void do_shit() {
 */
 
 // COPY FUNCTION DOWN VVV
-
 void do_shit() {
-    IODataObject* make = new IODataObject(get_path_to_game());
-    make->save();
-    int x = 78;
-    make->save_value(x);
-    char c = 'u';
-    make->save_value(c);
-    int arr[] = {3, 4, 5};
-    make->save_value(3);
-    make->save_pointer(arr, sizeof(arr));
-    make->close();
-    
-    
-    delete make;
-    
-    IODataObject* make2 = new IODataObject(get_path_to_game());
-    make->read();
-    int xr = make2->read_value<int>();
-    char cr = make2->read_value<char>();
-    int arr_size = make2->read_value<int>();
-    int arrr[arr_size];
-    make2->read_pointer(arrr, arr_size * sizeof(int));
-    make2->close();
-    
-    printf("%d %c\n", xr, cr);
-    printf("%d %d %d %d", arr_size, arrr[0], arrr[1], arrr[2]);
+    GameInfoDataObject obj;
+    obj.read_values();
 }
+
 
 // COPY DUMP CONTENTS VVV
 
 /*
 Dumps
+ 
+ void do_shit() {
+ IODataObject* make = new IODataObject(get_path_to_game());
+ make->save();
+ int x = 78;
+ make->save_value(x);
+ char c = 'u';
+ make->save_value(c);
+ int arr[] = {3, 4, 5};
+ make->save_value(3);
+ make->save_pointer(arr, sizeof(arr));
+ make->close();
+ 
+ 
+ delete make;
+ 
+ IODataObject* make2 = new IODataObject(get_path_to_game());
+ make->read();
+ int xr = make2->read_value<int>();
+ char cr = make2->read_value<char>();
+ int arr_size = make2->read_value<int>();
+ int arrr[arr_size];
+ make2->read_pointer(arrr, arr_size * sizeof(int));
+ make2->close();
+ 
+ printf("%d %c\n", xr, cr);
+ printf("%d %d %d %d", arr_size, arrr[0], arrr[1], arrr[2]);
+ }
+ 
+ 
  void do_shit() {
  printf("helloworld\n");
  }

@@ -248,6 +248,10 @@ std::string get_path_to_game() {
     return get_metadata_path(get_path_to_game_folder());
 }
 
+std::string get_path_to_game_json() {
+    // the game info json should be located inside where the game is running
+    return "./gameinfo.json";
+}
 
 
 

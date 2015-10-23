@@ -10,6 +10,9 @@
 		0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF6F1BC98D300050EE52 /* base_widget.cpp */; };
 		0704CF741BC997550050EE52 /* item_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF721BC997550050EE52 /* item_bar.cpp */; };
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
+		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
+		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
+		071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 071A040C1BD9875C003BF218 /* gameinfo.json */; };
 		073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 073A507C1BD4893F002AA73F /* parent_widget.cpp */; };
 		074B6C9C1BB9D2380065192B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074B6C9B1BB9D2380065192B /* main.cpp */; };
 		074B6CA31BB9D2780065192B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA21BB9D2780065192B /* Cocoa.framework */; };
@@ -60,6 +63,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */,
 				0766EAF51BBF7CDA00477144 /* tiles.png in CopyFiles */,
 				07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */,
 				07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */,
@@ -75,6 +79,11 @@
 		0704CF731BC997550050EE52 /* item_bar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_bar.h; sourceTree = "<group>"; };
 		0704CF751BC997DE0050EE52 /* item_barlet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = item_barlet.cpp; sourceTree = "<group>"; };
 		0704CF761BC997DE0050EE52 /* item_barlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_barlet.h; sourceTree = "<group>"; };
+		071A04031BD96349003BF218 /* game_info_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game_info_loader.cpp; sourceTree = "<group>"; };
+		071A04041BD96349003BF218 /* game_info_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game_info_loader.h; sourceTree = "<group>"; };
+		071A04091BD98454003BF218 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
+		071A040A1BD98454003BF218 /* jsoncpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jsoncpp.cpp; sourceTree = "<group>"; };
+		071A040C1BD9875C003BF218 /* gameinfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = gameinfo.json; sourceTree = "<group>"; };
 		073A507C1BD4893F002AA73F /* parent_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parent_widget.cpp; sourceTree = "<group>"; };
 		073A507D1BD4893F002AA73F /* parent_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parent_widget.h; sourceTree = "<group>"; };
 		074B6C981BB9D2380065192B /* Bawk */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bawk; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,9 +215,12 @@
 				0766EAFA1BBF7DBE00477144 /* image_helper.c */,
 				0766EAFB1BBF7DBE00477144 /* SOIL.c */,
 				0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */,
+				071A040C1BD9875C003BF218 /* gameinfo.json */,
 				0766EAF41BBF7CDA00477144 /* tiles.png */,
 				07C4260C1BBB18AB0045D796 /* frag_shader.glsl */,
 				07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */,
+				071A04091BD98454003BF218 /* json */,
+				071A040A1BD98454003BF218 /* jsoncpp.cpp */,
 				07C426101BBB2B110045D796 /* glm */,
 				075C67361BBA30BE00CB87DE /* CoreVideo.framework */,
 				075C67341BBA2FEC00CB87DE /* IOKit.framework */,
@@ -315,6 +327,8 @@
 				0766EAF71BBF7D1300477144 /* texture_loader.h */,
 				0766EB101BC0BE9800477144 /* block_loader.cpp */,
 				0766EB111BC0BE9800477144 /* block_loader.h */,
+				071A04031BD96349003BF218 /* game_info_loader.cpp */,
+				071A04041BD96349003BF218 /* game_info_loader.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";
@@ -414,7 +428,9 @@
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
+				071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */,
 				0766EAEE1BBF74FD00477144 /* block.cpp in Sources */,
+				071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */,
 				0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,

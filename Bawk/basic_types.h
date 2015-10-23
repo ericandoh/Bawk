@@ -91,6 +91,10 @@ struct cursor_item_distinguisher {
     uint32_t vid;
 };
 
+enum SaveMode {
+    READ, WRITE,
+};
+
 // 4x4 matrix, for rendering calculations
 typedef glm::mat4 fmat4;
 

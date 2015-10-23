@@ -14,6 +14,8 @@ block_type::block_type() {
     life = 0;
     block_id = 0;
     owner = 0;
+    is_recipe = 0;
+    relx = rely = relz = 0;
 }
 
 block_type::block_type(uint16_t t) {
@@ -22,6 +24,8 @@ block_type::block_type(uint16_t t) {
     life = 0;
     block_id = 0;
     owner = 0;
+    is_recipe = 0;
+    relx = rely = relz = 0;
 }
 
 block_type::block_type(uint16_t t, BlockOrientation orient, uint32_t pid) {
@@ -30,6 +34,8 @@ block_type::block_type(uint16_t t, BlockOrientation orient, uint32_t pid) {
     life = 0;
     block_id = 0;
     owner = pid;
+    is_recipe = 0;
+    relx = rely = relz = 0;
 }
 
 block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t bid, uint32_t pid) {
@@ -38,6 +44,8 @@ block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t
     life = h;
     block_id = bid;
     owner = pid;
+    is_recipe = 0;
+    relx = rely = relz = 0;
 }
 
 bool block_type::equals(block_type other) {

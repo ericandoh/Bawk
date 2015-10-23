@@ -47,9 +47,14 @@ struct block_type {
     // as the block takes more damage, INCREMENT this value (life starts at 0 and goes up)
     // (its kind of like aging okay?)
     uint16_t life;
+    // unique id for the block, might differ for different blocks
     uint64_t block_id;
     // id for owner. 0 indicates the WORLD
     uint32_t owner;
+    // 0 - not a recipe, 1 - is recipe center block, 2 - other recipe center block
+    uint8_t is_recipe;
+    // if this is a recipe block, this tells the offset from the center block
+    uint16_t relx, rely, relz;
     block_type();
     // used by world to make generic blocks
     block_type(uint16_t t);

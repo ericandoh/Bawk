@@ -1,0 +1,98 @@
+{
+    "version": 4,
+    "blocks":
+    {
+        "0": {
+            "name": "air",
+            "transparency": 0,
+            "weight": 0
+        },
+        "1": {
+            "name": "stone",
+            "resistance": 10,
+            "weight": 25
+        },
+        "2": {
+            "name": "dirt",
+            "resistance": 2,
+            "weight": 10
+        },
+        "3": {
+            "name": "grass",
+            "resistance": 3,
+            "weight": 12
+        },
+        "4": {
+            "name": "saddle",
+            "resistance": 2,
+            "texture": "simplebox.obj",
+            "weight": 30,
+            "vehicle": 1
+        },
+        "5": {
+            "name": "allsupportedfeatures",
+            "resistance": 100,
+            "texture": "test.obj",
+            "transparency": 2,
+            "weight": 100,
+            "vehicle": 100
+        }
+    },
+    "recipes":
+    {
+        "0": {
+            "name": "engine",
+            "blocks": [{"position": [0, 0, 0]},
+                       {"position": [0, 0, 1]},
+                       {"position": [0, 1, 1]},
+                       {"id": 1, "position": [0, 1, 0]}
+            ],
+            "texture": "engine.obj",
+            "resistance": 40,
+            "weight": 100
+        },
+        "1": {
+            "name": "tree",
+            "blocks": [{"id": 3, "orientation": 5, "position": [0, 0, 0]},
+                       {"id": 3, "orientation": "top", "position": [0, 0, 1]},
+                       {"position": [0, 1, 1]}
+                       ],
+            "resistance": 40,
+            "texture": "test.obj",
+            "transparency": 3,
+            "weight": 100,
+            "vehicle": 1
+        },
+        "2": {
+            "name": "allsupportedfeatures",
+            "blocks": [{"id": 3, "orientation": 5, "position": [0, 0, 0]},
+                       {"id": 3, "orientation": "top", "position": [0, 0, 1]},
+                       {"position": [0, 1, 1]}
+            ],
+            "blockfile": "path/to/superobject_folder",
+            "resistance": 40,
+            "texture": "test.obj",
+            "transparency": 3,
+            "weight": 100,
+            "vehicle": 1
+        }
+    },
+    "world_gen":
+    {
+        "biomes": [
+        {
+                   "name": "forest"
+        },
+        {
+                   "name": "allsupportedfeatures",
+                   "frequency": 10,
+                   "roughness": 10,
+                   "blocks": [{"id": 3, "lower": 0, "upper": 10, "frequency": 1},
+                                                           {"id": 10, "lower": -20, "upper": 5, "frequency": 0.5}
+                   ],
+                   "structures": [{"recipeids": [2, 3], "spaced": 20},
+                                  {"recipeids": [4, 5], "spaced": 30}]
+        }
+        ]
+    }
+}
