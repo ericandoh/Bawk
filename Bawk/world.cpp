@@ -8,8 +8,8 @@
 #include "world.h"
 #include "base_world.h"
 #include "block_loader.h"
-#include "worldrender.h"    // used for getting which block to place
 #include "superobject.h"
+#include "blocktracer.h"
 
 // constructor
 World::World(std::string id) {

@@ -130,7 +130,7 @@ void Game::render() {
     // render world in player's perspective
     world->render(transform);
     // get depth coordinates
-    player->query_depth();
+    player->query_depth(world);
     // render current item based on those depth coordinates
     if (bar->get_current()) {
         bar->get_current()->render_and_position(transform);

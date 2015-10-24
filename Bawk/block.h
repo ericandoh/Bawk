@@ -27,16 +27,6 @@
 #include <stdint.h>
 #include "player.h"
 
-// orientation, from a viewer looking from the positive x-direction
-enum BlockOrientation: uint8_t {
-    FRONT = 0,
-    TOP = 1,
-    RIGHT = 2,
-    BACK = 3,
-    BOTTOM = 4,
-    LEFT = 5
-};
-
 struct block_type {
     // the physical type of the block
     // properties such as block resistance, block weight, etc can be calculated from this

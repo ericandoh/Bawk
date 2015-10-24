@@ -44,8 +44,6 @@ GLuint get_vertex_attribute_vbo();
 GLuint get_texture_attribute_vbo();
 void set_block_draw_mode(int v);
 void set_transform_matrix(fmat4 mvp);
-void set_look_at(float depth, int x, int y, int z, BlockOrientation side);
-bool get_look_at(ivec4* src);
 void set_up_for_world_render();
 
 #endif /* defined(__Bawk__worldrender__) */

@@ -17,6 +17,7 @@
 #include "cursorsuperobject.h"
 
 // add this to every recipe ID
+// +1, so 0 doesn't map to 0 in the actual block
 const uint16_t recipe_mask = 0x1 << 15;
 
 // none of these structs have a uint16_t type

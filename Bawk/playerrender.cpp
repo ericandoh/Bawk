@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "display.h"    // for get_window_size
 #include "worldrender.h"
+#include "blocktracer.h"
 #include "playerrender.h"
 #include "block.h"
 
@@ -37,11 +38,7 @@ fmat4* RenderablePlayer::set_camera() {
     return &mvp;
 }
 
-static float dti(float val) {
-    return fabsf(val - roundf(val));
-}
-
-void RenderablePlayer::query_depth() {
+void RenderablePlayer::query_depth(World* world) {
     int width, height;
     float depth;
     get_window_size(&width, &height);
@@ -59,49 +56,9 @@ void RenderablePlayer::query_depth() {
     // view, projection matrices should be set from previous set_camera() call
     glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
     
-    int mx = floorf(objcoord.x);
-    int my = floorf(objcoord.y);
-    int mz = floorf(objcoord.z);
     
-    float distance = sqrtf((mx-pos.x)*(mx-pos.x) + (my-pos.y)*(my-pos.y) + (mz-pos.z)*(mz-pos.z));
-    
-    BlockOrientation face;
-    
-    if(dti(objcoord.x) < dti(objcoord.y)) {
-        if(dti(objcoord.x) < dti(objcoord.z)) {
-            // face is perpendicular to x-axis (most likely)
-            if(dir.x > 0) {
-                face = BlockOrientation::BACK;
-            } else {
-                face = BlockOrientation::FRONT;
-            }
-        } else {
-            // face is perpendicular to z-axis (most likely)
-            if(dir.z > 0) {
-                face = BlockOrientation::LEFT;
-            } else {
-                face = BlockOrientation::RIGHT;
-            }
-        }
-    } else {
-        if(dti(objcoord.y) < dti(objcoord.z)) {
-            // face is perpendicular to y-axis (most likely)
-            if(dir.y > 0) {
-                face = BlockOrientation::BOTTOM;
-            } else {
-                face = BlockOrientation::TOP;
-            }
-        } else {
-            // face is perpendicular to z-axis (most likely)
-            if(dir.z > 0) {
-                face = BlockOrientation::LEFT;
-            } else {
-                face = BlockOrientation::RIGHT;
-            }
-        }
-    }
     // call to save mx, my, mz, and face here to a global var
-    set_look_at(distance, mx, my, mz, face);
+    set_look_at(pos, dir, depth, objcoord, world);
 }
 
 void RenderablePlayer::render() {

@@ -27,6 +27,8 @@
 #include "entity.h"
 #include "math.h"
 
+class World;
+
 class RenderablePlayer: public Entity {
     fmat4 mvp;
     fmat4 view, projection;
@@ -34,7 +36,7 @@ class RenderablePlayer: public Entity {
 public:
     RenderablePlayer();
     fmat4* set_camera();
-    void query_depth();
+    void query_depth(World* world);
     // renders a box around the selection
     // also updates appropriate variables marking the selection
     void render();

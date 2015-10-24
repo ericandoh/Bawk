@@ -73,6 +73,16 @@ struct ivec3 : glm::tvec3<int> {
     }*/
 };
 
+// orientation, from a viewer looking from the positive x-direction
+enum BlockOrientation: uint8_t {
+    FRONT = 0,
+    TOP = 1,
+    RIGHT = 2,
+    BACK = 3,
+    BOTTOM = 4,
+    LEFT = 5
+};
+
 struct player_and_id {
     uint32_t pid;
     uint32_t sid;
