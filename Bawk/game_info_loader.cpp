@@ -364,6 +364,10 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
             read_obj_file(&(block_model_info[recipe_id + recipe_mask]), recipe["texture"].asString());
             block_info->is_model = true;
         }
+        else {
+            // the recipe (should) not have recipe blocks, and if it does default to the corresponding block id texture
+            block_info->texture = recipe_id;
+        }
         if (recipe.isMember("resistance") && recipe["resistance"].type() == Json::intValue) {
             block_info->resistance = recipe["resistance"].asInt();
         }
@@ -436,8 +440,8 @@ void free_game_info() {
     delete game_data_object;
 }
 
-uint16_t get_block_texture(block_type block, BlockOrientation face) {
-    uint16_t block_id = block.type;
+uint16_t get_block_texture(block_type blk, BlockOrientation face) {
+    uint16_t block_id = blk.type;
     if (block_id >= recipe_mask) {
         block_id -= recipe_mask;
         int texture = game_data_object->recipe_block_info[block_id].texture;
@@ -464,6 +468,21 @@ uint16_t get_block_texture(block_type block, BlockOrientation face) {
         }
     }
     return 0;
+}
+
+bool get_block_is_model(block_type blk) {
+    uint16_t block_id = blk.type;
+    if (block_id >= recipe_mask) {
+        block_id -= recipe_mask;
+        if (game_data_object->recipe_block_info[block_id].is_model) {
+            // only render the model if you are the center
+            return blk.relx == 0 && blk.rely == 0 && blk.relz == 0;
+        }
+    }
+    else {
+        return game_data_object->block_info[block_id].is_model;
+    }
+    return false;
 }
 
 int get_block_resistance(uint16_t block_id) {
@@ -515,11 +534,22 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
     else {
         // construct a CursorSuperObject holding recipe contents
         CursorSuperObject* object = new CursorSuperObject(0, vid);
+        ivec3 first_pos;
         for (int i = 0; i < game_data_object->recipe_info[vid].blks.size(); i++) {
             ivec3 pos = game_data_object->recipe_info[vid].positions[i];
             uint16_t blk = game_data_object->recipe_info[vid].blks[i];
             BlockOrientation orientation = game_data_object->recipe_info[vid].orientations[i];
             block_type block(blk, orientation, 0);
+            if (i == 0) {
+                block.relx = block.rely = block.relz = 0;
+                first_pos = pos;
+            }
+            else {
+                // calculate block relx/rely/relz from above
+                block.relx = pos.x - first_pos.x;
+                block.rely = pos.y - first_pos.y;
+                block.relz = pos.z - first_pos.z;
+            }
             object->set_block(pos.x, pos.y, pos.z, block);
         }
         return object;
@@ -529,16 +559,22 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
 void fill_game_models(std::vector<fvec3> &model_vertices,
                       std::vector<fvec3> &model_normals,
                       std::vector<fvec3> &model_uvs,
-                      block_type block) {
-    if (block.is_recipe != 1) {
-        return;
-    }
+                      block_type block,
+                      int x, int y, int z) {
     uint16_t block_id = block.type;
     std::vector<fvec3> vertices = game_data_object->block_model_info[block_id].vertices;
     std::vector<fvec3> normals = game_data_object->block_model_info[block_id].normals;
     std::vector<fvec3> uvs = game_data_object->block_model_info[block_id].uvs;
     
-    model_vertices.insert(model_vertices.end(), vertices.begin(), vertices.end());
+    printf("%d %d %d\n", (int)vertices.size(), (int)normals.size(), (int)uvs.size());
+    
+    model_vertices.reserve(model_vertices.size() + vertices.size());
+    for (int i = 0; i < vertices.size(); i++) {
+        fvec3 translated(vertices[i].x + x, vertices[i].y + y, vertices[i].z + z);
+        model_vertices.push_back(translated);
+    };
+    
+    // normals and uvs dont need to add xyz
     model_normals.insert(model_normals.end(), normals.begin(), normals.end());
     model_uvs.insert(model_uvs.end(), uvs.begin(), uvs.end());
 }

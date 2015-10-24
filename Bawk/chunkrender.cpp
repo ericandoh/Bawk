@@ -95,8 +95,8 @@ bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) 
         return true;
     
     // Recipe Models are also always blocked
-    if (blk[x1][y1][z1].is_recipe)
-        return true;
+    if (get_block_is_model(blk[x2][y2][z2]))
+        return false;
     
     // Leaves do not block any other block, including themselves
     if(get_transparency(get(x2, y2, z2).type) == 1)
@@ -227,9 +227,9 @@ void RenderableChunk::update() {
     for(int x = CX - 1; x >= 0; x--) {
         for(int y = 0; y < CY; y++) {
             for(int z = 0; z < CZ; z++) {
-                if (blk[x][y][z].is_recipe) {
+                if (get_block_is_model(blk[x][y][z])) {
                     // add to
-                    fill_game_models(model_vertices, model_normals, model_uvs, blk[x][y][z]);
+                    fill_game_models(model_vertices, model_normals, model_uvs, blk[x][y][z], x, y, z);
                 }
                 // Line of sight blocked?
                 if(isblocked(x, y, z, x - 1, y, z)) {
@@ -490,7 +490,7 @@ void RenderableChunk::render() {
         
         glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
         glBufferData(GL_ARRAY_BUFFER, model_uvs.size() * sizeof(fvec3), &(model_uvs[0]), GL_STATIC_DRAW);
-        glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(texture_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_TRIANGLES, 0, num_triangles);
     }
 }

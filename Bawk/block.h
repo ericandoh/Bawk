@@ -54,7 +54,7 @@ struct block_type {
     // 0 - not a recipe, 1 - is recipe center block, 2 - other recipe center block
     uint8_t is_recipe;
     // if this is a recipe block, this tells the offset from the center block
-    uint16_t relx, rely, relz;
+    int16_t relx, rely, relz;
     block_type();
     // used by world to make generic blocks
     block_type(uint16_t t);

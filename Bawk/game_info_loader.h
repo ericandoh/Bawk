@@ -32,6 +32,7 @@ int load_game_info();
 void free_game_info();
 
 uint16_t get_block_texture(block_type blk, BlockOrientation face);
+bool get_block_is_model(block_type blk);
 int get_block_resistance(uint16_t block_id);
 int get_block_transparency(uint16_t block_id);
 int get_block_weight(uint16_t block_id);
@@ -44,6 +45,7 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid);
 void fill_game_models(std::vector<fvec3> &model_vertices,
                       std::vector<fvec3> &model_normals,
                       std::vector<fvec3> &model_uvs,
-                      block_type block);
+                      block_type block,
+                      int x, int y, int z);
 
 #endif /* defined(__Bawk__game_info_loader__) */
