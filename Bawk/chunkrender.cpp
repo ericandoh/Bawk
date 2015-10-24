@@ -103,15 +103,15 @@ bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) 
         return false;
     
     // Leaves do not block any other block, including themselves
-    if(get_transparency(get(x2, y2, z2).type) == 1)
+    if(get_block_transparency(get(x2, y2, z2).type) == 1)
         return false;
     
     // Non-transparent blocks always block line of sight
-    if(!get_transparency(get(x2, y2, z2).type))
+    if(!get_block_transparency(get(x2, y2, z2).type))
         return true;
     
     // Otherwise, LOS is only blocked by blocks if the same transparency type
-    return get_transparency(get(x2, y2, z2).type) == get_transparency(blk[x1][y1][z1].type);
+    return get_block_transparency(get(x2, y2, z2).type) == get_block_transparency(blk[x1][y1][z1].type);
 }
 
 

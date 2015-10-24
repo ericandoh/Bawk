@@ -52,15 +52,6 @@ bool block_type::equals(block_type other) {
     return type == other.type && orientation == other.orientation && life == other.life && (!is_recipe);
 }
 
-int get_transparency(uint16_t block) {
-    if (block == 0) {
-        return 2;
-    }
-    // all blocks are opaque for now
-    // later return an integer if not transparent
-    return 0;
-}
-
 int creates_independence(uint16_t block) {
     return 0;
 }

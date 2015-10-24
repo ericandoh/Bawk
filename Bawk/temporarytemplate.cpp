@@ -7,7 +7,7 @@
 //
 
 #include "temporarytemplate.h"
-#include "block.h"
+#include "game_info_loader.h"
 
 TemporaryTemplate::TemporaryTemplate() {
     will_be_independent = 0;
@@ -15,7 +15,7 @@ TemporaryTemplate::TemporaryTemplate() {
 
 void TemporaryTemplate::add_block(ivec3 position, block_type block) {
     blocks.push_back(block_data(position, block));
-    if (creates_independence(block.type)) {
+    if (get_block_independence(block.type)) {
         will_be_independent++;
     }
 }
@@ -23,7 +23,7 @@ void TemporaryTemplate::add_block(ivec3 position, block_type block) {
 void TemporaryTemplate::remove_block(ivec3 position) {
     for (unsigned int i = 0; i < blocks.size(); i++) {
         if (blocks.at(i).position == position) {
-            if (creates_independence(blocks.at(i).block.type)) {
+            if (get_block_independence(blocks.at(i).block.type)) {
                 will_be_independent--;
             }
             blocks.erase(blocks.begin() + i);
