@@ -40,6 +40,8 @@ extern int CHUNK_RENDER_DIST;
 
 int world_load_resources();
 void world_free_resources();
+GLuint get_vertex_attribute_vbo();
+GLuint get_texture_attribute_vbo();
 void set_block_draw_mode(int v);
 void set_transform_matrix(fmat4 mvp);
 void set_look_at(float depth, int x, int y, int z, BlockOrientation side);

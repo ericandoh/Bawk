@@ -51,6 +51,4 @@ public:
     void delete_self() override;
 };
 
-void delete_cursorblockvbos();
-
 #endif /* defined(__Bawk__cursorblock__) */

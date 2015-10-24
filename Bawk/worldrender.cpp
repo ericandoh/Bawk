@@ -13,6 +13,7 @@
 #include "worldrender.h"
 #include "chunkrender.h"
 #include "cursorblock.h"
+#include "game_info_loader.h"
 
 // shaders and attributes set by shader loading program
 GLuint block_attribute_coord;
@@ -30,6 +31,10 @@ float BLOCK_PLACE_DST = 10.0f;
 int mx, my, mz;
 BlockOrientation face;
 bool in_range;
+
+
+GLuint common_vertex_vbo;
+GLuint common_texture_vbo;
 
 int world_load_resources() {
     if (set_shaders(&block_attribute_coord,
@@ -58,15 +63,30 @@ int world_load_resources() {
     
     set_up_for_world_render();
     
+    glGenBuffers(1, &common_vertex_vbo);
+    glGenBuffers(1, &common_texture_vbo);
+    
+    load_game_info();
+    
     return 0;
 }
 
 void world_free_resources() {
+    free_game_info();
     delete_all_buffers();
     glDeleteProgram(program);
     glDeleteTextures(1, &tile_texture);
     
-    delete_cursorblockvbos();
+    glDeleteBuffers(1, &common_vertex_vbo);
+    glDeleteBuffers(1, &common_texture_vbo);
+}
+
+GLuint get_vertex_attribute_vbo() {
+    return common_vertex_vbo;
+}
+
+GLuint get_texture_attribute_vbo() {
+    return common_texture_vbo;
 }
 
 void set_block_draw_mode(int v) {

@@ -198,7 +198,7 @@ CursorSuperObject* create_from_template(Player* player, World* world, TemporaryT
         lower_corner.y = imin(lower_corner.y, position.y);
         lower_corner.z = imin(lower_corner.z, position.z);
     }
-        for (auto &i : blocks) {
+    for (auto &i : blocks) {
         ivec3 position = ivec3(i.position.x - lower_corner.x,
                                i.position.y - lower_corner.y,
                                i.position.z - lower_corner.z);

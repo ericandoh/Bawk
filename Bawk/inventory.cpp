@@ -9,6 +9,7 @@
 #include "inventory.h"
 #include "cursorblock.h"
 #include "cursorsuperobject.h"
+#include "game_info_loader.h"
 
 void insert_ordered(std::vector<uint16_t>* src, uint16_t v) {
     int start = 0;
@@ -92,7 +93,7 @@ CursorItem* PlayerInventory::get_recipe_at(int index) {
         return 0;
     uint16_t recipe_id = found_recipes[index];
     // TODO fetch recipe by recipe_id
-    return 0;
+    return get_recipe_cursoritem_from(recipe_id);
 }
 
 CursorItem* PlayerInventory::get_custom_at(int index) {

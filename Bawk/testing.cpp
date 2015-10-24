@@ -28,8 +28,9 @@ void do_shit() {
 
 // COPY FUNCTION DOWN VVV
 void do_shit() {
-    GameInfoDataObject obj;
-    obj.read_values();
+    load_game_info();
+    printf("Block 1's resistance: %d\n", get_block_resistance(2));
+    free_game_info();
 }
 
 

@@ -49,7 +49,7 @@ block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t
 }
 
 bool block_type::equals(block_type other) {
-    return type == other.type && orientation == other.orientation && life == other.life;
+    return type == other.type && orientation == other.orientation && life == other.life && (!is_recipe);
 }
 
 int get_transparency(uint16_t block) {

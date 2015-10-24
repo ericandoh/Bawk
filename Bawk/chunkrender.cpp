@@ -12,6 +12,7 @@
 #include "glm/glm.hpp"
 #include "worldrender.h"
 #include "blockrender.h"
+#include "game_info_loader.h"
 
 // dimensions of a chunk
 #define CX 16
@@ -91,6 +92,10 @@ void delete_all_buffers() {
 bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) {
     // Air (0) is always "blocked"
     if(!blk[x1][y1][z1].type)
+        return true;
+    
+    // Recipe Models are also always blocked
+    if (blk[x1][y1][z1].is_recipe)
         return true;
     
     // Leaves do not block any other block, including themselves
@@ -213,11 +218,19 @@ void RenderableChunk::update() {
     int merged = 0;
     bool vis = false;
     
+    model_vertices.clear();
+    model_normals.clear();
+    model_uvs.clear();
+    
     // View from negative x
     
     for(int x = CX - 1; x >= 0; x--) {
         for(int y = 0; y < CY; y++) {
             for(int z = 0; z < CZ; z++) {
+                if (blk[x][y][z].is_recipe) {
+                    // add to
+                    fill_game_models(model_vertices, model_normals, model_uvs, blk[x][y][z]);
+                }
                 // Line of sight blocked?
                 if(isblocked(x, y, z, x - 1, y, z)) {
                     vis = false;
@@ -229,7 +242,6 @@ void RenderableChunk::update() {
                 // Same block as previous one? Extend it.
                 if(vis && z != 0 && blk[x][y][z].equals(blk[x][y][z - 1])) {
                     set_coord_and_texture(vertex, texture, i - 5, x, y, z + 1, type, flags);
-                    
                     set_coord_and_texture(vertex, texture, i - 2, x, y, z + 1, type, flags);
                     set_coord_and_texture(vertex, texture, i - 1, x, y + 1, z + 1, type, flags);
                     merged++;
@@ -466,6 +478,21 @@ void RenderableChunk::render() {
     glVertexAttribPointer(texture_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, elements);
+    
+    if (model_vertices.size() > 0) {
+        // draw the model elements
+        set_block_draw_mode(0);
+        int num_triangles = (int)model_vertices.size() / 3;
+        
+        glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+        glBufferData(GL_ARRAY_BUFFER, model_vertices.size() * sizeof(fvec3), &(model_vertices[0]), GL_STATIC_DRAW);
+        glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
+        glBufferData(GL_ARRAY_BUFFER, model_uvs.size() * sizeof(fvec3), &(model_uvs[0]), GL_STATIC_DRAW);
+        glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glDrawArrays(GL_TRIANGLES, 0, num_triangles);
+    }
 }
 
 void get_empty_chunk(block_type source[CX][CY][CZ]) {

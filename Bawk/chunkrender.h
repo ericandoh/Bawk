@@ -24,6 +24,7 @@
 #define Bawk_chunk_h
 
 #include <GLFW/glfw3.h>
+#include <vector>
 #include "block.h"
 
 // dimensions of our chunk
@@ -36,6 +37,9 @@ void delete_all_buffers();
 class RenderableChunk {
     GLuint coord_vbo;           // VBO (vertex buffer object) for coordinates
     GLuint texture_vbo;         // VBO (vertex buffer object) for textures/flags
+    std::vector<fvec3> model_vertices;
+    std::vector<fvec3> model_normals;
+    std::vector<fvec3> model_uvs;
     int elements;               // number of triangles that need rendering
     int block_counter;          // number of blocks in this chunk
     int slot;                   // which slot it is using for the VBO?

@@ -46,9 +46,6 @@ int Game::init() {
         return 1;
     }
     
-    // load resources for widgets/misc stuff
-    initialize_vbo_for_widgets();
-    
     // load game-related data
     if (load_game_data())
         return 1;
@@ -455,6 +452,5 @@ Game::~Game() {
     delete story;
     delete bar;
     world_free_resources();
-    clean_vbo_for_widgets();
 }
 

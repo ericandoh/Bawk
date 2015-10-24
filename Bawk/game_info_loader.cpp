@@ -11,10 +11,96 @@
 #include <fstream>
 #include <string>
 #include <streambuf>
+#include <unordered_map>
+#include "json/json.h"
 #include "block_loader.h"
+#include "cursorsuperobject.h"
 
 // add this to every recipe ID
 const uint16_t recipe_mask = 0x1 << 15;
+
+// none of these structs have a uint16_t type
+// because those are the indices into our vectors
+struct block_game_info {
+    std::string name;
+    bool is_model;
+    int texture;
+    int textures[6];
+    int resistance;
+    int transparency;
+    int weight;
+    int vehicle;
+    block_game_info() {
+        name = "";
+        is_model = false;
+        texture = 0;
+        resistance = 0;
+        transparency = 0;
+        weight = 0;
+        vehicle = 0;
+    }
+};
+
+struct model_game_info {
+    // we will use this to bind to texture which is loaded in by SOIL
+    std::string texture;
+    std::vector<fvec3> vertices;
+    std::vector<fvec3> uvs;
+    std::vector<fvec3> normals;
+};
+
+struct recipe_game_info {
+    std::string name;
+    bool from_file;
+    std::string file_path;
+    std::vector<ivec3> positions;
+    std::vector<uint16_t> blks;
+    std::vector<BlockOrientation> orientations;
+};
+
+struct block_layer_game_info {
+    uint16_t type;
+    int lower;
+    int upper;
+    int frequency;
+};
+
+struct structure_gen_game_info {
+    std::vector<uint16_t> types;
+    int lower;
+    int upper;
+    int spacing;
+};
+
+struct biome_game_info {
+    std::string name;
+    int frequency;
+    int roughness;
+    std::vector<block_layer_game_info> layers;
+    std::vector<structure_gen_game_info> structures;
+};
+
+class GameInfoDataObject {
+    int read_blocks(Json::Value root);
+    int read_recipes(Json::Value root);
+    int read_world_gen(Json::Value root);
+public:
+    int version;
+    std::vector<block_game_info> block_info;
+    std::vector<block_game_info> recipe_block_info;
+    std::unordered_map<uint16_t, model_game_info> block_model_info;
+    std::vector<recipe_game_info> recipe_info;
+    std::vector<biome_game_info> biome_info;
+    
+    GameInfoDataObject();
+    ~GameInfoDataObject();
+    int read_values();
+    // accessor methods
+    
+};
+
+// store the current game data object as a blobal
+GameInfoDataObject* game_data_object;
 
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     // stolen shamelessly (i'm a good thief) from http://stackoverflow.com/questions/236129/split-a-string-in-c
@@ -32,14 +118,14 @@ void read_obj_file(model_game_info* dst, std::string obj_filename) {
     //obj_filename = "/Users/Eric/Documents/dev/BawkAssets/simplebox.obj";
     
     std::vector<fvec3> temp_vertices;
-    std::vector<fvec2> temp_uvs;
+    std::vector<fvec3> temp_uvs;
     std::vector<fvec3> temp_normals;
     
     std::ifstream file(get_path_to_game_folder() + "/" + obj_filename);
     //std::ifstream file(obj_filename);
     
     if (!file.is_open()) {
-        printf("File could not be found\n");
+        printf("File could not be found %s\n", (get_path_to_game_folder() + "/" + obj_filename).c_str());
     }
     
     std::string line;
@@ -54,7 +140,8 @@ void read_obj_file(model_game_info* dst, std::string obj_filename) {
             temp_vertices.push_back(vertex);
         }
         else if (identifier.compare("vt") == 0) {
-            fvec2 uv;
+            fvec3 uv;
+            uv.z = 0;
             if (!(iss >> uv.x >> uv.y)) { break; }
             temp_uvs.push_back(uv);
         }
@@ -266,9 +353,11 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
                     
                 }
             }
+            info->from_file = false;
         }
         if (recipe.isMember("blockfile") && recipe["blockfile"].type() == Json::stringValue) {
-            printf("Currently not supported. Sorry!");
+            info->from_file = true;
+            info->file_path = get_path_to_game_folder() + "/" +  recipe["blockfile"].asString();
         }
         if (recipe.isMember("texture") && recipe["texture"].type() == Json::stringValue) {
             block_model_info[recipe_id + recipe_mask] = model_game_info();
@@ -336,4 +425,120 @@ int GameInfoDataObject::read_values() {
         read_world_gen(root["world_gen"]);
     
     return 0;
+}
+
+int load_game_info() {
+    game_data_object = new GameInfoDataObject();
+    return game_data_object->read_values();
+}
+
+void free_game_info() {
+    delete game_data_object;
+}
+
+uint16_t get_block_texture(block_type block, BlockOrientation face) {
+    uint16_t block_id = block.type;
+    if (block_id >= recipe_mask) {
+        block_id -= recipe_mask;
+        int texture = game_data_object->recipe_block_info[block_id].texture;
+        if (texture < 0) {
+            // use the array instead
+            printf("frog\n");
+        }
+        else {
+            return texture;
+        }
+
+    }
+    else {
+        if (block_id >= game_data_object->block_info.size()) {
+            return block_id;
+        }
+        int texture = game_data_object->block_info[block_id].texture;
+        if (texture < 0) {
+            // use the array instead
+            printf("frog\n");
+        }
+        else {
+            return texture;
+        }
+    }
+    return 0;
+}
+
+int get_block_resistance(uint16_t block_id) {
+    if (block_id >= recipe_mask) {
+        block_id -= recipe_mask;
+        return game_data_object->recipe_block_info[block_id].resistance;
+    }
+    else {
+        return game_data_object->block_info[block_id].resistance;
+    }
+}
+
+int get_block_transparency(uint16_t block_id) {
+    if (block_id >= recipe_mask) {
+        block_id -= recipe_mask;
+        return game_data_object->recipe_block_info[block_id].transparency;
+    }
+    else {
+        return game_data_object->block_info[block_id].transparency;
+    }
+}
+
+int get_block_weight(uint16_t block_id) {
+    if (block_id >= recipe_mask) {
+        block_id -= recipe_mask;
+        return game_data_object->recipe_block_info[block_id].weight;
+    }
+    else {
+        return game_data_object->block_info[block_id].weight;
+    }
+}
+
+int get_block_independence(uint16_t block_id) {
+    if (block_id >= recipe_mask) {
+        block_id -= recipe_mask;
+        return game_data_object->recipe_block_info[block_id].vehicle;
+    }
+    else {
+        return game_data_object->block_info[block_id].vehicle;
+    }
+}
+
+CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
+    if (game_data_object->recipe_info[vid].from_file) {
+        // make a superobject loaded from file path
+        // game_data_object->recipe_info[vid].file_path;
+        return 0;
+    }
+    else {
+        // construct a CursorSuperObject holding recipe contents
+        CursorSuperObject* object = new CursorSuperObject(0, vid);
+        for (int i = 0; i < game_data_object->recipe_info[vid].blks.size(); i++) {
+            ivec3 pos = game_data_object->recipe_info[vid].positions[i];
+            uint16_t blk = game_data_object->recipe_info[vid].blks[i];
+            BlockOrientation orientation = game_data_object->recipe_info[vid].orientations[i];
+            block_type block(blk, orientation, 0);
+            object->set_block(pos.x, pos.y, pos.z, block);
+        }
+        return object;
+    }
+}
+
+void fill_game_models(std::vector<fvec3> &model_vertices,
+                      std::vector<fvec3> &model_normals,
+                      std::vector<fvec3> &model_uvs,
+                      block_type block) {
+    if (block.is_recipe != 1) {
+        return;
+    }
+    uint16_t block_id = block.type;
+    std::vector<fvec3> vertices = game_data_object->block_model_info[block_id].vertices;
+    std::vector<fvec3> normals = game_data_object->block_model_info[block_id].normals;
+    std::vector<fvec3> uvs = game_data_object->block_model_info[block_id].uvs;
+    
+    model_vertices.insert(model_vertices.end(), vertices.begin(), vertices.end());
+    model_normals.insert(model_normals.end(), normals.begin(), normals.end());
+    model_uvs.insert(model_uvs.end(), uvs.begin(), uvs.end());
 }

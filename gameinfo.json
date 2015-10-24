@@ -30,6 +30,84 @@
             "vehicle": 1
         },
         "5": {
+            "name": "unnamed"
+        },
+        "6": {
+            "name": "unnamed"
+        },
+        "7": {
+            "name": "unnamed"
+        },
+        "8": {
+            "name": "unnamed"
+        },
+        "9": {
+            "name": "unnamed"
+        },
+        "10": {
+            "name": "unnamed"
+        },
+        "11": {
+            "name": "unnamed"
+        },
+        "12": {
+            "name": "unnamed"
+        },
+        "13": {
+            "name": "unnamed"
+        },
+        "14": {
+            "name": "unnamed"
+        },
+        "15": {
+            "name": "unnamed"
+        },
+        "16": {
+            "name": "unnamed"
+        },
+        "17": {
+            "name": "unnamed"
+        },
+        "18": {
+            "name": "unnamed"
+        },
+        "19": {
+            "name": "unnamed"
+        },
+        "20": {
+            "name": "unnamed"
+        },
+        "21": {
+            "name": "unnamed"
+        },
+        "22": {
+            "name": "unnamed"
+        },
+        "23": {
+            "name": "unnamed"
+        },
+        "24": {
+            "name": "unnamed"
+        },
+        "25": {
+            "name": "unnamed"
+        },
+        "26": {
+            "name": "unnamed"
+        },
+        "27": {
+            "name": "unnamed"
+        },
+        "28": {
+            "name": "unnamed"
+        },
+        "29": {
+            "name": "unnamed"
+        },
+        "30": {
+            "name": "unnamed"
+        },
+        "31": {
             "name": "allsupportedfeatures",
             "resistance": 100,
             "texture": "test.obj",

@@ -23,89 +23,27 @@
 #define __Bawk__game_info_loader__
 
 #include <stdio.h>
-#include <iostream>
-#include <fstream>
-#include <unordered_map>
 #include "basic_types.h"
-#include "json/json.h"
 #include "block.h"
 
-// none of these structs have a uint16_t type
-// because those are the indices into our vectors
-struct block_game_info {
-    std::string name;
-    bool is_model;
-    int texture;
-    int textures[6];
-    int resistance;
-    int transparency;
-    int weight;
-    int vehicle;
-    block_game_info() {
-        name = "";
-        is_model = false;
-        texture = 0;
-        resistance = 0;
-        transparency = 0;
-        weight = 0;
-        vehicle = 0;
-    }
-};
+class CursorItem;
 
-struct model_game_info {
-    // we will use this to bind to texture which is loaded in by SOIL
-    std::string texture;
-    std::vector<fvec3> vertices;
-    std::vector<fvec2> uvs;
-    std::vector<fvec3> normals;
-};
+int load_game_info();
+void free_game_info();
 
-struct recipe_game_info {
-    std::string name;
-    std::vector<ivec3> positions;
-    std::vector<uint16_t> blks;
-    std::vector<BlockOrientation> orientations;
-};
+uint16_t get_block_texture(block_type blk, BlockOrientation face);
+int get_block_resistance(uint16_t block_id);
+int get_block_transparency(uint16_t block_id);
+int get_block_weight(uint16_t block_id);
+int get_block_independence(uint16_t block_id);
 
-struct block_layer_game_info {
-    uint16_t type;
-    int lower;
-    int upper;
-    int frequency;
-};
+CursorItem* get_recipe_cursoritem_from(uint16_t vid);
 
-struct structure_gen_game_info {
-    std::vector<uint16_t> types;
-    int lower;
-    int upper;
-    int spacing;
-};
+// some world generation methods below
 
-struct biome_game_info {
-    std::string name;
-    int frequency;
-    int roughness;
-    std::vector<block_layer_game_info> layers;
-    std::vector<structure_gen_game_info> structures;
-};
-
-class GameInfoDataObject {
-    int version;
-    std::vector<block_game_info> block_info;
-    std::vector<block_game_info> recipe_block_info;
-    std::unordered_map<uint16_t, model_game_info> block_model_info;
-    std::vector<recipe_game_info> recipe_info;
-    std::vector<biome_game_info> biome_info;
-    
-    int read_blocks(Json::Value root);
-    int read_recipes(Json::Value root);
-    int read_world_gen(Json::Value root);
-public:
-    GameInfoDataObject();
-    ~GameInfoDataObject();
-    int read_values();
-    // accessor methods
-    
-};
+void fill_game_models(std::vector<fvec3> &model_vertices,
+                      std::vector<fvec3> &model_normals,
+                      std::vector<fvec3> &model_uvs,
+                      block_type block);
 
 #endif /* defined(__Bawk__game_info_loader__) */

@@ -7,6 +7,7 @@
 //
 
 #include "blockrender.h"
+#include "game_info_loader.h"
 
 const unsigned int TILES_PER_TEXTURE = 16;
 
@@ -19,27 +20,12 @@ void set_coord_and_texture(GLbyte coord[][3],
     coord[index][1] = y;
     coord[index][2] = z;
     
-    // TODO if block has different textures for different faces
-    // set them here
-    // BlockOrientation transformed_block = transform_orientation(block.orientation, face);
-    // uint16_t tile_index = get_tile_index(block.type, transformed_oreintation);
-    
-    // TODO
-    /*if (!block.is_recipe) {
-        // render normally
-    }
-    else if (block.is_recipe == 1) {
-        // render a texture here instead
-    }
-    else {
-        // skip this block
-    }*/
-    
+    uint16_t texture_index = get_block_texture(block.type, face);
     
     // first 8 bits. Represents the x-axis in our texture atlas
-    texture[index][0] = block.type % TILES_PER_TEXTURE;
+    texture[index][0] = texture_index % TILES_PER_TEXTURE;
     // last 8 bits. Represents the y-axis in our texture atlas
-    texture[index][1] = block.type / TILES_PER_TEXTURE;
+    texture[index][1] = texture_index / TILES_PER_TEXTURE;
     // some extra flags we can set to let shader know how to render this
     
     GLbyte flags = 0;

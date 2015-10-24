@@ -30,11 +30,6 @@
 #include <GLFW/glfw3.h>
 #include "basic_types.h"
 
-void initialize_vbo_for_widgets();
-GLuint get_widget_vertex_attribute_vbo();
-GLuint get_widget_texture_attribute_vbo();
-void clean_vbo_for_widgets();
-
 class BaseWidget {
 public:
     int x, y, width, height;

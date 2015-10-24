@@ -9,27 +9,6 @@
 #include "base_widget.h"
 #include "display.h"
 
-GLuint widget_vertex_vbo;
-GLuint widget_texture_vbo;
-
-void initialize_vbo_for_widgets() {
-    glGenBuffers(1, &widget_vertex_vbo);
-    glGenBuffers(1, &widget_texture_vbo);
-}
-
-GLuint get_widget_vertex_attribute_vbo() {
-    return widget_vertex_vbo;
-}
-
-GLuint get_widget_texture_attribute_vbo() {
-    return widget_texture_vbo;
-}
-
-void clean_vbo_for_widgets() {
-    glDeleteBuffers(1, &widget_vertex_vbo);
-    glDeleteBuffers(1, &widget_texture_vbo);
-}
-
 BaseWidget::BaseWidget() {
     x = 0;
     y = 0;

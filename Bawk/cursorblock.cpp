@@ -11,14 +11,6 @@
 #include "worldrender.h"
 #include "blockrender.h"
 
-struct blockvboholder {
-    CursorBlock* block;
-    GLuint coord_vbo;
-    GLuint texture_vbo;
-};
-
-static struct blockvboholder block_vbo_slot[1] = {0};
-
 CursorBlock::CursorBlock(block_type type) {
     block = type;
 }
@@ -119,23 +111,13 @@ void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
     
     set_transform_matrix(*transform);
     
-    if (block_vbo_slot[0].block != this) {
-        // steal this
-        if (!block_vbo_slot[0].block) {
-            // if not initialized, make it
-            glGenBuffers(1, &block_vbo_slot[0].coord_vbo);
-            glGenBuffers(1, &block_vbo_slot[0].texture_vbo);
-        }
-        block_vbo_slot[0].block = this;
-    }
-    
     set_block_draw_mode(1);
     
-    glBindBuffer(GL_ARRAY_BUFFER, block_vbo_slot[0].coord_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(block_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
-    glBindBuffer(GL_ARRAY_BUFFER, block_vbo_slot[0].texture_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(texture_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -171,9 +153,4 @@ cursor_item_distinguisher CursorBlock::get_distinguisher() {
 
 void CursorBlock::delete_self() {
     delete this;
-}
-
-void delete_cursorblockvbos() {
-    glDeleteBuffers(1, &block_vbo_slot[0].coord_vbo);
-    glDeleteBuffers(1, &block_vbo_slot[0].texture_vbo);
 }
