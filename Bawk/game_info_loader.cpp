@@ -566,11 +566,9 @@ void fill_game_models(std::vector<fvec3> &model_vertices,
     std::vector<fvec3> normals = game_data_object->block_model_info[block_id].normals;
     std::vector<fvec3> uvs = game_data_object->block_model_info[block_id].uvs;
     
-    printf("%d %d %d\n", (int)vertices.size(), (int)normals.size(), (int)uvs.size());
-    
     model_vertices.reserve(model_vertices.size() + vertices.size());
     for (int i = 0; i < vertices.size(); i++) {
-        fvec3 translated(vertices[i].x + x, vertices[i].y + y, vertices[i].z + z);
+        fvec3 translated(vertices[i].x + x, vertices[i].y + y, vertices[i].z + z + 1);
         model_vertices.push_back(translated);
     };
     

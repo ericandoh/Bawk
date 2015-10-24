@@ -94,8 +94,12 @@ bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) 
     if(!blk[x1][y1][z1].type)
         return true;
     
-    // Recipe Models are also always blocked
-    if (get_block_is_model(blk[x2][y2][z2]))
+    // Recipe Models are also always blocked, because they dont need to be rendered
+    if (get_block_is_model(blk[x1][y1][z1]))
+        return true;
+    
+    // Things next to models however, are rendered (models are sexy!)
+    if (get_block_is_model(get(x2, y2, z2)))
         return false;
     
     // Leaves do not block any other block, including themselves
@@ -464,25 +468,24 @@ void RenderableChunk::render() {
     lastused = glfwGetTime();
     
     // If this chunk is empty, we don't need to draw anything.
-    if(!elements)
-        return;
-    
-    // we're drawing blocks
-    set_block_draw_mode(1);
-    
-    // Render the VBO here
-    glBindBuffer(GL_ARRAY_BUFFER, coord_vbo);
-    glVertexAttribPointer(block_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, texture_vbo);
-    glVertexAttribPointer(texture_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
-    
-    glDrawArrays(GL_TRIANGLES, 0, elements);
+    if(elements) {
+        // we're drawing blocks
+        set_block_draw_mode(1);
+        
+        // Render the VBO here
+        glBindBuffer(GL_ARRAY_BUFFER, coord_vbo);
+        glVertexAttribPointer(block_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, texture_vbo);
+        glVertexAttribPointer(texture_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+        
+        glDrawArrays(GL_TRIANGLES, 0, elements);
+    }
     
     if (model_vertices.size() > 0) {
         // draw the model elements
         set_block_draw_mode(0);
-        int num_triangles = (int)model_vertices.size() / 3;
+        int num_triangles = (int)model_vertices.size();
         
         glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
         glBufferData(GL_ARRAY_BUFFER, model_vertices.size() * sizeof(fvec3), &(model_vertices[0]), GL_STATIC_DRAW);
