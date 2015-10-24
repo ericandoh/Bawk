@@ -60,6 +60,22 @@ block_type World::get_block(float x, float y, float z) {
     return base_world->get_block(x, y, z);
 }
 
+void World::get_at(float x, float y, float z, bool* world_selected, Entity** selected) {
+    // first, try fetching from the world
+    block_type block = get_block(x, y, z);
+    if (block.type) {
+        *world_selected = true;
+        *selected = 0;
+    }
+    else {
+        // nothing in the world here
+        // try see if we have an object we could be looking at
+        *world_selected = false;
+        Entity* val = holder.poke(x, y, z);
+        *selected = val;
+    }
+}
+
 bool World::kill_block(ivec3* src) {
     ivec4 looking_at;
     if (!get_look_at(&looking_at)) {
@@ -95,5 +111,7 @@ bool World::will_collide_with_anything(RenderableSuperObject* other) {
 }
 
 SuperObject* World::create_superobject(Player* player) {
-    return new SuperObject(name, player->getID(), player->assignID());
+    SuperObject* obj = new SuperObject(name, player->getID(), player->assignID());
+    holder.add_entity(obj);
+    return obj;
 }

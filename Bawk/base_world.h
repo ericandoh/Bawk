@@ -40,6 +40,7 @@ public:
     void update_dimensions_from_chunk(ivec3 chunk_pos) override;
     bool intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner) override;
     
+    bool poke(float x, float y, float z) override;
     int get_collision_priority() override;
 };
 

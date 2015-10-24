@@ -45,6 +45,7 @@ public:
     // called by cursor item, places block into baseworld
     void place_block(ivec3 position, block_type block);
     block_type get_block(float x, float y, float z);
+    void get_at(float x, float y, float z, bool* world_selected, Entity** selected);
     // called by game to kill a block directly. then effects are propogated to the appropriate entities
     bool kill_block(ivec3* src);
     void add_player(Player* player);

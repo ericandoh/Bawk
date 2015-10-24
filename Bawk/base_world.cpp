@@ -74,6 +74,10 @@ bool BaseWorld::intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner
     return true;
 }
 
+bool BaseWorld::poke(float x, float y, float z) {
+    return get_block(x, y, z).type;
+}
+
 int BaseWorld::get_collision_priority() {
     return 2;
 }

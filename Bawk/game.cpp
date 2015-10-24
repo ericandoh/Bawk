@@ -14,6 +14,7 @@
 #include "base_widget.h"
 #include "block_loader.h"
 #include "display.h"
+#include "blocktracer.h"
 
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
@@ -375,7 +376,12 @@ void Game::mouse_button_callback(int button, int action, int mods) {
             }
             else if (do_this == CLICK_CREATE) {
                 // get block here instead of outside
-                if (bar->get_current() && bar->get_current()->is_locked_in()) {
+                Entity* src = get_look_at();
+                if (src) {
+                    printf("entity selected\n");
+                    printf("frog\n");
+                }
+                else if (bar->get_current() && bar->get_current()->is_locked_in()) {
                     if (place_into) {
                         printf("Placing template into template!\n");
                     }

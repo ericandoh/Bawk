@@ -94,9 +94,9 @@ void BresenhamTracer::bresenham3D(float x1, float y1, float z1, const float x2, 
     BlockOrientation prev = BlockOrientation::FRONT;
     BlockOrientation side = BlockOrientation::FRONT;
     
-    // keep finding intersection points along dir until we run out
+    // keep finding intersection points along dir until we get to our destination, or look at 100 blocks
     int count = 0;
-    while (!((int)floorf(halfway.x) == destx && (int)floorf(halfway.y) == desty && (int)floorf(halfway.z) == destz) && count < 250) {
+    while (!((int)floorf(halfway.x) == destx && (int)floorf(halfway.y) == desty && (int)floorf(halfway.z) == destz) && count < 100) {
         previous = point;
         point = find_intersection_with_unit_cube(point, dir, &side);
         // average previous + point

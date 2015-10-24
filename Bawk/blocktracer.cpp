@@ -35,14 +35,16 @@ WorldTracer::WorldTracer(World* w) {
 }
 
 bool WorldTracer::check_at_coord(float x, float y, float z, BlockOrientation side) {
-    /*world->get_at(x, y, z, &world_selected, &selected);
+    world->get_at(x, y, z, &world_selected, &selected);
     if (world_selected || selected) {
         mx = floorf(x);
         my = floorf(y);
         mz = floorf(z);
+        face = side;
+        in_range = true;
         return true;
-    }*/
-    if (world->get_block(x, y, z).type) {
+    }
+    /*if (world->get_block(x, y, z).type) {
         mx = floorf(x);
         my = floorf(y);
         mz = floorf(z);
@@ -51,7 +53,7 @@ bool WorldTracer::check_at_coord(float x, float y, float z, BlockOrientation sid
         face = side;
         in_range = true;
         return true;
-    }
+    }*/
     return false;
 }
 
@@ -67,7 +69,7 @@ void set_look_at(fvec3 pos, fvec3 dir, float depth, fvec3 objcoord, World* world
     in_range = false;
     
     WorldTracer tracer(world);
-    tracer.bresenham3D(pos.x, pos.y, pos.z, end.x, end.y, end.z);
+    tracer.bresenham3D(start.x, start.y, start.z, end.x, end.y, end.z);
     /*
     // old depth-buffer method, which doesn't work for model objects
     mx = floorf(objcoord.x);
@@ -112,11 +114,16 @@ void set_look_at(fvec3 pos, fvec3 dir, float depth, fvec3 objcoord, World* world
 }
 
 bool get_look_at(ivec4* src) {
-    if (in_range) {
+    if (in_range && world_selected) {
         src->x = mx;
         src->y = my;
         src->z = mz;
         src->w = face;
+        return true;
     }
-    return in_range;
+    return false;
+}
+
+Entity* get_look_at() {
+    return selected;
 }

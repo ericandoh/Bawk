@@ -84,6 +84,8 @@ public:
     // call when initializing from scratch with a lot of blocks, or when removing a block at a periphery
     virtual void update_dimensions_from_chunk(ivec3 chunk_pos);
     
+    virtual bool poke(float x, float y, float z) override;
+    
     int get_collision_priority() override;
     bool check_collision_vs(Entity* other) override;
     

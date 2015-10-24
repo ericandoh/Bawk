@@ -95,6 +95,17 @@ bool Entity::has_moved() {
     return velocity.x != 0 || velocity.y != 0 || velocity.z != 0;
 }
 
+bool Entity::poke(float x, float y, float z) {
+    // transform into OAC
+    fvec3 oac;
+    // TODO same note as above
+    transform_into_my_coordinates(&oac, x, y, z);
+    
+    return (lower_bound.x <= oac.x) && (oac.x <= upper_bound.x) &&
+            (lower_bound.y <= oac.y) && (oac.y <= upper_bound.y) &&
+            (lower_bound.z <= oac.z) && (oac.z <= upper_bound.z);
+}
+
 fvec3 Entity::step() {
     fvec3 new_pos = fvec3(pos.x + velocity.x * speed,
                           pos.y + velocity.y * speed,

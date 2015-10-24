@@ -338,6 +338,15 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
     //                        upper_bound.x, upper_bound.y, upper_bound.z);
 }
 
+bool RenderableSuperObject::poke(float x, float y, float z) {
+    if (Entity::poke(x, y, z)) {
+        if (get_block(x, y, z).type){
+            return true;
+        }
+    }
+    return false;
+}
+
 int RenderableSuperObject::get_collision_priority() {
     return 1;
 }

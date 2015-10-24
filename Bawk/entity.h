@@ -58,6 +58,8 @@ public:
     fvec3* get_pos();
     fvec3 set_pos(fvec3 to);
     bool has_moved();
+    // poke this object at RWC, true if this object says, "OUCH"
+    virtual bool poke(float x, float y, float z);
     virtual fvec3 step();
     virtual void render(fmat4* transform);
     virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);

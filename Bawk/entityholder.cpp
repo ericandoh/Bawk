@@ -76,3 +76,12 @@ bool EntityHolder::collides_with(Entity* entity) {
     }
     return false;
 }
+
+Entity* EntityHolder::poke(float x, float y, float z) {
+    for (unsigned int i = 0; i < entities.size(); i++) {
+        if (entities[i]->poke(x, y, z)) {
+            return entities[i];
+        }
+    }
+    return 0;
+}

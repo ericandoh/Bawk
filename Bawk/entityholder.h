@@ -42,6 +42,7 @@ public:
     void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // checks if an entity not being held will collide if added
     bool collides_with(Entity* entity);
+    Entity* poke(float x, float y, float z);
 };
 
 #endif /* defined(__Bawk__entityholder__) */
