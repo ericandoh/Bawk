@@ -41,6 +41,9 @@ void World::remove_self() {
     }
     writer.save_value(age);
     writer.close();
+    
+    base_world->remove_selfs();
+    holder.remove_selfs();
 }
 
 // renders the world
@@ -110,8 +113,8 @@ bool World::will_collide_with_anything(RenderableSuperObject* other) {
     return holder.collides_with(other);
 }
 
-SuperObject* World::create_superobject(Player* player) {
-    SuperObject* obj = new SuperObject(name, player->getID(), player->assignID());
+SuperObject* World::create_superobject(Player* player, ivec3 pos) {
+    SuperObject* obj = new SuperObject(name, player->getID(), player->assignID(), pos);
     holder.add_entity(obj);
     return obj;
 }

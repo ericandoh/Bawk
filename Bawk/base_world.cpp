@@ -81,3 +81,7 @@ bool BaseWorld::poke(float x, float y, float z) {
 int BaseWorld::get_collision_priority() {
     return 2;
 }
+
+void BaseWorld::remove_selfs() {
+    save_all_chunks();
+}

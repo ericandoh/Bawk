@@ -123,9 +123,9 @@ void Entity::update_chunks(fvec3* old_pos, fvec3* new_pos) {
 }
 
 bool Entity::intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner) {
-    return      !(lower_bound.x > upper_corner.x || lower_corner.x > upper_bound.x
-               || lower_bound.y > upper_corner.y || lower_corner.y > upper_bound.y
-               || lower_bound.z > upper_corner.z || lower_corner.z > upper_bound.z);
+    return      !(lower_bound.x >= upper_corner.x || lower_corner.x >= upper_bound.x
+               || lower_bound.y >= upper_corner.y || lower_corner.y >= upper_bound.y
+               || lower_bound.z >= upper_corner.z || lower_corner.z >= upper_bound.z);
 }
 
 bool Entity::collides_with(Entity* other) {

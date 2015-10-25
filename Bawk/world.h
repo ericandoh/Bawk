@@ -51,7 +51,7 @@ public:
     void add_player(Player* player);
     void step();
     bool will_collide_with_anything(RenderableSuperObject* superobject);
-    SuperObject* create_superobject(Player* player);
+    SuperObject* create_superobject(Player* player, ivec3 pos);
 };
 
 #endif /* defined(__Bawk__world__) */

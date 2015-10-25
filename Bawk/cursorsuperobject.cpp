@@ -88,9 +88,9 @@ void CursorSuperObject::move_block(ivec3 dir) {
 }
 
 void CursorSuperObject::get_bounds(ivec3* upper) {
-    upper->x = upper_bound.x - lower_bound.x + 1;
-    upper->y = upper_bound.y - lower_bound.y + 1;
-    upper->z = upper_bound.z - lower_bound.z + 1;
+    upper->x = upper_bound.x - lower_bound.x;
+    upper->y = upper_bound.y - lower_bound.y;
+    upper->z = upper_bound.z - lower_bound.z;
 }
 
 void CursorSuperObject::render_at_zero(fmat4* transform) {
@@ -129,13 +129,6 @@ int CursorSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, in
     }
     get_empty_chunk(to_arr);
     return 0;
-}
-
-bool CursorSuperObject::within_dimensions_chunk(int x, int y, int z) {
-    if (chunks.count(ivec3(x, y, z))) {
-        return true;
-    }
-    return false;
 }
 
 bool CursorSuperObject::is_locked_in() {

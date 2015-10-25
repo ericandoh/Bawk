@@ -19,7 +19,7 @@
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
     MOVE_BLOCK_UP, MOVE_BLOCK_DOWN, MOVE_BLOCK_LEFT, MOVE_BLOCK_RIGHT, MOVE_BLOCK_FORWARD,
-    MOVE_BLOCK_BACKWARD, OPEN_INV, CLICK_CREATE, CLICK_DESTROY, SAVE_TEMPLATE
+    MOVE_BLOCK_BACKWARD, OPEN_INV, CLICK_CREATE, CLICK_DESTROY, SAVE_TEMPLATE, DEBUG_ACTION,
 };
 
 int toggleable_keys[] = {GLFW_KEY_SPACE,
@@ -81,6 +81,9 @@ int Game::init() {
     
     key_to_action[GLFW_KEY_I] = OPEN_INV;
     key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
+    
+    // WHYYYYYYYY
+    key_to_action[GLFW_KEY_Y] = DEBUG_ACTION;
     
     mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
     mouse_to_action[GLFW_MOUSE_BUTTON_RIGHT] = CLICK_CREATE;
@@ -337,6 +340,10 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 display_disable_cursor();
                 in_game = true;
             }
+        }
+        else if (do_this == DEBUG_ACTION) {
+            // use this for debugging only
+            player->query_depth(world);
         }
         else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
             int to_index = key - GLFW_KEY_1;

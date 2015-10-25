@@ -23,12 +23,13 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     world_name = "";
 }
 
-SuperObject::SuperObject(std::string wid, uint32_t p, uint32_t v) {
+SuperObject::SuperObject(std::string wid, uint32_t p, uint32_t v, ivec3 po) {
     // this constructor should be called by a player wanting to make a new object
     // the player will assign the object an ID
     vid = v;
     pid = p;
     world_name = wid;
+    pos = fvec3((float)po.x, (float)po.y, (float)po.z);
 }
 
 SuperObject::SuperObject(std::string wid, uint32_t p, uint32_t v, int* err) {
@@ -67,11 +68,4 @@ int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z
     writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
     writer.close();
     return 0;
-}
-
-bool SuperObject::within_dimensions_chunk(int x, int y, int z) {
-    //ivec3 pos = ivec3(x, y, z);
-    printf("Optimize me by saving a list of the valid chunks xyz in a chunk data object");
-    printf("Without it it still works for now but it's janky!");
-    return true;
 }

@@ -57,7 +57,6 @@ public:
     void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
     // called when a request to load a chunk from disk is made
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
-    bool within_dimensions_chunk(int x, int y, int z) override;
     
     std::string get_save_path() override;
     std::string get_chunk_save_path(ivec3* pos) override;

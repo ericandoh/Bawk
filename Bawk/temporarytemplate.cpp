@@ -38,9 +38,16 @@ std::vector<block_data> TemporaryTemplate::publish(Player* player, World* world)
         unpublish(world);
         
         // then use that to find the translation/other properties of this object
+        ivec3 lower_corner(INT_MAX, INT_MAX, INT_MAX);
+        for (auto &i : blocks) {
+            ivec3 pos = i.position;
+            lower_corner.x = std::min(lower_corner.x, pos.x);
+            lower_corner.y = std::min(lower_corner.y, pos.y);
+            lower_corner.z = std::min(lower_corner.z, pos.z);
+        }
         
         // now package it into a superobject
-        SuperObject* superobject = world->create_superobject(player);
+        SuperObject* superobject = world->create_superobject(player, lower_corner);
         // and add the blocks in this template to the superobject. There should be no conflicts here
         
         for (auto &i : blocks) {

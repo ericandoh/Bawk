@@ -293,6 +293,14 @@ void RenderableSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
     }
 }
 
+// check if a chunk coordinate (CAC) xyz is a chunk held by this object
+bool RenderableSuperObject::within_dimensions_chunk(int x, int y, int z) {
+    if (chunks.count(ivec3(x, y, z))) {
+        return true;
+    }
+    return false;
+}
+
 void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
     if (!chunks.count(chunk_pos))
         return;
@@ -309,9 +317,9 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
                             int(lower_bound.z) == (old_chunk_lower.z + CZ*chunk_pos.z) ||
                             lower_bound.x == FLT_MAX;
         recalculate_needed = recalculate_needed ||
-                            int(upper_bound.x) == (old_chunk_upper.x + CX*chunk_pos.x)  ||
-                            int(upper_bound.y) == (old_chunk_upper.y + CY*chunk_pos.y) ||
-                            int(upper_bound.z) == (old_chunk_upper.z + CZ*chunk_pos.z) ||
+                            int(upper_bound.x) == (old_chunk_upper.x + CX*chunk_pos.x + 1)  ||
+                            int(upper_bound.y) == (old_chunk_upper.y + CY*chunk_pos.y + 1) ||
+                            int(upper_bound.z) == (old_chunk_upper.z + CZ*chunk_pos.z + 1) ||
                             upper_bound.x == -FLT_MAX;
     }
     else {
@@ -329,9 +337,9 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
             lower_bound.x = fminf(float(bounds.lower_bound.x + CX*cpos.x), lower_bound.x);
             lower_bound.y = fminf(float(bounds.lower_bound.y + CY*cpos.y), lower_bound.y);
             lower_bound.z = fminf(float(bounds.lower_bound.z + CZ*cpos.z), lower_bound.z);
-            upper_bound.x = fmaxf(float(bounds.upper_bound.x + CX*cpos.x), upper_bound.x);
-            upper_bound.y = fmaxf(float(bounds.upper_bound.y + CY*cpos.y), upper_bound.y);
-            upper_bound.z = fmaxf(float(bounds.upper_bound.z + CZ*cpos.z), upper_bound.z);
+            upper_bound.x = fmaxf(float(bounds.upper_bound.x + CX*cpos.x + 1), upper_bound.x);
+            upper_bound.y = fmaxf(float(bounds.upper_bound.y + CY*cpos.y + 1), upper_bound.y);
+            upper_bound.z = fmaxf(float(bounds.upper_bound.z + CZ*cpos.z + 1), upper_bound.z);
         }
     }
     //printf("Bounds updated to %f %f %f, %f %f %f\n", lower_bound.x, lower_bound.y, lower_bound.z,
@@ -529,6 +537,17 @@ bool RenderableSuperObject::collides_with_superobject(RenderableSuperObject* oth
     return false;
 }
 
+void RenderableSuperObject::save_all_chunks() {
+    // save chunks not in memory
+    int counter = 0;
+    for (auto kv : chunks) {
+        counter++;
+        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
+        kv.second->cleanup();
+    }
+    printf("Saved %d chunks\n", counter);
+}
+
 
 int RenderableSuperObject::load_self(IODataObject* obj) {
     if (Entity::load_self(obj))
@@ -556,12 +575,5 @@ void RenderableSuperObject::remove_self(IODataObject* obj) {
         obj->save_value(i.second);
     }
     
-    // save chunks not in memory
-    int counter = 0;
-    for (auto kv : chunks) {
-        counter++;
-        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
-        kv.second->cleanup();
-    }
-    printf("Saved %d chunks\n", counter);
+    save_all_chunks();
 }

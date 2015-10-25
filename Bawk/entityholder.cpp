@@ -85,3 +85,9 @@ Entity* EntityHolder::poke(float x, float y, float z) {
     }
     return 0;
 }
+
+void EntityHolder::remove_selfs() {
+    for (int i = 0; i < entities.size(); i++) {
+        entities[i]->remove_selfs();
+    }
+}

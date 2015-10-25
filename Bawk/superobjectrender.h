@@ -79,7 +79,7 @@ public:
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) = 0;
     
     // check if a chunk coordinate (CAC) xyz is a chunk held by this object
-    virtual bool within_dimensions_chunk(int x, int y, int z) = 0;
+    virtual bool within_dimensions_chunk(int x, int y, int z);
     // updates the dimensions of my object, given a chunk at chunk_pos (CAC) is updated
     // call when initializing from scratch with a lot of blocks, or when removing a block at a periphery
     virtual void update_dimensions_from_chunk(ivec3 chunk_pos);
@@ -95,6 +95,7 @@ public:
     bool collides_with_entity(Entity* other);
     bool collides_with_superobject(RenderableSuperObject* other);
     
+    void save_all_chunks();
     int load_self(IODataObject* obj) override;
     void remove_self(IODataObject* obj) override;
 };

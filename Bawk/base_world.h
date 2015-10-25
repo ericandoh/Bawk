@@ -42,6 +42,8 @@ public:
     
     bool poke(float x, float y, float z) override;
     int get_collision_priority() override;
+    
+    void remove_selfs() override;
 };
 
 #endif /* defined(__Bawk__base_world__) */

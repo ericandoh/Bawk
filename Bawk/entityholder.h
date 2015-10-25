@@ -43,6 +43,8 @@ public:
     // checks if an entity not being held will collide if added
     bool collides_with(Entity* entity);
     Entity* poke(float x, float y, float z);
+    
+    void remove_selfs();
 };
 
 #endif /* defined(__Bawk__entityholder__) */
