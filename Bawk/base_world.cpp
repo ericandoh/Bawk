@@ -11,7 +11,11 @@
 
 #define GROUND_DEPTH 4
 
-BaseWorld::BaseWorld(std::string wid): SuperObject(wid) {
+BaseWorld::BaseWorld(std::string wid) {
+    pid = 0;
+    vid = 0;
+    world_name = wid;
+    entity_class = 1;
     get_empty_chunk(air);
     get_empty_chunk(ground);
     for (int x = 0; x < CX; x++) {

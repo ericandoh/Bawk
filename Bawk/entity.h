@@ -41,11 +41,15 @@ protected:
     fvec3 up;
     fvec3 dir;
 public:
+    // identifying information for the entity
+    uint32_t vid;
+    uint32_t pid;
+    // used by loader to see how to construct the entity...
+    int entity_class;
     // the bounding box over contents of all chunks, in OAC
     // public for convenience of access
     fvec3 lower_bound, upper_bound;
     Entity();
-    Entity(fvec3 p, fvec3 v, fvec3 u, fvec3 d, fvec3 lower, fvec3 upper);
     // internal function to transform RWC xyz to OAC src
     void transform_into_my_coordinates(fvec3* src, float x, float y, float z);
     // internal function to transform OAC xyz to RWC src

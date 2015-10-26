@@ -12,37 +12,27 @@
 #include "game.h"
 #include "blocktracer.h"
 
-SuperObject::SuperObject(std::string w) {
+SuperObject::SuperObject() {
     // this constructor should be only called to construct a world
     vid = 0;
     pid = 0;
-    world_name = w;
+    entity_class = 4;
 }
 
 SuperObject::SuperObject(uint32_t p, uint32_t v) {
     // this constructor should be called for world-less, cursor objects
     vid = v;
     pid = p;
-    world_name = "";
+    entity_class = 4;
 }
 
-SuperObject::SuperObject(std::string wid, uint32_t p, uint32_t v, ivec3 po) {
+SuperObject::SuperObject(uint32_t p, uint32_t v, ivec3 po) {
     // this constructor should be called by a player wanting to make a new object
     // the player will assign the object an ID
     vid = v;
     pid = p;
-    world_name = wid;
+    entity_class = 4;
     pos = fvec3((float)po.x, (float)po.y, (float)po.z);
-}
-
-SuperObject::SuperObject(std::string wid, uint32_t p, uint32_t v, int* err) {
-    // this constructor should be called if the object already exists and needs to be
-    // loaded from memory
-    vid = v;
-    pid = p;
-    world_name = wid;
-    // call load_self() externally
-    printf("frog\n");
 }
 
 void SuperObject::set_block(float x, float y, float z, block_type type) {

@@ -462,7 +462,6 @@ Game::~Game() {
     printf("Cleaning up game\n");
     save_game_data();
     world->remove_self();
-    player->remove_selfs();
     delete place_into;
     // player deleted as part of world...?
     delete world;

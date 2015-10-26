@@ -37,18 +37,14 @@ struct key_mapping_info {
 
 class SuperObject : public RenderableSuperObject {
 protected:
-    std::string world_name;
     // note that we might have >1 action per key press (ie. both engines X, Y fire on pressing W)
     std::map<int, std::vector<key_mapping_info>> key_mapping;
     // the reverse mapping of the above, for convenience
     std::unordered_map<ivec3, std::vector<int>> reverse_key_mapping;
 public:
-    uint32_t vid;
-    uint32_t pid;
-    SuperObject(std::string w);
+    SuperObject();
     SuperObject(uint32_t p, uint32_t v);
-    SuperObject(std::string w, uint32_t p, uint32_t v, ivec3 po);
-    SuperObject(std::string w, uint32_t p, uint32_t v, int* err);
+    SuperObject(uint32_t p, uint32_t v, ivec3 po);
     
     virtual void set_block(float x, float y, float z, block_type type) override;
     

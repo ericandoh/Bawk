@@ -61,9 +61,6 @@ protected:
 public:
     // makes a renderable super object that is presumed to be empty initially
     RenderableSuperObject();
-    // make a renderable super object with some specified bounds (OAC) and position (RWC)
-    // TODO call this at initialization of the game, for when loading in existing objects
-    RenderableSuperObject(fvec3 p);
     // gets the block at (RWC) xyz
     block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz

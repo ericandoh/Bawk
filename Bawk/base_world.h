@@ -28,6 +28,7 @@
 #include "superobject.h"
 
 class BaseWorld: public SuperObject {
+    std::string world_name;
     block_type air[CX][CY][CZ];
     block_type ground[CX][CY][CZ];
 public:

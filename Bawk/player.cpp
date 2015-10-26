@@ -17,6 +17,8 @@ Player::Player(uint32_t p) {
     update_direction(0.0, 0.0);
     // TODO randomly generate pid from name of player
     pid = p;
+    vid = 0;
+    entity_class = 2;
     id_assign = 0;
     inventory = new PlayerInventory();
     mount = 0;

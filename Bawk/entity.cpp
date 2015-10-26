@@ -19,17 +19,9 @@ Entity::Entity() {
     
     velocity = fvec3(0, 0, 0);
     speed = 0.1f;
-}
-
-Entity::Entity(fvec3 p, fvec3 v, fvec3 u, fvec3 d, fvec3 lower, fvec3 upper) {
-    pos = p;
-    up = u;
-    dir = d;
-    lower_bound = lower;
-    upper_bound = upper;
-    
-    velocity = v;
-    speed = 0.1f;
+    vid = 0;
+    pid = 0;
+    entity_class = 0;   // please set me in future constructors!
 }
 
 void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {

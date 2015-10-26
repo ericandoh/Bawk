@@ -33,7 +33,6 @@
 class SuperObject;
 
 class Player : public RenderablePlayer {
-    uint32_t pid;
     fvec2 angle;
     long id_assign;
     SuperObject* mount;

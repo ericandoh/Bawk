@@ -7,13 +7,7 @@
 //
 
 #include "entityholder.h"
-
-EntityHolder::~EntityHolder() {
-    for (int i = 0; i < entities.size(); i++) {
-        entities[i]->remove_selfs();
-        delete entities[i];
-    }
-}
+#include "entity_loader.h"
 
 void EntityHolder::set_global_entity(Entity* entity) {
     global_entity = entity;
@@ -86,8 +80,41 @@ Entity* EntityHolder::poke(float x, float y, float z) {
     return 0;
 }
 
-void EntityHolder::remove_selfs() {
+int EntityHolder::load_self(IODataObject* obj) {
+    int entities_count = obj->read_value<int>();
+    for (int i = 0; i < entities_count; i++) {
+        // load in pid, vid, entity_class in that order
+        uint32_t pid = obj->read_value<uint32_t>();
+        uint32_t vid = obj->read_value<uint32_t>();
+        int entity_class = obj->read_value<int>();
+        Entity* entity = get_entity_from(pid, vid, entity_class);
+        if (entity)
+            entities.push_back(entity);
+    }
+    return 0;
+}
+
+void EntityHolder::remove_self(IODataObject* obj) {
+    
     for (int i = 0; i < entities.size(); i++) {
         entities[i]->remove_selfs();
+    }
+    
+    int entities_count = (int)entities.size();
+    for (int i = 0; i < entities_count; i++) {
+        // remove from entity count all entities that are baseworld or player
+        // because we don't want to save those!
+        if (entities[i]->entity_class == 1 || entities[i]->entity_class == 2) {
+            entities_count--;
+        }
+    }
+    
+    obj->save_value(entities_count);
+    for (int i = 0; i < (int)entities.size(); i++) {
+        if (entities[i]->entity_class == 1 || entities[i]->entity_class == 2)
+            continue;
+        obj->save_value(entities[i]->pid);
+        obj->save_value(entities[i]->vid);
+        obj->save_value(entities[i]->entity_class);
     }
 }

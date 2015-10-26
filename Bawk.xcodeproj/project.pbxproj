@@ -52,6 +52,7 @@
 		076BEFF41BD213B900D68C8F /* scrolling_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFF21BD213B900D68C8F /* scrolling_widget.cpp */; };
 		077098941BDBFDA5002F295D /* bresenham3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 077098931BDBFDA5002F295D /* bresenham3d.cpp */; };
 		077098981BDC0640002F295D /* blocktracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 077098961BDC0640002F295D /* blocktracer.cpp */; };
+		0774A9761BDEC85A0069489D /* entity_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0774A9741BDEC85A0069489D /* entity_loader.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -165,6 +166,8 @@
 		077098951BDBFE5E002F295D /* bresenham3d.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bresenham3d.h; sourceTree = "<group>"; };
 		077098961BDC0640002F295D /* blocktracer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blocktracer.cpp; sourceTree = "<group>"; };
 		077098971BDC0640002F295D /* blocktracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blocktracer.h; sourceTree = "<group>"; };
+		0774A9741BDEC85A0069489D /* entity_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity_loader.cpp; sourceTree = "<group>"; };
+		0774A9751BDEC85A0069489D /* entity_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_loader.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -344,6 +347,8 @@
 				0766EB111BC0BE9800477144 /* block_loader.h */,
 				071A04031BD96349003BF218 /* game_info_loader.cpp */,
 				071A04041BD96349003BF218 /* game_info_loader.h */,
+				0774A9741BDEC85A0069489D /* entity_loader.cpp */,
+				0774A9751BDEC85A0069489D /* entity_loader.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";
@@ -433,6 +438,7 @@
 				076BEFF41BD213B900D68C8F /* scrolling_widget.cpp in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,
 				076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */,
+				0774A9761BDEC85A0069489D /* entity_loader.cpp in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
 				0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */,
 				0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */,

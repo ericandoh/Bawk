@@ -33,7 +33,6 @@ class EntityHolder {
     // some data structure to hold all (nonbaseworld) entities in a efficient manner
     std::vector<Entity*> entities;
 public:
-    ~EntityHolder();
     void set_global_entity(Entity* entity);
     void add_entity(Entity* entity);
     void remove_entity(Entity* entity);
@@ -44,7 +43,8 @@ public:
     bool collides_with(Entity* entity);
     Entity* poke(float x, float y, float z);
     
-    void remove_selfs();
+    int load_self(IODataObject* obj);
+    void remove_self(IODataObject* obj);
 };
 
 #endif /* defined(__Bawk__entityholder__) */

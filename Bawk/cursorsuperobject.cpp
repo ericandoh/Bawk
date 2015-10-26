@@ -21,6 +21,7 @@ CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): SuperObject(p, s) 
     locked = false;
     loaded = false;
     make_vehicle = 0;
+    entity_class = 3;
 }
 
 void CursorSuperObject::set_block(float x, float y, float z, block_type type) {

@@ -16,11 +16,6 @@ RenderableSuperObject::RenderableSuperObject(): Entity() {
     // TODO recalculate bound here, or load bound from memory
 }
 
-RenderableSuperObject::RenderableSuperObject(fvec3 p): Entity() {
-    pos = p;
-    // TODO recalculate bound here, or load bound from memory
-}
-
 void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
                                                         ivec3* crc,
                                                         float x, float y, float z) {
@@ -212,7 +207,8 @@ void RenderableSuperObject::render(fmat4* transform) {
         center.y /= center.w;
         
         // If it is behind the camera, don't bother drawing it
-        if(center.z < -CY / 2)
+        // was 0.5f before, but rounding errors forced me to bump this value up
+        if(center.z < -CY * 0.75f)
             continue;
         
         // If it is outside the screen, don't bother drawing it
@@ -295,7 +291,7 @@ void RenderableSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
 
 // check if a chunk coordinate (CAC) xyz is a chunk held by this object
 bool RenderableSuperObject::within_dimensions_chunk(int x, int y, int z) {
-    if (chunks.count(ivec3(x, y, z))) {
+    if (chunk_bounds.count(ivec3(x, y, z))) {
         return true;
     }
     return false;
