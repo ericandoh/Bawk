@@ -396,12 +396,8 @@ void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         if (in_game) {
             Entity* src = get_look_at();
-            if (src) {
-                src->block_mouse_callback(this, button);
-                
-                // tell the clicked entity to handle this mouse action
-                printf("entity selected\n");
-                printf("frog\n");
+            if (src && src->block_mouse_callback(this, button)) {
+                ;
             }
             else {
                 if (!world->block_mouse_callback(this, button)) {

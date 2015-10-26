@@ -30,6 +30,15 @@ int World::load_self() {
         return 1;
     }
     age = reader.read_value<unsigned long>();
+    
+    // no need to load in base_world - it has only data in the chunks
+    
+    printf("frog\n");
+    // load in entities from holder...wait does this even need to happen
+    // at the very least, give back the players their toys when logging, and don't deal with
+    // non-player entities (i.e. monsters/whatnot despawn)
+    // holder.load_self(&reader);
+    
     reader.close();
     return 0;
 }
@@ -40,10 +49,14 @@ void World::remove_self() {
         return;
     }
     writer.save_value(age);
+    holder.remove_selfs();
+    printf("frog\n");
+    // at the very least, give back the players their toys when logging, and don't deal with
+    // non-player entities (i.e. monsters/whatnot despawn) (they should not be saved)
+    // holder.remove_self(&writer);
     writer.close();
     
     base_world->remove_selfs();
-    holder.remove_selfs();
 }
 
 // renders the world
