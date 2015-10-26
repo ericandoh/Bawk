@@ -50,7 +50,7 @@ public:
     SuperObject(std::string w, uint32_t p, uint32_t v, ivec3 po);
     SuperObject(std::string w, uint32_t p, uint32_t v, int* err);
     
-    void set_block(float x, float y, float z, block_type type) override;
+    virtual void set_block(float x, float y, float z, block_type type) override;
     
     bool block_keyboard_callback(Game* game, int key) override;
     bool block_mouse_callback(Game* game, int button) override;

@@ -396,8 +396,9 @@ void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         if (in_game) {
             Entity* src = get_look_at();
-            if (src && src->block_mouse_callback(this, button)) {
-                ;
+            if (src) {
+                // if we're looking at a source, should ALWAYS either do nothing or do special function
+                src->block_mouse_callback(this, button);
             }
             else {
                 if (!world->block_mouse_callback(this, button)) {

@@ -32,11 +32,12 @@ class CursorSuperObject: public SuperObject, public CursorItem {
     // if this object needs to be loaded from memory
     bool loaded;
     bool locked;
-    
+    int make_vehicle;
 public:
     CursorSuperObject(uint32_t p, uint32_t s);
     
     // --- cursoritem methods ---
+    void set_block(float x, float y, float z, block_type type) override;
     
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
@@ -61,7 +62,8 @@ public:
     std::string get_save_path() override;
     std::string get_chunk_save_path(ivec3* pos) override;
     
-    
+    int load_self(IODataObject* obj) override;
+    void remove_self(IODataObject* obj) override;
     void load_all() override;
     
     cursor_item_distinguisher get_distinguisher() override;

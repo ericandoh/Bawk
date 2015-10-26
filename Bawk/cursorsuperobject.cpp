@@ -8,7 +8,7 @@
 
 #include "cursorsuperobject.h"
 #include "block.h"
-
+#include "game_info_loader.h"
 
 // heavily modify this so that
 // 1. it doesn't mark itself as a folder to disk
@@ -20,6 +20,20 @@
 CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): SuperObject(p, s) {
     locked = false;
     loaded = false;
+    make_vehicle = 0;
+}
+
+void CursorSuperObject::set_block(float x, float y, float z, block_type type) {
+    // see if block at xyz is a vehicle block
+    if (get_block_independence(get_block(x, y, z).type)) {
+        make_vehicle--;
+    }
+    
+    SuperObject::set_block(x, y, z, type);
+    // see if this block is a vehicle block
+    if (get_block_independence(type.type)) {
+        make_vehicle++;
+    }
 }
 
 // sets the blocks in this representation into the world, and if template is not null, into the
@@ -28,6 +42,15 @@ bool CursorSuperObject::set_blocks(Player* player, World* world, TemporaryTempla
     // TODO if we rotated this object, update individual block orientations
     if (world->will_collide_with_anything(this)) {
         return false;
+    }
+    
+    bool makes_vehicle = false;
+    SuperObject* superobject = 0;
+    if (make_vehicle && (!temp)) {
+        // this has a a vehicle block, and we're not placing into a template
+        makes_vehicle = true;
+        ivec3 lower_corner(floorf(pos.x), floorf(pos.y), floorf(pos.z));
+        superobject = world->create_superobject(player, lower_corner);
     }
     
     printf("Publishing blocks from a template!\n");
@@ -48,10 +71,15 @@ bool CursorSuperObject::set_blocks(Player* player, World* world, TemporaryTempla
                                                 int(world_coord.y),
                                                 int(world_coord.z));
                         block.owner = player->getID();
-                        world->place_block(block_pos, block);
-                        //printf("Placing to (%d, %d, %d)\n", block_pos.x, block_pos.y, block_pos.z);
-                        if (temp)
-                            temp->add_block(block_pos, block);
+                        if (makes_vehicle) {
+                            superobject->set_block(block_pos.x, block_pos.y, block_pos.z, block);
+                        }
+                        else {
+                            world->place_block(block_pos, block);
+                            //printf("Placing to (%d, %d, %d)\n", block_pos.x, block_pos.y, block_pos.z);
+                            if (temp)
+                                temp->add_block(block_pos, block);
+                        }
                     }
                 }
             }
@@ -145,6 +173,18 @@ std::string CursorSuperObject::get_save_path() {
 
 std::string CursorSuperObject::get_chunk_save_path(ivec3* pos) {
     return get_path_to_template_chunk(pid, vid, pos);
+}
+
+int CursorSuperObject::load_self(IODataObject* obj) {
+    if (SuperObject::load_self(obj))
+        return 1;
+    make_vehicle = obj->read_value<int>();
+    return 0;
+}
+
+void CursorSuperObject::remove_self(IODataObject* obj) {
+    SuperObject::remove_self(obj);
+    obj->save_value(make_vehicle);
 }
 
 void CursorSuperObject::load_all() {
