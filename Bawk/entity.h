@@ -28,6 +28,8 @@
 #include "basic_types.h"
 #include "block_loader.h"
 
+class Game;
+
 class Entity {
     fvec3 velocity;
     float speed;
@@ -60,6 +62,10 @@ public:
     bool has_moved();
     // poke this object at RWC, true if this object says, "OUCH"
     virtual bool poke(float x, float y, float z);
+    
+    virtual bool block_keyboard_callback(Game* game, int key);
+    virtual bool block_mouse_callback(Game* game, int button);
+    
     virtual fvec3 step();
     virtual void render(fmat4* transform);
     virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);

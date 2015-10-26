@@ -7,6 +7,7 @@
 
 #include "player.h"
 #include "block_loader.h"
+#include "superobject.h"
 
 #define PI 3.14159265358979323846
 
@@ -18,6 +19,7 @@ Player::Player(uint32_t p) {
     pid = p;
     id_assign = 0;
     inventory = new PlayerInventory();
+    mount = 0;
 }
 
 Player::~Player() {
@@ -86,6 +88,22 @@ ivec3 Player::get_rounded_forward() {
         }
         return ivec3(0, 0, 1);
     }
+}
+
+void Player::set_mount(SuperObject* m) {
+    mount = m;
+    // TODO disable/enable collision detection here
+    printf("frog\n");
+}
+
+void Player::unmount() {
+    mount = 0;
+    // TODO disable/enable collision detection here
+    printf("frog\n");
+}
+
+SuperObject* Player::get_mount() {
+    return mount;
 }
 
 std::string Player::get_save_path() {

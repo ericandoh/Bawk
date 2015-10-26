@@ -67,7 +67,7 @@ public:
     // gets the block at (RWC) xyz
     block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz
-    void set_block(float x, float y, float z, block_type type);
+    virtual void set_block(float x, float y, float z, block_type type);
     // renders the object, given a player viewpoint transform matrix
     void render(fmat4* transform) override;
     // makes calls to load in/free chunks depending on the
@@ -96,8 +96,8 @@ public:
     bool collides_with_superobject(RenderableSuperObject* other);
     
     void save_all_chunks();
-    int load_self(IODataObject* obj) override;
-    void remove_self(IODataObject* obj) override;
+    virtual int load_self(IODataObject* obj) override;
+    virtual void remove_self(IODataObject* obj) override;
 };
 
 #endif /* defined(__Bawk__superobjectrender__) */

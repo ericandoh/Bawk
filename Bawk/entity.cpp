@@ -106,6 +106,23 @@ bool Entity::poke(float x, float y, float z) {
             (lower_bound.z <= oac.z) && (oac.z <= upper_bound.z);
 }
 
+bool Entity::block_keyboard_callback(Game* game, int key) {
+    return false;
+}
+
+bool Entity::block_mouse_callback(Game* game, int button) {
+    /*block_mouse_callback_func callback = get_block_mouse_callback_from(something);
+    if (callback) {
+        (*callback)(game,
+                    this,
+                    0,
+                    fvec3(0, 0, 0),
+                    button);
+        return true;
+    }*/
+    return false;
+}
+
 fvec3 Entity::step() {
     fvec3 new_pos = fvec3(pos.x + velocity.x * speed,
                           pos.y + velocity.y * speed,

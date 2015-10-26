@@ -11,7 +11,7 @@
 #include <fstream>
 #include <string>
 #include <streambuf>
-#include <unordered_map>
+#include <map>
 #include "json/json.h"
 #include "block_loader.h"
 #include "cursorsuperobject.h"
@@ -81,6 +81,12 @@ struct biome_game_info {
     std::vector<structure_gen_game_info> structures;
 };
 
+struct ui_block_callback_info {
+    block_mouse_callback_func mouse_callback;
+    block_keyboard_callback_func keyboard_callback;
+    std::vector<int> key_bindings;
+};
+
 class GameInfoDataObject {
     int read_blocks(Json::Value root);
     int read_recipes(Json::Value root);
@@ -89,7 +95,8 @@ public:
     int version;
     std::vector<block_game_info> block_info;
     std::vector<block_game_info> recipe_block_info;
-    std::unordered_map<uint16_t, model_game_info> block_model_info;
+    std::map<uint16_t, model_game_info> block_model_info;
+    std::map<uint16_t, ui_block_callback_info> block_callback_info;
     std::vector<recipe_game_info> recipe_info;
     std::vector<biome_game_info> biome_info;
     
@@ -265,6 +272,12 @@ int GameInfoDataObject::read_blocks(Json::Value root) {
         if (block.isMember("vehicle") && block["vehicle"].type() == Json::intValue) {
             info->vehicle = block["vehicle"].asInt();
         }
+        if (block.isMember("action") and block["action"].type() == Json::stringValue) {
+            ui_block_callback_info callback_info;
+            callback_info.mouse_callback = get_block_mouse_callback_for(block["action"].asString());
+            callback_info.keyboard_callback = get_block_keyboard_callback_for(block["action"].asString(), callback_info.key_bindings);
+            block_callback_info[block_id] = callback_info;
+        }
     }
     return 0;
 }
@@ -356,9 +369,17 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
             }
             info->from_file = false;
         }
-        if (recipe.isMember("blockfile") && recipe["blockfile"].type() == Json::stringValue) {
-            info->from_file = true;
-            info->file_path = get_path_to_game_folder() + "/" +  recipe["blockfile"].asString();
+        if (recipe.isMember("blocks") && recipe["blocks"].type() == Json::stringValue) {
+            if (recipe["blockfile"].asString().compare("auto") == 0) {
+                // using the texture block model obj data, automatically fill in blocks where the model has points
+                // then assign a center block as the center of the object
+                printf("frog\n");
+            }
+            else {
+                // this is the name of a file.
+                info->from_file = true;
+                info->file_path = get_path_to_game_folder() + "/" +  recipe["blockfile"].asString();
+            }
         }
         if (recipe.isMember("texture") && recipe["texture"].type() == Json::stringValue) {
             block_model_info[recipe_id + recipe_mask] = model_game_info();
@@ -524,6 +545,27 @@ int get_block_independence(uint16_t block_id) {
     else {
         return game_data_object->block_info[block_id].vehicle;
     }
+}
+
+block_mouse_callback_func get_block_mouse_callback_from(block_type block_id) {
+    if (game_data_object->block_callback_info.count(block_id.type)) {
+        return game_data_object->block_callback_info[block_id.type].mouse_callback;
+    }
+    return 0;
+}
+
+block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_id) {
+    if (game_data_object->block_callback_info.count(block_id.type)) {
+        return game_data_object->block_callback_info[block_id.type].keyboard_callback;
+    }
+    return 0;
+}
+
+std::vector<int> get_block_default_keyboard_bindings(block_type block_id) {
+    if (game_data_object->block_callback_info.count(block_id.type)) {
+        return game_data_object->block_callback_info[block_id.type].key_bindings;
+    }
+    return std::vector<int>();
 }
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid) {

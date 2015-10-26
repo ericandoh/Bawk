@@ -30,10 +30,13 @@
 #include "basic_types.h"
 #include "inventory.h"
 
+class SuperObject;
+
 class Player : public RenderablePlayer {
     uint32_t pid;
     fvec2 angle;
     long id_assign;
+    SuperObject* mount;
 public:
     PlayerInventory* inventory;
     Player(uint32_t p);
@@ -43,6 +46,10 @@ public:
     void update_direction(double xdiff, double ydiff);
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();
+    
+    void set_mount(SuperObject* m);
+    SuperObject* get_mount();
+    void unmount();
     
     std::string get_save_path() override;
     int load_selfs() override;

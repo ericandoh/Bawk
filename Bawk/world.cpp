@@ -79,6 +79,10 @@ void World::get_at(float x, float y, float z, bool* world_selected, Entity** sel
     }
 }
 
+bool World::block_mouse_callback(Game *game, int button) {
+    return base_world->block_mouse_callback(game, button);
+}
+
 bool World::kill_block(ivec3* src) {
     ivec4 looking_at;
     if (!get_look_at(&looking_at)) {

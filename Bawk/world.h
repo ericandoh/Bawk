@@ -28,6 +28,8 @@
 #include "worldrender.h"
 #include "entityholder.h"
 
+class Game;
+
 class World {
     
     // how many cycles the world has lived through
@@ -46,6 +48,9 @@ public:
     void place_block(ivec3 position, block_type block);
     block_type get_block(float x, float y, float z);
     void get_at(float x, float y, float z, bool* world_selected, Entity** selected);
+    
+    bool block_mouse_callback(Game* game, int button);
+    
     // called by game to kill a block directly. then effects are propogated to the appropriate entities
     bool kill_block(ivec3* src);
     void add_player(Player* player);

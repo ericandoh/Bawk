@@ -27,7 +27,8 @@
             "resistance": 2,
             "texture": "simplebox.obj",
             "weight": 30,
-            "vehicle": 1
+            "vehicle": 1,
+            "action": "engine"
         },
         "5": {
             "name": "unnamed"
@@ -113,7 +114,8 @@
             "texture": "test.obj",
             "transparency": 2,
             "weight": 100,
-            "vehicle": 100
+            "vehicle": 100,
+            "action": "sample"
         }
     },
     "recipes":
@@ -147,7 +149,7 @@
                        {"id": 3, "orientation": "top", "position": [0, 0, 1]},
                        {"position": [0, 1, 1]}
             ],
-            "blockfile": "path/to/superobject_folder",
+            "blocks": "path/to/superobject_folder",
             "resistance": 40,
             "texture": "test.obj",
             "transparency": 3,

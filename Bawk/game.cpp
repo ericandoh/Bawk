@@ -22,7 +22,7 @@ enum Action {
     MOVE_BLOCK_BACKWARD, OPEN_INV, CLICK_CREATE, CLICK_DESTROY, SAVE_TEMPLATE, DEBUG_ACTION,
 };
 
-int toggleable_keys[] = {GLFW_KEY_SPACE,
+int toggleable_keys[] = {GLFW_KEY_Q,
                             GLFW_KEY_Z, GLFW_KEY_A, GLFW_KEY_D,
                             GLFW_KEY_W, GLFW_KEY_S};
 
@@ -62,7 +62,7 @@ int Game::init() {
     world->update_chunks(0, player_pos);
     
     // set key mappings
-    key_to_action[GLFW_KEY_SPACE] = MOVE_UP;
+    key_to_action[GLFW_KEY_Q] = MOVE_UP;
     key_to_action[GLFW_KEY_Z] = MOVE_DOWN;
     key_to_action[GLFW_KEY_A] = MOVE_LEFT;
     key_to_action[GLFW_KEY_D] = MOVE_RIGHT;
@@ -82,7 +82,7 @@ int Game::init() {
     key_to_action[GLFW_KEY_I] = OPEN_INV;
     key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
     
-    // WHYYYYYYYY
+    // WHYYYYYYYY (the key Y LOL)
     key_to_action[GLFW_KEY_Y] = DEBUG_ACTION;
     
     mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
@@ -101,24 +101,6 @@ int Game::init() {
     story->add_child(bar);
     
     inventory_ui = new MainInventoryWidget(bar, player->inventory, width / 2, height / 2);
-    
-    // tell bar to load info from player
-    //bar->set_index(1);
-    //CursorItem* first = new CursorBlock(6);
-    //bar->set_current(first);
-    
-    /*
-    bar->set_index(1);
-    CursorSuperObject* second = new CursorSuperObject(0, 37, false, true);
-    second->set_block(0.0f, 0.0f, 0.0f, 2);
-    second->set_block(0.0f, 1.0f, 0.0f, 2);
-    second->set_block(0.0f, 1.0f, 1.0f, 2);
-    bar->set_current(second);*/
-    
-    /*bar->set_index(2);
-    CursorSuperObject* third = new CursorSuperObject();
-    third->set_block(0.0f, 0.0f, 0.0f, 2);
-    bar->set_current(third);*/
     
     bar->set_index(0);
         
@@ -208,6 +190,172 @@ void Game::switch_current_item(int to_index) {
     bar->set_index(to_index);
 }
 
+void Game::key_callback_default(int key) {
+    Action do_this = key_to_action[key];
+    if (do_this == CONFIRM) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            // this code is duplicated somewhere else!
+            if (place_into) {
+                printf("Placing template into template!\n");
+            }
+            else {
+                printf("Placing template into world!\n");
+            }
+            // we need to place this object into the world
+            // if we can't place this object, this should fail
+            bar->get_current()->set_blocks(player, world, place_into);
+        }
+        else if (place_into) {
+            printf("Exporting template to current cursor!\n");
+            // we're done making this template.
+            // publish it to either the baseworld or to a new superobject
+            // do we need to free? what if its already in inventory
+            // let's not free this l8 on, since we still need to render if its in inventory
+            // then l8 we can have a separate memory scheme for if this is in memory or not
+            bar->set_current(create_from_template(player, world, place_into));
+            delete place_into;
+            place_into = 0;
+        }
+        else {
+            printf("Making new template\n");
+            // create a new place_info
+            place_into = new TemporaryTemplate();
+            // TODO do stuff to dim the world except all newly placed blocks
+            // i.e. set a uniform variable to tune the intensity
+        }
+    }
+    else if (do_this == CANCEL) {
+        if (!in_game) {
+            story->close_latest_child();
+            if (story->count_children() == 1) {
+                display_disable_cursor();
+                in_game = true;
+            }
+        }
+        else if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Cancelling current template placing 1\n");
+            bar->get_current()->unlock();
+        }
+        else if (place_into) {
+            // we're canceling making this template
+            printf("Cancelling current template\n");
+            place_into->unpublish(world);
+            delete place_into;
+            place_into = 0;
+        }
+        else {
+            printf("Escape pressed with no context. Exitting\n");
+            exit_game();
+        }
+    }
+    else if (do_this == MOVE_BLOCK_UP) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Moving placed template\n");
+            bar->get_current()->move_block(ivec3(0, 1, 0));
+        }
+    }
+    else if (do_this == MOVE_BLOCK_DOWN) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Moving placed template\n");
+            bar->get_current()->move_block(ivec3(0, -1, 0));
+        }
+    }
+    else if (do_this == MOVE_BLOCK_LEFT) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Moving placed template\n");
+            ivec3 left = player->get_rounded_left();
+            bar->get_current()->move_block(ivec3(-left.x, 0, -left.z));
+        }
+    }
+    else if (do_this == MOVE_BLOCK_RIGHT) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Moving placed template\n");
+            bar->get_current()->move_block(player->get_rounded_left());
+        }
+    }
+    else if (do_this == MOVE_BLOCK_FORWARD) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Moving placed template\n");
+            bar->get_current()->move_block(player->get_rounded_forward());
+        }
+    }
+    else if (do_this == MOVE_BLOCK_BACKWARD) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Moving placed template\n");
+            ivec3 forward = player->get_rounded_forward();
+            bar->get_current()->move_block(ivec3(-forward.x, 0, -forward.z));
+        }
+    }
+    else if (do_this == SAVE_TEMPLATE) {
+        player->inventory->add_custom_at(bar->get_current());
+        if (story->has_child(inventory_ui)) {
+            inventory_ui->refresh();
+        }
+    }
+    else if (do_this == OPEN_INV) {
+        story->toggle_child(inventory_ui);
+        if (story->count_children() > 1) {
+            inventory_ui->refresh();
+            display_enable_cursor();
+            in_game = false;
+        }
+        else {
+            display_disable_cursor();
+            in_game = true;
+        }
+    }
+    else if (do_this == DEBUG_ACTION) {
+        // use this for debugging only
+        player->query_depth(world);
+    }
+    else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
+        int to_index = key - GLFW_KEY_1;
+        switch_current_item(to_index);
+    }
+    else if (key == GLFW_KEY_0) {
+        switch_current_item(9);
+    }
+}
+
+void Game::mouse_button_callback_default(int button) {
+    Action do_this = mouse_to_action[button];
+    if (do_this == CLICK_DESTROY) {
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            printf("Cancelling current template placing2\n");
+            bar->get_current()->unlock();
+        }
+        else {
+            // get block here instead of outside
+            printf("Destroying block from world\n");
+            ivec3 removed_at;
+            if (world->kill_block(&removed_at)) {
+                if (place_into) {
+                    printf("Destroying it from the template as well rofl\n");
+                    place_into->remove_block(removed_at);
+                }
+            }
+        }
+    }
+    else if (do_this == CLICK_CREATE) {
+        // get block here instead of outside
+        if (bar->get_current() && bar->get_current()->is_locked_in()) {
+            if (place_into) {
+                printf("Placing template into template!\n");
+            }
+            else {
+                printf("Placing template into world!\n");
+            }
+            // we need to place this object into the world
+            bar->get_current()->set_blocks(player, world, place_into);
+        }
+        else if (bar->get_current()) {
+            printf("Placing block\n");
+            bar->get_current()->place_blocks(player, world, place_into);
+        }
+    }
+}
+
+
 // Calls an action depending on key pressed
 // Not all key presses may correspond to player so this method belongs here
 void Game::key_callback(int key, int scancode, int action, int mods) {
@@ -228,130 +376,14 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         }
     }
     else if (action == GLFW_PRESS) {
-        Action do_this = key_to_action[key];
-        if (do_this == CONFIRM) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                // this code is duplicated somewhere else!
-                if (place_into) {
-                    printf("Placing template into template!\n");
-                }
-                else {
-                    printf("Placing template into world!\n");
-                }
-                // we need to place this object into the world
-                // if we can't place this object, this should fail
-                bar->get_current()->set_blocks(player, world, place_into);
-            }
-            else if (place_into) {
-                printf("Exporting template to current cursor!\n");
-                // we're done making this template.
-                // publish it to either the baseworld or to a new superobject
-                // do we need to free? what if its already in inventory
-                // let's not free this l8 on, since we still need to render if its in inventory
-                // then l8 we can have a separate memory scheme for if this is in memory or not
-                bar->set_current(create_from_template(player, world, place_into));
-                delete place_into;
-                place_into = 0;
-            }
-            else {
-                printf("Making new template\n");
-                // create a new place_info
-                place_into = new TemporaryTemplate();
-                // TODO do stuff to dim the world except all newly placed blocks
-                // i.e. set a uniform variable to tune the intensity
+        // see if we're in any vehicle of any sort, then see if it'll accept the key i send
+        SuperObject* mount = player->get_mount();
+        if (mount) {
+            if (mount->block_keyboard_callback(this, key)) {
+                return;
             }
         }
-        else if (do_this == CANCEL) {
-            if (!in_game) {
-                story->close_latest_child();
-                if (story->count_children() == 1) {
-                    display_disable_cursor();
-                    in_game = true;
-                }
-            }
-            else if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Cancelling current template placing 1\n");
-                bar->get_current()->unlock();
-            }
-            else if (place_into) {
-                // we're canceling making this template
-                printf("Cancelling current template\n");
-                place_into->unpublish(world);
-                delete place_into;
-                place_into = 0;
-            }
-            else {
-                printf("Escape pressed with no context. Exitting\n");
-                exit_game();
-            }
-        }
-        else if (do_this == MOVE_BLOCK_UP) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Moving placed template\n");
-                bar->get_current()->move_block(ivec3(0, 1, 0));
-            }
-        }
-        else if (do_this == MOVE_BLOCK_DOWN) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Moving placed template\n");
-                bar->get_current()->move_block(ivec3(0, -1, 0));
-            }
-        }
-        else if (do_this == MOVE_BLOCK_LEFT) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Moving placed template\n");
-                ivec3 left = player->get_rounded_left();
-                bar->get_current()->move_block(ivec3(-left.x, 0, -left.z));
-            }
-        }
-        else if (do_this == MOVE_BLOCK_RIGHT) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Moving placed template\n");
-                bar->get_current()->move_block(player->get_rounded_left());
-            }
-        }
-        else if (do_this == MOVE_BLOCK_FORWARD) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Moving placed template\n");
-                bar->get_current()->move_block(player->get_rounded_forward());
-            }
-        }
-        else if (do_this == MOVE_BLOCK_BACKWARD) {
-            if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                printf("Moving placed template\n");
-                ivec3 forward = player->get_rounded_forward();
-                bar->get_current()->move_block(ivec3(-forward.x, 0, -forward.z));
-            }
-        }
-        else if (do_this == SAVE_TEMPLATE) {
-            player->inventory->add_custom_at(bar->get_current());
-            if (story->has_child(inventory_ui)) {
-                inventory_ui->refresh();
-            }
-        }
-        else if (do_this == OPEN_INV) {
-            story->toggle_child(inventory_ui);
-            if (story->count_children() > 1) {
-                inventory_ui->refresh();
-                display_enable_cursor();
-                in_game = false;
-            }
-            else {
-                display_disable_cursor();
-                in_game = true;
-            }
-        }
-        else if (do_this == DEBUG_ACTION) {
-            // use this for debugging only
-            player->query_depth(world);
-        }
-        else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
-            int to_index = key - GLFW_KEY_1;
-            switch_current_item(to_index);
-        }
-        else if (key == GLFW_KEY_0) {
-            switch_current_item(9);
-        }
+        key_callback_default(key);
     }
 }
 
@@ -363,44 +395,19 @@ void Game::mouse_move_callback(double xdiff, double ydiff) {
 void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         if (in_game) {
-            Action do_this = mouse_to_action[button];
-            if (do_this == CLICK_DESTROY) {
-                if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                    printf("Cancelling current template placing2\n");
-                    bar->get_current()->unlock();
-                }
-                else {
-                    // get block here instead of outside
-                    printf("Destroying block from world\n");
-                    ivec3 removed_at;
-                    if (world->kill_block(&removed_at)) {
-                        if (place_into) {
-                            printf("Destroying it from the template as well rofl\n");
-                            place_into->remove_block(removed_at);
-                        }
-                    }
-                }
+            Entity* src = get_look_at();
+            if (src) {
+                src->block_mouse_callback(this, button);
+                
+                // tell the clicked entity to handle this mouse action
+                printf("entity selected\n");
+                printf("frog\n");
             }
-            else if (do_this == CLICK_CREATE) {
-                // get block here instead of outside
-                Entity* src = get_look_at();
-                if (src) {
-                    printf("entity selected\n");
-                    printf("frog\n");
-                }
-                else if (bar->get_current() && bar->get_current()->is_locked_in()) {
-                    if (place_into) {
-                        printf("Placing template into template!\n");
-                    }
-                    else {
-                        printf("Placing template into world!\n");
-                    }
-                    // we need to place this object into the world
-                    bar->get_current()->set_blocks(player, world, place_into);
-                }
-                else if (bar->get_current()) {
-                    printf("Placing block\n");
-                    bar->get_current()->place_blocks(player, world, place_into);
+            else {
+                if (!world->block_mouse_callback(this, button)) {
+                    // mouse click at (base)world failed to elicit a response
+                    // (just like me with women)
+                    mouse_button_callback_default(button);
                 }
             }
         }

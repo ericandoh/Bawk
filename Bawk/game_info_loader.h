@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "basic_types.h"
 #include "block.h"
+#include "blockaction.h"
 
 class CursorItem;
 
@@ -37,6 +38,10 @@ int get_block_resistance(uint16_t block_id);
 int get_block_transparency(uint16_t block_id);
 int get_block_weight(uint16_t block_id);
 int get_block_independence(uint16_t block_id);
+
+block_mouse_callback_func get_block_mouse_callback_from(block_type block_id);
+block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_id);
+std::vector<int> get_block_default_keyboard_bindings(block_type block_id);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);
 
