@@ -112,7 +112,7 @@ void World::step() {
     age++;
 }
 
-bool World::will_collide_with_anything(RenderableSuperObject* other) {
+bool World::will_collide_with_anything(Entity* other) {
     return holder.collides_with(other);
 }
 

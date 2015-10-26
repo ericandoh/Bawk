@@ -8,6 +8,7 @@
 #include "player.h"
 #include "block_loader.h"
 #include "superobject.h"
+#include "world.h"
 
 #define PI 3.14159265358979323846
 
@@ -92,16 +93,42 @@ ivec3 Player::get_rounded_forward() {
     }
 }
 
-void Player::set_mount(SuperObject* m) {
-    mount = m;
-    // TODO disable/enable collision detection here
-    printf("frog\n");
+fvec3 Player::step() {
+    if (mount) {
+        // track mount
+        fvec3 old_pos = pos;
+        pos = fvec3(mount->pos.x + offset_to_mount.x,
+                    mount->pos.y + offset_to_mount.y,
+                    mount->pos.z + offset_to_mount.z);
+        return old_pos;
+    }
+    else {
+        return RenderablePlayer::step();
+    }
 }
 
-void Player::unmount() {
+bool Player::collides_with(Entity* other) {
+    if (mount) {
+        return false;
+    }
+    return RenderablePlayer::collides_with(other);
+}
+
+void Player::set_mount(SuperObject* m, fvec3 pos) {
+    mount = m;
+    offset_to_mount = fvec3(pos.x - m->pos.x, pos.y - m->pos.y, pos.z - m->pos.z);
+}
+
+bool Player::unmount(World* world) {
+    // try setting pos to about 2 blocks above current position
+    pos.y += 2.0f;
+    if (world->will_collide_with_anything(this)) {
+        // return false if we can't unmount...because not room for player
+        pos.y -= 2.0f;
+        return false;
+    }
     mount = 0;
-    // TODO disable/enable collision detection here
-    printf("frog\n");
+    return true;
 }
 
 SuperObject* Player::get_mount() {

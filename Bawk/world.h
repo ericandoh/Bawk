@@ -55,7 +55,7 @@ public:
     bool kill_block(ivec3* src);
     void add_player(Player* player);
     void step();
-    bool will_collide_with_anything(RenderableSuperObject* superobject);
+    bool will_collide_with_anything(Entity* superobject);
     SuperObject* create_superobject(Player* player, ivec3 pos);
 };
 

@@ -35,12 +35,12 @@ class Entity {
     float speed;
     // TODO support rotation later on, if you're coolbeans
 protected:
-    // position of the superobject, in RWC
-    fvec3 pos;
     // up/dir vectors. these should be normalized
     fvec3 up;
     fvec3 dir;
 public:
+    // position of the superobject, in RWC
+    fvec3 pos;
     // identifying information for the entity
     uint32_t vid;
     uint32_t pid;
@@ -80,7 +80,7 @@ public:
     virtual int load_self(IODataObject* obj);
     virtual void remove_self(IODataObject* obj);
 
-    bool collides_with(Entity* other);
+    virtual bool collides_with(Entity* other);
     // override this with your own int for up to what class of Entities you can handle collision
     // detection for
     virtual int get_collision_priority();

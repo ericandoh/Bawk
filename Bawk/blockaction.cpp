@@ -33,12 +33,28 @@ bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk,
     return true;
 }
 
+// a universal 6 directional engine
+// drawbacks is it is very weak
 bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int action) {
     if (action == 0) {
+        // move up
         printf("KEY 0 PRSSED\n");
     }
     else if (action == 1) {
+        // move down
         printf("KEY 1 PRSSED\n");
+    }
+    else if (action == 2) {
+        // turn left
+    }
+    else if (action == 3) {
+        // turn right
+    }
+    else if (action == 4) {
+        // move forward
+    }
+    else if (action == 5) {
+        // move backwards
     }
     return true;
 }

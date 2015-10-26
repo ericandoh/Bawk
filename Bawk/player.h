@@ -31,11 +31,13 @@
 #include "inventory.h"
 
 class SuperObject;
+class World;
 
 class Player : public RenderablePlayer {
     fvec2 angle;
     long id_assign;
     SuperObject* mount;
+    fvec3 offset_to_mount;
 public:
     PlayerInventory* inventory;
     Player(uint32_t p);
@@ -46,9 +48,13 @@ public:
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();
     
-    void set_mount(SuperObject* m);
+    fvec3 step() override;
+    
+    bool collides_with(Entity* other) override;
+    
+    void set_mount(SuperObject* m, fvec3 pos);
     SuperObject* get_mount();
-    void unmount();
+    bool unmount(World* world);
     
     std::string get_save_path() override;
     int load_selfs() override;
