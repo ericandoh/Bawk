@@ -38,7 +38,8 @@ void EntityHolder::step() {
         legal = true;
         for (unsigned int j = 0; j < i; j++) {
             if (entities.at(j)->collides_with(entities.at(i))) {
-                legal = false;
+                //legal = false;
+                legal = true;
                 break;
             }
         }

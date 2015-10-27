@@ -15,6 +15,7 @@
 #include "json/json.h"
 #include "block_loader.h"
 #include "cursorsuperobject.h"
+#include "world_generator.h"
 
 // add this to every recipe ID
 // +1, so 0 doesn't map to 0 in the actual block
@@ -406,6 +407,9 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
     // not supported currently
     printf("reading in world generation files currently not supported!\n");
     printf("frog\n");
+    
+    setup_world_generator(100);
+    
     return 0;
 }
 
