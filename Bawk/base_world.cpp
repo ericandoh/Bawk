@@ -8,6 +8,7 @@
 
 #include "base_world.h"
 #include "block_loader.h"
+#include "world_generator.h"
 
 #define GROUND_DEPTH 4
 
@@ -40,6 +41,8 @@ int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     if (!SuperObject::get_chunk(to_arr, x, y, z)) {
         return 0;
     }
+    fill_chunk_at(ivec3(x, y, z), to_arr);
+    /*
     // chunk doesn't exist in disk, so it must not exist at all
     // create a new chunk with random parameters
     if (y == 0) {
@@ -61,7 +64,7 @@ int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
                     to_arr[x][rand() % 16][z].type = rand() % 4 + 7;
             }
         }
-    }
+    }*/
     return 0;
 }
 

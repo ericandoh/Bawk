@@ -60,17 +60,6 @@ struct ivec3 : glm::tvec3<int> {
               && y == other.y
               && z == other.z);
     }
-    /*
-    // return hash function based on interleaving of x, y, z
-    std::size_t operator()(const ivec3& k) const
-    {
-        // turn first 9 bits to a 27 bit string, then add together
-        // the result should be XYZXYZXYZXYZ for XXXX, YYYY, ZZZZ (but with more bits)
-        uint32_t xb = spread_bits(x);
-        uint32_t yb = spread_bits(y) << 1;
-        uint32_t zb = spread_bits(z) << 2;
-        return xb + yb + zb;
-    }*/
 };
 
 // orientation, from a viewer looking from the positive x-direction

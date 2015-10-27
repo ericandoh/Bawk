@@ -24,6 +24,10 @@
 #include "entity.h"
 #include "block.h"
 
+struct chunk_bounds {
+    ivec3 lower_bound, upper_bound;
+};
+
 namespace std
 {
     template<>
@@ -38,10 +42,6 @@ namespace std
         }
     };
 }
-
-struct chunk_bounds {
-    ivec3 lower_bound, upper_bound;
-};
 
 typedef std::unordered_map<ivec3, RenderableChunk*> chunk_map;
 typedef std::unordered_map<ivec3, chunk_bounds> chunk_bound_map;
