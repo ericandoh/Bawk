@@ -13,25 +13,24 @@
             "weight": 25
         },
         "2": {
-            "name": "dirt",
-            "resistance": 2,
-            "weight": 10
-        },
-        "3": {
             "name": "grass",
             "resistance": 3,
             "weight": 12
         },
+        "3": {
+            "name": "sand",
+            "resistance": 1,
+            "weight": 12
+        },
         "4": {
-            "name": "saddle",
-            "resistance": 2,
-            "texture": "simplebox.obj",
-            "weight": 30,
-            "vehicle": 1,
-            "action": "engine"
+            "name": "wood",
+            "resistance": 6,
+            "weight": 9
         },
         "5": {
-            "name": "unnamed"
+            "name": "dirt",
+            "resistance": 2,
+            "weight": 10
         },
         "6": {
             "name": "unnamed"
@@ -40,7 +39,12 @@
             "name": "unnamed"
         },
         "8": {
-            "name": "unnamed"
+            "name": "saddle",
+            "resistance": 2,
+            "texture": "simplebox.obj",
+            "weight": 30,
+            "vehicle": 1,
+            "action": "engine"
         },
         "9": {
             "name": "unnamed"

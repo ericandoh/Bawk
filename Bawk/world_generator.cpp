@@ -417,7 +417,7 @@ int pick_biome_from_weights(std::map<int, float> &weights) {
         if (rv < total)
             return i.first;
     }
-    // this should never be executed
+    // this should never be executed if weights was setup correctly
     return 0;
 }
 
@@ -428,12 +428,6 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
     if (abs(chunk_pos.y) > 2) {
         return;
     }
-    
-    srand(info.seed);
-    srand(rand() + chunk_pos.x);
-    srand(rand() + chunk_pos.y);
-    srand(rand() + chunk_pos.z);
-    srand(rand());
     
     int lower, upper;
     std::map<int, float> weights;
@@ -450,9 +444,13 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
                 continue;
             for (int y = bottom; y < top; y++) {
                 // hacky, but adding 5 to biome to get block
+                srand(info.seed);
+                srand(rand() + chunk_pos.x*CX+x);
+                srand(rand() + chunk_pos.y*CY+y);
+                srand(rand() + chunk_pos.z*CZ+z);
                 uint16_t type = pick_biome_from_weights(weights);
                 if (type)
-                    to_arr[x][y][z] = type + 5;
+                    to_arr[x][y][z] = type;
             }
         }
     }
@@ -492,7 +490,7 @@ void clean_world_generator() {
 
 
 void test_world_generator() {
-    int lower, upper;
+    /*int lower, upper;
     setup_world_generator(100);
     //x=60 to 79, z=68-69 to test boundary
     //test funkiness going on at -569/6/32
@@ -506,5 +504,12 @@ void test_world_generator() {
             get_heights_at(&lower, &upper, first, weights);
             printf("%d to %d still\n", lower, upper);
         }
-    }
+    }*/
+    srand(200);
+    std::map<int, float> weights;
+    weights[10] = 0.0f;
+    weights[11] = 0.9f;
+    weights[12] = 0.1f;
+    for (int i = 0; i < 15; i++)
+        printf("%d\n", pick_biome_from_weights(weights));
 }
