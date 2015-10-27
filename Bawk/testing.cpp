@@ -8,8 +8,7 @@
 
 #include "testing.h"
 // clear imports every once in a while
-#include <glm/gtc/noise.hpp>
-#include "basic_types.h"
+#include "world_generator.h"
 
 void do_shit();
 
@@ -27,49 +26,54 @@ void do_shit() {
 }
 */
 
-static float noise2d(float x, float y, int seed, int octaves, float persistence, float strength) {
-    srand(seed);
-    // any more and we start losing precision
-    // 2^20 is about a million, so about a million x million possible worlds. I think we good
-    int add_x = rand() % (0x1 << 20);
-    int add_y = rand() % (0x1 << 20);
-    float sea_level = 2.0;
-    
-    float sum = 0;
-    float scale = 1.0;
-    
-    for(int i = 0; i < octaves; i++) {
-        sum += strength * glm::simplex(fvec2((x+add_x) / 256.0, (y+add_y) / 256.0) * scale);
-        scale *= 2.0;
-        strength *= persistence;
-    }
-    return sum + sea_level;
-}
-
-
-// COPY FUNCTION DOWN VVV
 void do_shit() {
-    int seed = 1093841320; // seed usedot make perlin noise
-    int octaves = 5; //how many frequencies to have, let's not change this
-    float persistence = 0.8;    // how much of the higher frequencies to have?
-    float strength = 10.0;      // how much the terrain should change
     // copy me
-    for (float i = 0; i < 20; i++) {
-        for (float j = 0; j < 20; j++) {
-            strength = 10.0 + (i + j) * 30.0 / 40.0;
-            printf("%d ", (int)floorf(noise2d(i, j, seed, octaves, persistence, strength)));
-        }
-        printf("\n");
-    }
+    test_world_generator();
 }
-
-
 
 
 // COPY DUMP CONTENTS VVV
 
 /*
 Dumps
+ 
+ 
+ static float noise2d(float x, float y, int seed, int octaves, float persistence, float strength) {
+ srand(seed);
+ // any more and we start losing precision
+ // 2^20 is about a million, so about a million x million possible worlds. I think we good
+ int add_x = rand() % (0x1 << 20);
+ int add_y = rand() % (0x1 << 20);
+ float sea_level = 2.0;
+ 
+ float sum = 0;
+ float scale = 1.0;
+ 
+ for(int i = 0; i < octaves; i++) {
+ sum += strength * glm::simplex(fvec2((x+add_x) / 256.0, (y+add_y) / 256.0) * scale);
+ scale *= 2.0;
+ strength *= persistence;
+ }
+ return sum + sea_level;
+ }
+ 
+ 
+ // COPY FUNCTION DOWN VVV
+ void do_shit() {
+ int seed = 1093841320; // seed usedot make perlin noise
+ int octaves = 5; //how many frequencies to have, let's not change this
+ float persistence = 0.8;    // how much of the higher frequencies to have?
+ float strength = 10.0;      // how much the terrain should change
+ // copy me
+ for (float i = 0; i < 20; i++) {
+ for (float j = 0; j < 20; j++) {
+ strength = 10.0 + (i + j) * 30.0 / 40.0;
+ printf("%d ", (int)floorf(noise2d(i, j, seed, octaves, persistence, strength)));
+ }
+ printf("\n");
+ }
+ }
+
  
  class Tracer: public BresenhamTracer {
  bool check_at_coord(float x, float y, float z, BlockOrientation side) override;

@@ -43,8 +43,8 @@ BiomeNoiseGenerationInfo::BiomeNoiseGenerationInfo() {
 }
 
 BiomeNoiseGenerationInfo::BiomeNoiseGenerationInfo(float s, float p) {
-    strength_lower = 30.0f;
-    persistence_lower = 0.95f;
+    strength_lower = 4.0f;
+    persistence_lower = 0.3f;
     strength_upper = s;
     persistence_upper = p;
 }
@@ -123,8 +123,8 @@ void setup_world_generator(int fillthis) {
     info.biome_points_per_island_average = 2;   //4
     info.biome_points_per_island_variance = 1;  //3
     
-    info.island_fatness = 4.0f;
-    info.melt_distance = 8.0f;  //20.0f
+    info.island_fatness = 4.0f; // 7.0f
+    info.melt_distance = 10.0f;  //20.0f
     
     info.octaves = 5;
     
@@ -132,10 +132,10 @@ void setup_world_generator(int fillthis) {
     
     info.biome_noise_info.resize(5);
     info.biome_noise_info[0] = BiomeNoiseGenerationInfo(1.0f, 0.5f);//corresponds to the empty biome lol
-    info.biome_noise_info[1] = BiomeNoiseGenerationInfo(30.0f, 0.3f);
-    info.biome_noise_info[2] = BiomeNoiseGenerationInfo(40.0f, 0.9f);
-    info.biome_noise_info[3] = BiomeNoiseGenerationInfo(4.0f, 0.3f);
-    info.biome_noise_info[4] = BiomeNoiseGenerationInfo(10.0f, 0.7f);
+    info.biome_noise_info[1] = BiomeNoiseGenerationInfo(10.0f, 0.2f);
+    info.biome_noise_info[2] = BiomeNoiseGenerationInfo(10.0f, 0.9f);
+    info.biome_noise_info[3] = BiomeNoiseGenerationInfo(3.0f, 0.3f);
+    info.biome_noise_info[4] = BiomeNoiseGenerationInfo(3.0f, 0.7f);
 }
 
 int choose_random(int average, int variance) {
@@ -212,25 +212,7 @@ void generate_biome_points(ivec3 sector_pos) {
 }
 
 void generate_island_points(ivec3 sector_pos) {
-    if (!state.biome_points.count(sector_pos)) {
-        generate_biome_points(sector_pos);
-    }
-    /*for (int i = -1; i <= 1; i++) {
-        for (int j = -1; j <= 1; j++) {
-            for (int k = -1; k <= 1; k++) {
-                ivec3 side_sector_pos(sector_pos.x + i, sector_pos.y + j, sector_pos.z + k);
-                if (!state.biome_points.count(side_sector_pos)) {
-                    generate_biome_points(side_sector_pos);
-                }
-            }
-        }
-    }*/
-    
-    srand(info.seed);
-    srand(rand() + sector_pos.x);
-    //srand(rand() + sector_pos.y);
-    srand(rand() + sector_pos.z);
-    srand(rand());  // call rand one more time to distinguish from generate_biome_points
+    generate_biome_points(sector_pos);
     
     int sector_biome_point_count = (int) state.biome_points[sector_pos].size();
     
@@ -263,10 +245,10 @@ void generate_island_points(ivec3 sector_pos) {
             }
         }
         int use_index = indices[index_of_index];
-        state.island_biome_points[sector_pos][use_index] = rand() % 5 + 1;
+        state.island_biome_points[sector_pos][use_index] = rand() % 4 + 1;
         
         if (i == 0) {
-            first_center = state.biome_points[sector_pos][use_index];;
+            first_center = state.biome_points[sector_pos][use_index];
         }
         // this deletion is unnecessary - a simple .erase(...) would have sufficed...
         indices[index_of_index] = indices.back();
@@ -392,7 +374,12 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
         if (picked_biomes[i]) {
             float weight = 1.0f - (distances_to_said_biomes[i] - distances_to_said_biomes[0]) / melt_distance;
             float frac_weight = weight / weight_sum;
-            weights[picked_biomes[i]] = frac_weight;
+            if (weights.count(picked_biomes[i])) {
+                weights[picked_biomes[i]] += frac_weight;
+            }
+            else {
+                weights[picked_biomes[i]] = frac_weight;
+            }
             lstrength += (info.biome_noise_info[picked_biomes[i]].strength_lower) * frac_weight;
             ustrength += (info.biome_noise_info[picked_biomes[i]].strength_upper) * frac_weight;
             lpers += (info.biome_noise_info[picked_biomes[i]].persistence_lower) * frac_weight;
@@ -400,12 +387,12 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
         }
     }
     if (fraction_island > 0.01) {
-        float rlower = noise2d(pos.x, pos.z, info.seed, info.octaves, lpers, lstrength);
+        float rlower = noise2d(pos.x, pos.z, info.seed, info.octaves, lpers, lstrength) * fraction_island;
         rlower -= (info.island_fatness * fraction_island);
-        rlower += (state.island_heights[sac]);
-        float rupper = noise2d(pos.x, pos.z, info.seed + 1, info.octaves, upers, ustrength);
+        //rlower += (state.island_heights[sac]);
+        float rupper = noise2d(pos.x, pos.z, info.seed + 1, info.octaves, upers, ustrength) * fraction_island;
         rupper += (info.island_fatness * fraction_island);
-        rupper += (state.island_heights[sac]);
+        //rupper += (state.island_heights[sac]);
         *lower = (int)floorf(rlower);
         *upper = (int)floorf(rupper);
         if (*upper < *lower) {
@@ -435,12 +422,18 @@ int pick_biome_from_weights(std::map<int, float> &weights) {
 }
 
 void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
-    printf("Generating chunk %d %d %d\n", chunk_pos.x, chunk_pos.y, chunk_pos.z);
+    //printf("Generating chunk %d %d %d\n", chunk_pos.x, chunk_pos.y, chunk_pos.z);
     get_empty_chunk(to_arr);
     
     if (abs(chunk_pos.y) > 2) {
         return;
     }
+    
+    srand(info.seed);
+    srand(rand() + chunk_pos.x);
+    srand(rand() + chunk_pos.y);
+    srand(rand() + chunk_pos.z);
+    srand(rand());
     
     int lower, upper;
     std::map<int, float> weights;
@@ -453,6 +446,8 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
             upper -= chunk_pos.y*CY;
             int bottom = std::max(lower, 0);
             int top = std::min(upper, CY);
+            if (bottom >= top || bottom > CY - 1 || top < 1)
+                continue;
             for (int y = bottom; y < top; y++) {
                 // hacky, but adding 5 to biome to get block
                 uint16_t type = pick_biome_from_weights(weights);
@@ -461,7 +456,7 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
             }
         }
     }
-    printf("Done\n");
+    //printf("Done\n");
     
     /*
     info.seed = 100;
@@ -495,3 +490,21 @@ void clean_world_generator() {
     // nothing needs to be done (yet)
 }
 
+
+void test_world_generator() {
+    int lower, upper;
+    setup_world_generator(100);
+    //x=60 to 79, z=68-69 to test boundary
+    //test funkiness going on at -569/6/32
+    for (int x = -569; x < -566; x++) {
+        for (int z = 32; z < 33; z++) {
+            ivec3 first(x, 0, z);
+            printf("For %d, %d\n", x, z);
+            std::map<int, float> weights;
+            get_heights_at(&lower, &upper, first, weights);
+            printf("%d to %d\n", lower, upper);
+            get_heights_at(&lower, &upper, first, weights);
+            printf("%d to %d still\n", lower, upper);
+        }
+    }
+}
