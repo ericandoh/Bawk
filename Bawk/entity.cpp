@@ -8,6 +8,7 @@
 
 #include "entity.h"
 #include <climits>
+#include <glm/gtc/matrix_transform.hpp>
 
 Entity::Entity() {
     // initialize things
@@ -17,27 +18,62 @@ Entity::Entity() {
     lower_bound = fvec3(FLT_MAX, FLT_MAX, FLT_MAX);
     upper_bound = fvec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     
+    center_pos = fvec3(0.0f, 0.0f, 0.0f);
+    weight = 0;
+    // 0 is full health
+    health = 0;
+    
     velocity = fvec3(0, 0, 0);
+    angular_velocity = fvec2(0, 0);
     speed = 0.1f;
     vid = 0;
     pid = 0;
     entity_class = 0;   // please set me in future constructors!
+    
+    rpos = ivec3(0, 0, 0);
+    rdir = ivec3(0, 0, 0);
 }
 
 void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
-    // TODO this needs work to compensate for rotations and whatnot
-    src->x = x - pos.x;
-    src->y = y - pos.y;
-    src->z = z - pos.z;
+    // round center_pos to nearest 0.5
+    fvec3 integral_center_pos(roundf(center_pos.x - 0.5f)+0.5f,
+                              roundf(center_pos.y - 0.5f)+0.5f,
+                              roundf(center_pos.z - 0.5f)+0.5f);
+    // round angle to nearest angle
+    fvec2 rounded_angle = fvec2(roundf(angle.x / M_PI) * M_PI,
+                                roundf(angle.y / M_PI) * M_PI);
+
+    fvec4 result(x - pos.x, y - pos.y, z - pos.z, 1.0f);
     
-    //view = glm::lookAt(pos, pos + dir, up);
-    //fvec3(src.x, src.y, src.z
+    fmat4 reverse = glm::translate(fmat4(1), integral_center_pos);
+    reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+    reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
+    reverse = glm::translate(reverse, -integral_center_pos);
+    
+    src->x = result.x;
+    src->y = result.y;
+    src->z = result.z;
 }
 
 void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
-    src->x = x + pos.x;
-    src->y = y + pos.y;
-    src->z = z + pos.z;
+    // round center_pos to nearest 0.5
+    fvec3 integral_center_pos(roundf(center_pos.x - 0.5f)+0.5f,
+                              roundf(center_pos.y - 0.5f)+0.5f,
+                              roundf(center_pos.z - 0.5f)+0.5f);
+    // round angle to nearest angle
+    fvec2 rounded_angle = fvec2(roundf(angle.x / M_PI) * M_PI,
+                                roundf(angle.y / M_PI) * M_PI);
+    // S * R * T
+    fmat4 view = glm::translate(fmat4(1), integral_center_pos);
+    view = glm::rotate(view, rounded_angle.x, fvec3(0, 1, 0));
+    view = glm::rotate(view, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+    view = glm::translate(view, -integral_center_pos);
+    fvec4 result(x, y, z, 1.0f);
+    result = view * result;
+    
+    src->x = result.x + pos.x;
+    src->y = result.y + pos.y;
+    src->z = result.z + pos.z;
 }
 
 // movement methods. Move these to class Entity
@@ -71,20 +107,34 @@ void Entity::move_down() {
     velocity.y -= 1.0f;
 }
 
+void Entity::recalculate_dir() {
+    if(angle.x < -M_PI)
+        angle.x += M_PI * 2;
+    if(angle.x > M_PI)
+        angle.x -= M_PI * 2;
+    if(angle.y < -M_PI / 2)
+        angle.y = -M_PI / 2;
+    if(angle.y > M_PI / 2)
+        angle.y = M_PI / 2;
+    
+    //right.x = -cosf(angle.x);
+    //right.y = 0;
+    //right.z = sinf(angle.x);
+    
+    dir.x = sinf(angle.x) * cosf(angle.y);
+    dir.y = sinf(angle.y);
+    dir.z = cosf(angle.x) * cosf(angle.y);
+    
+    //up = glm::cross(right, lookat);
+    // TODO recalculate pos
+}
+
 fvec3* Entity::get_pos() {
     return &pos;
 }
 
-fvec3 Entity::set_pos(fvec3 to_pos) {
-    // this OVERRIDES collision detection checks and should be ONLY called
-    // for special scenarios
-    fvec3 old_pos = pos;
-    pos = to_pos;
-    return old_pos;
-}
-
 bool Entity::has_moved() {
-    return velocity.x != 0 || velocity.y != 0 || velocity.z != 0;
+    return velocity.x != 0 || velocity.y != 0 || velocity.z != 0 || angular_velocity.x != 0 || angular_velocity.y != 0;
 }
 
 bool Entity::poke(float x, float y, float z) {
@@ -116,11 +166,15 @@ bool Entity::block_mouse_callback(Game* game, int button) {
 }
 
 fvec3 Entity::step() {
+    fvec3 old_pos = pos;
+    angle.x += angular_velocity.x;
+    angle.y += angular_velocity.y;
     fvec3 new_pos = fvec3(pos.x + velocity.x * speed,
                           pos.y + velocity.y * speed,
                           pos.z + velocity.z * speed);
     velocity = fvec3(0, 0, 0);
-    return set_pos(new_pos);
+    
+    return old_pos;
 }
 
 void Entity::render(fmat4* transform) {
@@ -207,9 +261,16 @@ int Entity::load_self(IODataObject* obj) {
     speed = obj->read_value<float>();
     pos = obj->read_value<fvec3>();
     up = obj->read_value<fvec3>();
-    dir = obj->read_value<fvec3>();
+    angle = obj->read_value<fvec2>();
     lower_bound = obj->read_value<fvec3>();
     upper_bound = obj->read_value<fvec3>();
+    
+    center_pos = obj->read_value<fvec3>();
+    weight = obj->read_value<int>();
+    health = obj->read_value<int>();
+    
+    recalculate_dir();
+    
     return 0;
 }
 
@@ -229,7 +290,10 @@ void Entity::remove_self(IODataObject* obj) {
     obj->save_value(speed);
     obj->save_value(pos);
     obj->save_value(up);
-    obj->save_value(dir);
+    obj->save_value(angle);
     obj->save_value(lower_bound);
     obj->save_value(upper_bound);
+    obj->save_value(center_pos);
+    obj->save_value(weight);
+    obj->save_value(health);
 }

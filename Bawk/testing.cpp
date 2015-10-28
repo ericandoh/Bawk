@@ -8,7 +8,9 @@
 
 #include "testing.h"
 // clear imports every once in a while
-#include "world_generator.h"
+#include "basic_types.h"
+#include <vector>
+#include <glm/gtc/matrix_transform.hpp>
 
 void do_shit();
 
@@ -28,7 +30,43 @@ void do_shit() {
 
 void do_shit() {
     // copy me
-    test_world_generator();
+    fvec3 pos(0, 0, 0);
+    fvec2 angle(0, 3.14159265359/2);
+    fvec3 up(0, 1, 0);
+    fvec3 center_pos(0.5f, 0.0f, 1.5f);
+    
+    std::vector<fvec3> test_points;
+    test_points.push_back(fvec3(0, 0, 0));
+    test_points.push_back(fvec3(1, 0, 0));
+    test_points.push_back(fvec3(0, 0, 2));
+    test_points.push_back(fvec3(1, 0, 2));
+    test_points.push_back(fvec3(0.5f, 0.0f, 1.5f));
+    
+    fmat4 view = glm::translate(fmat4(1), center_pos);
+    view = glm::rotate(view, angle.x, fvec3(0, 1, 0));
+    view = glm::rotate(view, angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
+    view = glm::translate(view, -center_pos);
+    
+    fmat4 reverse = glm::translate(fmat4(1), center_pos);
+    reverse = glm::rotate(reverse, -angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
+    reverse = glm::rotate(reverse, -angle.x, fvec3(0, 1, 0));
+    reverse = glm::translate(reverse, -center_pos);
+    
+    for (int i = 0; i < test_points.size(); i++) {
+        fvec3 point = test_points[i];
+        fvec4 homogenized(point.x, point.y, point.z, 1.0f);
+        
+        fvec4 result = view * homogenized;
+        printf("%f %f %f turns to %f %f %f %f\n", point.x, point.y, point.z, result.x, result.y, result.z, result.w);
+        result = reverse * result;
+        printf("%f %f %f %f translated back\n", result.x, result.y, result.z, result.w);
+    }
+    
+    view = glm::translate(fmat4(1), -center_pos);
+    fvec4 testpoint = fvec4(0, 0, 0, 1);
+    fvec4 result = view * testpoint;
+    printf("%f %f %f %f\n",result.x, result.y, result.z, result.w);
+    
 }
 
 

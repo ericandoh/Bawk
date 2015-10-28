@@ -17,6 +17,7 @@ SuperObject::SuperObject() {
     vid = 0;
     pid = 0;
     entity_class = 4;
+    block_counter = 0;
 }
 
 SuperObject::SuperObject(uint32_t p, uint32_t v) {
@@ -24,6 +25,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     vid = v;
     pid = p;
     entity_class = 4;
+    block_counter = 0;
 }
 
 SuperObject::SuperObject(uint32_t p, uint32_t v, ivec3 po) {
@@ -33,6 +35,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v, ivec3 po) {
     pid = p;
     entity_class = 4;
     pos = fvec3((float)po.x, (float)po.y, (float)po.z);
+    block_counter = 0;
 }
 
 void SuperObject::set_block(float x, float y, float z, block_type type) {
@@ -58,10 +61,10 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
         }
     }
     else {
-        // see if we're removing a block that has a key binding
         fvec3 oac;
         transform_into_my_coordinates(&oac, x, y, z);
         ivec3 rounded_oac((int)floorf(oac.x), (int)floorf(y), (int)floorf(z));
+        // see if we're removing a block that has a key binding
         if (reverse_key_mapping.count(rounded_oac)) {
             // we do have such a key binding, remove it
             for (int i = 0; i < reverse_key_mapping[rounded_oac].size(); i++) {
@@ -77,6 +80,36 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
             }
             reverse_key_mapping.erase(rounded_oac);
         }
+    }
+    block_type current = get_block(x, y, z);
+    if (current.type) {
+        fvec3 oac;
+        transform_into_my_coordinates(&oac, x, y, z);
+        // remove stats for current block
+        int current_weight = get_block_weight(current.type);
+        int new_weight = weight - current_weight;
+        center_pos = fvec3((center_pos.x * weight - (oac.x + 0.5f) * current_weight) / new_weight,
+                           (center_pos.y * weight - (oac.y + 0.5f) * current_weight) / new_weight,
+                           (center_pos.z * weight - (oac.z + 0.5f) * current_weight) / new_weight
+                           );
+        weight = new_weight;
+        health -= current.life;
+        block_counter--;
+    }
+    if (type.type) {
+        // add stats for current block
+        fvec3 oac;
+        transform_into_my_coordinates(&oac, x, y, z);
+        // remove stats for current block
+        int current_weight = get_block_weight(type.type);
+        int new_weight = weight + current_weight;
+        center_pos = fvec3((center_pos.x * weight + (oac.x + 0.5f) * current_weight) / new_weight,
+                           (center_pos.y * weight + (oac.y + 0.5f) * current_weight) / new_weight,
+                           (center_pos.z * weight + (oac.z + 0.5f) * current_weight) / new_weight
+                           );
+        weight = new_weight;
+        health += current.life;
+        block_counter++;
     }
     RenderableSuperObject::set_block(x, y, z, type);
 }
@@ -173,6 +206,7 @@ int SuperObject::load_self(IODataObject* obj) {
             reverse_key_mapping[key_mapping[key][j].position].push_back(key);
         }
     }
+    block_counter = obj->read_value<int>();
     
     return 0;
 }
@@ -192,4 +226,5 @@ void SuperObject::remove_self(IODataObject* obj) {
             obj->save_value(i.second[j]);
         }
     }
+    obj->save_value(block_counter);
 }

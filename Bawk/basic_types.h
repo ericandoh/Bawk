@@ -30,6 +30,8 @@ typedef glm::vec3 fvec3;
 // float vec2
 typedef glm::vec2 fvec2;
 
+typedef glm::vec4 fvec4;
+
 // float vec4
 typedef glm::tvec4<int> ivec4;
 

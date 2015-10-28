@@ -43,24 +43,7 @@ void Player::update_direction(double xdiff, double ydiff) {
     angle.x -= xdiff * M_PI;
     angle.y -= ydiff * M_PI;
     
-    if(angle.x < -M_PI)
-        angle.x += M_PI * 2;
-    if(angle.x > M_PI)
-        angle.x -= M_PI * 2;
-    if(angle.y < -M_PI / 2)
-        angle.y = -M_PI / 2;
-    if(angle.y > M_PI / 2)
-        angle.y = M_PI / 2;
-    
-    //right.x = -cosf(angle.x);
-    //right.y = 0;
-    //right.z = sinf(angle.x);
-    
-    dir.x = sinf(angle.x) * cosf(angle.y);
-    dir.y = sinf(angle.y);
-    dir.z = cosf(angle.x) * cosf(angle.y);
-    
-    //up = glm::cross(right, lookat);
+    recalculate_dir();
 }
 
 ivec3 Player::get_rounded_left() {
@@ -152,7 +135,6 @@ int Player::load_self(IODataObject* obj) {
     if (RenderablePlayer::load_self(obj))
         return 1;
     // load player stuff here
-    angle = obj->read_value<fvec2>();
     id_assign = obj->read_value<long>();
     inventory->load_self(obj);
     return 0;
@@ -161,7 +143,6 @@ int Player::load_self(IODataObject* obj) {
 void Player::remove_self(IODataObject* obj) {
     RenderablePlayer::remove_self(obj);
     // save player stuff here
-    obj->save_value(angle);
     obj->save_value(id_assign);
     
     inventory->remove_self(obj);

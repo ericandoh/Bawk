@@ -41,6 +41,7 @@ protected:
     std::map<int, std::vector<key_mapping_info>> key_mapping;
     // the reverse mapping of the above, for convenience
     std::unordered_map<ivec3, std::vector<int>> reverse_key_mapping;
+    int block_counter;
 public:
     SuperObject();
     SuperObject(uint32_t p, uint32_t v);

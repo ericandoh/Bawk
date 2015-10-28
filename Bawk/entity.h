@@ -31,13 +31,23 @@
 class Game;
 
 class Entity {
+    // temp variable that tells me my speed at a certain point in time
     fvec3 velocity;
+    // temp variable that tells me my angular speed at a certain point in time
+    fvec2 angular_velocity;
+    // this will be deprecated!!!!!!!!!!!!!!!!!!!!!!!!!
     float speed;
     // TODO support rotation later on, if you're coolbeans
 protected:
     // up/dir vectors. these should be normalized
     fvec3 up;
     fvec3 dir;
+    fvec2 angle;
+    // rounded position and direction vectors
+    // used to represent true position
+    ivec3 rpos, rdir;
+    // if the object is stable it is not moving
+    bool stable;
 public:
     // position of the superobject, in RWC
     fvec3 pos;
@@ -49,6 +59,12 @@ public:
     // the bounding box over contents of all chunks, in OAC
     // public for convenience of access
     fvec3 lower_bound, upper_bound;
+    // the weighted center position of this entity
+    fvec3 center_pos;
+    // weight of the entity
+    int weight;
+    // height of the entity. 0 is full health (alive!)
+    int health;
     Entity();
     // internal function to transform RWC xyz to OAC src
     void transform_into_my_coordinates(fvec3* src, float x, float y, float z);
@@ -61,8 +77,8 @@ public:
     void move_right();
     void move_up();
     void move_down();
+    void recalculate_dir();
     fvec3* get_pos();
-    fvec3 set_pos(fvec3 to);
     bool has_moved();
     // poke this object at RWC, true if this object says, "OUCH"
     virtual bool poke(float x, float y, float z);

@@ -34,7 +34,6 @@ class SuperObject;
 class World;
 
 class Player : public RenderablePlayer {
-    fvec2 angle;
     long id_assign;
     SuperObject* mount;
     fvec3 offset_to_mount;

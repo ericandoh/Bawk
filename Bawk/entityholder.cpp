@@ -32,9 +32,9 @@ void EntityHolder::step() {
     fvec3 old_pos;
     bool legal;
     for (unsigned int i = 0; i < entities.size(); i++) {
+        old_pos = entities.at(i)->step();
         if (!entities[i]->has_moved())
             continue;
-        old_pos = entities.at(i)->step();
         legal = true;
         for (unsigned int j = 0; j < i; j++) {
             if (entities.at(j)->collides_with(entities.at(i))) {
@@ -44,7 +44,7 @@ void EntityHolder::step() {
             }
         }
         if (!legal) {
-            entities.at(i)->set_pos(old_pos);
+            entities.at(i)->pos = old_pos;
         }
     }
     

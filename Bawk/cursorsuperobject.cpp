@@ -103,7 +103,7 @@ bool CursorSuperObject::place_blocks(Player* player, World* world, TemporaryTemp
         return false;
     }
     // save position
-    set_pos(fvec3(mx, my, mz));
+    pos = fvec3(mx, my, mz);
     locked = true;
     return true;
 }
@@ -124,7 +124,7 @@ void CursorSuperObject::get_bounds(ivec3* upper) {
 
 void CursorSuperObject::render_at_zero(fmat4* transform) {
     fvec3 old_pos = pos;
-    set_pos(fvec3(0, 0, 0));
+    pos = fvec3(0, 0, 0);
     render(transform);
     pos = old_pos;
 }
@@ -138,7 +138,7 @@ void CursorSuperObject::render_and_position(fmat4* transform) {
         }
         // save position
         if (pos != fvec3(mx, my, mz)) {
-            set_pos(fvec3(mx, my, mz));
+            pos = fvec3(mx, my, mz);
         }
     }
     render(transform);
