@@ -25,7 +25,7 @@
 // this is definitely not professional at all ... dude just make a new target + make it run test directly...
 #include "testing.h"
 
-#define TESTING 0
+#define TESTING 1
 
 int main(void)
 {

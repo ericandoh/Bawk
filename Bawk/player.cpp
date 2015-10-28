@@ -76,17 +76,15 @@ ivec3 Player::get_rounded_forward() {
     }
 }
 
-fvec3 Player::step() {
+void Player::step() {
     if (mount) {
         // track mount
-        fvec3 old_pos = pos;
         pos = fvec3(mount->pos.x + offset_to_mount.x,
                     mount->pos.y + offset_to_mount.y,
                     mount->pos.z + offset_to_mount.z);
-        return old_pos;
     }
     else {
-        return RenderablePlayer::step();
+        RenderablePlayer::step();
     }
 }
 

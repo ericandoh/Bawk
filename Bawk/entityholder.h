@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <unordered_map>
 #include "entity.h"
 
 class EntityHolder {
@@ -46,5 +47,7 @@ public:
     int load_self(IODataObject* obj);
     void remove_self(IODataObject* obj);
 };
+
+void test_entity_holder_collision_detection();
 
 #endif /* defined(__Bawk__entityholder__) */

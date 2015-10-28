@@ -89,29 +89,45 @@ void Entity::move_forward() {
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
     velocity += forward;
+    stable = false;
 }
 void Entity::move_backward() {
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
     velocity -= forward;
+    stable = false;
 }
 void Entity::move_left() {
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
     velocity.x += forward.z;
     velocity.z -= forward.x;
+    stable = false;
 }
 void Entity::move_right() {
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
     velocity.x -= forward.z;
     velocity.z += forward.x;
+    stable = false;
 }
 void Entity::move_up() {
     velocity.y += 1.0f;
+    stable = false;
 }
 void Entity::move_down() {
     velocity.y -= 1.0f;
+    stable = false;
+}
+
+void Entity::turn_left() {
+    angular_velocity.x += 0.3f;
+    recalculate_dir();
+}
+
+void Entity::turn_right() {
+    angular_velocity.x -= 0.3f;
+    recalculate_dir();
 }
 
 void Entity::recalculate_dir() {
@@ -137,11 +153,8 @@ void Entity::recalculate_dir() {
 }
 
 fvec3* Entity::get_pos() {
+    // TODO deprecate this
     return &pos;
-}
-
-bool Entity::has_moved() {
-    return velocity.x != 0 || velocity.y != 0 || velocity.z != 0 || angular_velocity.x != 0 || angular_velocity.y != 0;
 }
 
 bool Entity::poke(float x, float y, float z) {
@@ -172,16 +185,8 @@ bool Entity::block_mouse_callback(Game* game, int button) {
     return false;
 }
 
-fvec3 Entity::step() {
-    fvec3 old_pos = pos;
-    angle.x += angular_velocity.x;
-    angle.y += angular_velocity.y;
-    fvec3 new_pos = fvec3(pos.x + velocity.x * speed,
-                          pos.y + velocity.y * speed,
-                          pos.z + velocity.z * speed);
-    velocity = fvec3(0, 0, 0);
-    
-    return old_pos;
+void Entity::step() {
+    // do nothing
 }
 
 void Entity::render(fmat4* transform) {
@@ -190,6 +195,60 @@ void Entity::render(fmat4* transform) {
 
 void Entity::update_chunks(fvec3* old_pos, fvec3* new_pos) {
     // do nothing
+}
+
+void Entity::calculate_moving_bounding_box() {
+    // transform my bounds into RWC
+    fvec3 lower_rwc, upper_rwc;
+    transform_into_world_coordinates(&lower_rwc, lower_bound.x, lower_bound.y, lower_bound.z);
+    transform_into_world_coordinates(&upper_rwc, upper_bound.x, upper_bound.y, upper_bound.z);
+    fvec3 before_lower_corner(std::min(lower_rwc.x, upper_rwc.x),
+                              std::min(lower_rwc.y, upper_rwc.y),
+                              std::min(lower_rwc.z, upper_rwc.z));
+    fvec3 before_upper_corner(std::max(lower_rwc.x, upper_rwc.x),
+                              std::max(lower_rwc.y, upper_rwc.y),
+                              std::max(lower_rwc.z, upper_rwc.z));
+    
+    apply_velocity();
+    apply_rotation();
+    
+    transform_into_world_coordinates(&lower_rwc, lower_bound.x, lower_bound.y, lower_bound.z);
+    transform_into_world_coordinates(&upper_rwc, upper_bound.x, upper_bound.y, upper_bound.z);
+    fvec3 after_lower_corner(std::min(lower_rwc.x, upper_rwc.x),
+                             std::min(lower_rwc.y, upper_rwc.y),
+                             std::min(lower_rwc.z, upper_rwc.z));
+    fvec3 after_upper_corner(std::max(lower_rwc.x, upper_rwc.x),
+                             std::max(lower_rwc.y, upper_rwc.y),
+                             std::max(lower_rwc.z, upper_rwc.z));
+    
+    moving_lower = fvec3(std::min(before_lower_corner.x, after_lower_corner.x),
+                         std::min(before_lower_corner.y, after_lower_corner.y),
+                         std::min(before_lower_corner.z, after_lower_corner.z));
+    moving_upper = fvec3(std::max(before_upper_corner.x, after_upper_corner.x),
+                         std::max(before_upper_corner.y, after_upper_corner.y),
+                         std::max(before_upper_corner.z, after_upper_corner.z));
+    
+}
+
+void Entity::revert_velocities() {
+    pos -= velocity;
+    angle -= angular_velocity;
+    recalculate_dir();
+}
+
+void Entity::apply_velocity() {
+    pos += velocity;
+}
+
+void Entity::apply_rotation() {
+    angle -= angular_velocity;
+    recalculate_dir();
+}
+
+void Entity::reset_velocities() {
+    angular_velocity = fvec2(0, 0);
+    velocity = fvec3(0, 0, 0);
+    stable = true;
 }
 
 bool Entity::intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner) {

@@ -31,8 +31,6 @@
 class Game;
 
 class Entity {
-    // temp variable that tells me my speed at a certain point in time
-    fvec3 velocity;
     // temp variable that tells me my angular speed at a certain point in time
     fvec2 angular_velocity;
     // this will be deprecated!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -46,8 +44,6 @@ protected:
     // rounded position and direction vectors
     // used to represent true position
     ivec3 rpos, rdir;
-    // if the object is stable it is not moving
-    bool stable;
 public:
     // position of the superobject, in RWC
     fvec3 pos;
@@ -59,6 +55,15 @@ public:
     // the bounding box over contents of all chunks, in OAC
     // public for convenience of access
     fvec3 lower_bound, upper_bound;
+    
+    // temp variables used to hold state inbetween transitions
+    fvec3 moving_lower, moving_upper;
+    fvec3 previous_pos, previous_angle;
+    // temp variable that tells me my speed at a certain point in time
+    fvec3 velocity;
+    
+    // if the object is stable it is not moving its RRWC (rounded real world coordinates)
+    bool stable;
     // the weighted center position of this entity
     fvec3 center_pos;
     // weight of the entity
@@ -77,16 +82,17 @@ public:
     void move_right();
     void move_up();
     void move_down();
+    void turn_left();
+    void turn_right();
     void recalculate_dir();
     fvec3* get_pos();
-    bool has_moved();
     // poke this object at RWC, true if this object says, "OUCH"
     virtual bool poke(float x, float y, float z);
     
     virtual bool block_keyboard_callback(Game* game, int key);
     virtual bool block_mouse_callback(Game* game, int button);
     
-    virtual fvec3 step();
+    virtual void step();
     virtual void render(fmat4* transform);
     virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);
     
@@ -96,6 +102,16 @@ public:
     virtual int load_self(IODataObject* obj);
     virtual void remove_self(IODataObject* obj);
 
+    // this is in RWC!!!!!!!!!!
+    void calculate_moving_bounding_box();
+    void revert_velocities();
+    void apply_velocity();
+    void apply_rotation();
+    void reset_velocities();
+    
+    fvec3 get_lower();
+    fvec3 get_upper();
+    
     virtual bool collides_with(Entity* other);
     // override this with your own int for up to what class of Entities you can handle collision
     // detection for

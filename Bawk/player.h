@@ -47,7 +47,7 @@ public:
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();
     
-    fvec3 step() override;
+    void step() override;
     
     bool collides_with(Entity* other) override;
     
