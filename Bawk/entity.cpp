@@ -43,12 +43,16 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
     fvec2 rounded_angle = fvec2(roundf(angle.x / M_PI) * M_PI,
                                 roundf(angle.y / M_PI) * M_PI);
 
-    fvec4 result(x - pos.x, y - pos.y, z - pos.z, 1.0f);
-    
-    fmat4 reverse = glm::translate(fmat4(1), integral_center_pos);
-    reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
-    reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
-    reverse = glm::translate(reverse, -integral_center_pos);
+    fmat4 reverse(1);
+    if (rounded_angle.x != 0 || rounded_angle.y != 0) {
+        reverse = glm::translate(fmat4(1), integral_center_pos);
+        reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+        reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
+        reverse = glm::translate(reverse, -integral_center_pos);
+    }
+    reverse = glm::translate(reverse, -pos);
+    fvec4 result(x, y, z, 1.0f);
+    result = reverse * result;
     
     src->x = result.x;
     src->y = result.y;
@@ -64,16 +68,19 @@ void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, floa
     fvec2 rounded_angle = fvec2(roundf(angle.x / M_PI) * M_PI,
                                 roundf(angle.y / M_PI) * M_PI);
     // S * R * T
-    fmat4 view = glm::translate(fmat4(1), integral_center_pos);
-    view = glm::rotate(view, rounded_angle.x, fvec3(0, 1, 0));
-    view = glm::rotate(view, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
-    view = glm::translate(view, -integral_center_pos);
+    fmat4 view = glm::translate(fmat4(1), pos);
+    if (rounded_angle.x != 0 || rounded_angle.y != 0) {
+        view = glm::translate(view, integral_center_pos);
+        view = glm::rotate(view, rounded_angle.x, fvec3(0, 1, 0));
+        view = glm::rotate(view, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+        view = glm::translate(view, -integral_center_pos);
+    }
     fvec4 result(x, y, z, 1.0f);
     result = view * result;
     
-    src->x = result.x + pos.x;
-    src->y = result.y + pos.y;
-    src->z = result.z + pos.z;
+    src->x = result.x;
+    src->y = result.y;
+    src->z = result.z;
 }
 
 // movement methods. Move these to class Entity
@@ -230,8 +237,15 @@ bool Entity::collides_with_entity(Entity* other) {
     // TODO same note as above
     transform_into_my_coordinates(&upper_oac, upper.x, upper.y, upper.z);
     
+    fvec3 real_lower_oac = fvec3(std::min(lower_oac.x, upper_oac.x),
+                                 std::min(lower_oac.y, upper_oac.y),
+                                 std::min(lower_oac.z, upper_oac.z));
+    fvec3 real_upper_oac = fvec3(std::max(lower_oac.x, upper_oac.x),
+                                 std::max(lower_oac.y, upper_oac.y),
+                                 std::max(lower_oac.z, upper_oac.z));
+    
     // see if lower_oac, upper_oac intersect with lower, upper
-    if (!intersects_with_my_bounds(lower_oac, upper_oac)) {
+    if (!intersects_with_my_bounds(real_lower_oac, real_upper_oac)) {
         return false;
     }
     return true;

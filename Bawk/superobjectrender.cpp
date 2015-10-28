@@ -191,13 +191,21 @@ void RenderableSuperObject::render(fmat4* transform) {
     for (auto iterator = chunks.begin(); iterator != chunks.end(); iterator++) {
         ivec3 sub_pos = iterator->first;
         
-        fvec3 chunk_rwc;
-        transform_into_world_coordinates(&chunk_rwc, sub_pos.x * CX,
-                                                     sub_pos.y * CY,
-                                                     sub_pos.z * CZ);
-        fmat4 model = glm::translate(fmat4(1.0f),
-                                     chunk_rwc);
-        fmat4 mvp = *transform * model;
+        fmat4 view = glm::translate(fmat4(1), fvec3(pos.x,
+                                                    pos.y,
+                                                    pos.z));
+        if (angle.x != 0 || angle.y != 0) {
+            view = glm::translate(view, center_pos);
+            view = glm::rotate(view, angle.x, fvec3(0, 1, 0));
+            view = glm::rotate(view, angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
+            view = glm::translate(view, -center_pos);
+        }
+        view = glm::translate(view, fvec3(sub_pos.x * CX,
+                                          sub_pos.y * CY,
+                                          sub_pos.z * CZ));
+        
+
+        fmat4 mvp = *transform * view;
         
         // Is this chunk on the screen?
         glm::vec4 center = mvp * glm::vec4(CX / 2, CY / 2, CZ / 2, 1);
@@ -385,17 +393,24 @@ bool RenderableSuperObject::collides_with_entity(Entity* other) {
     // TODO same note as above
     transform_into_my_coordinates(&upper_oac, upper.x, upper.y, upper.z);
     
+    fvec3 real_lower_oac = fvec3(std::min(lower_oac.x, upper_oac.x),
+                                 std::min(lower_oac.y, upper_oac.y),
+                                 std::min(lower_oac.z, upper_oac.z));
+    fvec3 real_upper_oac = fvec3(std::max(lower_oac.x, upper_oac.x),
+                                 std::max(lower_oac.y, upper_oac.y),
+                                 std::max(lower_oac.z, upper_oac.z));
+    
     // see if lower_oac, upper_oac intersect with lower, upper
-    if (!intersects_with_my_bounds(lower_oac, upper_oac)) {
+    if (!intersects_with_my_bounds(real_lower_oac, real_upper_oac)) {
         return false;
     }
     
     // now transform into cac, crc
     ivec3 lower_cac, lower_crc;
-    transform_into_chunk_bounds(&lower_cac, &lower_crc, lower_oac.x, lower_oac.y, lower_oac.z);
+    transform_into_chunk_bounds(&lower_cac, &lower_crc, real_lower_oac.x, real_lower_oac.y, real_lower_oac.z);
     // now transform into cac, crc
     ivec3 upper_cac, upper_crc;
-    transform_into_chunk_bounds(&upper_cac, &upper_crc, upper_oac.x, upper_oac.y, upper_oac.z);
+    transform_into_chunk_bounds(&upper_cac, &upper_crc, real_upper_oac.x, real_upper_oac.y, real_upper_oac.z);
     
     // iterate through chunks directly and see if there is intersection
     // if so, return region of conflict
@@ -464,17 +479,24 @@ bool RenderableSuperObject::collides_with_superobject(RenderableSuperObject* oth
     // TODO same note as above
     transform_into_my_coordinates(&upper_oac, upper.x, upper.y, upper.z);
     
+    fvec3 real_lower_oac = fvec3(std::min(lower_oac.x, upper_oac.x),
+                                 std::min(lower_oac.y, upper_oac.y),
+                                 std::min(lower_oac.z, upper_oac.z));
+    fvec3 real_upper_oac = fvec3(std::max(lower_oac.x, upper_oac.x),
+                                 std::max(lower_oac.y, upper_oac.y),
+                                 std::max(lower_oac.z, upper_oac.z));
+    
     // see if lower_oac, upper_oac intersect with lower, upper
-    if (!intersects_with_my_bounds(lower_oac, upper_oac)) {
+    if (!intersects_with_my_bounds(real_lower_oac, real_upper_oac)) {
         return false;
     }
     
     // now transform into cac, crc
     ivec3 lower_cac, lower_crc;
-    transform_into_chunk_bounds(&lower_cac, &lower_crc, lower_oac.x, lower_oac.y, lower_oac.z);
+    transform_into_chunk_bounds(&lower_cac, &lower_crc, real_lower_oac.x, real_lower_oac.y, real_lower_oac.z);
     // now transform into cac, crc
     ivec3 upper_cac, upper_crc;
-    transform_into_chunk_bounds(&upper_cac, &upper_crc, upper_oac.x, upper_oac.y, upper_oac.z);
+    transform_into_chunk_bounds(&upper_cac, &upper_crc, real_upper_oac.x, real_upper_oac.y, real_upper_oac.z);
     
     // iterate through chunks directly and see if there is intersection
     // if so, return region of conflict
