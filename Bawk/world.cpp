@@ -91,8 +91,8 @@ bool World::kill_block(ivec3* src) {
     int my = looking_at.y;
     int mz = looking_at.z;
     int face = looking_at.w;
-    // TODO do a check to see if any objects in the way
-    // TODO do a distance check
+    // TODO if this is a recipe block remove all surrounding recipe offset blocks
+    printf("frog\n");
     base_world->set_block(mx, my, mz, 0);
     printf("Removing at (%d, %d, %d)   (face %d)\n",
            mx, my, mz, face);

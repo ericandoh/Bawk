@@ -397,9 +397,13 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
         if (recipe.isMember("weight") && recipe["weight"].type() == Json::intValue) {
             block_info->weight = recipe["weight"].asInt();
         }
-        
+        if (recipe.isMember("action") and recipe["action"].type() == Json::stringValue) {
+            ui_block_callback_info callback_info;
+            callback_info.mouse_callback = get_block_mouse_callback_for(recipe["action"].asString());
+            callback_info.keyboard_callback = get_block_keyboard_callback_for(recipe["action"].asString(), callback_info.key_bindings);
+            block_callback_info[recipe_id + recipe_mask] = callback_info;
+        }
     }
-    
     return 0;
 }
 

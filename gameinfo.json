@@ -39,21 +39,25 @@
             "name": "unnamed"
         },
         "8": {
-            "name": "saddle",
-            "resistance": 2,
-            "texture": "simplebox.obj",
-            "weight": 30,
-            "vehicle": 1,
-            "action": "engine"
+            "name": "unnamed"
         },
         "9": {
             "name": "unnamed"
         },
         "10": {
-            "name": "unnamed"
+            "name": "engine",
+            "resistance": 2,
+            "texture": "simplebox.obj",
+            "weight": 30,
+            "action": "engine"
         },
         "11": {
-            "name": "unnamed"
+            "name": "saddle",
+            "resistance": 2,
+            "texture": "vehicle.obj",
+            "weight": 30,
+            "vehicle": 1,
+            "action": "vehicle"
         },
         "12": {
             "name": "unnamed"

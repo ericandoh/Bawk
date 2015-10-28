@@ -41,10 +41,6 @@
 const int VERSION = 4;
 
 class Game : public Displayable {
-    // game data objects
-    World* world;
-    Player* player;
-    
     std::string world_name;
     uint32_t pid;
     
@@ -66,6 +62,9 @@ class Game : public Displayable {
     int load_game_data();
     int save_game_data();
 public:
+    // game data objects
+    World* world;
+    Player* player;
     void set_parameters(std::string wn, uint32_t p);
     int init() override;
     void render() override;

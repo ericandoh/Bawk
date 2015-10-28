@@ -22,7 +22,7 @@ typedef bool (*block_keyboard_callback_func)(Game* game, Entity* owner, block_ty
 // used by gameloader to get appropriate action functions
 block_mouse_callback_func get_block_mouse_callback_for(std::string name);
 
-block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<int> default_keymap);
+block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<int> &default_keymap);
 
 
 #endif /* defined(__Bawk__blockaction__) */

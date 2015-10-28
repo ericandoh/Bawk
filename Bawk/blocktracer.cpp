@@ -124,6 +124,17 @@ bool get_look_at(ivec4* src) {
     return false;
 }
 
+bool get_look_at_vehicle(ivec4* src) {
+    if (in_range && selected) {
+        src->x = mx;
+        src->y = my;
+        src->z = mz;
+        src->w = face;
+        return true;
+    }
+    return false;
+}
+
 Entity* get_look_at() {
     return selected;
 }

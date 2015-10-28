@@ -24,3 +24,8 @@ int imin(int a, int b) {
 int imax(int a, int b) {
     return a > b ? a : b;
 }
+
+ivec3 get_floor_from_fvec3(fvec3 src) {
+    ivec3 result((int)floorf(src.x), (int)floorf(src.y), (int)floorf(src.z));
+    return result;
+}

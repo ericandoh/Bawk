@@ -117,6 +117,7 @@ bool Player::collides_with(Entity* other) {
 void Player::set_mount(SuperObject* m, fvec3 pos) {
     mount = m;
     offset_to_mount = fvec3(pos.x - m->pos.x, pos.y - m->pos.y, pos.z - m->pos.z);
+    this->pos = pos;
 }
 
 bool Player::unmount(World* world) {

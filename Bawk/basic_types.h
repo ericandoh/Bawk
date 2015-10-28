@@ -97,6 +97,6 @@ enum SaveMode {
 // 4x4 matrix, for rendering calculations
 typedef glm::mat4 fmat4;
 
-// float
+ivec3 get_floor_from_fvec3(fvec3 src);
 
 #endif

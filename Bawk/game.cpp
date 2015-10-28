@@ -140,6 +140,14 @@ void Game::frame() {
     bool need_update = false;
     for (auto& key : key_toggled) {
         if (key.second) {
+            // see if we're in any vehicle of any sort, then see if it'll accept the key i send
+            SuperObject* mount = player->get_mount();
+            if (mount) {
+                if (mount->block_keyboard_callback(this, key.first)) {
+                    continue;
+                }
+            }
+            
             bool this_key_need_update = true;
             Action do_this = key_to_action[key.first];
             switch (do_this) {

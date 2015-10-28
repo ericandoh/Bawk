@@ -38,11 +38,11 @@ SuperObject::SuperObject(uint32_t p, uint32_t v, ivec3 po) {
 void SuperObject::set_block(float x, float y, float z, block_type type) {
     if (type.type) {
         // set key binding (to default one) if it has one
-        std::vector<int> bindings = get_block_default_keyboard_bindings(type.type);
+        std::vector<int> bindings = get_block_default_keyboard_bindings(type);
         if (bindings.size() > 0) {
             fvec3 oac;
             transform_into_my_coordinates(&oac, x, y, z);
-            ivec3 rounded_oac((int)floorf(oac.x), (int)floorf(y), (int)floorf(z));
+            ivec3 rounded_oac = get_floor_from_fvec3(oac);
             reverse_key_mapping[rounded_oac] = std::vector<int>(bindings.size());
             for (int i = 0; i < bindings.size(); i++) {
                 if (!key_mapping.count(bindings[i])) {
@@ -106,8 +106,13 @@ bool SuperObject::block_keyboard_callback(Game* game, int key) {
 
 bool SuperObject::block_mouse_callback(Game* game, int button) {
     ivec4 lookingat;
-    if (get_look_at(&lookingat)) {
+    if (get_look_at_vehicle(&lookingat)) {
         block_type blk = get_block(lookingat.x, lookingat.y, lookingat.z);
+        // see if blk is an indirect block - that is, it's part of a recipe block
+        if (blk.is_recipe == 2) {
+            // find offset
+            blk = get_block(lookingat.x + blk.relx, lookingat.y + blk.rely, lookingat.z + blk.relz);
+        }
         block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
         if (callback) {
             (*callback)(game,
