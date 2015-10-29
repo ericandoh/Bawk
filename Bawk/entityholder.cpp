@@ -60,37 +60,6 @@ bool sort_on_z(Entity* a, Entity* b) {
     return a->moving_lower.z < b->moving_lower.z;
 }
 
-
-class EntityPathTracer: public BresenhamTracer {
-    Entity* candidate;
-    std::vector<Entity*> against;
-public:
-    bool success;
-    fvec3 final_pos;
-    EntityPathTracer(Entity* c, std::vector<Entity*> &a, fvec3 init);
-    bool check_at_coord(float x, float y, float z, BlockOrientation side) override;
-};
-
-EntityPathTracer::EntityPathTracer(Entity* c, std::vector<Entity*> &a, fvec3 init) {
-    success = true;
-    candidate = c;
-    against = a;
-    final_pos = init;
-}
-
-bool EntityPathTracer::check_at_coord(float x, float y, float z, BlockOrientation side) {
-    candidate->pos = fvec3(floorf(x),floorf(y),floorf(z));
-    for (auto &i: against) {
-        if (i->collides_with(candidate)) {
-            success = false;
-            return true;
-        }
-    }
-    final_pos = candidate->pos;
-    return false;
-}
-
-
 /*
  COLLISION DETECTION IS HERE!!!!!!!!!!
  
@@ -246,20 +215,52 @@ void EntityHolder::step() {
             }
         }
         if (collides) {
-            moved_entity->revert_velocities();
+            moved_entity->revert_rotation();
         }
-        // now try moving the entity, 1 block step at a time, until it gets to its destination
+        // now try moving the entity slowly in the direction until final destination
         fvec3 start_pos = moved_entity->pos;
-        fvec3 end_pos = moved_entity->pos + moved_entity->velocity;
-        EntityPathTracer path_tracer(moved_entity, checking_against, start_pos);
-        path_tracer.bresenham3D(start_pos.x, start_pos.y, start_pos.z,
-                                end_pos.x, end_pos.y, end_pos.z);
-        if (path_tracer.success) {
-            moved_entity->pos = start_pos;
-            moved_entity->apply_velocity();
+        fvec3 current_pos = start_pos;
+        fvec3 normalized_velocity = glm::normalize(moved_entity->velocity);
+        fvec3 step_velocity = normalized_velocity * 0.1f;
+        int steps = 0;
+        if (step_velocity.x == 0) {
+            if (step_velocity.y == 0) {
+                steps = (int)(moved_entity->velocity.z / step_velocity.z);
+            }
+            else {
+                steps = (int)(moved_entity->velocity.y / step_velocity.y);
+            }
+        } else {
+            steps = (int)(moved_entity->velocity.x / step_velocity.x);
+        }
+        if (steps == 0) {
+            steps++;
+        }
+        if (checking_against.size() == 2) {
+            printf("lol %d\n", steps);
+        }
+        int counter = 0;
+        fvec3 prev_pos;
+        bool collided = false;
+        while (counter < steps && (!collided)) {
+            prev_pos = current_pos;
+            current_pos = current_pos + step_velocity;
+            moved_entity->pos = current_pos;
+            for (auto &i: checking_against) {
+                if (i->collides_with(moved_entity)) {
+                    collided = true;
+                    break;
+                }
+            }
+            if (collided)
+                break;
+            counter++;
+        }
+        if (!collided) {
+            moved_entity->pos = start_pos + moved_entity->velocity;
         }
         else {
-            moved_entity->pos = path_tracer.final_pos;
+            moved_entity->pos = prev_pos;
         }
     }
     for (auto &i: entities) {
@@ -375,7 +376,7 @@ void test_entity_holder_collision_detection() {
     all_entities[x]->pos = fvec3(3,0,2);
     all_entities[x]->center_pos = fvec3(0.5f,0.5f,0.5f);
     all_entities[x]->lower_bound = fvec3(0,0,0);
-    all_entities[x++]->upper_bound = fvec3(1,1,1);
+    all_entities[x++]->upper_bound = fvec3(0.8,0.8,0.8);
     
     EntityHolder holder;
     holder.set_global_entity(all_entities[0]);
@@ -383,7 +384,8 @@ void test_entity_holder_collision_detection() {
         holder.add_entity(all_entities[i]);
     }
     
-    // RUN TESTS
+    printf("Integer coordinate tests\n");
+    // RUN TESTS - integer coordinates
     // move <1> from (1,1) to (2,1)
     all_entities[1]->velocity = fvec3(1,0,0);
     all_entities[1]->stable = false;
@@ -409,6 +411,43 @@ void test_entity_holder_collision_detection() {
     all_entities[1]->stable = false;
     holder.step();
     test_print_entities_positions(all_entities);
+    
+    // RUN TESTS - float coordinates/vectors
+    printf("Float coordinate tests\n");
+    x = 1.0f;
+    all_entities[x]->pos = fvec3(1,0,0);
+    all_entities[x]->center_pos = fvec3(0.5f,0.5f,1.0f);
+    all_entities[x]->lower_bound = fvec3(0,0,0);
+    all_entities[x++]->upper_bound = fvec3(0.8,0.8,1.8);
+    
+    all_entities[x]->pos = fvec3(3.9f,0,2);
+    all_entities[x]->center_pos = fvec3(1.0f,0.5f,0.5f);
+    all_entities[x]->lower_bound = fvec3(0,0,0);
+    all_entities[x++]->upper_bound = fvec3(2,1,1);
+    
+    // move <1> from (1,0) to (1,1.45)
+    all_entities[1]->velocity = fvec3(0,0,1.45);
+    all_entities[1]->stable = false;
+    holder.step();
+    
+    test_print_entities_positions(all_entities);
+    for (int i = 0; i < 20; i++) {
+        if (i == 14)
+            ;
+        // move <1> from (1,1.45) until we cant (hopefully due to object at 3.9,0,2)
+        all_entities[1]->velocity = fvec3(0.17,0,0);
+        all_entities[1]->stable = false;
+        holder.step();
+        test_print_entities_positions(all_entities);
+    }
+    
+    // move <1> from (1,1.45) until we cant
+    all_entities[1]->velocity = fvec3(3,0,0);
+    all_entities[1]->stable = false;
+    holder.step();
+    test_print_entities_positions(all_entities);
+    
+    
     // CLEANUP
     for (int i = 0; i < testcount; i++) {
         delete all_entities[i];

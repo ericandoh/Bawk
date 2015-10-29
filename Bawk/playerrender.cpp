@@ -23,6 +23,7 @@ RenderablePlayer::RenderablePlayer() {
     //upper_bound = fvec3(0.4f, 0.9f, 0.4f);
     lower_bound = fvec3(0.0f, 0.0f, 0.0f);
     upper_bound = fvec3(0.8f, 1.8f, 0.8f);
+    center_pos = fvec3(0.4f, 0.9f, 0.4f);
     
     glGenBuffers(1, &cursor_vbo);
     // TODO do we ever free this...

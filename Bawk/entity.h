@@ -104,6 +104,7 @@ public:
     // this is in RWC!!!!!!!!!!
     void calculate_moving_bounding_box();
     void revert_velocities();
+    void revert_rotation();
     void apply_velocity();
     void apply_rotation();
     void reset_velocities();
