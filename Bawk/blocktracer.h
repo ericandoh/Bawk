@@ -14,7 +14,7 @@
 
 class World;
 
-void set_look_at(fvec3 pos, fvec3 dir, float depth, fvec3 objcoord, World* world);
+void set_look_at(fvec3 pos, fvec3 dir, World* world);
 bool get_look_at(ivec4* src);
 bool get_look_at_vehicle(ivec4* src);
 Entity* get_look_at();

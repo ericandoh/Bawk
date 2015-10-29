@@ -19,10 +19,10 @@ RenderablePlayer::RenderablePlayer() {
     dir = fvec3(1.0f, 0.0f, 0.0f);
     up = fvec3(0.0f, 1.0f, 0.0f);
     
-    //lower_bound = fvec3(-1.0f, -1.0f, -1.0f);
-    //upper_bound = fvec3(0.0f, 0.0f, 0.0f);
-    lower_bound = fvec3(-0.4f, -0.9f, -0.4f);
-    upper_bound = fvec3(0.4f, 0.9f, 0.4f);
+    //lower_bound = fvec3(-0.4f, -0.9f, 0.4f);
+    //upper_bound = fvec3(0.4f, 0.9f, 0.4f);
+    lower_bound = fvec3(0.0f, 0.0f, 0.0f);
+    upper_bound = fvec3(0.8f, 1.8f, 0.8f);
     
     glGenBuffers(1, &cursor_vbo);
     // TODO do we ever free this...
@@ -32,14 +32,15 @@ fmat4* RenderablePlayer::set_camera() {
     int width, height;
     get_window_size(&width, &height);
     
-    view = glm::lookAt(pos, pos + dir, up);
+    fvec3 offpos = fvec3(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f);
+    view = glm::lookAt(offpos, offpos + dir, up);
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;
     return &mvp;
 }
 
 void RenderablePlayer::query_depth(World* world) {
-    int width, height;
+    /*int width, height;
     float depth;
     get_window_size(&width, &height);
     
@@ -47,18 +48,18 @@ void RenderablePlayer::query_depth(World* world) {
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;
     
-    
     // gets the depth at the place in the screen we're pointing at
     glReadPixels(width / 2, height / 2, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
     
     glm::vec4 viewport = glm::vec4(0, 0, width, height);
     glm::vec3 wincoord = glm::vec3(width / 2, height / 2, depth);
     // view, projection matrices should be set from previous set_camera() call
-    glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);
+    glm::vec3 objcoord = glm::unProject(wincoord, view, projection, viewport);*/
     
     
     // call to save mx, my, mz, and face here to a global var
-    set_look_at(pos, dir, depth, objcoord, world);
+    fvec3 offpos = fvec3(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f);
+    set_look_at(offpos, dir, world);
 }
 
 void RenderablePlayer::render() {

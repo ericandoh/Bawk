@@ -57,7 +57,7 @@ bool WorldTracer::check_at_coord(float x, float y, float z, BlockOrientation sid
     return false;
 }
 
-void set_look_at(fvec3 pos, fvec3 dir, float depth, fvec3 objcoord, World* world) {
+void set_look_at(fvec3 pos, fvec3 dir, World* world) {
     
     // let's use ray casting instead!
     // algorithm: Bresenham's

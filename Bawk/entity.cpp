@@ -88,35 +88,35 @@ void Entity::move_forward() {
     // override this if flying/on land
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
-    velocity += forward;
+    velocity += forward * speed;
     stable = false;
 }
 void Entity::move_backward() {
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
-    velocity -= forward;
+    velocity -= forward * speed;
     stable = false;
 }
 void Entity::move_left() {
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
-    velocity.x += forward.z;
-    velocity.z -= forward.x;
+    velocity.x += forward.z * speed;
+    velocity.z -= forward.x * speed;
     stable = false;
 }
 void Entity::move_right() {
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
-    velocity.x -= forward.z;
-    velocity.z += forward.x;
+    velocity.x -= forward.z * speed;
+    velocity.z += forward.x * speed;
     stable = false;
 }
 void Entity::move_up() {
-    velocity.y += 1.0f;
+    velocity.y += 1.0f * speed;
     stable = false;
 }
 void Entity::move_down() {
-    velocity.y -= 1.0f;
+    velocity.y -= 1.0f * speed;
     stable = false;
 }
 

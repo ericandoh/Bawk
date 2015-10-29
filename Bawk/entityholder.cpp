@@ -268,18 +268,22 @@ void EntityHolder::step() {
 }
 
 void EntityHolder::render(fmat4* transform) {
+    global_entity->render(transform);
     for (int i = 0; i < entities.size(); i++) {
         entities[i]->render(transform);
     }
 }
 
 void EntityHolder::update_chunks(fvec3* old_pos, fvec3* new_pos) {
+    global_entity->update_chunks(old_pos, new_pos);
     for (int i = 0; i < entities.size(); i++) {
         entities[i]->update_chunks(old_pos, new_pos);
     }
 }
 
 bool EntityHolder::collides_with(Entity* entity) {
+    if (global_entity->collides_with(entity))
+        return true;
     for (unsigned int i = 0; i < entities.size(); i++) {
         if (entities[i] != entity && entities[i]->collides_with(entity)) {
             return true;

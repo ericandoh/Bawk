@@ -58,7 +58,6 @@ public:
     
     // temp variables used to hold state inbetween transitions
     fvec3 moving_lower, moving_upper;
-    fvec3 previous_pos, previous_angle;
     // temp variable that tells me my speed at a certain point in time
     fvec3 velocity;
     
