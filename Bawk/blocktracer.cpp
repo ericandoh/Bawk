@@ -114,7 +114,7 @@ void set_look_at(fvec3 pos, fvec3 dir, World* world) {
 }
 
 bool get_look_at(ivec4* src) {
-    if (in_range && world_selected) {
+    if (in_range) { // & world_selected
         src->x = floorf(mx);
         src->y = floorf(my);
         src->z = floorf(mz);

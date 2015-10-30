@@ -405,7 +405,9 @@ void Game::mouse_button_callback(int button, int action, int mods) {
             Entity* src = get_look_at();
             if (src) {
                 // if we're looking at a source, should ALWAYS either do nothing or do special function
-                src->block_mouse_callback(this, button);
+                if (!src->block_mouse_callback(this, button)) {
+                    mouse_button_callback_default(button);
+                }
             }
             else {
                 if (!world->block_mouse_callback(this, button)) {

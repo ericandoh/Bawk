@@ -32,6 +32,7 @@ int set_shaders(GLuint* block_attribute_coord,
                 GLuint* texture_attribute_coord,
                 GLuint* block_uniform_mvp,
                 GLuint* block_uniform_draw_mode,
+                GLuint* block_shade_intensity,
                 GLuint* program);
 
 #endif /* defined(__Bawk__shader_loader__) */

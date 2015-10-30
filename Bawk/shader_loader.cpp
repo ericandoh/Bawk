@@ -36,6 +36,7 @@ int set_shaders(GLuint* block_attribute_coord,
                 GLuint* texture_attribute_coord,
                 GLuint* block_uniform_mvp,
                 GLuint* block_uniform_draw_mode,
+                GLuint* block_shade_intensity,
                 GLuint* program)
 {
     
@@ -189,6 +190,13 @@ int set_shaders(GLuint* block_attribute_coord,
     *block_uniform_draw_mode = glGetUniformLocation(*program, uniform_draw_mode_name);
     if (*block_uniform_draw_mode == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_draw_mode_name);
+        return false;
+    }
+    
+    const char* uniform_shade_intensity_name = "shade_intensity";
+    *block_shade_intensity = glGetUniformLocation(*program, uniform_shade_intensity_name);
+    if (*block_shade_intensity == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n",uniform_shade_intensity_name);
         return false;
     }
     

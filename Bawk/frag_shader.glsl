@@ -4,6 +4,7 @@ varying vec3 v_coord;
 varying vec3 texcoord;
 uniform sampler2D tile_texture;
 uniform int draw_mode;
+uniform float shade_intensity;
 
 void main(void) {
     if (draw_mode == 0) {
@@ -31,10 +32,10 @@ void main(void) {
         vec4 color = texture2D(tile_texture, imgcoord);
         if(color.a < 0.4)
             discard;
-        color.xyz *= intensity;
+        color.xyz *= intensity * shade_intensity;
         gl_FragColor = color;
     }
     else {
-        gl_FragColor = vec4(texcoord.xyz, 1.0);
+        gl_FragColor = vec4(texcoord.xyz, 1.0) * shade_intensity;
     }
 }

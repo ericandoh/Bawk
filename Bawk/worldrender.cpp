@@ -20,6 +20,7 @@ GLuint block_attribute_coord;
 GLuint texture_attribute_coord;
 GLuint block_uniform_mvp;
 GLuint block_uniform_draw_mode;
+GLuint block_shader_intensity;
 GLuint tile_texture;
 GLuint program;
 
@@ -35,6 +36,7 @@ int world_load_resources() {
                     &texture_attribute_coord,
                     &block_uniform_mvp,
                     &block_uniform_draw_mode,
+                    &block_shader_intensity,
                     &program)) {
         return 1;
     }
@@ -56,6 +58,8 @@ int world_load_resources() {
     
     glGenBuffers(1, &common_vertex_vbo);
     glGenBuffers(1, &common_texture_vbo);
+    
+    set_shader_intensity(1.0f);
     
     load_game_info();
     
@@ -86,6 +90,10 @@ void set_block_draw_mode(int v) {
 
 void set_transform_matrix(fmat4 mvp) {
     glUniformMatrix4fv(block_uniform_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+}
+
+void set_shader_intensity(float m) {
+    glUniform1f(block_shader_intensity, m);
 }
 
 void set_up_for_world_render() {
