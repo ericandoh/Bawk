@@ -194,7 +194,7 @@ bool SuperObject::block_keyboard_callback(Game* game, int key) {
 }
 
 bool SuperObject::block_mouse_callback(Game* game, int button) {
-    ivec4 lookingat;
+    fvec4 lookingat;
     if (get_look_at_vehicle(&lookingat)) {
         block_type blk = get_block(lookingat.x, lookingat.y, lookingat.z);
         // see if blk is an indirect block - that is, it's part of a recipe block

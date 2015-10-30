@@ -13,7 +13,7 @@
 const float PLACE_BLOCK_FRONT = 1.4f;
 const float PLACE_BLOCK_BACK = 10.0f;
 
-int mx, my, mz = 0;
+float mx, my, mz = 0;
 BlockOrientation face;
 bool in_range = false;
 Entity* selected = 0;
@@ -37,9 +37,9 @@ WorldTracer::WorldTracer(World* w) {
 bool WorldTracer::check_at_coord(float x, float y, float z, BlockOrientation side) {
     world->get_at(x, y, z, &world_selected, &selected);
     if (world_selected || selected) {
-        mx = floorf(x);
-        my = floorf(y);
-        mz = floorf(z);
+        mx = x;
+        my = y;
+        mz = z;
         face = side;
         in_range = true;
         return true;
@@ -115,16 +115,16 @@ void set_look_at(fvec3 pos, fvec3 dir, World* world) {
 
 bool get_look_at(ivec4* src) {
     if (in_range && world_selected) {
-        src->x = mx;
-        src->y = my;
-        src->z = mz;
+        src->x = floorf(mx);
+        src->y = floorf(my);
+        src->z = floorf(mz);
         src->w = face;
         return true;
     }
     return false;
 }
 
-bool get_look_at_vehicle(ivec4* src) {
+bool get_look_at_vehicle(fvec4* src) {
     if (in_range && selected) {
         src->x = mx;
         src->y = my;
