@@ -64,6 +64,24 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
     src->z = result.z;
 }
 
+void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) {
+    fmat4 reverse(1);
+    if (can_rotate) {
+        // round angle to nearest angle
+        reverse = glm::translate(fmat4(1), center_pos);
+        reverse = glm::rotate(reverse, -angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
+        reverse = glm::rotate(reverse, -angle.x, fvec3(0, 1, 0));
+        reverse = glm::translate(reverse, -center_pos);
+    }
+    reverse = glm::translate(reverse, -pos);
+    fvec4 result(x, y, z, 1.0f);
+    result = reverse * result;
+    
+    src->x = result.x;
+    src->y = result.y;
+    src->z = result.z;
+}
+
 void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
     fmat4 view = glm::translate(fmat4(1), pos);
     if (can_rotate) {
@@ -73,6 +91,22 @@ void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, floa
         view = glm::translate(view, center_pos);
         view = glm::rotate(view, rounded_angle.x, fvec3(0, 1, 0));
         view = glm::rotate(view, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+        view = glm::translate(view, -center_pos);
+    }
+    fvec4 result(x, y, z, 1.0f);
+    result = view * result;
+    
+    src->x = result.x;
+    src->y = result.y;
+    src->z = result.z;
+}
+
+void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z) {
+    fmat4 view = glm::translate(fmat4(1), pos);
+    if (can_rotate) {
+        view = glm::translate(view, center_pos);
+        view = glm::rotate(view, angle.x, fvec3(0, 1, 0));
+        view = glm::rotate(view, angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
         view = glm::translate(view, -center_pos);
     }
     fvec4 result(x, y, z, 1.0f);

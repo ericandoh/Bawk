@@ -81,8 +81,11 @@ public:
     Entity();
     // internal function to transform RWC xyz to OAC src
     void transform_into_my_coordinates(fvec3* src, float x, float y, float z);
+    // do this smoothly
+    void transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z);
     // internal function to transform OAC xyz to RWC src
     void transform_into_world_coordinates(fvec3* src, float x, float y, float z);
+    void transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z);
     
     // movement methods
     void move_forward(float force);

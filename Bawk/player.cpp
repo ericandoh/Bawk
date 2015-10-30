@@ -93,9 +93,8 @@ ivec3 Player::get_rounded_forward() {
 void Player::step() {
     if (mount) {
         // track mount
-        pos = fvec3(mount->pos.x + offset_to_mount.x,
-                    mount->pos.y + offset_to_mount.y,
-                    mount->pos.z + offset_to_mount.z);
+        mount->transform_into_world_coordinates_smooth(&pos, offset_to_mount.x, offset_to_mount.y, offset_to_mount.z);
+        pos -= center_pos;
     }
     else {
         RenderablePlayer::step();
@@ -106,8 +105,8 @@ void Player::set_mount(SuperObject* m, fvec3 pos) {
     if (!m)
         return;
     mount = m;
-    offset_to_mount = fvec3(pos.x - m->pos.x, pos.y - m->pos.y, pos.z - m->pos.z);
-    this->pos = pos;
+    m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
+    this->pos = pos - this->center_pos;
     can_collide = false;
 }
 
