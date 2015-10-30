@@ -49,6 +49,8 @@ public:
     
     virtual void set_block(float x, float y, float z, block_type type) override;
     
+    void step() override;
+    
     bool block_keyboard_callback(Game* game, int key) override;
     bool block_mouse_callback(Game* game, int button) override;
     

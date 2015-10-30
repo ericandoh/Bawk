@@ -19,7 +19,8 @@ Entity::Entity() {
     upper_bound = fvec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
     
     center_pos = fvec3(0.0f, 0.0f, 0.0f);
-    weight = 0;
+    // everything has to weigh at least something - can't have massless objects and shit yod
+    weight = 1;
     // 0 is full health
     health = 0;
     
@@ -29,27 +30,25 @@ Entity::Entity() {
     vid = 0;
     pid = 0;
     entity_class = 0;   // please set me in future constructors!
-    
-    rpos = ivec3(0, 0, 0);
-    rdir = ivec3(0, 0, 0);
+    stable = true;
 }
 
 void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
     // round center_pos to nearest 0.5
-    fvec3 integral_center_pos(roundf(center_pos.x - 0.5f)+0.5f,
-                              roundf(center_pos.y - 0.5f)+0.5f,
-                              roundf(center_pos.z - 0.5f)+0.5f);
+    /*fvec3 integral_center_pos(roundf(center_pos.x * 2.0f)*0.5f,
+                              roundf(center_pos.y * 2.0f)*0.5f,
+                              roundf(center_pos.z * 2.0f)*0.5f);*/
     // round angle to nearest angle
     fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
                                 roundf(angle.y * 2 / M_PI) * M_PI / 2);
 
     fmat4 reverse(1);
-    /*if (rounded_angle.x != 0 || rounded_angle.y != 0) {
-        reverse = glm::translate(fmat4(1), integral_center_pos);
+    if (rounded_angle.x != 0 || rounded_angle.y != 0) {
+        reverse = glm::translate(fmat4(1), center_pos);
         reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
         reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
-        reverse = glm::translate(reverse, -integral_center_pos);
-    }*/
+        reverse = glm::translate(reverse, -center_pos);
+    }
     //fvec3 rounded_pos = fvec3(roundf(pos.x), roundf(pos.y), roundf(pos.z));
     reverse = glm::translate(reverse, -pos);
     fvec4 result(x, y, z, 1.0f);
@@ -62,21 +61,21 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
 
 void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
     // round center_pos to nearest 0.5
-    fvec3 integral_center_pos(roundf(center_pos.x - 0.5f)+0.5f,
-                              roundf(center_pos.y - 0.5f)+0.5f,
-                              roundf(center_pos.z - 0.5f)+0.5f);
+    /*fvec3 integral_center_pos(roundf(center_pos.x * 2.0f)*0.5f,
+                              roundf(center_pos.y * 2.0f)*0.5f,
+                              roundf(center_pos.z * 2.0f)*0.5f);*/
     // round angle to nearest angle
     fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
                                 roundf(angle.y * 2 / M_PI) * M_PI / 2);
     // S * R * T
     //fvec3 rounded_pos = fvec3(roundf(pos.x), roundf(pos.y), roundf(pos.z));
     fmat4 view = glm::translate(fmat4(1), pos);
-    /*if (rounded_angle.x != 0 || rounded_angle.y != 0) {
-        view = glm::translate(view, integral_center_pos);
+    if (rounded_angle.x != 0 || rounded_angle.y != 0) {
+        view = glm::translate(view, center_pos);
         view = glm::rotate(view, rounded_angle.x, fvec3(0, 1, 0));
         view = glm::rotate(view, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
-        view = glm::translate(view, -integral_center_pos);
-    }*/
+        view = glm::translate(view, -center_pos);
+    }
     fvec4 result(x, y, z, 1.0f);
     result = view * result;
     
@@ -124,11 +123,19 @@ void Entity::move_down() {
 
 void Entity::turn_left() {
     angular_velocity.x += 0.3f;
+    stable = false;
     recalculate_dir();
 }
 
 void Entity::turn_right() {
     angular_velocity.x -= 0.3f;
+    stable = false;
+    recalculate_dir();
+}
+
+void Entity::turn_angle(fvec2 off) {
+    angular_velocity += off;
+    stable = false;
     recalculate_dir();
 }
 
@@ -189,53 +196,6 @@ bool Entity::block_mouse_callback(Game* game, int button) {
 
 void Entity::step() {
     // do nothing
-    if (stable) {
-        if (floorf(pos.x) != pos.x) {
-            float off = roundf(pos.x) - pos.x;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
-            velocity.x += off;
-            stable = false;
-        }
-        if (floorf(pos.y) != pos.y) {
-            float off = roundf(pos.y) - pos.y;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
-            velocity.y += off;
-            stable = false;
-        }
-        if (floorf(pos.z) != pos.z) {
-            float off = roundf(pos.z) - pos.z;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
-            velocity.z += off;
-            stable = false;
-        }
-        /*if ((int)(angle.x*2 / M_PI)*M_PI/2 != angle.x) {
-            float off = roundf(angle.x*2 / M_PI)*M_PI/2 - angle.x;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
-            angular_velocity.x += off;
-            recalculate_dir();
-        }
-        if ((int)(angle.y *2 / M_PI)*M_PI/2 != angle.y) {
-            float off = roundf(angle.y*2 / M_PI)*M_PI/2 - angle.y;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
-            angular_velocity.y += off;
-            recalculate_dir();
-        }*/
-    }
 }
 
 void Entity::render(fmat4* transform) {
@@ -295,7 +255,7 @@ void Entity::apply_velocity() {
 }
 
 void Entity::apply_rotation() {
-    angle -= angular_velocity;
+    angle += angular_velocity;
     recalculate_dir();
 }
 
@@ -423,4 +383,38 @@ void Entity::remove_self(IODataObject* obj) {
     obj->save_value(center_pos);
     obj->save_value(weight);
     obj->save_value(health);
+}
+
+
+void test_entity_coordinate_system() {
+    Entity test;
+    
+    test.pos = fvec3(1, 2, 3);
+    // we are 2 by 3
+    test.lower_bound = fvec3(0, 0, 0);
+    test.upper_bound = fvec3(2, 1, 3);
+    // centered at 1, 1.5 (middle!)
+    test.center_pos = fvec3(1.0f, 0.5f, 1.5f);
+    test.turn_angle(fvec2(1.57f, 0.0f));
+    test.apply_rotation();
+
+    fvec3 test_point = fvec3(2, 0, 0);
+    fvec3 result;
+    test.transform_into_world_coordinates(&result, test_point.x, test_point.y, test_point.z);
+    printf("%f %f %f\n", result.x,result.y,result.z);
+    test.transform_into_my_coordinates(&result, result.x, result.y, result.z);
+    printf("%f %f %f\n", result.x,result.y,result.z);
+    
+    
+    test_point = fvec3(1.0f, 0.5f, 1.5f);
+    test.transform_into_world_coordinates(&result, test_point.x, test_point.y, test_point.z);
+    printf("%f %f %f\n", result.x,result.y,result.z);
+    test.transform_into_my_coordinates(&result, result.x, result.y, result.z);
+    printf("%f %f %f\n", result.x,result.y,result.z);
+    
+    test_point = fvec3(1.0f, 0.0f, 2.0f);
+    test.transform_into_world_coordinates(&result, test_point.x, test_point.y, test_point.z);
+    printf("%f %f %f\n", result.x,result.y,result.z);
+    test.transform_into_my_coordinates(&result, result.x, result.y, result.z);
+    printf("%f %f %f\n", result.x,result.y,result.z);
 }

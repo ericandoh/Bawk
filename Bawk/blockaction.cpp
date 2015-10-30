@@ -33,7 +33,7 @@ bool vehicle_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fv
     else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
         if (owner && owner->entity_class == 4) {
             // there must be an owner!!!!!!!!!!!
-            game->player->set_mount((SuperObject*)owner, fvec3(rwc.x + 0.5f, rwc.y + 1, rwc.z+0.5f));
+            game->player->set_mount((SuperObject*)owner, fvec3(rwc.x, rwc.y + 0.5f, rwc.z));
         }
     }
     else {

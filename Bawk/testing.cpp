@@ -8,7 +8,7 @@
 
 #include "testing.h"
 // clear imports every once in a while
-#include "entityholder.h"
+#include "entity.h"
 
 void do_shit();
 
@@ -27,13 +27,18 @@ void do_shit() {
 */
 
 void do_shit() {
-    test_entity_holder_collision_detection();
+    test_entity_coordinate_system();
 }
 
 // COPY DUMP CONTENTS VVV
 
 /*
 Dumps
+ 
+ void do_shit() {
+ test_entity_holder_collision_detection();
+ }
+
  
  void do_shit() {
  // copy me

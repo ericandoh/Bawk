@@ -40,9 +40,11 @@ uint32_t Player::assignID() {
 
 void Player::update_direction(double xdiff, double ydiff) {
     
-    angle.x -= xdiff * M_PI;
-    angle.y -= ydiff * M_PI;
-    
+    //angle.x -= xdiff * M_PI;
+    //angle.y -= ydiff * M_PI;
+    angular_velocity.x -= xdiff * M_PI;
+    angular_velocity.y -= ydiff * M_PI;
+    stable = false;
     recalculate_dir();
 }
 

@@ -83,7 +83,7 @@ int Game::init() {
     key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
     
     // WHYYYYYYYY (the key Y LOL)
-    key_to_action[GLFW_KEY_Y] = DEBUG_ACTION;
+    key_to_action[GLFW_KEY_L] = DEBUG_ACTION;
     
     mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
     mouse_to_action[GLFW_MOUSE_BUTTON_RIGHT] = CLICK_CREATE;

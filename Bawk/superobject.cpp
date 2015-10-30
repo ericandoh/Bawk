@@ -114,6 +114,56 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
     RenderableSuperObject::set_block(x, y, z, type);
 }
 
+void SuperObject::step() {
+    if (stable) {
+        if (floorf(pos.x) != pos.x) {
+            float off = roundf(pos.x) - pos.x;
+            if (off < -0.05f)
+                off = -0.05f;
+            if (off > 0.05f)
+                off = 0.05f;
+            velocity.x += off;
+            stable = false;
+        }
+        if (floorf(pos.y) != pos.y) {
+            float off = roundf(pos.y) - pos.y;
+            if (off < -0.05f)
+                off = -0.05f;
+            if (off > 0.05f)
+                off = 0.05f;
+            velocity.y += off;
+            stable = false;
+        }
+        if (floorf(pos.z) != pos.z) {
+            float off = roundf(pos.z) - pos.z;
+            if (off < -0.05f)
+                off = -0.05f;
+            if (off > 0.05f)
+                off = 0.05f;
+            velocity.z += off;
+            stable = false;
+        }
+        /*if ((int)(angle.x*2 / M_PI)*M_PI/2 != angle.x) {
+         float off = roundf(angle.x*2 / M_PI)*M_PI/2 - angle.x;
+         if (off < -0.05f)
+         off = -0.05f;
+         if (off > 0.05f)
+         off = 0.05f;
+         angular_velocity.x += off;
+         recalculate_dir();
+         }
+         if ((int)(angle.y *2 / M_PI)*M_PI/2 != angle.y) {
+         float off = roundf(angle.y*2 / M_PI)*M_PI/2 - angle.y;
+         if (off < -0.05f)
+         off = -0.05f;
+         if (off > 0.05f)
+         off = 0.05f;
+         angular_velocity.y += off;
+         recalculate_dir();
+         }*/
+    }
+}
+
 bool SuperObject::block_keyboard_callback(Game* game, int key) {
     if (key_mapping.count(key)) {
         bool any = false;

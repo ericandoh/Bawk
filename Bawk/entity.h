@@ -31,8 +31,6 @@
 class Game;
 
 class Entity {
-    // temp variable that tells me my angular speed at a certain point in time
-    fvec2 angular_velocity;
     // this will be deprecated!!!!!!!!!!!!!!!!!!!!!!!!!
     float speed;
     // TODO support rotation later on, if you're coolbeans
@@ -41,9 +39,6 @@ protected:
     fvec3 up;
     fvec3 dir;
     fvec2 angle;
-    // rounded position and direction vectors
-    // used to represent true position
-    ivec3 rpos, rdir;
 public:
     // position of the superobject, in RWC
     fvec3 pos;
@@ -60,6 +55,8 @@ public:
     fvec3 moving_lower, moving_upper;
     // temp variable that tells me my speed at a certain point in time
     fvec3 velocity;
+    // temp variable that tells me my angular speed at a certain point in time
+    fvec2 angular_velocity;
     
     // if the object is stable it is not moving its RRWC (rounded real world coordinates)
     bool stable;
@@ -83,6 +80,7 @@ public:
     void move_down();
     void turn_left();
     void turn_right();
+    void turn_angle(fvec2 off);
     void recalculate_dir();
     fvec3* get_pos();
     // poke this object at RWC, true if this object says, "OUCH"
@@ -124,5 +122,7 @@ public:
     // check if a bounding box (OAC) (lower, upper) intersects with my own bounds
     virtual bool intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner);
 };
+
+void test_entity_coordinate_system();
 
 #endif /* defined(__Bawk__entity__) */

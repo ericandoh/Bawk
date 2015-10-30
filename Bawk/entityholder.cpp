@@ -185,7 +185,7 @@ void EntityHolder::step() {
                             }
                             collisionList[first].push_back(second);
                         }
-                        else {
+                        if (!second->stable) {
                             // second is the perpetrator of the action
                             if (collisionList.count(second) == 0) {
                                 collisionList[second] = std::vector<Entity*>();
@@ -206,61 +206,68 @@ void EntityHolder::step() {
         std::vector<Entity*> checking_against = i.second;
         // first, try rotating moved_entity and see if it can rotate
         moved_entity->revert_velocities();
-        moved_entity->apply_rotation();
-        bool collides = false;
-        for (auto &j : checking_against) {
-            if (j->collides_with(moved_entity)) {
-                collides = true;
-                break;
-            }
-        }
-        if (collides) {
-            moved_entity->revert_rotation();
-        }
-        // now try moving the entity slowly in the direction until final destination
-        fvec3 start_pos = moved_entity->pos;
-        fvec3 current_pos = start_pos;
-        fvec3 normalized_velocity = glm::normalize(moved_entity->velocity);
-        fvec3 step_velocity = normalized_velocity * 0.1f;
-        int steps = 0;
-        if (step_velocity.x == 0) {
-            if (step_velocity.y == 0) {
-                steps = (int)(moved_entity->velocity.z / step_velocity.z);
-            }
-            else {
-                steps = (int)(moved_entity->velocity.y / step_velocity.y);
-            }
-        } else {
-            steps = (int)(moved_entity->velocity.x / step_velocity.x);
-        }
-        if (steps == 0) {
-            steps++;
-        }
-        if (checking_against.size() == 2) {
-            printf("lol %d\n", steps);
-        }
-        int counter = 0;
-        fvec3 prev_pos;
-        bool collided = false;
-        while (counter < steps && (!collided)) {
-            prev_pos = current_pos;
-            current_pos = current_pos + step_velocity;
-            moved_entity->pos = current_pos;
-            for (auto &i: checking_against) {
-                if (i->collides_with(moved_entity)) {
-                    collided = true;
+        if (moved_entity->angular_velocity.x != 0 || moved_entity->angular_velocity.y != 0) {
+            moved_entity->apply_rotation();
+            bool collides = false;
+            for (auto &j : checking_against) {
+                if (j->collides_with(moved_entity)) {
+                    collides = true;
                     break;
                 }
             }
-            if (collided)
-                break;
-            counter++;
+            if (collides) {
+                moved_entity->revert_rotation();
+            }
         }
-        if (!collided) {
-            moved_entity->pos = start_pos + moved_entity->velocity;
-        }
-        else {
-            moved_entity->pos = prev_pos;
+        if (moved_entity->velocity.x != 0 || moved_entity->velocity.y != 0 || moved_entity->velocity.z != 0) {
+            // now try moving the entity slowly in the direction until final destination
+            fvec3 start_pos = moved_entity->pos;
+            fvec3 current_pos = start_pos;
+            fvec3 normalized_velocity = glm::normalize(moved_entity->velocity);
+            fvec3 step_velocity = normalized_velocity * 0.1f;
+            int steps = 0;
+            if (step_velocity.x == 0) {
+                if (step_velocity.y == 0) {
+                    steps = (int)(moved_entity->velocity.z / step_velocity.z);
+                }
+                else {
+                    steps = (int)(moved_entity->velocity.y / step_velocity.y);
+                }
+            } else {
+                steps = (int)(moved_entity->velocity.x / step_velocity.x);
+            }
+            if (checking_against.size() == 2) {
+                printf("frog %d %d\n", steps, rand());
+                if (steps < 0) {
+                    printf("what\n");
+                }
+            }
+            if (steps <= 0) {
+                steps = 1;
+            }
+            int counter = 0;
+            fvec3 prev_pos;
+            bool collided = false;
+            while (counter < steps && (!collided)) {
+                prev_pos = current_pos;
+                current_pos = current_pos + step_velocity;
+                moved_entity->pos = current_pos;
+                for (auto &i: checking_against) {
+                    if (i->collides_with(moved_entity)) {
+                        collided = true;
+                        break;
+                    }
+                }
+                if (collided)
+                    break;
+                counter++;
+            }
+            if (!collided) {
+                moved_entity->pos = start_pos + moved_entity->velocity;
+            }
+            else {
+                moved_entity->pos = prev_pos;
+            }
         }
     }
     for (auto &i: entities) {
