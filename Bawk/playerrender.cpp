@@ -14,17 +14,6 @@
 #include "block.h"
 
 RenderablePlayer::RenderablePlayer() {
-    // initialize things
-    pos = fvec3(0.0f, 8.0f, 0.0f);
-    dir = fvec3(1.0f, 0.0f, 0.0f);
-    up = fvec3(0.0f, 1.0f, 0.0f);
-    
-    //lower_bound = fvec3(-0.4f, -0.9f, 0.4f);
-    //upper_bound = fvec3(0.4f, 0.9f, 0.4f);
-    lower_bound = fvec3(0.0f, 0.0f, 0.0f);
-    upper_bound = fvec3(0.9f, 0.9f, 0.9f);
-    center_pos = fvec3(0.45f, 0.45f, 0.45f);
-    
     glGenBuffers(1, &cursor_vbo);
     // TODO do we ever free this...
 }

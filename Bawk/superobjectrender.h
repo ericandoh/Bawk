@@ -77,20 +77,15 @@ public:
     
     // check if a chunk coordinate (CAC) xyz is a chunk held by this object
     virtual bool within_dimensions_chunk(int x, int y, int z);
+    virtual bool intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos);
     // updates the dimensions of my object, given a chunk at chunk_pos (CAC) is updated
     // call when initializing from scratch with a lot of blocks, or when removing a block at a periphery
     virtual void update_dimensions_from_chunk(ivec3 chunk_pos);
     
     virtual bool poke(float x, float y, float z) override;
     
-    int get_collision_priority() override;
-    bool check_collision_vs(Entity* other) override;
-    
-    // checks if this superobject collides with this other superobject
-    // other superobject should NEVER be the baseworld (or other dimensionless entity)
-    // to check against dimensionless entities like that, set the dimensionless as the callee
-    bool collides_with_entity(Entity* other);
-    bool collides_with_superobject(RenderableSuperObject* other);
+    int get_collision_level() override;
+    bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) override;
     
     void save_all_chunks();
     virtual int load_self(IODataObject* obj) override;

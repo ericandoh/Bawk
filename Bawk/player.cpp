@@ -13,13 +13,29 @@
 #define PI 3.14159265358979323846
 
 Player::Player(uint32_t p) {
-    // replace these with vectors later on
-    angle = fvec2(0.0f, 0.0f);
-    update_direction(0.0, 0.0);
-    // TODO randomly generate pid from name of player
-    pid = p;
     vid = 0;
+    pid = p;
     entity_class = 2;
+    can_collide = true;
+    can_rotate = false;
+    
+    // initialize things
+    up = fvec3(0.0f, 1.0f, 0.0f);
+    pos = fvec3(0.0f, 8.0f, 0.0f);
+    angle = fvec2(0.0f, 0.0f);
+    
+    //lower_bound = fvec3(-0.4f, -0.9f, 0.4f);
+    //upper_bound = fvec3(0.4f, 0.9f, 0.4f);
+    fvec3 lower_bound = fvec3(0.0f, 0.0f, 0.0f);
+    fvec3 upper_bound = fvec3(0.9f, 0.9f, 0.9f);
+    bounds = bounding_box(lower_bound, upper_bound);
+    center_pos = fvec3(0.45f, 0.45f, 0.45f);
+    
+    weight = 20;
+    
+    
+    update_direction(0.0, 0.0);
+    
     id_assign = 0;
     inventory = new PlayerInventory();
     mount = 0;
@@ -39,12 +55,8 @@ uint32_t Player::assignID() {
 }
 
 void Player::update_direction(double xdiff, double ydiff) {
-    
-    //angle.x -= xdiff * M_PI;
-    //angle.y -= ydiff * M_PI;
-    angular_velocity.x -= xdiff * M_PI;
-    angular_velocity.y -= ydiff * M_PI;
-    stable = false;
+    angle.x -= xdiff*M_PI;
+    angle.y -= ydiff*M_PI;
     recalculate_dir();
 }
 
@@ -90,17 +102,13 @@ void Player::step() {
     }
 }
 
-bool Player::collides_with(Entity* other) {
-    if (mount) {
-        return false;
-    }
-    return RenderablePlayer::collides_with(other);
-}
-
 void Player::set_mount(SuperObject* m, fvec3 pos) {
+    if (!m)
+        return;
     mount = m;
     offset_to_mount = fvec3(pos.x - m->pos.x, pos.y - m->pos.y, pos.z - m->pos.z);
     this->pos = pos;
+    can_collide = false;
 }
 
 bool Player::unmount(World* world) {
@@ -112,6 +120,7 @@ bool Player::unmount(World* world) {
         return false;
     }
     mount = 0;
+    can_collide = true;
     return true;
 }
 

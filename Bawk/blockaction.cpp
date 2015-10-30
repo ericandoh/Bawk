@@ -56,28 +56,30 @@ bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, 
     if (action == 0) {
         // move up
         printf("KEY 0 PRSSED\n");
-        owner->move_up();
+        owner->move_up(5.0f);
     }
     else if (action == 1) {
         // move down
         printf("KEY 1 PRSSED\n");
-        owner->move_down();
+        owner->move_down(5.0f);
     }
     else if (action == 2) {
         // turn left
-        owner->move_left();
+        //owner->move_left(5.0f);
+        owner->turn_left(5.0f);
     }
     else if (action == 3) {
         // turn right
-        owner->move_right();
+        //owner->move_right(5.0f);
+        owner->turn_right(5.0f);
     }
     else if (action == 4) {
         // move forward
-        owner->move_forward();
+        owner->move_forward(5.0f);
     }
     else if (action == 5) {
         // move backwards
-        owner->move_backward();
+        owner->move_backward(5.0f);
     }
     else {
         return false;

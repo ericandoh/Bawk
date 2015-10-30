@@ -23,6 +23,8 @@
 #define Bawk_basic_types_h
 
 #include "glm/glm.hpp"
+#include <climits>
+#include <algorithm>
 
 // float vec3
 typedef glm::vec3 fvec3;
@@ -98,6 +100,51 @@ enum SaveMode {
 
 // 4x4 matrix, for rendering calculations
 typedef glm::mat4 fmat4;
+
+struct bounding_box {
+    fvec3 lower;
+    fvec3 upper;
+    bounding_box() {
+        lower = fvec3(FLT_MAX, FLT_MAX, FLT_MAX);
+        upper = fvec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+    }
+    bounding_box(fvec3 l) {
+        lower = l;
+        upper = fvec3(lower.x + 1,
+                      lower.y + 1,
+                      lower.z + 1);
+    }
+    bounding_box(fvec3 l, fvec3 u) {
+        lower = l;
+        upper = u;
+    }
+    bool hits(fvec3 point) {
+        return (lower.x <= point.x) && (point.x <= upper.x) &&
+        (lower.y <= point.y) && (point.y <= upper.y) &&
+        (lower.z <= point.z) && (point.z <= upper.z);
+    }
+    bool hits(bounding_box other) {
+        return !(lower.x >= other.upper.x || other.lower.x >= upper.x
+          || lower.y >= other.upper.y || other.lower.y >= upper.y
+          || lower.z >= other.upper.z || other.lower.z >= upper.z);
+    }
+    void refit_for_rotation() {
+        float lowerx = std::min(lower.x, upper.x);
+        float lowery = std::min(lower.y, upper.y);
+        float lowerz = std::min(lower.z, upper.z);
+        float upperx = std::max(lower.x, upper.x);
+        float uppery = std::max(lower.y, upper.y);
+        float upperz = std::max(lower.z, upper.z);
+        lower.x = lowerx;
+        lower.y = lowery;
+        lower.z = lowerz;
+        upper.x = upperx;
+        upper.y = uppery;
+        upper.z = upperz;
+    }
+};
+
+bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);
 
 ivec3 get_floor_from_fvec3(fvec3 src);
 

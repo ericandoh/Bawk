@@ -77,16 +77,28 @@ void BaseWorld::update_dimensions_from_chunk(ivec3 chunk_pos) {
     // do nothing
 }
 
-bool BaseWorld::intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner) {
-    return true;
+bool BaseWorld::intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos) {
+    if (load_chunk(chunkpos.x, chunkpos.y, chunkpos.z) ) {
+        return false;
+    }
+    return chunks[chunkpos]->intersects_my_bounds(lower, upper);
 }
 
 bool BaseWorld::poke(float x, float y, float z) {
     return get_block(x, y, z).type;
 }
 
-int BaseWorld::get_collision_priority() {
-    return 2;
+bool BaseWorld::collides_with(Entity* other) {
+    if (!can_collide || !other->can_collide) {
+        return false;
+    }
+    
+    bounding_box other_rwc_bounds;
+    other->transform_into_world_coordinates(&other_rwc_bounds.lower, other->bounds.lower.x, other->bounds.lower.y, other->bounds.lower.z);
+    other->transform_into_world_coordinates(&other_rwc_bounds.upper, other->bounds.upper.x, other->bounds.upper.y, other->bounds.upper.z);
+    other_rwc_bounds.refit_for_rotation();
+    
+    return SuperObject::collides_with(other, &other_rwc_bounds, &other_rwc_bounds, get_collision_level(), other->get_collision_level());
 }
 
 void BaseWorld::remove_selfs() {

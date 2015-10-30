@@ -7,6 +7,7 @@
 //
 
 #include "basic_types.h"
+#include <algorithm>
 
 uint32_t spread_bits(uint32_t val)
 {
@@ -27,5 +28,18 @@ int imax(int a, int b) {
 
 ivec3 get_floor_from_fvec3(fvec3 src) {
     ivec3 result((int)floorf(src.x), (int)floorf(src.y), (int)floorf(src.z));
+    return result;
+}
+
+bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b) {
+    bounding_box result;
+    result.lower.x = std::max(a.lower.x, b.lower.x);
+    result.lower.y = std::max(a.lower.y, b.lower.y);
+    result.lower.z = std::max(a.lower.z, b.lower.z);
+    
+    result.upper.x = std::min(a.upper.x, b.upper.x);
+    result.upper.y = std::min(a.upper.y, b.upper.y);
+    result.upper.z = std::min(a.upper.z, b.upper.z);
+    
     return result;
 }

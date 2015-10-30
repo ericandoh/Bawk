@@ -116,7 +116,7 @@ void EntityHolder::step() {
     for (auto& ent: entities) {
         // if not stable, always check entity against the world
         // if we add gravity, add it here later
-        if (!ent->stable) {
+        if (!ent->stable && ent->can_collide) {
             collisionList[ent] = std::vector<Entity*>(1);
             collisionList[ent][0] = global_entity;
         }
@@ -178,6 +178,9 @@ void EntityHolder::step() {
                         // we have a collision
                         Entity* first = love_buddies.first;
                         Entity* second = love_buddies.second;
+                        if (!first->can_collide || !second->can_collide) {
+                            continue;
+                        }
                         if (!first->stable) {
                             // first is the perpetrator of the action
                             if (collisionList.count(first) == 0) {
@@ -205,9 +208,8 @@ void EntityHolder::step() {
         Entity* moved_entity = i.first;
         std::vector<Entity*> checking_against = i.second;
         // first, try rotating moved_entity and see if it can rotate
-        moved_entity->revert_velocities();
+        moved_entity->pos -= moved_entity->velocity;
         if (moved_entity->angular_velocity.x != 0 || moved_entity->angular_velocity.y != 0) {
-            moved_entity->apply_rotation();
             bool collides = false;
             for (auto &j : checking_against) {
                 if (j->collides_with(moved_entity)) {
@@ -216,7 +218,8 @@ void EntityHolder::step() {
                 }
             }
             if (collides) {
-                moved_entity->revert_rotation();
+                moved_entity->angle -= moved_entity->angular_velocity;
+                moved_entity->recalculate_dir();
             }
         }
         if (moved_entity->velocity.x != 0 || moved_entity->velocity.y != 0 || moved_entity->velocity.z != 0) {
@@ -271,7 +274,9 @@ void EntityHolder::step() {
         }
     }
     for (auto &i: entities) {
-        i->reset_velocities();
+        i->stable = true;
+        i->velocity = fvec3(0,0,0);
+        i->angular_velocity = fvec2(0,0);
     }
 }
 
@@ -371,19 +376,19 @@ void test_entity_holder_collision_detection() {
     int x = 0;
     // global entity - make it a point!
     all_entities[x]->pos = fvec3(0,0,0);
-    all_entities[x]->lower_bound = fvec3(0,0,0);
-    all_entities[x++]->upper_bound = fvec3(0,0,0);
+    all_entities[x]->bounds.lower = fvec3(0,0,0);
+    all_entities[x++]->bounds.upper = fvec3(0,0,0);
     
     
     all_entities[x]->pos = fvec3(1,0,1);
     all_entities[x]->center_pos = fvec3(0.5f,0.5f,0.5f);
-    all_entities[x]->lower_bound = fvec3(0,0,0);
-    all_entities[x++]->upper_bound = fvec3(1,1,1);
+    all_entities[x]->bounds.lower = fvec3(0,0,0);
+    all_entities[x++]->bounds.upper = fvec3(1,1,1);
     
     all_entities[x]->pos = fvec3(3,0,2);
     all_entities[x]->center_pos = fvec3(0.5f,0.5f,0.5f);
-    all_entities[x]->lower_bound = fvec3(0,0,0);
-    all_entities[x++]->upper_bound = fvec3(0.8,0.8,0.8);
+    all_entities[x]->bounds.lower = fvec3(0,0,0);
+    all_entities[x++]->bounds.upper = fvec3(0.8,0.8,0.8);
     
     EntityHolder holder;
     holder.set_global_entity(all_entities[0]);
@@ -424,13 +429,13 @@ void test_entity_holder_collision_detection() {
     x = 1.0f;
     all_entities[x]->pos = fvec3(1,0,0);
     all_entities[x]->center_pos = fvec3(0.5f,0.5f,1.0f);
-    all_entities[x]->lower_bound = fvec3(0,0,0);
-    all_entities[x++]->upper_bound = fvec3(0.8,0.8,1.8);
+    all_entities[x]->bounds.lower = fvec3(0,0,0);
+    all_entities[x++]->bounds.upper = fvec3(0.8,0.8,1.8);
     
     all_entities[x]->pos = fvec3(3.9f,0,2);
     all_entities[x]->center_pos = fvec3(1.0f,0.5f,0.5f);
-    all_entities[x]->lower_bound = fvec3(0,0,0);
-    all_entities[x++]->upper_bound = fvec3(2,1,1);
+    all_entities[x]->bounds.lower = fvec3(0,0,0);
+    all_entities[x++]->bounds.upper = fvec3(2,1,1);
     
     // move <1> from (1,0) to (1,1.45)
     all_entities[1]->velocity = fvec3(0,0,1.45);

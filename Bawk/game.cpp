@@ -55,11 +55,10 @@ int Game::init() {
     // later separate loading the player and the world - this might get complicated!
     player = new Player(pid);
     player->load_selfs();
-    fvec3* player_pos = player->get_pos();
-    last_player_pos = fvec3(player_pos->x, player_pos->y, player_pos->z);
+    last_player_pos = player->pos;
     
     world->add_player(player);
-    world->update_chunks(0, player_pos);
+    world->update_chunks(0, &(player->pos));
     
     // set key mappings
     key_to_action[GLFW_KEY_Q] = MOVE_UP;
@@ -152,22 +151,22 @@ void Game::frame() {
             Action do_this = key_to_action[key.first];
             switch (do_this) {
                 case MOVE_UP:
-                    player->move_up();
+                    player->move_up(5.0f);
                     break;
                 case MOVE_DOWN:
-                    player->move_down();
+                    player->move_down(5.0f);
                     break;
                 case MOVE_LEFT:
-                    player->move_left();
+                    player->move_left(5.0f);
                     break;
                 case MOVE_RIGHT:
-                    player->move_right();
+                    player->move_right(5.0f);
                     break;
                 case MOVE_FORWARD:
-                    player->move_forward();
+                    player->move_forward(5.0f);
                     break;
                 case MOVE_BACKWARD:
-                    player->move_backward();
+                    player->move_backward(5.0f);
                     break;
                 default:
                     // do nothing
@@ -187,10 +186,10 @@ float get_dst(fvec3* a, fvec3* b) {
 }
 
 void Game::check_need_update() {
-    fvec3* player_pos = player->get_pos();
-    if (get_dst(&last_player_pos, player_pos) >= CHUNK_UPDATE_TRIGGER_DISTANCE) {
-        world->update_chunks(&last_player_pos, player_pos);
-        last_player_pos = fvec3(player_pos->x, player_pos->y, player_pos->z);
+    fvec3 player_pos = player->pos;
+    if (get_dst(&last_player_pos, &player_pos) >= CHUNK_UPDATE_TRIGGER_DISTANCE) {
+        world->update_chunks(&last_player_pos, &player_pos);
+        last_player_pos = player_pos;
     }
 }
 

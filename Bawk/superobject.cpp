@@ -25,6 +25,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     vid = v;
     pid = p;
     entity_class = 4;
+    can_rotate = true;
     block_counter = 0;
 }
 
@@ -35,6 +36,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v, ivec3 po) {
     pid = p;
     entity_class = 4;
     pos = fvec3((float)po.x, (float)po.y, (float)po.z);
+    can_rotate = true;
     block_counter = 0;
 }
 
@@ -88,10 +90,14 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
         // remove stats for current block
         int current_weight = get_block_weight(current.type);
         int new_weight = weight - current_weight;
-        center_pos = fvec3((center_pos.x * weight - (oac.x + 0.5f) * current_weight) / new_weight,
-                           (center_pos.y * weight - (oac.y + 0.5f) * current_weight) / new_weight,
-                           (center_pos.z * weight - (oac.z + 0.5f) * current_weight) / new_weight
-                           );
+        if (new_weight == 0) {
+            center_pos = pos;
+        } else {
+            center_pos = fvec3((center_pos.x * weight - (oac.x + 0.5f) * current_weight) / new_weight,
+                               (center_pos.y * weight - (oac.y + 0.5f) * current_weight) / new_weight,
+                               (center_pos.z * weight - (oac.z + 0.5f) * current_weight) / new_weight
+                               );
+        }
         weight = new_weight;
         health -= current.life;
         block_counter--;
@@ -103,10 +109,12 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
         // remove stats for current block
         int current_weight = get_block_weight(type.type);
         int new_weight = weight + current_weight;
-        center_pos = fvec3((center_pos.x * weight + (oac.x + 0.5f) * current_weight) / new_weight,
-                           (center_pos.y * weight + (oac.y + 0.5f) * current_weight) / new_weight,
-                           (center_pos.z * weight + (oac.z + 0.5f) * current_weight) / new_weight
-                           );
+        if (new_weight != 0) {
+            center_pos = fvec3((center_pos.x * weight + (oac.x + 0.5f) * current_weight) / new_weight,
+                               (center_pos.y * weight + (oac.y + 0.5f) * current_weight) / new_weight,
+                               (center_pos.z * weight + (oac.z + 0.5f) * current_weight) / new_weight
+                               );
+        }
         weight = new_weight;
         health += current.life;
         block_counter++;
@@ -143,24 +151,22 @@ void SuperObject::step() {
             velocity.z += off;
             stable = false;
         }
-        /*if ((int)(angle.x*2 / M_PI)*M_PI/2 != angle.x) {
-         float off = roundf(angle.x*2 / M_PI)*M_PI/2 - angle.x;
-         if (off < -0.05f)
-         off = -0.05f;
-         if (off > 0.05f)
-         off = 0.05f;
-         angular_velocity.x += off;
-         recalculate_dir();
-         }
-         if ((int)(angle.y *2 / M_PI)*M_PI/2 != angle.y) {
-         float off = roundf(angle.y*2 / M_PI)*M_PI/2 - angle.y;
-         if (off < -0.05f)
-         off = -0.05f;
-         if (off > 0.05f)
-         off = 0.05f;
-         angular_velocity.y += off;
-         recalculate_dir();
-         }*/
+        if ((int)(angle.x*2 / M_PI)*M_PI/2 != angle.x) {
+            float off = roundf(angle.x*2 / M_PI)*M_PI/2 - angle.x;
+            if (off < -0.05f)
+                off = -0.05f;
+            if (off > 0.05f)
+                off = 0.05f;
+            angular_velocity.x += off;
+        }
+        if ((int)(angle.y *2 / M_PI)*M_PI/2 != angle.y) {
+            float off = roundf(angle.y*2 / M_PI)*M_PI/2 - angle.y;
+            if (off < -0.05f)
+                off = -0.05f;
+            if (off > 0.05f)
+                off = 0.05f;
+            angular_velocity.y += off;
+        }
     }
 }
 

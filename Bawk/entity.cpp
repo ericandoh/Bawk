@@ -7,49 +7,54 @@
 //
 
 #include "entity.h"
-#include <climits>
 #include <glm/gtc/matrix_transform.hpp>
 
 Entity::Entity() {
-    // initialize things
-    pos = fvec3(0.0f, 0.0f, 0.0f);
+    // these will be overwritten by a call to set angle
     up = fvec3(0.0f, 1.0f, 0.0f);
     dir = fvec3(1.0f, 0.0f, 0.0f);
-    lower_bound = fvec3(FLT_MAX, FLT_MAX, FLT_MAX);
-    upper_bound = fvec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-    
-    center_pos = fvec3(0.0f, 0.0f, 0.0f);
-    // everything has to weigh at least something - can't have massless objects and shit yod
-    weight = 1;
-    // 0 is full health
-    health = 0;
-    
-    velocity = fvec3(0, 0, 0);
-    angular_velocity = fvec2(0, 0);
-    speed = 0.1f;
+    // identifying info for the entity. this should be overwritten
     vid = 0;
     pid = 0;
-    entity_class = 0;   // please set me in future constructors!
-    stable = true;
+    entity_class = 0;
+    
+    // this should be overridden as needed
+    can_collide = true;
+    can_rotate = false;
+    
+    // set initial pos/angle to origin, overwrite for most objects
+    pos = fvec3(0.0f, 0.0f, 0.0f);
+    angle = fvec2(0.0f, 0.0f);
+    
+    // set initial bounds to be maxed out
+    bounds = bounding_box();
+    center_pos = fvec3(0.0f, 0.0f, 0.0f);
+    
+    // this object is (hopefully) not moving to start out with
+    velocity = fvec3(0, 0, 0);
+    angular_velocity = fvec2(0, 0);
+    // do a stable check to begin with
+    stable = false;
+    
+    // start with no weight
+    weight = 0;
+    // 0 is full health
+    health = 0;
 }
 
 void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
-    // round center_pos to nearest 0.5
-    /*fvec3 integral_center_pos(roundf(center_pos.x * 2.0f)*0.5f,
-                              roundf(center_pos.y * 2.0f)*0.5f,
-                              roundf(center_pos.z * 2.0f)*0.5f);*/
-    // round angle to nearest angle
-    fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
-                                roundf(angle.y * 2 / M_PI) * M_PI / 2);
-
     fmat4 reverse(1);
-    if (rounded_angle.x != 0 || rounded_angle.y != 0) {
+    if (can_rotate) {
+        // round angle to nearest angle
+        fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
+                                    roundf(angle.y * 2 / M_PI) * M_PI / 2);
+        
+        
         reverse = glm::translate(fmat4(1), center_pos);
         reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
         reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
         reverse = glm::translate(reverse, -center_pos);
     }
-    //fvec3 rounded_pos = fvec3(roundf(pos.x), roundf(pos.y), roundf(pos.z));
     reverse = glm::translate(reverse, -pos);
     fvec4 result(x, y, z, 1.0f);
     result = reverse * result;
@@ -60,17 +65,11 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
 }
 
 void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
-    // round center_pos to nearest 0.5
-    /*fvec3 integral_center_pos(roundf(center_pos.x * 2.0f)*0.5f,
-                              roundf(center_pos.y * 2.0f)*0.5f,
-                              roundf(center_pos.z * 2.0f)*0.5f);*/
-    // round angle to nearest angle
-    fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
-                                roundf(angle.y * 2 / M_PI) * M_PI / 2);
-    // S * R * T
-    //fvec3 rounded_pos = fvec3(roundf(pos.x), roundf(pos.y), roundf(pos.z));
     fmat4 view = glm::translate(fmat4(1), pos);
-    if (rounded_angle.x != 0 || rounded_angle.y != 0) {
+    if (can_rotate) {
+        // round angle to nearest angle
+        fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
+                                    roundf(angle.y * 2 / M_PI) * M_PI / 2);
         view = glm::translate(view, center_pos);
         view = glm::rotate(view, rounded_angle.x, fvec3(0, 1, 0));
         view = glm::rotate(view, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
@@ -84,59 +83,75 @@ void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, floa
     src->z = result.z;
 }
 
+float Entity::get_speed(float force) {
+    // if we have negative/zero weight, treat as us having 1 weight
+    if (weight <= 0) {
+        return force;
+    }
+    return force/weight;
+}
+
 // movement methods. Move these to class Entity
-void Entity::move_forward() {
+void Entity::move_forward(float force) {
     // override this if flying/on land
     fvec3 forward = fvec3(dir.x, 0, dir.z);
     forward = glm::normalize(forward);
-    velocity += forward * speed;
-    stable = false;
-}
-void Entity::move_backward() {
-    fvec3 forward = fvec3(dir.x, 0, dir.z);
-    forward = glm::normalize(forward);
-    velocity -= forward * speed;
-    stable = false;
-}
-void Entity::move_left() {
-    fvec3 forward = fvec3(dir.x, 0, dir.z);
-    forward = glm::normalize(forward);
-    velocity.x += forward.z * speed;
-    velocity.z -= forward.x * speed;
-    stable = false;
-}
-void Entity::move_right() {
-    fvec3 forward = fvec3(dir.x, 0, dir.z);
-    forward = glm::normalize(forward);
-    velocity.x -= forward.z * speed;
-    velocity.z += forward.x * speed;
-    stable = false;
-}
-void Entity::move_up() {
-    velocity.y += 1.0f * speed;
-    stable = false;
-}
-void Entity::move_down() {
-    velocity.y -= 1.0f * speed;
-    stable = false;
+    move_dist(forward * get_speed(force));
 }
 
-void Entity::turn_left() {
-    angular_velocity.x += 0.3f;
-    stable = false;
-    recalculate_dir();
+void Entity::move_backward(float force) {
+    fvec3 forward = -fvec3(dir.x, 0, dir.z);
+    forward = glm::normalize(forward);
+    move_dist(forward * get_speed(force));
 }
 
-void Entity::turn_right() {
-    angular_velocity.x -= 0.3f;
+void Entity::move_left(float force) {
+    fvec3 forward = fvec3(dir.x, 0, dir.z);
+    forward = glm::normalize(forward);
+    move_dist(fvec3(forward.z * get_speed(force),
+                    0,
+                    -forward.x * get_speed(force)));
+}
+
+void Entity::move_right(float force) {
+    fvec3 forward = fvec3(dir.x, 0, dir.z);
+    forward = glm::normalize(forward);
+    move_dist(fvec3(-forward.z * get_speed(force),
+                    0,
+                    forward.x * get_speed(force)));
+}
+
+void Entity::move_up(float force) {
+    move_dist(fvec3(0.0f,
+                    get_speed(force),
+                    0.0f));
+}
+
+void Entity::move_down(float force) {
+    move_dist(fvec3(0.0f,
+                    -get_speed(force),
+                    0.0f));
+}
+
+void Entity::turn_left(float force) {
+    // 1 unit of force turns 1 weight by M_PI/2
+    turn_angle(fvec2(get_speed(force)*M_PI/2,
+                     0.0f));
+}
+
+void Entity::turn_right(float force) {
+    turn_angle(fvec2(-get_speed(force)*M_PI/2,
+                     0.0f));
+}
+
+void Entity::move_dist(fvec3 off) {
+    velocity += off;
     stable = false;
-    recalculate_dir();
 }
 
 void Entity::turn_angle(fvec2 off) {
     angular_velocity += off;
     stable = false;
-    recalculate_dir();
 }
 
 void Entity::recalculate_dir() {
@@ -158,12 +173,6 @@ void Entity::recalculate_dir() {
     dir.z = cosf(angle.x) * cosf(angle.y);
     
     //up = glm::cross(right, lookat);
-    // TODO recalculate pos
-}
-
-fvec3* Entity::get_pos() {
-    // TODO deprecate this
-    return &pos;
 }
 
 bool Entity::poke(float x, float y, float z) {
@@ -171,10 +180,7 @@ bool Entity::poke(float x, float y, float z) {
     fvec3 oac;
     // TODO same note as above
     transform_into_my_coordinates(&oac, x, y, z);
-    
-    return (lower_bound.x <= oac.x) && (oac.x <= upper_bound.x) &&
-            (lower_bound.y <= oac.y) && (oac.y <= upper_bound.y) &&
-            (lower_bound.z <= oac.z) && (oac.z <= upper_bound.z);
+    return bounds.hits(oac);
 }
 
 bool Entity::block_keyboard_callback(Game* game, int key) {
@@ -209,8 +215,8 @@ void Entity::update_chunks(fvec3* old_pos, fvec3* new_pos) {
 void Entity::calculate_moving_bounding_box() {
     // transform my bounds into RWC
     fvec3 lower_rwc, upper_rwc;
-    transform_into_world_coordinates(&lower_rwc, lower_bound.x, lower_bound.y, lower_bound.z);
-    transform_into_world_coordinates(&upper_rwc, upper_bound.x, upper_bound.y, upper_bound.z);
+    transform_into_world_coordinates(&lower_rwc, bounds.lower.x, bounds.lower.y, bounds.lower.z);
+    transform_into_world_coordinates(&upper_rwc, bounds.upper.x, bounds.upper.y, bounds.upper.z);
     fvec3 before_lower_corner(std::min(lower_rwc.x, upper_rwc.x),
                               std::min(lower_rwc.y, upper_rwc.y),
                               std::min(lower_rwc.z, upper_rwc.z));
@@ -218,11 +224,14 @@ void Entity::calculate_moving_bounding_box() {
                               std::max(lower_rwc.y, upper_rwc.y),
                               std::max(lower_rwc.z, upper_rwc.z));
     
-    apply_velocity();
-    apply_rotation();
+    pos += velocity;
+    if (can_rotate) {
+        angle += angular_velocity;
+        recalculate_dir();
+    }
     
-    transform_into_world_coordinates(&lower_rwc, lower_bound.x, lower_bound.y, lower_bound.z);
-    transform_into_world_coordinates(&upper_rwc, upper_bound.x, upper_bound.y, upper_bound.z);
+    transform_into_world_coordinates(&lower_rwc, bounds.lower.x, bounds.lower.y, bounds.lower.z);
+    transform_into_world_coordinates(&upper_rwc, bounds.upper.x, bounds.upper.y, bounds.upper.z);
     fvec3 after_lower_corner(std::min(lower_rwc.x, upper_rwc.x),
                              std::min(lower_rwc.y, upper_rwc.y),
                              std::min(lower_rwc.z, upper_rwc.z));
@@ -239,87 +248,47 @@ void Entity::calculate_moving_bounding_box() {
     
 }
 
-void Entity::revert_velocities() {
-    pos -= velocity;
-    angle -= angular_velocity;
-    recalculate_dir();
-}
-
-void Entity::revert_rotation() {
-    angle -= angular_velocity;
-    recalculate_dir();
-}
-
-void Entity::apply_velocity() {
-    pos += velocity;
-}
-
-void Entity::apply_rotation() {
-    angle += angular_velocity;
-    recalculate_dir();
-}
-
-void Entity::reset_velocities() {
-    angular_velocity = fvec2(0, 0);
-    velocity = fvec3(0, 0, 0);
-    stable = true;
-}
-
-bool Entity::intersects_with_my_bounds(fvec3 lower_corner, fvec3 upper_corner) {
-    return      !(lower_bound.x >= upper_corner.x || lower_corner.x >= upper_bound.x
-               || lower_bound.y >= upper_corner.y || lower_corner.y >= upper_bound.y
-               || lower_bound.z >= upper_corner.z || lower_corner.z >= upper_bound.z);
-}
-
 bool Entity::collides_with(Entity* other) {
-    if (get_collision_priority() >= other->get_collision_priority()) {
-        return check_collision_vs(other);
+    if (!can_collide || !other->can_collide) {
+        return false;
     }
-    // other entity has a better way of dealing with collision
-    return other->check_collision_vs(this);
+    
+    int my_collision_level = get_collision_level();
+    int other_collision_level = other->get_collision_level();
+    
+    bounding_box rwc_bounds;
+    transform_into_world_coordinates(&rwc_bounds.lower, bounds.lower.x, bounds.lower.y, bounds.lower.z);
+    transform_into_world_coordinates(&rwc_bounds.upper, bounds.upper.x, bounds.upper.y, bounds.upper.z);
+    rwc_bounds.refit_for_rotation();
+    
+    bounding_box other_rwc_bounds;
+    other->transform_into_world_coordinates(&other_rwc_bounds.lower, other->bounds.lower.x, other->bounds.lower.y, other->bounds.lower.z);
+    other->transform_into_world_coordinates(&other_rwc_bounds.upper, other->bounds.upper.x, other->bounds.upper.y, other->bounds.upper.z);
+    other_rwc_bounds.refit_for_rotation();
+    
+    if (!rwc_bounds.hits(other_rwc_bounds)) {
+        // my big fat bounds doesn't even hit the other bounds
+        return false;
+    }
+    
+    if (my_collision_level >= other_collision_level) {
+        return collides_with(other, &rwc_bounds, &other_rwc_bounds, my_collision_level, other_collision_level);
+    }
+    else {
+        return other->collides_with(this, &other_rwc_bounds, &rwc_bounds, other_collision_level, my_collision_level);
+    }
 }
 
-bool Entity::check_collision_vs(Entity* other) {
-    // we can handle this
-    // we GOT this
-    // other entity MUST be also an entity
-    return collides_with_entity(other);
-}
-
-int Entity::get_collision_priority() {
+int Entity::get_collision_level() {
     return 0;
 }
 
-bool Entity::collides_with_entity(Entity* other) {
-    fvec3 lower, upper;
-    fvec3 other_lower = other->lower_bound;
-    fvec3 other_upper = other->upper_bound;
-    // TODO the below might give us not a bounding box if the item is rotated
-    // make a new function that calculates the "future" to the nearest 90 rotation (so that we have
-    // square transformations)
-    other->transform_into_world_coordinates(&lower, other_lower.x, other_lower.y, other_lower.z);
-    other->transform_into_world_coordinates(&upper, other_upper.x, other_upper.y, other_upper.z);
+bool Entity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) {
+    // see if other (with bounds other_bounds) intersects me at my collision level
     
-    // transform into OAC
-    fvec3 lower_oac;
-    // TODO same note as above
-    transform_into_my_coordinates(&lower_oac, lower.x, lower.y, lower.z);
-    
-    // transform into OAC
-    fvec3 upper_oac;
-    // TODO same note as above
-    transform_into_my_coordinates(&upper_oac, upper.x, upper.y, upper.z);
-    
-    fvec3 real_lower_oac = fvec3(std::min(lower_oac.x, upper_oac.x),
-                                 std::min(lower_oac.y, upper_oac.y),
-                                 std::min(lower_oac.z, upper_oac.z));
-    fvec3 real_upper_oac = fvec3(std::max(lower_oac.x, upper_oac.x),
-                                 std::max(lower_oac.y, upper_oac.y),
-                                 std::max(lower_oac.z, upper_oac.z));
-    
-    // see if lower_oac, upper_oac intersect with lower, upper
-    if (!intersects_with_my_bounds(real_lower_oac, real_upper_oac)) {
-        return false;
+    // my collision level must be 0 if we're calling it at this state
+    if (my_collision_lvl > 0 || other_collision_level > 0) {
+        printf("Error: We skipped a collision level somewhere: %d,%d\n", my_collision_lvl, other_collision_level);
     }
     return true;
 }
@@ -343,24 +312,6 @@ int Entity::load_selfs() {
     return 0;
 }
 
-int Entity::load_self(IODataObject* obj) {
-    velocity = obj->read_value<fvec3>();
-    speed = obj->read_value<float>();
-    pos = obj->read_value<fvec3>();
-    up = obj->read_value<fvec3>();
-    angle = obj->read_value<fvec2>();
-    lower_bound = obj->read_value<fvec3>();
-    upper_bound = obj->read_value<fvec3>();
-    
-    center_pos = obj->read_value<fvec3>();
-    weight = obj->read_value<int>();
-    health = obj->read_value<int>();
-    
-    recalculate_dir();
-    
-    return 0;
-}
-
 void Entity::remove_selfs() {
     std::string path = this->get_save_path();
     if (path.compare("") == 0)
@@ -372,21 +323,36 @@ void Entity::remove_selfs() {
     write.close();
 }
 
+int Entity::load_self(IODataObject* obj) {
+    up = obj->read_value<fvec3>();
+    pos = obj->read_value<fvec3>();
+    angle = obj->read_value<fvec2>();
+    
+    bounds = obj->read_value<bounding_box>();
+    center_pos = obj->read_value<fvec3>();
+    
+    weight = obj->read_value<int>();
+    health = obj->read_value<int>();
+    
+    recalculate_dir();
+    return 0;
+}
+
 void Entity::remove_self(IODataObject* obj) {
-    obj->save_value(velocity);
-    obj->save_value(speed);
-    obj->save_value(pos);
     obj->save_value(up);
+    obj->save_value(pos);
     obj->save_value(angle);
-    obj->save_value(lower_bound);
-    obj->save_value(upper_bound);
+    
+    obj->save_value(bounds);
     obj->save_value(center_pos);
+    
     obj->save_value(weight);
     obj->save_value(health);
 }
 
 
 void test_entity_coordinate_system() {
+    /*
     Entity test;
     
     test.pos = fvec3(1, 2, 3);
@@ -416,5 +382,5 @@ void test_entity_coordinate_system() {
     test.transform_into_world_coordinates(&result, test_point.x, test_point.y, test_point.z);
     printf("%f %f %f\n", result.x,result.y,result.z);
     test.transform_into_my_coordinates(&result, result.x, result.y, result.z);
-    printf("%f %f %f\n", result.x,result.y,result.z);
+    printf("%f %f %f\n", result.x,result.y,result.z);*/
 }

@@ -12,8 +12,7 @@
 #include "superobjectrender.h"
 
 RenderableSuperObject::RenderableSuperObject(): Entity() {
-    pos = fvec3(0.0, 0.0, 0.0);
-    // TODO recalculate bound here, or load bound from memory
+    // nothing special needed here
 }
 
 void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
@@ -305,6 +304,14 @@ bool RenderableSuperObject::within_dimensions_chunk(int x, int y, int z) {
     return false;
 }
 
+bool RenderableSuperObject::intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos) {
+    ivec3 lower_corner = chunk_bounds[chunkpos].lower_bound;
+    ivec3 upper_corner = chunk_bounds[chunkpos].upper_bound;
+    return   !(lower.x > upper_corner.x || lower_corner.x > upper.x
+               || lower.y > upper_corner.y || lower_corner.y > upper.y
+               || lower.z > upper_corner.z || lower_corner.z > upper.z);
+}
+
 void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
     if (!chunks.count(chunk_pos))
         return;
@@ -316,15 +323,15 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
         ivec3 old_chunk_lower = chunk_bounds[chunk_pos].lower_bound;
         ivec3 old_chunk_upper = chunk_bounds[chunk_pos].upper_bound;
         // we need to recalculate if any of our total bounds depended on this chunk, or seemed to
-        recalculate_needed = int(lower_bound.x) == (old_chunk_lower.x + CX*chunk_pos.x)  ||
-                            int(lower_bound.y) == (old_chunk_lower.y + CY*chunk_pos.y) ||
-                            int(lower_bound.z) == (old_chunk_lower.z + CZ*chunk_pos.z) ||
-                            lower_bound.x == FLT_MAX;
+        recalculate_needed = int(bounds.lower.x) == (old_chunk_lower.x + CX*chunk_pos.x)  ||
+                            int(bounds.lower.y) == (old_chunk_lower.y + CY*chunk_pos.y) ||
+                            int(bounds.lower.z) == (old_chunk_lower.z + CZ*chunk_pos.z) ||
+                            bounds.lower.x == FLT_MAX;
         recalculate_needed = recalculate_needed ||
-                            int(upper_bound.x) == (old_chunk_upper.x + CX*chunk_pos.x + 1)  ||
-                            int(upper_bound.y) == (old_chunk_upper.y + CY*chunk_pos.y + 1) ||
-                            int(upper_bound.z) == (old_chunk_upper.z + CZ*chunk_pos.z + 1) ||
-                            upper_bound.x == -FLT_MAX;
+                            int(bounds.upper.x) == (old_chunk_upper.x + CX*chunk_pos.x + 1)  ||
+                            int(bounds.upper.y) == (old_chunk_upper.y + CY*chunk_pos.y + 1) ||
+                            int(bounds.upper.z) == (old_chunk_upper.z + CZ*chunk_pos.z + 1) ||
+                            bounds.upper.x == -FLT_MAX;
     }
     else {
         recalculate_needed = true;
@@ -333,17 +340,17 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
     
     // iterate through all our chunks and update dimensions
     if (recalculate_needed) {
-        lower_bound = fvec3(FLT_MAX, FLT_MAX, FLT_MAX);
-        upper_bound = fvec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        bounds.lower = fvec3(FLT_MAX, FLT_MAX, FLT_MAX);
+        bounds.upper = fvec3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
         for (auto &i : chunk_bounds) {
             ivec3 cpos = i.first;
-            struct chunk_bounds bounds = i.second;
-            lower_bound.x = fminf(float(bounds.lower_bound.x + CX*cpos.x), lower_bound.x);
-            lower_bound.y = fminf(float(bounds.lower_bound.y + CY*cpos.y), lower_bound.y);
-            lower_bound.z = fminf(float(bounds.lower_bound.z + CZ*cpos.z), lower_bound.z);
-            upper_bound.x = fmaxf(float(bounds.upper_bound.x + CX*cpos.x + 1), upper_bound.x);
-            upper_bound.y = fmaxf(float(bounds.upper_bound.y + CY*cpos.y + 1), upper_bound.y);
-            upper_bound.z = fmaxf(float(bounds.upper_bound.z + CZ*cpos.z + 1), upper_bound.z);
+            struct chunk_bounds cbounds = i.second;
+            bounds.lower.x = fminf(float(cbounds.lower_bound.x + CX*cpos.x), bounds.lower.x);
+            bounds.lower.y = fminf(float(cbounds.lower_bound.y + CY*cpos.y), bounds.lower.y);
+            bounds.lower.z = fminf(float(cbounds.lower_bound.z + CZ*cpos.z), bounds.lower.z);
+            bounds.upper.x = fmaxf(float(cbounds.upper_bound.x + CX*cpos.x + 1), bounds.upper.x);
+            bounds.upper.y = fmaxf(float(cbounds.upper_bound.y + CY*cpos.y + 1), bounds.upper.y);
+            bounds.upper.z = fmaxf(float(cbounds.upper_bound.z + CZ*cpos.z + 1), bounds.upper.z);
         }
     }
     //printf("Bounds updated to %f %f %f, %f %f %f\n", lower_bound.x, lower_bound.y, lower_bound.z,
@@ -359,156 +366,49 @@ bool RenderableSuperObject::poke(float x, float y, float z) {
     return false;
 }
 
-int RenderableSuperObject::get_collision_priority() {
+int RenderableSuperObject::get_collision_level() {
     return 1;
 }
 
-bool RenderableSuperObject::check_collision_vs(Entity* other) {
-    if (other->get_collision_priority() == 0) {
-        return collides_with_entity(other);
+bool RenderableSuperObject::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) {
+    if (my_collision_lvl == 0) {
+        return Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
     }
-    else {
-        return collides_with_superobject((RenderableSuperObject*)other);
-    }
-}
-
-bool RenderableSuperObject::collides_with_entity(Entity* other) {
-    // calculate RWC of other's bounds
-    fvec3 lower, upper;
-    fvec3 other_lower = other->lower_bound;
-    fvec3 other_upper = other->upper_bound;
-    // TODO the below might give us not a bounding box if the item is rotated
-    // make a new function that calculates the "future" to the nearest 90 rotation (so that we have
-    // square transformations)
-    other->transform_into_world_coordinates(&lower, other_lower.x, other_lower.y, other_lower.z);
-    other->transform_into_world_coordinates(&upper, other_upper.x, other_upper.y, other_upper.z);
-    
-    // transform into OAC
-    fvec3 lower_oac;
-    // TODO same note as above
-    transform_into_my_coordinates(&lower_oac, lower.x, lower.y, lower.z);
-    
-    // transform into OAC
-    fvec3 upper_oac;
-    // TODO same note as above
-    transform_into_my_coordinates(&upper_oac, upper.x, upper.y, upper.z);
-    
-    fvec3 real_lower_oac = fvec3(std::min(lower_oac.x, upper_oac.x),
-                                 std::min(lower_oac.y, upper_oac.y),
-                                 std::min(lower_oac.z, upper_oac.z));
-    fvec3 real_upper_oac = fvec3(std::max(lower_oac.x, upper_oac.x),
-                                 std::max(lower_oac.y, upper_oac.y),
-                                 std::max(lower_oac.z, upper_oac.z));
-    
-    // see if lower_oac, upper_oac intersect with lower, upper
-    if (!intersects_with_my_bounds(real_lower_oac, real_upper_oac)) {
-        return false;
-    }
-    
-    // now transform into cac, crc
-    ivec3 lower_cac, lower_crc;
-    transform_into_chunk_bounds(&lower_cac, &lower_crc, real_lower_oac.x, real_lower_oac.y, real_lower_oac.z);
-    // now transform into cac, crc
-    ivec3 upper_cac, upper_crc;
-    transform_into_chunk_bounds(&upper_cac, &upper_crc, real_upper_oac.x, real_upper_oac.y, real_upper_oac.z);
-    
-    // iterate through chunks directly and see if there is intersection
-    // if so, return region of conflict
-    
-    // iterate through our chunk region and see if it exists in our mapping
-    for (int x = lower_cac.x; x <= upper_cac.x; x++) {
-        for (int y = lower_cac.y; y <= upper_cac.y; y++) {
-            for (int z = lower_cac.z; z <= upper_cac.z; z++) {
-                if (!within_dimensions_chunk(x, y, z)) {
-                    continue;
-                }
-                if (!load_chunk(x, y, z)) {
-                    ivec3 lower_corner(0, 0, 0);
-                    ivec3 upper_corner(CX - 1, CY - 1, CZ - 1);
-                    if (x == lower_cac.x)
-                        lower_corner.x = lower_crc.x;
-                    if (x == upper_cac.x)
-                        upper_corner.x = upper_crc.x;
-                    if (y == lower_cac.y)
-                        lower_corner.y = lower_crc.y;
-                    if (y == upper_cac.y)
-                        upper_corner.y = upper_crc.y;
-                    if (z == lower_cac.z)
-                        lower_corner.z = lower_crc.z;
-                    if (z == upper_cac.z)
-                        upper_corner.z = upper_crc.z;
-                    ivec3 chunk_pos = ivec3(x, y, z);
-                    RenderableChunk* chunk = chunks[chunk_pos];
-                    if (chunk->intersects_my_bounds(lower_corner, upper_corner)) {
-                        // do a more careful check
-                        for (int xt = lower_corner.x; xt <= upper_corner.x; xt++) {
-                            for (int yt = lower_corner.y; yt <= upper_corner.y; yt++) {
-                                for (int zt = lower_corner.z; zt <= upper_corner.z; zt++) {
-                                    if (chunk->blk[xt][yt][zt].type) {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
+    else if (my_collision_lvl == 1) {
+        // see which chunks hit other_bounds, then call each chunk bounds on me
+        // find intersection of my_bounds, other_bounds
+        bounding_box intersection_box = get_bounding_box_intersection(*my_bounds, *other_bounds);
+        // convert intersection_box into my coordinates
+        bounding_box oac_intersection_box;
+        transform_into_my_coordinates(&oac_intersection_box.lower,
+                                      intersection_box.lower.x,
+                                      intersection_box.lower.y,
+                                      intersection_box.lower.z);
+        transform_into_my_coordinates(&oac_intersection_box.upper,
+                                      intersection_box.upper.x,
+                                      intersection_box.upper.y,
+                                      intersection_box.upper.z);
+        oac_intersection_box.refit_for_rotation();
+        
+        // now transform into cac, crc
+        ivec3 lower_cac, lower_crc;
+        transform_into_chunk_bounds(&lower_cac, &lower_crc,
+                                    oac_intersection_box.lower.x,
+                                    oac_intersection_box.lower.y,
+                                    oac_intersection_box.lower.z);
+        // now transform into cac, crc
+        ivec3 upper_cac, upper_crc;
+        transform_into_chunk_bounds(&upper_cac, &upper_crc,
+                                    oac_intersection_box.upper.x,
+                                    oac_intersection_box.upper.y,
+                                    oac_intersection_box.upper.z);
+        
+        for (int x = lower_cac.x; x <= upper_cac.x; x++) {
+            for (int y = lower_cac.y; y <= upper_cac.y; y++) {
+                for (int z = lower_cac.z; z <= upper_cac.z; z++) {
+                    if (!within_dimensions_chunk(x, y, z)) {
+                        continue;
                     }
-                }
-            }
-        }
-    }
-    return false;
-}
-
-bool RenderableSuperObject::collides_with_superobject(RenderableSuperObject* other) {
-    // calculate RWC of other's bounds
-    fvec3 lower, upper;
-    fvec3 other_lower = other->lower_bound;
-    fvec3 other_upper = other->upper_bound;
-    // TODO the below might give us not a bounding box if the item is rotated
-    // make a new function that calculates the "future" to the nearest 90 rotation (so that we have
-    // square transformations)
-    other->transform_into_world_coordinates(&lower, other_lower.x, other_lower.y, other_lower.z);
-    other->transform_into_world_coordinates(&upper, other_upper.x, other_upper.y, other_upper.z);
-    
-    // transform into OAC
-    fvec3 lower_oac;
-    // TODO same note as above
-    transform_into_my_coordinates(&lower_oac, lower.x, lower.y, lower.z);
-    
-    // transform into OAC
-    fvec3 upper_oac;
-    // TODO same note as above
-    transform_into_my_coordinates(&upper_oac, upper.x, upper.y, upper.z);
-    
-    fvec3 real_lower_oac = fvec3(std::min(lower_oac.x, upper_oac.x),
-                                 std::min(lower_oac.y, upper_oac.y),
-                                 std::min(lower_oac.z, upper_oac.z));
-    fvec3 real_upper_oac = fvec3(std::max(lower_oac.x, upper_oac.x),
-                                 std::max(lower_oac.y, upper_oac.y),
-                                 std::max(lower_oac.z, upper_oac.z));
-    
-    // see if lower_oac, upper_oac intersect with lower, upper
-    if (!intersects_with_my_bounds(real_lower_oac, real_upper_oac)) {
-        return false;
-    }
-    
-    // now transform into cac, crc
-    ivec3 lower_cac, lower_crc;
-    transform_into_chunk_bounds(&lower_cac, &lower_crc, real_lower_oac.x, real_lower_oac.y, real_lower_oac.z);
-    // now transform into cac, crc
-    ivec3 upper_cac, upper_crc;
-    transform_into_chunk_bounds(&upper_cac, &upper_crc, real_upper_oac.x, real_upper_oac.y, real_upper_oac.z);
-    
-    // iterate through chunks directly and see if there is intersection
-    // if so, return region of conflict
-    
-    // iterate through our chunk region and see if it exists in our mapping
-    for (int x = lower_cac.x; x <= upper_cac.x; x++) {
-        for (int y = lower_cac.y; y <= upper_cac.y; y++) {
-            for (int z = lower_cac.z; z <= upper_cac.z; z++) {
-                if (!within_dimensions_chunk(x, y, z)) {
-                    continue;
-                }
-                if (!load_chunk(x, y, z)) {
                     ivec3 lower_corner(0, 0, 0);
                     ivec3 upper_corner(CX - 1, CY - 1, CZ - 1);
                     if (x == lower_cac.x)
@@ -524,24 +424,33 @@ bool RenderableSuperObject::collides_with_superobject(RenderableSuperObject* oth
                     if (z == upper_cac.z)
                         upper_corner.z = upper_crc.z;
                     ivec3 chunk_pos = ivec3(x, y, z);
-                    RenderableChunk* chunk = chunks[chunk_pos];
-                    if (chunk->intersects_my_bounds(lower_corner, upper_corner)) {
-                        // do a more careful check
-                        for (int xt = lower_corner.x; xt <= upper_corner.x; xt++) {
-                            for (int yt = lower_corner.y; yt <= upper_corner.y; yt++) {
-                                for (int zt = lower_corner.z; zt <= upper_corner.z; zt++) {
-                                    if (chunk->blk[xt][yt][zt].type) {
-                                        // if any block other than air intersects we fucked
-                                        fvec3 world_coord;
-                                        transform_into_world_coordinates(&world_coord,
-                                                                         xt + CX*x,
-                                                                         yt + CY*y,
-                                                                         zt + CZ*z);
-                                        if (other->get_block(world_coord.x,
-                                                             world_coord.y,
-                                                             world_coord.z).type) {
-                                            // break here to debug
-                                            return true;
+                    if (intersects_chunk(lower_corner, upper_corner, chunk_pos)) {
+                        if (!load_chunk(x, y, z)) {
+                            RenderableChunk* chunk = chunks[chunk_pos];
+                            for (int xt = lower_corner.x; xt <= upper_corner.x; xt++) {
+                                for (int yt = lower_corner.y; yt <= upper_corner.y; yt++) {
+                                    for (int zt = lower_corner.z; zt <= upper_corner.z; zt++) {
+                                        if (chunk->blk[xt][yt][zt].type) {
+                                            bounding_box subbox;
+                                            subbox.lower = fvec3(x*CX + xt,
+                                                                 y*CY + yt,
+                                                                 z*CZ + zt);
+                                            subbox.upper = fvec3(x*CX + xt + 1,
+                                                                 y*CY + yt + 1,
+                                                                 z*CZ + zt + 1);
+                                            transform_into_world_coordinates(&subbox.lower, subbox.lower.x, subbox.lower.y, subbox.lower.z);
+                                            transform_into_world_coordinates(&subbox.upper, subbox.upper.x, subbox.upper.y, subbox.upper.z);
+                                            subbox.refit_for_rotation();
+                                            if (other_collision_level > my_collision_lvl - 1) {
+                                                if (other->collides_with(this, other_bounds, &subbox, other_collision_level, my_collision_lvl - 1)) {
+                                                    return true;
+                                                }
+                                            }
+                                            else {
+                                                if (collides_with(other, &subbox, other_bounds, my_collision_lvl - 1, other_collision_level)) {
+                                                    return true;
+                                                }
+                                            }
                                         }
                                     }
                                 }

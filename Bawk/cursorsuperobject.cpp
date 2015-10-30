@@ -22,6 +22,7 @@ CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): SuperObject(p, s) 
     loaded = false;
     make_vehicle = 0;
     entity_class = 3;
+    can_rotate = true;
 }
 
 void CursorSuperObject::set_block(float x, float y, float z, block_type type) {
@@ -117,9 +118,9 @@ void CursorSuperObject::move_block(ivec3 dir) {
 }
 
 void CursorSuperObject::get_bounds(ivec3* upper) {
-    upper->x = upper_bound.x - lower_bound.x;
-    upper->y = upper_bound.y - lower_bound.y;
-    upper->z = upper_bound.z - lower_bound.z;
+    upper->x = bounds.upper.x - bounds.lower.x;
+    upper->y = bounds.upper.y - bounds.lower.y;
+    upper->z = bounds.upper.z - bounds.lower.z;
 }
 
 void CursorSuperObject::render_at_zero(fmat4* transform) {

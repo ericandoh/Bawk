@@ -49,8 +49,6 @@ public:
     
     void step() override;
     
-    bool collides_with(Entity* other) override;
-    
     void set_mount(SuperObject* m, fvec3 pos);
     SuperObject* get_mount();
     bool unmount(World* world);
