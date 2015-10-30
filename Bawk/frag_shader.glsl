@@ -9,7 +9,7 @@ uniform float shade_intensity;
 void main(void) {
     if (draw_mode == 0) {
         // use the texture coordinates given to us directly
-        gl_FragColor = texture2D(tile_texture, texcoord.xy);
+        gl_FragColor = texture2D(tile_texture, texcoord.xy) * shade_intensity;
     }
     else if (draw_mode == 1) {
         int shaderflags = int(texcoord.z);
@@ -36,6 +36,6 @@ void main(void) {
         gl_FragColor = color;
     }
     else {
-        gl_FragColor = vec4(texcoord.xyz, 1.0) * shade_intensity;
+        gl_FragColor = vec4(texcoord.xyz, 1.0);
     }
 }

@@ -106,6 +106,10 @@ void World::add_player(Player* player) {
     holder.add_entity(player);
 }
 
+void World::add_entity(Entity* entity) {
+    holder.add_entity(entity);
+}
+
 // cycles one timestep for the world
 void World::step() {
     holder.step();
@@ -120,4 +124,8 @@ SuperObject* World::create_superobject(Player* player, ivec3 pos) {
     SuperObject* obj = new SuperObject(player->getID(), player->assignID(), pos);
     holder.add_entity(obj);
     return obj;
+}
+
+void World::remove_entity(Entity* entity, bool del) {
+    holder.remove_entity(entity, del);
 }

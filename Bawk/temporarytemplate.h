@@ -26,6 +26,7 @@
 #include <vector>
 #include "basic_types.h"
 #include "world.h"
+#include "superobjectrender.h"
 
 struct block_data {
     ivec3 position;
@@ -37,7 +38,7 @@ struct block_data {
 };
 
 // represents a template in the making
-class TemporaryTemplate {
+class TemporaryTemplate: public RenderableSuperObject {
     std::vector<block_data> blocks;
     // if this is toggled, when finalizing add blocks not to the world
     // but to its own independent superobject
@@ -48,6 +49,12 @@ public:
     void remove_block(ivec3 position);
     std::vector<block_data> publish(Player* player, World* world);
     void unpublish(World* world);
+    
+    void render(fmat4* transform) override;
+    
+    void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
+    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
+    int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
 };
 
 #endif /* defined(__Bawk__temporarytemplate__) */

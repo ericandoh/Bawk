@@ -15,6 +15,7 @@
 #include "block_loader.h"
 #include "display.h"
 #include "blocktracer.h"
+#include "temporarytemplate.h"
 
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
@@ -112,8 +113,12 @@ void Game::render() {
     glEnable(GL_POLYGON_OFFSET_FILL);
     // get transform from player's perspective
     fmat4* transform = player->set_camera();
+    if (place_into) {
+        set_shader_intensity(0.5f);
+    }
     // render world in player's perspective
     world->render(transform);
+    set_shader_intensity(1.0f);
     // get depth coordinates
     player->query_depth(world);
     // render current item based on those depth coordinates
@@ -227,6 +232,7 @@ void Game::key_callback_default(int key) {
             printf("Making new template\n");
             // create a new place_info
             place_into = new TemporaryTemplate();
+            world->add_entity(place_into);
             // TODO do stuff to dim the world except all newly placed blocks
             // i.e. set a uniform variable to tune the intensity
         }
@@ -335,11 +341,11 @@ void Game::mouse_button_callback_default(int button) {
             // get block here instead of outside
             printf("Destroying block from world\n");
             ivec3 removed_at;
-            if (world->kill_block(&removed_at)) {
-                if (place_into) {
-                    printf("Destroying it from the template as well rofl\n");
-                    place_into->remove_block(removed_at);
-                }
+            if (place_into) {
+                place_into->remove_block(removed_at);
+            }
+            else {
+                world->kill_block(&removed_at);
             }
         }
     }

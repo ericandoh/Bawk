@@ -32,7 +32,6 @@
 #include "world.h"
 #include "player.h"
 #include "displayable.h"
-#include "temporarytemplate.h"
 #include "cursoritem.h"
 #include "item_bar.h"
 #include "parent_widget.h"

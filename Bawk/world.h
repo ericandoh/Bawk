@@ -54,9 +54,11 @@ public:
     // called by game to kill a block directly. then effects are propogated to the appropriate entities
     bool kill_block(ivec3* src);
     void add_player(Player* player);
+    void add_entity(Entity* entity);
     void step();
     bool will_collide_with_anything(Entity* superobject);
     SuperObject* create_superobject(Player* player, ivec3 pos);
+    void remove_entity(Entity* entity, bool del);
 };
 
 #endif /* defined(__Bawk__world__) */

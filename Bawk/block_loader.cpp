@@ -275,6 +275,10 @@ void IODataObject::close() {
         read_data = 0;
     }
     else if (mode == SaveMode::WRITE) {
+        size_t written = outfile.tellp();
+        if (written > 1000000) {
+            printf("We wrote more than 1MB to disk. WHY?\n");
+        }
         outfile.close();
     }
 }

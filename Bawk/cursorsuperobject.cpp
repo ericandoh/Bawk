@@ -9,6 +9,7 @@
 #include "cursorsuperobject.h"
 #include "block.h"
 #include "game_info_loader.h"
+#include "temporarytemplate.h"
 
 // heavily modify this so that
 // 1. it doesn't mark itself as a folder to disk
@@ -77,10 +78,11 @@ bool CursorSuperObject::set_blocks(Player* player, World* world, TemporaryTempla
                             superobject->set_block(block_pos.x, block_pos.y, block_pos.z, block);
                         }
                         else {
-                            world->place_block(block_pos, block);
                             //printf("Placing to (%d, %d, %d)\n", block_pos.x, block_pos.y, block_pos.z);
                             if (temp)
                                 temp->add_block(block_pos, block);
+                            else
+                                world->place_block(block_pos, block);
                         }
                     }
                 }

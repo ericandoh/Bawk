@@ -25,7 +25,8 @@
 
 #include <stdio.h>
 #include "world.h"
-#include "temporarytemplate.h"
+
+class TemporaryTemplate;
 
 // represents an item (either a single block or a template, pretty much)
 class CursorItem {

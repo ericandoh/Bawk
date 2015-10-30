@@ -10,6 +10,7 @@
 #include "cursorblock.h"
 #include "worldrender.h"
 #include "blockrender.h"
+#include "temporarytemplate.h"
 
 CursorBlock::CursorBlock(block_type type) {
     block = type;
@@ -26,9 +27,10 @@ bool CursorBlock::set_blocks(Player* player, World* world, TemporaryTemplate* te
     ivec3 block_pos = ivec3(mx, my, mz);
     block.orientation = orient;
     block.owner = player->getID();
-    world->place_block(block_pos, block);
     if (temp)
         temp->add_block(block_pos, block);
+    else
+        world->place_block(block_pos, block);
     return true;
 }
 // for a single block, this will call set_blocks (above) directly.

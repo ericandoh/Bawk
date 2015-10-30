@@ -8,6 +8,7 @@
 
 #include "cursoritem.h"
 #include "blocktracer.h"
+#include "temporarytemplate.h"
 
 bool CursorItem::update_pointing_position(int* tx, int* ty, int* tz,
                                           BlockOrientation* orient,

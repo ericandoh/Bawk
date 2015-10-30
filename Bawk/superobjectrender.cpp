@@ -345,6 +345,10 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
         for (auto &i : chunk_bounds) {
             ivec3 cpos = i.first;
             struct chunk_bounds cbounds = i.second;
+            if (cbounds.lower_bound.x == CX) {
+                // our chunk bound is invalid
+                continue;
+            }
             bounds.lower.x = fminf(float(cbounds.lower_bound.x + CX*cpos.x), bounds.lower.x);
             bounds.lower.y = fminf(float(cbounds.lower_bound.y + CY*cpos.y), bounds.lower.y);
             bounds.lower.z = fminf(float(cbounds.lower_bound.z + CZ*cpos.z), bounds.lower.z);

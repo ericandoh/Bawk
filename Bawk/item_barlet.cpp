@@ -114,4 +114,6 @@ void ItemBarlet::set_cursor_item(CursorItem* item) {
 
 void ItemBarlet::set_current(bool curr) {
     current = curr;
+    if (entity)
+        entity->unlock();
 }

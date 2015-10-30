@@ -66,10 +66,10 @@ public:
     // sets the block at (RWC) xyz
     virtual void set_block(float x, float y, float z, block_type type);
     // renders the object, given a player viewpoint transform matrix
-    void render(fmat4* transform) override;
+    virtual void render(fmat4* transform) override;
     // makes calls to load in/free chunks depending on the
     // former and new (RWC) coordinates of the player
-    void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
+    virtual void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
     // this should be overriden to provide chunk data at (CAC) xyz
     virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) = 0;
     // this should be overriden to save chunk data at (CAC) xyz

@@ -18,12 +18,17 @@ void EntityHolder::add_entity(Entity* entity) {
     entities.push_back(entity);
 }
 
-void EntityHolder::remove_entity(Entity* entity) {
+void EntityHolder::remove_entity(Entity* entity, bool del) {
+    // erase entity from world TODO
     for (unsigned int i = 0; i < entities.size(); i++) {
         if (entities.at(i) == entity) {
             entities.erase(entities.begin() + i);
             break;
         }
+    }
+    if (del) {
+        printf("frog\n");
+        // make call to delete object from memory!
     }
 }
 
@@ -125,6 +130,9 @@ void EntityHolder::step() {
     // now run collision detection - see if anything collides
     std::vector<Entity*> opened;
     for (int i = 0; i < xbounding.size(); i++) {
+        if (xbounding[i]->bounds.lower.x == FLT_MAX) {
+            continue;
+        }
         for (int j = (int)opened.size() - 1; j >= 0; j--) {
             // if current's lower greater than opened's upper
             if (opened[j]->moving_upper.x <= xbounding[i]->moving_lower.x) {
@@ -143,6 +151,9 @@ void EntityHolder::step() {
     // now run collision detection - see if anything collides
     opened.clear();
     for (int i = 0; i < ybounding.size(); i++) {
+        if (ybounding[i]->bounds.lower.y == FLT_MAX) {
+            continue;
+        }
         for (int j = (int)opened.size() - 1; j >= 0; j--) {
             // if current's lower greater than opened's upper
             if (opened[j]->moving_upper.y <= ybounding[i]->moving_lower.y) {
@@ -163,6 +174,9 @@ void EntityHolder::step() {
     // now run collision detection - see if anything collides
     opened.clear();
     for (int i = 0; i < zbounding.size(); i++) {
+        if (zbounding[i]->bounds.lower.z == FLT_MAX) {
+            continue;
+        }
         for (int j = (int)opened.size() - 1; j >= 0; j--) {
             // if current's lower greater than opened's upper
             if (opened[j]->moving_upper.z <= zbounding[i]->moving_lower.z) {

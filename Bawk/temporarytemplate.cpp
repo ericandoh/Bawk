@@ -11,6 +11,11 @@
 
 TemporaryTemplate::TemporaryTemplate() {
     will_be_independent = 0;
+    entity_class = 0;   // this shouldnt matter since this wont be saved in memory
+    can_rotate = true;  // later maybe we can rotate the template?
+    pos = fvec3(0, 0, 0);   // unlike any other objects, this is alwas 0-aligned then
+    // blocks are placed at an offset
+    stable = true;
 }
 
 void TemporaryTemplate::add_block(ivec3 position, block_type block) {
@@ -18,6 +23,7 @@ void TemporaryTemplate::add_block(ivec3 position, block_type block) {
     if (get_block_independence(block.type)) {
         will_be_independent++;
     }
+    set_block(position.x, position.y, position.z, block);
 }
 
 void TemporaryTemplate::remove_block(ivec3 position) {
@@ -30,14 +36,16 @@ void TemporaryTemplate::remove_block(ivec3 position) {
             break;
         }
     }
+    set_block(position.x, position.y, position.z, block_type());
 }
 
 std::vector<block_data> TemporaryTemplate::publish(Player* player, World* world) {
+    // first, remove myself from the world (without deleting myself from disk)
+    // because like, im totally not in the disk brah
+    world->remove_entity(this, false);
     if (will_be_independent) {
-        // first, remove all blocks from the baseworld
-        unpublish(world);
         
-        // then use that to find the translation/other properties of this object
+        // find the translation/other properties of this object
         ivec3 lower_corner(INT_MAX, INT_MAX, INT_MAX);
         for (auto &i : blocks) {
             ivec3 pos = i.position;
@@ -55,14 +63,34 @@ std::vector<block_data> TemporaryTemplate::publish(Player* player, World* world)
             superobject->set_block(pos.x, pos.y, pos.z, i.block);
         }
     }
+    else {
+        // publish all my blocks to the world!
+        for (auto &i : blocks) {
+            world->place_block(i.position, i.block);
+        }
+    }
     return blocks;
 }
 
 void TemporaryTemplate::unpublish(World* world) {
-    // remove ALL blocks from this world that belong to this template
-    for (auto &i : blocks) {
-        ivec3 position = i.position;
-        // placing a block of 0 effectively "destroys" the block at that location
-        world->place_block(position, 0);
-    }
+    world->remove_entity(this, false);
+}
+
+void TemporaryTemplate::render(fmat4* transform) {
+    set_shader_intensity(1.0f);
+    RenderableSuperObject::render(transform);
+}
+
+void TemporaryTemplate::update_chunks(fvec3* old_pos, fvec3* new_pos) {
+    // do nothing
+}
+
+int TemporaryTemplate::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
+    get_empty_chunk(to_arr);
+    return 0;
+}
+
+int TemporaryTemplate::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
+    // do nothing
+    return 0;
 }
