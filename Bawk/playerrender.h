@@ -23,7 +23,7 @@
 #define __Bawk__playerrender__
 
 #include <stdio.h>
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include "entity.h"
 #include "math.h"
 

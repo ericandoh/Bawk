@@ -36,9 +36,9 @@ struct block_game_info {
         name = "";
         is_model = false;
         texture = 0;
-        resistance = 0;
+        resistance = 1;
         transparency = 0;
-        weight = 0;
+        weight = 1;
         vehicle = 0;
     }
 };

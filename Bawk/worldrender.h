@@ -24,7 +24,7 @@
 #define __Bawk__worldrender__
 
 #include <stdio.h>
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include "basic_types.h"
 #include "superobject.h"
 #include "block.h"
@@ -33,6 +33,7 @@ extern GLuint block_attribute_coord;
 extern GLuint texture_attribute_coord;
 extern GLuint block_uniform_mvp;
 extern GLuint block_uniform_draw_mode;
+extern GLuint block_alpha_cutoff;
 extern GLuint tile_texture;
 extern GLuint program;
 
@@ -40,11 +41,14 @@ extern int CHUNK_RENDER_DIST;
 
 int world_load_resources();
 void world_free_resources();
+void bind_to_tiles();
 GLuint get_vertex_attribute_vbo();
 GLuint get_texture_attribute_vbo();
 void set_block_draw_mode(int v);
 void set_transform_matrix(fmat4 mvp);
 void set_shader_intensity(float m);
+void set_alpha_cutoff(float a);
+void set_alpha_set(float a);
 void set_up_for_world_render();
 
 #endif /* defined(__Bawk__worldrender__) */

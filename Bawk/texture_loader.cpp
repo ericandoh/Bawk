@@ -28,3 +28,8 @@ GLuint load_tiles() {
     }
     return tiles;
 }
+
+void save_tile() {
+    int reuslt = SOIL_save_screenshot("/Users/Eric/haha.png", SOIL_SAVE_TYPE_BMP, 0, 0, 640, 480);
+    printf("%d\n", reuslt);
+}

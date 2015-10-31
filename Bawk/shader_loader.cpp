@@ -11,7 +11,7 @@
 #include <fstream>
 #include <streambuf>
 #include <iostream>
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include "shader_loader.h"
 
 const std::string VERTEX_SHADER = "vertex_shader.glsl";
@@ -37,6 +37,8 @@ int set_shaders(GLuint* block_attribute_coord,
                 GLuint* block_uniform_mvp,
                 GLuint* block_uniform_draw_mode,
                 GLuint* block_shade_intensity,
+                GLuint* alpha_cutoff,
+                GLuint* alpha_set,
                 GLuint* program)
 {
     
@@ -197,6 +199,20 @@ int set_shaders(GLuint* block_attribute_coord,
     *block_shade_intensity = glGetUniformLocation(*program, uniform_shade_intensity_name);
     if (*block_shade_intensity == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_shade_intensity_name);
+        return false;
+    }
+    
+    const char* uniform_alpha_cutoff_name = "alpha_cutoff";
+    *alpha_cutoff = glGetUniformLocation(*program, uniform_alpha_cutoff_name);
+    if (*alpha_cutoff == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n",uniform_alpha_cutoff_name);
+        return false;
+    }
+    
+    const char* uniform_alpha_set_name = "alpha_set";
+    *alpha_set = glGetUniformLocation(*program, uniform_alpha_set_name);
+    if (*alpha_set == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n",uniform_alpha_set_name);
         return false;
     }
     

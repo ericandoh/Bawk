@@ -25,8 +25,9 @@
 #define __Bawk__texture_loader__
 
 #include <stdio.h>
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 
 GLuint load_tiles();
+void save_tile();
 
 #endif /* defined(__Bawk__texture_loader__) */

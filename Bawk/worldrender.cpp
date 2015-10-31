@@ -21,6 +21,8 @@ GLuint texture_attribute_coord;
 GLuint block_uniform_mvp;
 GLuint block_uniform_draw_mode;
 GLuint block_shader_intensity;
+GLuint block_alpha_cutoff;
+GLuint block_alpha_set;
 GLuint tile_texture;
 GLuint program;
 
@@ -37,6 +39,8 @@ int world_load_resources() {
                     &block_uniform_mvp,
                     &block_uniform_draw_mode,
                     &block_shader_intensity,
+                    &block_alpha_cutoff,
+                    &block_alpha_set,
                     &program)) {
         return 1;
     }
@@ -45,7 +49,7 @@ int world_load_resources() {
     tile_texture = load_tiles();
     glBindTexture(GL_TEXTURE_2D, tile_texture);
     
-    glUniform1i(uniform_texture, 0);
+    //glUniform1i(uniform_texture, 0);
     
     glEnable(GL_CULL_FACE);
     
@@ -53,6 +57,8 @@ int world_load_resources() {
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     glPolygonOffset(1, 1);
+    glEnable (GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     set_up_for_world_render();
     
@@ -76,6 +82,10 @@ void world_free_resources() {
     glDeleteBuffers(1, &common_texture_vbo);
 }
 
+void bind_to_tiles() {
+    glBindTexture(GL_TEXTURE_2D, tile_texture);
+}
+
 GLuint get_vertex_attribute_vbo() {
     return common_vertex_vbo;
 }
@@ -94,6 +104,14 @@ void set_transform_matrix(fmat4 mvp) {
 
 void set_shader_intensity(float m) {
     glUniform1f(block_shader_intensity, m);
+}
+
+void set_alpha_cutoff(float a) {
+    glUniform1f(block_alpha_cutoff, a);
+}
+
+void set_alpha_set(float a) {
+    glUniform1f(block_alpha_set, a);
 }
 
 void set_up_for_world_render() {

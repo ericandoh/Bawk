@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <cstring>
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include "glm/glm.hpp"
 #include "worldrender.h"
 #include "blockrender.h"

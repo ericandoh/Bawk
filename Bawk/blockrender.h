@@ -24,7 +24,7 @@
 #define __Bawk__blockrender__
 
 #include <stdio.h>
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include "block.h"
 
 void set_coord_and_texture(GLbyte coord[][3],

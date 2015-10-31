@@ -111,6 +111,7 @@ int Game::init() {
 void Game::render() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_POLYGON_OFFSET_FILL);
+    glEnable(GL_CULL_FACE);
     // get transform from player's perspective
     fmat4* transform = player->set_camera();
     if (place_into) {
@@ -122,12 +123,13 @@ void Game::render() {
     // get depth coordinates
     player->query_depth(world);
     // render current item based on those depth coordinates
+    glDisable(GL_CULL_FACE);
     if (bar->get_current()) {
         bar->get_current()->render_and_position(transform);
     }
     
     glDisable(GL_POLYGON_OFFSET_FILL);
-    glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
     
     // render the cursor
     player->render();
@@ -475,6 +477,7 @@ int Game::save_game_data() {
 
 Game::~Game() {
     printf("Cleaning up game\n");
+    player->unmount(world);
     save_game_data();
     world->remove_self();
     delete place_into;

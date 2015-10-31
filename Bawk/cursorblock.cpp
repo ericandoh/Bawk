@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include "cursorblock.h"
 #include "worldrender.h"
 #include "blockrender.h"

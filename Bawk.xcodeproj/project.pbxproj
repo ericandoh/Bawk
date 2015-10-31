@@ -171,6 +171,7 @@
 		0774A9751BDEC85A0069489D /* entity_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_loader.h; sourceTree = "<group>"; };
 		0774A9771BDEF1B80069489D /* world_generator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = world_generator.cpp; sourceTree = "<group>"; };
 		0774A9781BDEF1B80069489D /* world_generator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = world_generator.h; sourceTree = "<group>"; };
+		0784A7771BE41EC0001779BD /* includeglfw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = includeglfw.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -363,6 +364,7 @@
 			children = (
 				075C67641BBA78D600CB87DE /* display.cpp */,
 				075C67651BBA78D600CB87DE /* display.h */,
+				0784A7771BE41EC0001779BD /* includeglfw.h */,
 			);
 			name = display;
 			sourceTree = "<group>";
@@ -434,6 +436,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				074B6C9C1BB9D2380065192B /* main.cpp in Sources */,
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */,
 				075B20CF1BDD9FD000F42317 /* blockaction.cpp in Sources */,
@@ -465,7 +468,6 @@
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,
-				074B6C9C1BB9D2380065192B /* main.cpp in Sources */,
 				076BEFE51BD1A09A00D68C8F /* entityholder.cpp in Sources */,
 				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
 				0766EAF81BBF7D1300477144 /* texture_loader.cpp in Sources */,

@@ -23,7 +23,7 @@
 #ifndef Bawk_chunk_h
 #define Bawk_chunk_h
 
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include <vector>
 #include "block.h"
 

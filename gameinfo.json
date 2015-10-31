@@ -33,16 +33,27 @@
             "weight": 10
         },
         "6": {
-            "name": "unnamed"
+            "name": "glass",
+            "resistance": 1,
+            "transparency": 3,
+            "weight": 13
         },
         "7": {
-            "name": "unnamed"
+            "name": "water",
+            "resistance": 1,
+            "transparency": 4,
+            "weight": 13
         },
         "8": {
-            "name": "unnamed"
+            "name": "lava",
+            "resistance": 1,
+            "transparency": 5,
+            "weight": 13
         },
         "9": {
-            "name": "unnamed"
+            "name": "metal",
+            "resistance": 1,
+            "weight": 13
         },
         "10": {
             "name": "engine",

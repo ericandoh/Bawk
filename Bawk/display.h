@@ -23,7 +23,7 @@
 #define __Bawk__display__
 
 #include <stdio.h>
-#include <GLFW/glfw3.h>
+#include "includeglfw.h"
 #include "displayable.h"
 
 void get_window_size(int* width, int* height);
