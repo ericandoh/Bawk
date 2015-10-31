@@ -54,10 +54,14 @@ void PlayerInventory::new_inv() {
     // lucky 7
     add_blocks(7, 3);
     
-    // you haven't discovered any templates, fuck off
+    // let's give you ten trees to play around with
+    add_recipe_at(1, 10);
+    
     // discovered_templates.push(...);
     // you haven't created any either, fuck off
     // created_templates.push(...);
+    
+    // add block 7 to first item of cursor
     cursor_item_distinguisher val;
     val.is_blk = true;
     val.is_recipe = false;
@@ -92,7 +96,6 @@ CursorItem* PlayerInventory::get_recipe_at(int index) {
     if (index >= found_recipes.size())
         return 0;
     uint16_t recipe_id = found_recipes[index];
-    // TODO fetch recipe by recipe_id
     return get_recipe_cursoritem_from(recipe_id);
 }
 
@@ -111,8 +114,7 @@ CursorItem* PlayerInventory::get_item_from(cursor_item_distinguisher distinguish
         return new CursorBlock(distinguish.bid);
     }
     else if (distinguish.is_recipe) {
-        // TODO fetch recipe by item.bid
-        return 0;
+        return get_recipe_cursoritem_from(distinguish.vid);
     }
     else {
         // must be a custom superobject

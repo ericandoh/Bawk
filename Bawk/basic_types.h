@@ -147,5 +147,9 @@ struct bounding_box {
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);
 
 ivec3 get_floor_from_fvec3(fvec3 src);
+ivec3 get_ivec3_minimum(ivec3 a, ivec3 b);
+
+BlockOrientation get_translated_orientation(BlockOrientation base, BlockOrientation original);
+ivec3 get_translated_offset(BlockOrientation base, ivec3 original_offset);
 
 #endif

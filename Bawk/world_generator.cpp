@@ -110,7 +110,7 @@ WorldGeneratorState state;
 
 void setup_world_generator(int fillthis) {
     // later pass in arguments from above
-    int side = 64;  //1600
+    int side = 256;  //1600
     info.xsector_size = side;
     info.ysector_size = side;
     info.zsector_size = side;
@@ -118,13 +118,13 @@ void setup_world_generator(int fillthis) {
     info.biome_points_per_sector_average = 7;  //20
     info.biome_points_per_sector_variance = 1;  //7
     
-    info.min_biome_point_separation = 8;    //200
+    info.min_biome_point_separation = 14;    //200
     
     info.biome_points_per_island_average = 2;   //4
     info.biome_points_per_island_variance = 1;  //3
     
     info.island_fatness = 4.0f; // 7.0f
-    info.melt_distance = 10.0f;  //20.0f
+    info.melt_distance = 20.0f;  //20.0f
     
     info.octaves = 5;
     
@@ -132,10 +132,10 @@ void setup_world_generator(int fillthis) {
     
     info.biome_noise_info.resize(5);
     info.biome_noise_info[0] = BiomeNoiseGenerationInfo(1.0f, 0.5f);//corresponds to the empty biome lol
-    info.biome_noise_info[1] = BiomeNoiseGenerationInfo(10.0f, 0.2f);
-    info.biome_noise_info[2] = BiomeNoiseGenerationInfo(10.0f, 0.9f);
-    info.biome_noise_info[3] = BiomeNoiseGenerationInfo(3.0f, 0.3f);
-    info.biome_noise_info[4] = BiomeNoiseGenerationInfo(3.0f, 0.7f);
+    info.biome_noise_info[1] = BiomeNoiseGenerationInfo(20.0f, 0.2f);
+    info.biome_noise_info[2] = BiomeNoiseGenerationInfo(20.0f, 0.7f);
+    info.biome_noise_info[3] = BiomeNoiseGenerationInfo(20.0f, 0.2f);
+    info.biome_noise_info[4] = BiomeNoiseGenerationInfo(20.0f, 0.7f);
 }
 
 int choose_random(int average, int variance) {
@@ -274,13 +274,16 @@ static float noise2d(float x, float z, int seed, int octaves, float persistence,
     
     float sum = 0;
     float scale = 1.0;
+    float total_strength = 0.0f;
+    float base_strength = strength;
     
     for(int i = 0; i < octaves; i++) {
-        sum += strength * glm::simplex(fvec2((x+add_x) / 256.0, (z+add_z) / 256.0) * scale);
+        sum += strength * glm::simplex(fvec2((x+add_x) / 256.0 * scale, (z+add_z) / 256.0 * scale));
+        total_strength += strength;
         scale *= 2.0;
         strength *= persistence;
     }
-    return sum;
+    return sum / total_strength * base_strength;
 }
 
 bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &weights) {
@@ -324,7 +327,7 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
                     picked_biomes.push_back(state.island_biome_points[other_sac][i]);
                     distances_to_said_biomes.push_back(distance);
                 }
-                else if (distance < distances_to_said_biomes[0] + melt_distance) {
+                else if (distance <= distances_to_said_biomes[0] + melt_distance) {
                     // insert this pair into the list
                     int counter = 0;
                     bool inserted = false;
@@ -355,7 +358,6 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
     for (int i = 0; i < picked_biomes.size(); i++) {
         float weight = 1.0f - (distances_to_said_biomes[i] - distances_to_said_biomes[0]) / melt_distance;
         if (picked_biomes[i]) {
-            // only weigh biomes that are NOT empty
             weight_sum += weight;
         }
         else {
@@ -365,7 +367,7 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
     // what fraction of this island is actual island and not an edge
     // 0 -> we're at edge of island
     // 1 -> we're a bit far from the edge of the island
-    float fraction_island = 1.0f - empty_weight_sum / (empty_weight_sum + weight_sum);
+    float fraction_island = 1.0f - empty_weight_sum / (weight_sum + empty_weight_sum);
     *lower = 0;
     *upper = 0;
     float lstrength, ustrength, lpers, upers;
@@ -387,10 +389,10 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
         }
     }
     if (fraction_island > 0.01) {
-        float rlower = noise2d(pos.x, pos.z, info.seed, info.octaves, lpers, lstrength) * fraction_island;
+        float rlower = noise2d(pos.x, pos.z, info.seed, info.octaves, lpers, lstrength);// * fraction_island;
         rlower -= (info.island_fatness * fraction_island);
         //rlower += (state.island_heights[sac]);
-        float rupper = noise2d(pos.x, pos.z, info.seed + 1, info.octaves, upers, ustrength) * fraction_island;
+        float rupper = noise2d(pos.x, pos.z, info.seed + 1, info.octaves, upers, ustrength);// * fraction_island;
         rupper += (info.island_fatness * fraction_island);
         //rupper += (state.island_heights[sac]);
         *lower = (int)floorf(rlower);

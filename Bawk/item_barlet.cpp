@@ -49,6 +49,11 @@ void ItemBarlet::render_elements() {
         yfill = 0.4f;
         zfill = 0.5f;
     }
+    else {
+        xfill = 0.1f;
+        yfill = 0.15f;
+        zfill = 0.2f;
+    }
     float texture[6][3];
     for (int p = 0; p < 6; p++) {
         texture[p][0] = xfill;

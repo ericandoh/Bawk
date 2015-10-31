@@ -10,6 +10,7 @@
 #include "block_loader.h"
 #include "superobject.h"
 #include "blocktracer.h"
+#include "game_info_loader.h"
 
 // constructor
 World::World(std::string id) {
@@ -91,9 +92,26 @@ bool World::kill_block(ivec3* src) {
     int my = looking_at.y;
     int mz = looking_at.z;
     int face = looking_at.w;
-    // TODO if this is a recipe block remove all surrounding recipe offset blocks
-    printf("frog\n");
-    base_world->set_block(mx, my, mz, 0);
+    
+    block_type blk = get_block(mx, my, mz);
+    if (!blk.type)
+        return false;
+    
+    if (blk.is_recipe) {
+        // remove all recipe blocks as well
+        std::vector<ivec3> offsets;
+        get_recipe_block_offsets(blk.type, offsets);
+        printf("frog\n");
+        // this doesnt account for the entity's rotation. this is WRONG behaviour and WILL delete the
+        // wrong blocks!!!
+        for (auto &i: offsets) {
+            ivec3 roffset = get_translated_offset(blk.orientation, i);
+            base_world->set_block(mx + roffset.x, my + roffset.y, mz + roffset.z, block_type());
+        }
+    }
+    else {
+        base_world->set_block(mx, my, mz, block_type());
+    }
     printf("Removing at (%d, %d, %d)   (face %d)\n",
            mx, my, mz, face);
     src->x = mx;

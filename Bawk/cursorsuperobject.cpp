@@ -11,6 +11,17 @@
 #include "game_info_loader.h"
 #include "temporarytemplate.h"
 
+CursorSuperObject::CursorSuperObject(uint32_t s): SuperObject() {
+    vid = s;
+    pid = 0;
+    locked = false;
+    loaded = false;
+    make_vehicle = 0;
+    entity_class = 3;
+    can_rotate = true;
+    is_recipe = true;
+}
+
 // heavily modify this so that
 // 1. it doesn't mark itself as a folder to disk
 // 2. it doesn't load/save chunks to disk (superobjectrender has the capacity to hold all the chunks
@@ -24,6 +35,7 @@ CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): SuperObject(p, s) 
     make_vehicle = 0;
     entity_class = 3;
     can_rotate = true;
+    is_recipe = false;
 }
 
 void CursorSuperObject::set_block(float x, float y, float z, block_type type) {
@@ -202,7 +214,7 @@ void CursorSuperObject::load_all() {
 cursor_item_distinguisher CursorSuperObject::get_distinguisher() {
     cursor_item_distinguisher val;
     val.is_blk = false;
-    val.is_recipe = false;
+    val.is_recipe = is_recipe;
     val.bid = 0;
     val.pid = pid;
     val.vid = vid;

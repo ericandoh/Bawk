@@ -311,16 +311,18 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
         if (recipe.isMember("blocks") && recipe["blocks"].type() == Json::arrayValue) {
             int size = recipe["blocks"].size();
             Json::Value submember;
+            ivec3 left_corner;
             for (int i = 0; i < size; i++) {
                 submember = recipe["blocks"][i];
                 if(submember.type() == Json::objectValue) {
                     if ((!submember.isMember("id") || submember["id"].type() == Json::intValue) && (!submember.isMember("orientation") || submember["orientation"].type() == Json::intValue || submember["orientation"].type() == Json::stringValue) && submember["position"].type() == Json::arrayValue) {
-                        ivec3 position;
+                        ivec3 position(0, 0, 0);
                         int subsize = submember["position"].size();
                         if (subsize >= 3) {
                             position.x = submember["position"][0].asInt();
                             position.y = submember["position"][1].asInt();
                             position.z = submember["position"][2].asInt();
+                            left_corner = get_ivec3_minimum(left_corner, position);
                         }
                         
                         uint16_t bid = recipe_id + recipe_mask;
@@ -367,6 +369,12 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
                     }
                     
                 }
+            }
+            for (int i = 0; i < info->positions.size(); i++) {
+                ivec3 real_pos = ivec3(info->positions[i].x - left_corner.x,
+                                       info->positions[i].y - left_corner.y,
+                                       info->positions[i].z - left_corner.z);
+                info->positions[i] = real_pos;
             }
             info->from_file = false;
         }
@@ -477,7 +485,8 @@ uint16_t get_block_texture(block_type blk, BlockOrientation face) {
         int texture = game_data_object->recipe_block_info[block_id].texture;
         if (texture < 0) {
             // use the array instead
-            printf("frog\n");
+            BlockOrientation actual_face = get_translated_orientation(blk.orientation, face);
+            return game_data_object->recipe_block_info[block_id].textures[actual_face];
         }
         else {
             return texture;
@@ -491,7 +500,8 @@ uint16_t get_block_texture(block_type blk, BlockOrientation face) {
         int texture = game_data_object->block_info[block_id].texture;
         if (texture < 0) {
             // use the array instead
-            printf("frog\n");
+            BlockOrientation actual_face = get_translated_orientation(blk.orientation, face);
+            return game_data_object->block_info[block_id].textures[actual_face];
         }
         else {
             return texture;
@@ -580,11 +590,12 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
     if (game_data_object->recipe_info[vid].from_file) {
         // make a superobject loaded from file path
         // game_data_object->recipe_info[vid].file_path;
+        // TODO
         return 0;
     }
     else {
         // construct a CursorSuperObject holding recipe contents
-        CursorSuperObject* object = new CursorSuperObject(0, vid);
+        CursorSuperObject* object = new CursorSuperObject(vid);
         ivec3 first_pos;
         for (int i = 0; i < game_data_object->recipe_info[vid].blks.size(); i++) {
             ivec3 pos = game_data_object->recipe_info[vid].positions[i];
@@ -594,16 +605,45 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
             if (i == 0) {
                 block.relx = block.rely = block.relz = 0;
                 first_pos = pos;
+                block.is_recipe = 1;
             }
             else {
                 // calculate block relx/rely/relz from above
                 block.relx = pos.x - first_pos.x;
                 block.rely = pos.y - first_pos.y;
                 block.relz = pos.z - first_pos.z;
+                block.is_recipe = 2;
             }
             object->set_block(pos.x, pos.y, pos.z, block);
         }
         return object;
+    }
+}
+
+void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets) {
+    vid -= recipe_mask;
+    if (game_data_object->recipe_info[vid].from_file) {
+        // make a superobject loaded from file path
+        // game_data_object->recipe_info[vid].file_path;
+        // TODO
+        return;
+    }
+    else {
+        // construct a CursorSuperObject holding recipe contents
+        ivec3 first_pos;
+        for (int i = 0; i < game_data_object->recipe_info[vid].blks.size(); i++) {
+            ivec3 pos = game_data_object->recipe_info[vid].positions[i];
+            uint16_t blk = game_data_object->recipe_info[vid].blks[i];
+            if (i == 0) {
+                first_pos = pos;
+            }
+            if (blk == recipe_mask + vid) {
+                ivec3 offpos(pos.x - first_pos.x,
+                             pos.y - first_pos.y,
+                             pos.z - first_pos.z);
+                offsets.push_back(offpos);
+            }
+        }
     }
 }
 

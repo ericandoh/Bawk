@@ -14,7 +14,6 @@
 #include "block.h"
 
 RenderablePlayer::RenderablePlayer() {
-    glGenBuffers(1, &cursor_vbo);
     // TODO do we ever free this...
 }
 
@@ -73,7 +72,7 @@ void RenderablePlayer::render() {
     
     glm::mat4 one(1);
     set_transform_matrix(one);
-    glBindBuffer(GL_ARRAY_BUFFER, cursor_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof cross, cross, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     

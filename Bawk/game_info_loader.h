@@ -23,6 +23,7 @@
 #define __Bawk__game_info_loader__
 
 #include <stdio.h>
+#include <vector>
 #include "basic_types.h"
 #include "block.h"
 #include "blockaction.h"
@@ -44,6 +45,7 @@ block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_i
 std::vector<int> get_block_default_keyboard_bindings(block_type block_id);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);
+void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets);
 
 // some world generation methods below
 

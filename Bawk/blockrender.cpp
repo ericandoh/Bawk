@@ -20,7 +20,7 @@ void set_coord_and_texture(GLbyte coord[][3],
     coord[index][1] = y;
     coord[index][2] = z;
     
-    uint16_t texture_index = get_block_texture(block.type, face);
+    uint16_t texture_index = get_block_texture(block, face);
     
     // first 8 bits. Represents the x-axis in our texture atlas
     texture[index][0] = texture_index % TILES_PER_TEXTURE;

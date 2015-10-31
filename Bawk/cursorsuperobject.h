@@ -33,7 +33,11 @@ class CursorSuperObject: public SuperObject, public CursorItem {
     bool loaded;
     bool locked;
     int make_vehicle;
+    bool is_recipe;
 public:
+    // for recipes
+    CursorSuperObject(uint32_t s);
+    // for custom cursorsuperobjects
     CursorSuperObject(uint32_t p, uint32_t s);
     
     // --- cursoritem methods ---

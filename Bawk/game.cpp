@@ -235,8 +235,6 @@ void Game::key_callback_default(int key) {
             // create a new place_info
             place_into = new TemporaryTemplate();
             world->add_entity(place_into);
-            // TODO do stuff to dim the world except all newly placed blocks
-            // i.e. set a uniform variable to tune the intensity
         }
     }
     else if (do_this == CANCEL) {

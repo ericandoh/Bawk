@@ -65,7 +65,6 @@ bool ScrollingWidget::scrolled(int mx, int my, int px) {
     if (scroll < 0) {
         scroll = 0;
     }
-    // TODO refine this so that the bottom row will show at the bottom not at the top
     if (scroll >= rowheight * (maxrows - 1)) {
         scroll = rowheight * (maxrows - 1);
     }

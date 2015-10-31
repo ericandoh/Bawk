@@ -12,7 +12,7 @@
 TemporaryTemplate::TemporaryTemplate() {
     will_be_independent = 0;
     entity_class = 0;   // this shouldnt matter since this wont be saved in memory
-    can_rotate = true;  // later maybe we can rotate the template?
+    can_rotate = false;  // we CANNOT rotate the current template - because this will MESS with the recipe block offsets for removal
     pos = fvec3(0, 0, 0);   // unlike any other objects, this is alwas 0-aligned then
     // blocks are placed at an offset
     stable = true;

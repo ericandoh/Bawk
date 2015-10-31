@@ -19,7 +19,6 @@ void EntityHolder::add_entity(Entity* entity) {
 }
 
 void EntityHolder::remove_entity(Entity* entity, bool del) {
-    // erase entity from world TODO
     for (unsigned int i = 0; i < entities.size(); i++) {
         if (entities.at(i) == entity) {
             entities.erase(entities.begin() + i);
@@ -28,7 +27,7 @@ void EntityHolder::remove_entity(Entity* entity, bool del) {
     }
     if (del) {
         printf("frog\n");
-        // make call to delete object from memory!
+        // TODO make call to delete object from memory!
     }
 }
 

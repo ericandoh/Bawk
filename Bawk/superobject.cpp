@@ -200,7 +200,10 @@ bool SuperObject::block_mouse_callback(Game* game, int button) {
         // see if blk is an indirect block - that is, it's part of a recipe block
         if (blk.is_recipe == 2) {
             // find offset
-            blk = get_block(lookingat.x + blk.relx, lookingat.y + blk.rely, lookingat.z + blk.relz);
+            printf("frog\n");
+            // this does NOT account for the rotation of the entity and WILL give us a wrong result!!!
+            ivec3 rrel = get_translated_offset(blk.orientation, ivec3(blk.relx, blk.rely, blk.relz));
+            blk = get_block(lookingat.x + rrel.x, lookingat.y + rrel.y, lookingat.z + rrel.z);
         }
         block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
         if (callback) {

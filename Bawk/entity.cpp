@@ -212,7 +212,6 @@ void Entity::recalculate_dir() {
 bool Entity::poke(float x, float y, float z) {
     // transform into OAC
     fvec3 oac;
-    // TODO same note as above
     transform_into_my_coordinates(&oac, x, y, z);
     return bounds.hits(oac);
 }

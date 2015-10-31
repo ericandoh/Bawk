@@ -32,7 +32,6 @@ class World;
 class RenderablePlayer: public Entity {
     fmat4 mvp;
     fmat4 view, projection;
-    GLuint cursor_vbo;
 public:
     RenderablePlayer();
     fmat4* set_camera();
