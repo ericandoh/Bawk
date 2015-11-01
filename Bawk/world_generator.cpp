@@ -11,7 +11,9 @@
 #include <vector>
 #include <map>
 #include <glm/gtc/noise.hpp>
+#include "game_info_loader.h"
 
+/*
 namespace std
 {
     template<>
@@ -25,8 +27,9 @@ namespace std
             return xb + yb + zb;
         }
     };
-}
+}*/
 
+/*
 // per biome, holds info about how to generate said biome
 struct BiomeNoiseGenerationInfo {
     float strength_lower;
@@ -85,15 +88,15 @@ struct WorldGeneratorInfo {
     
     std::vector<BiomeNoiseGenerationInfo> biome_noise_info;
     
-    /*
+    ///
      Seeds
      Most turn out to be weeds
      But a few dream
      And expand the seam
      Of our reality
-     */
+     //
     int seed;
-};
+};*/
 
 // holds state of the world generation, for easier generation
 struct WorldGeneratorState {
@@ -105,10 +108,14 @@ struct WorldGeneratorState {
     std::unordered_map<ivec3, int> island_heights;
 };
 
-WorldGeneratorInfo info;
+world_gen_mode_info* info;
 WorldGeneratorState state;
+int seed;
 
-void setup_world_generator(int fillthis) {
+void setup_world_generator(world_gen_mode_info* inf, int s) {
+    info = inf;
+    seed = s;
+    /*
     // later pass in arguments from above
     int side = 256;  //1600
     info.xsector_size = side;
@@ -135,7 +142,7 @@ void setup_world_generator(int fillthis) {
     info.biome_noise_info[1] = BiomeNoiseGenerationInfo(20.0f, 0.2f);
     info.biome_noise_info[2] = BiomeNoiseGenerationInfo(20.0f, 0.7f);
     info.biome_noise_info[3] = BiomeNoiseGenerationInfo(20.0f, 0.2f);
-    info.biome_noise_info[4] = BiomeNoiseGenerationInfo(20.0f, 0.7f);
+    info.biome_noise_info[4] = BiomeNoiseGenerationInfo(20.0f, 0.7f);*/
 }
 
 int choose_random(int average, int variance) {
@@ -157,16 +164,16 @@ float get_distance(ivec3 a, ivec3 b) {
 }
 
 void generate_biome_points(ivec3 sector_pos) {
-    ivec3 sector_pos_offset(sector_pos.x * info.xsector_size,
-                            sector_pos.y * info.ysector_size,
-                            sector_pos.z * info.zsector_size);
+    ivec3 sector_pos_offset(sector_pos.x * info->xsectorsize,
+                            0,
+                            sector_pos.z * info->zsectorsize);
     
-    srand(info.seed);
+    srand(seed);
     srand(rand() + sector_pos.x);
     //srand(rand() + sector_pos.y);
     srand(rand() + sector_pos.z);
     
-    int biome_point_count = choose_random(info.biome_points_per_sector_average, info.biome_points_per_sector_variance);
+    int biome_point_count = choose_random(info->biomepointavg, info->biomepointvar);
     state.biome_points[sector_pos].reserve(biome_point_count);
     state.island_biome_points[sector_pos].reserve(biome_point_count);
     
@@ -177,20 +184,20 @@ void generate_biome_points(ivec3 sector_pos) {
     bool sector_not_filled = true;
     while (sector_not_filled && biome_point_counter < biome_point_count) {
         if (state.biome_points[sector_pos].empty()) {
-            state.biome_points[sector_pos].push_back(ivec3(rand() % info.xsector_size + sector_pos_offset.x,
+            state.biome_points[sector_pos].push_back(ivec3(rand() % info->xsectorsize + sector_pos_offset.x,
                                                            0, //rand() % info.ysector_size + sector_pos_offset.y,
-                                                           rand() % info.zsector_size + sector_pos_offset.z));
+                                                           rand() % info->zsectorsize + sector_pos_offset.z));
             state.island_biome_points[sector_pos].push_back(0);
         }
         else {
             bool success = true;
             for (int attempts = 0; attempts < max_attempts; attempts++) {
-                ivec3 point = ivec3(rand() % info.xsector_size + sector_pos_offset.x,
+                ivec3 point = ivec3(rand() % info->xsectorsize + sector_pos_offset.x,
                                     0, //rand() % info.ysector_size + sector_pos_offset.y,
-                                    rand() % info.zsector_size + sector_pos_offset.z);
+                                    rand() % info->zsectorsize + sector_pos_offset.z);
                 success = true;
                 for (auto &i: state.biome_points[sector_pos]) {
-                    if (get_distance(i, point) < info.min_biome_point_separation) {
+                    if (get_distance(i, point) < info->separation) {
                         success = false;
                         break;
                     }
@@ -211,12 +218,30 @@ void generate_biome_points(ivec3 sector_pos) {
     }
 }
 
+int pick_biome_from_weights(std::map<int, float> &weights) {
+    float total_total = 0;
+    for (auto &i: weights) {
+        total_total += i.second;
+    }
+    // probably a good idea to set the seed here, although we already have it set from above
+    int precision = 10000;
+    float rv = (rand() % precision) * 1.0 / precision;
+    float total = 0;
+    for (auto &i: weights) {
+        total += i.second;
+        if (rv < total / total_total)
+        return i.first;
+    }
+    // this should never be executed if weights was setup correctly
+    return 0;
+}
+
 void generate_island_points(ivec3 sector_pos) {
     generate_biome_points(sector_pos);
     
     int sector_biome_point_count = (int) state.biome_points[sector_pos].size();
     
-    int island_point_count = choose_random(info.biome_points_per_island_average, info.biome_points_per_island_variance);
+    int island_point_count = choose_random(info->islandpointavg, info->islandpointvar);
     if (island_point_count > sector_biome_point_count)
         island_point_count = sector_biome_point_count;
     
@@ -234,7 +259,7 @@ void generate_island_points(ivec3 sector_pos) {
         }
         else {
             // pick the closest index
-            float shortest = info.xsector_size + info.zsector_size;
+            float shortest = info->xsectorsize + info->zsectorsize;
             index_of_index = 0;
             for (int j = 0; j < index_size; j++) {
                 float dst = get_distance(first_center, state.biome_points[sector_pos][indices[j]]);
@@ -245,7 +270,7 @@ void generate_island_points(ivec3 sector_pos) {
             }
         }
         int use_index = indices[index_of_index];
-        state.island_biome_points[sector_pos][use_index] = rand() % 4 + 1;
+        state.island_biome_points[sector_pos][use_index] = pick_biome_from_weights(info->biome_frequencies);
         
         if (i == 0) {
             first_center = state.biome_points[sector_pos][use_index];
@@ -283,35 +308,35 @@ static float noise2d(float x, float z, int seed, int octaves, float persistence,
         scale *= 2.0;
         strength *= persistence;
     }
-    return sum / total_strength * base_strength;
+    return std::abs(sum / total_strength * base_strength);
 }
 
 bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &weights) {
     ivec3 sac;
-    sac.x = (int)floorf(pos.x * 1.0 / info.xsector_size);
+    sac.x = (int)floorf(pos.x * 1.0 / info->xsectorsize);
     sac.y = 0;
-    sac.z = (int)floorf(pos.z * 1.0 / info.zsector_size);
+    sac.z = (int)floorf(pos.z * 1.0 / info->zsectorsize);
     
     ivec3 src;
-    src.x = ((pos.x % info.xsector_size) + info.xsector_size) % info.xsector_size;
+    src.x = ((pos.x % info->xsectorsize) + info->xsectorsize) % info->xsectorsize;
     src.y = 0;
-    src.z = ((pos.z % info.zsector_size) + info.zsector_size) % info.zsector_size;
+    src.z = ((pos.z % info->zsectorsize) + info->zsectorsize) % info->zsectorsize;
     
     pos.y = 0;  // ignore the height component, bc fuck that shit
     
     int xlower, xupper, zlower, zupper;
     xlower = xupper = 0;
     zlower = zupper = 0;
-    if (src.x < info.xsector_size / 2)
+    if (src.x < info->xsectorsize / 2)
         xlower = -1;
     else
         xupper = 1;
-    if (src.z < info.zsector_size / 2)
+    if (src.z < info->zsectorsize / 2)
         zlower = -1;
     else
         zupper = 1;
     
-    float melt_distance = info.melt_distance;
+    float melt_distance = info->melt_distance;
     std::vector<int> picked_biomes;
     std::vector<float> distances_to_said_biomes;
     for (int xc = sac.x + xlower; xc <= sac.x + xupper; xc++) {
@@ -382,18 +407,19 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
             else {
                 weights[picked_biomes[i]] = frac_weight;
             }
-            lstrength += (info.biome_noise_info[picked_biomes[i]].strength_lower) * frac_weight;
-            ustrength += (info.biome_noise_info[picked_biomes[i]].strength_upper) * frac_weight;
-            lpers += (info.biome_noise_info[picked_biomes[i]].persistence_lower) * frac_weight;
-            upers += (info.biome_noise_info[picked_biomes[i]].persistence_upper) * frac_weight;
+            
+            lstrength += (info->lower_strength) * frac_weight;
+            ustrength += (get_biome_strength(picked_biomes[i])) * frac_weight;
+            lpers += (info->lower_persistence) * frac_weight;
+            upers += (get_biome_persistence(picked_biomes[i])) * frac_weight;
         }
     }
     if (fraction_island > 0.01) {
-        float rlower = noise2d(pos.x, pos.z, info.seed, info.octaves, lpers, lstrength);// * fraction_island;
-        rlower -= (info.island_fatness * fraction_island);
+        float rlower = noise2d(pos.x, pos.z, seed, info->octaves, lpers, lstrength);// * fraction_island;
+        rlower -= (info->fatness * fraction_island);
         //rlower += (state.island_heights[sac]);
-        float rupper = noise2d(pos.x, pos.z, info.seed + 1, info.octaves, upers, ustrength);// * fraction_island;
-        rupper += (info.island_fatness * fraction_island);
+        float rupper = noise2d(pos.x, pos.z, seed + 1, info->octaves, upers, ustrength);// * fraction_island;
+        rupper += (info->fatness * fraction_island);
         //rupper += (state.island_heights[sac]);
         *lower = (int)floorf(rlower);
         *upper = (int)floorf(rupper);
@@ -406,21 +432,6 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
         *upper = 0;
     }
     return false;
-}
-
-
-int pick_biome_from_weights(std::map<int, float> &weights) {
-    // probably a good idea to set the seed here, although we already have it set from above
-    int precision = 10000;
-    float rv = (rand() % precision) * 1.0 / precision;
-    float total = 0;
-    for (auto &i: weights) {
-        total += i.second;
-        if (rv < total)
-            return i.first;
-    }
-    // this should never be executed if weights was setup correctly
-    return 0;
 }
 
 void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
@@ -438,21 +449,20 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
             weights.clear();
             ivec3 pos(x + chunk_pos.x*CX, 0, z + chunk_pos.z*CZ);
             get_heights_at(&lower, &upper, pos, weights);
-            lower -= chunk_pos.y*CY;
-            upper -= chunk_pos.y*CY;
-            int bottom = std::max(lower, 0);
-            int top = std::min(upper, CY);
+            int bottom = std::max(lower - chunk_pos.y*CY, 0);
+            int top = std::min(upper - chunk_pos.y*CY, CY);
             if (bottom >= top || bottom > CY - 1 || top < 1)
                 continue;
             for (int y = bottom; y < top; y++) {
                 // hacky, but adding 5 to biome to get block
-                srand(info.seed);
+                srand(seed);
                 srand(rand() + chunk_pos.x*CX+x);
                 srand(rand() + chunk_pos.y*CY+y);
                 srand(rand() + chunk_pos.z*CZ+z);
                 uint16_t type = pick_biome_from_weights(weights);
-                if (type)
-                    to_arr[x][y][z] = type;
+                if (type) {
+                    to_arr[x][y][z] = get_random_block_from_biome(type, upper - y-chunk_pos.y*CY - 1);
+                }
             }
         }
     }

@@ -181,6 +181,7 @@
 		07C4263A1BBCC5700045D796 /* chunkrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkrender.cpp; sourceTree = "<group>"; };
 		07F6906D1BD388F900818867 /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
 		07F6906E1BD388F900818867 /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
+		07FA18371BE598CA00C7319C /* world_generator_structures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = world_generator_structures.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -355,6 +356,7 @@
 				071A04041BD96349003BF218 /* game_info_loader.h */,
 				0774A9741BDEC85A0069489D /* entity_loader.cpp */,
 				0774A9751BDEC85A0069489D /* entity_loader.h */,
+				07FA18371BE598CA00C7319C /* world_generator_structures.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";

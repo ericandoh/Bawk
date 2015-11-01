@@ -16,6 +16,7 @@
 #include "block_loader.h"
 #include "cursorsuperobject.h"
 #include "world_generator.h"
+#include "world_generator_structures.h"
 
 // add this to every recipe ID
 // +1, so 0 doesn't map to 0 in the actual block
@@ -60,28 +61,6 @@ struct recipe_game_info {
     std::vector<BlockOrientation> orientations;
 };
 
-struct block_layer_game_info {
-    uint16_t type;
-    int lower;
-    int upper;
-    int frequency;
-};
-
-struct structure_gen_game_info {
-    std::vector<uint16_t> types;
-    int lower;
-    int upper;
-    int spacing;
-};
-
-struct biome_game_info {
-    std::string name;
-    int frequency;
-    int roughness;
-    std::vector<block_layer_game_info> layers;
-    std::vector<structure_gen_game_info> structures;
-};
-
 struct ui_block_callback_info {
     block_mouse_callback_func mouse_callback;
     block_keyboard_callback_func keyboard_callback;
@@ -100,6 +79,7 @@ public:
     std::map<uint16_t, ui_block_callback_info> block_callback_info;
     std::vector<recipe_game_info> recipe_info;
     std::vector<biome_game_info> biome_info;
+    std::vector<world_gen_mode_info> world_gen_modes;
     
     GameInfoDataObject();
     ~GameInfoDataObject();
@@ -283,6 +263,25 @@ int GameInfoDataObject::read_blocks(Json::Value root) {
     return 0;
 }
 
+uint16_t get_block_id_from_name(Json::Value node) {
+    if (node.type() == Json::stringValue) {
+        for (uint16_t i = 0; i < game_data_object->block_info.size(); i++) {
+            if (game_data_object->block_info[i].name.compare(node.asString()) == 0) {
+                return i;
+            }
+        }
+        for (uint16_t i = 0; i < game_data_object->recipe_block_info.size(); i++) {
+            if (game_data_object->recipe_block_info[i].name.compare(node.asString()) == 0) {
+                return i + recipe_mask;
+            }
+        }
+        return 0;
+    }
+    else {
+        return node.asInt();
+    }
+}
+
 int GameInfoDataObject::read_recipes(Json::Value root) {
     if (root.type() != Json::objectValue)
         return 1;
@@ -327,7 +326,7 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
                         
                         uint16_t bid = recipe_id + recipe_mask;
                         if (submember.isMember("id")) {
-                            bid = submember["id"].asInt();
+                            bid = get_block_id_from_name(submember["id"]);
                         }
                         info->blks.push_back(bid);
                         info->positions.push_back(position);
@@ -415,12 +414,150 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
     return 0;
 }
 
+uint16_t get_biome_id_from_name(const std::string &name) {
+    for (uint16_t i = 0; i < game_data_object->biome_info.size(); i++) {
+        if (game_data_object->biome_info[i].name.compare(name) == 0) {
+            return i;
+        }
+    }
+    return 0;
+}
+
 int GameInfoDataObject::read_world_gen(Json::Value root) {
-    // not supported currently
-    printf("reading in world generation files currently not supported!\n");
-    printf("frog\n");
+    // read biome information
+    if (root.isMember("biomes") && root["biomes"].type() == Json::arrayValue) {
+        int size = root["biomes"].size();
+        for (int i = 0; i < size; i++){
+            Json::Value biome_node = root["biomes"][i];
+            if (biome_node.type() != Json::objectValue) {
+                continue;
+            }
+            biome_game_info binfo;
+            if (biome_node.isMember("name") && biome_node["name"].type() == Json::stringValue) {
+                binfo.name = biome_node["name"].asString();
+            }
+            if (biome_node.isMember("strength") && (biome_node["strength"].type() == Json::realValue || biome_node["strength"].type() == Json::intValue)) {
+                binfo.strength = biome_node["strength"].asFloat();
+            }
+            if (biome_node.isMember("persistence") && (biome_node["persistence"].type() == Json::realValue || biome_node["persistence"].type() == Json::intValue)) {
+                binfo.persistence = biome_node["persistence"].asFloat();
+            }
+            if (biome_node.isMember("blocks") && biome_node["blocks"].type() == Json::arrayValue) {
+                int block_size = biome_node["blocks"].size();
+                for (int j = 0; j < block_size; j++) {
+                    Json::Value block_root = biome_node["blocks"][j];
+                    if (block_root.type() != Json::objectValue)
+                        continue;
+                    block_layer_info blk_layer;
+                    if (block_root.isMember("id")) {
+                        blk_layer.type = get_block_id_from_name(block_root["id"]);
+                    }
+                    if (block_root.isMember("lower") && block_root["lower"].type() == Json::intValue) {
+                        blk_layer.lower = block_root["lower"].asInt();
+                    }
+                    if (block_root.isMember("upper") && block_root["upper"].type() == Json::intValue) {
+                        blk_layer.upper = block_root["upper"].asInt();
+                    }
+                    if (block_root.isMember("frequency") && (block_root["frequency"].type() == Json::realValue || block_root["frequency"].type() == Json::intValue) ) {
+                        blk_layer.frequency = block_root["frequency"].asFloat();
+                    }
+                    binfo.blocks.push_back(blk_layer);
+                }
+            }
+            if (biome_node.isMember("structures") && biome_node["structures"].type() == Json::arrayValue) {
+                int structure_size = biome_node["structures"].size();
+                for (int j = 0; j < structure_size; j++) {
+                    Json::Value struct_root = biome_node["structures"][j];
+                    if (struct_root.type() != Json::objectValue)
+                    continue;
+                    block_layer_info str_layer;
+                    if (struct_root.isMember("id")) {
+                        str_layer.type = get_block_id_from_name(struct_root["id"]);
+                    }
+                    if (struct_root.isMember("lower") && struct_root["lower"].type() == Json::intValue) {
+                        str_layer.lower = struct_root["lower"].asInt();
+                    }
+                    if (struct_root.isMember("upper") && struct_root["upper"].type() == Json::intValue) {
+                        str_layer.upper = struct_root["upper"].asInt();
+                    }
+                    if (struct_root.isMember("frequency") && (struct_root["frequency"].type() == Json::realValue || struct_root["frequency"].type() == Json::intValue)) {
+                        str_layer.frequency = struct_root["frequency"].asFloat();
+                    }
+                    binfo.structures.push_back(str_layer);
+                }
+            }
+            game_data_object->biome_info.push_back(binfo);
+        }
+    }
     
-    setup_world_generator(100);
+    // read modes
+    if (root.isMember("modes") && root["modes"].type() == Json::arrayValue) {
+        int size = root["modes"].size();
+        for (int i = 0; i < size; i++){
+            Json::Value mode_node = root["modes"][i];
+            if (mode_node.type() != Json::objectValue) {
+                continue;
+            }
+            world_gen_mode_info winfo;
+            if (mode_node.isMember("name") && mode_node["name"].type() == Json::stringValue) {
+                winfo.name = mode_node["name"].asString();
+            }
+            if (mode_node.isMember("biomes") && mode_node["biomes"].type() == Json::objectValue) {
+                Json::Value::Members members(mode_node["biomes"].getMemberNames());
+                for (Json::Value::Members::iterator it = members.begin();
+                     it != members.end();
+                     ++it) {
+                    const std::string& biome_name = *it;
+                    uint16_t biome_id =  get_biome_id_from_name(biome_name);
+                    winfo.biome_frequencies[biome_id] = mode_node["biomes"][biome_name].asFloat();
+                }
+            }
+            if (mode_node.isMember("sector") && mode_node["sector"].type() == Json::arrayValue && mode_node["sector"].size() == 2) {
+                if (mode_node["sector"][0].type() == Json::intValue &&
+                    mode_node["sector"][1].type() == Json::intValue) {
+                    winfo.xsectorsize = mode_node["sector"][0].asInt();
+                    winfo.zsectorsize = mode_node["sector"][1].asInt();
+                }
+            }
+            if (mode_node.isMember("biomecount") && mode_node["biomecount"].type() == Json::arrayValue) {
+                if (mode_node["biomecount"].size() >= 1 && mode_node["biomecount"][0].type() == Json::intValue) {
+                    winfo.biomepointavg = mode_node["biomecount"][0].asInt();
+                }
+                if (mode_node["biomecount"].size() >= 2 && mode_node["biomecount"][1].type() == Json::intValue) {
+                    winfo.biomepointvar = mode_node["biomecount"][1].asInt();
+                }
+            }
+            if (mode_node.isMember("islandcount") && mode_node["islandcount"].type() == Json::arrayValue) {
+                if (mode_node["islandcount"].size() >= 1 && mode_node["islandcount"][0].type() == Json::intValue) {
+                    winfo.islandpointavg = mode_node["islandcount"][0].asInt();
+                }
+                if (mode_node["islandcount"].size() >= 2 && mode_node["islandcount"][1].type() == Json::intValue) {
+                    winfo.islandpointvar = mode_node["islandcount"][1].asInt();
+                }
+            }
+            if (mode_node.isMember("separation") && (mode_node["separation"].type() == Json::realValue || mode_node["separation"].type() == Json::intValue)) {
+                winfo.separation = mode_node["separation"].asFloat();
+            }
+            if (mode_node.isMember("fatness") && (mode_node["fatness"].type() == Json::realValue || mode_node["fatness"].type() == Json::intValue)) {
+                winfo.fatness = mode_node["fatness"].asFloat();
+            }
+            if (mode_node.isMember("melt") && (mode_node["melt"].type() == Json::realValue || mode_node["melt"].type() == Json::intValue)) {
+                winfo.melt_distance = mode_node["melt"].asFloat();
+            }
+            if (mode_node.isMember("octaves") && mode_node["octaves"].type() == Json::intValue) {
+                winfo.octaves = mode_node["octaves"].asInt();
+            }
+            if (mode_node.isMember("lowerstrength") && (mode_node["lowerstrength"].type() == Json::realValue || mode_node["lowerstrength"].type() == Json::intValue)) {
+                winfo.lower_strength = mode_node["lowerstrength"].asFloat();
+            }
+            if (mode_node.isMember("lowerpersistence") && (mode_node["lowerpersistence"].type() == Json::realValue || mode_node["lowerpersistence"].type() == Json::intValue)) {
+                winfo.lower_persistence = mode_node["lowerpersistence"].asFloat();
+            }
+            game_data_object->world_gen_modes.push_back(winfo);
+        }
+    }
+    
+    setup_world_generator(&(game_data_object->world_gen_modes[0]), 101);
     
     return 0;
 }
@@ -666,4 +803,37 @@ void fill_game_models(std::vector<fvec3> &model_vertices,
     // normals and uvs dont need to add xyz
     model_normals.insert(model_normals.end(), normals.begin(), normals.end());
     model_uvs.insert(model_uvs.end(), uvs.begin(), uvs.end());
+}
+
+float get_biome_strength(uint16_t biome) {
+    // TOFU this could be unsafe array-size wise! we're being really trusting here
+    return game_data_object->biome_info[biome].strength;
+}
+
+float get_biome_persistence(uint16_t biome) {
+    // TOFU this could be unsafe array-size wise! we're being really trusting here
+    return game_data_object->biome_info[biome].persistence;
+}
+
+uint16_t get_random_block_from_biome(uint16_t biome, int depth) {
+    float total_frequency = 0;
+    for (auto &i: game_data_object->biome_info[biome].blocks) {
+        if (depth >= i.lower && depth <= i.upper) {
+            total_frequency += i.frequency;
+        }
+    }
+    
+    int precision = 10000;
+    float rv = (rand() % precision) * 1.0 / precision;
+    float total = 0;
+    for (auto &i: game_data_object->biome_info[biome].blocks) {
+        if (depth >= i.lower && depth <= i.upper) {
+            total += i.frequency;
+            if (rv < total / total_frequency) {
+                return i.type;
+            }
+        }
+    }
+    return 0;
+    
 }

@@ -55,4 +55,8 @@ void fill_game_models(std::vector<fvec3> &model_vertices,
                       block_type block,
                       int x, int y, int z);
 
+float get_biome_strength(uint16_t biome);
+float get_biome_persistence(uint16_t biome);
+uint16_t get_random_block_from_biome(uint16_t biome, int depth);
+
 #endif /* defined(__Bawk__game_info_loader__) */

@@ -12,8 +12,9 @@
 #include <stdio.h>
 #include "basic_types.h"
 #include "chunkrender.h"
+#include "world_generator_structures.h"
 
-void setup_world_generator(int fillthis);
+void setup_world_generator(world_gen_mode_info* inf, int s);
 void clean_world_generator();
 
 // fills the general player world with new chunks/islands
