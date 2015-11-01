@@ -59,6 +59,7 @@
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
 		07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C4263A1BBCC5700045D796 /* chunkrender.cpp */; };
 		07F6906F1BD388F900818867 /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F6906D1BD388F900818867 /* testing.cpp */; };
+		07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FA18381BE5ACAB00C7319C /* worldevent.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -182,6 +183,8 @@
 		07F6906D1BD388F900818867 /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
 		07F6906E1BD388F900818867 /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
 		07FA18371BE598CA00C7319C /* world_generator_structures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = world_generator_structures.h; sourceTree = "<group>"; };
+		07FA18381BE5ACAB00C7319C /* worldevent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = worldevent.cpp; sourceTree = "<group>"; };
+		07FA18391BE5ACAB00C7319C /* worldevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = worldevent.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +321,8 @@
 				075B20CE1BDD9FD000F42317 /* blockaction.h */,
 				0774A9771BDEF1B80069489D /* world_generator.cpp */,
 				0774A9781BDEF1B80069489D /* world_generator.h */,
+				07FA18381BE5ACAB00C7319C /* worldevent.cpp */,
+				07FA18391BE5ACAB00C7319C /* worldevent.h */,
 			);
 			name = entities;
 			sourceTree = "<group>";
@@ -459,6 +464,7 @@
 				076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */,
 				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
+				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,

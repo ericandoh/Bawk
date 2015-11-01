@@ -128,9 +128,35 @@ void World::add_entity(Entity* entity) {
     holder.add_entity(entity);
 }
 
+void World::add_event(WorldEvent *event) {
+    for (int i = (int)events.size() - 1; i >= 0; i--) {
+        if (events[i]->expiration <= event->expiration) {
+            // insert at this index
+            events.insert(events.begin() + i, event);
+            return;
+        }
+    }
+    events.insert(events.begin(), event);
+}
+
 // cycles one timestep for the world
 void World::step() {
     holder.step();
+    
+    int counter = 0;
+    while (counter < events.size()) {
+        if (events[counter]->expiration > age) {
+            break;
+        }
+        events[counter]->action(this);
+        if (events[counter]->expires) {
+            free_world_event(events[counter]);
+            events.erase(events.begin() + counter);
+        }
+        else {
+            counter++;
+        }
+    }
     age++;
 }
 
@@ -139,7 +165,11 @@ bool World::will_collide_with_anything(Entity* other) {
 }
 
 SuperObject* World::create_superobject(Player* player, ivec3 pos) {
-    SuperObject* obj = new SuperObject(player->getID(), player->assignID(), pos);
+    SuperObject* obj;
+    if (player)
+        obj = new SuperObject(player->getID(), player->assignID(), pos);
+    else
+        obj = new SuperObject(0, player->assignID(), pos);
     holder.add_entity(obj);
     return obj;
 }

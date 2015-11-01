@@ -52,12 +52,31 @@ struct block_layer_info {
     }
 };
 
+struct spawn_layer_info {
+    block_layer_info layer;
+    fvec3 offset;
+    spawn_layer_info() {
+        layer = block_layer_info();
+        offset = fvec3(0, 0, 0);
+    }
+};
+
+struct spawn_ore_layer_info {
+    block_layer_info layer;
+    int radius;
+    spawn_ore_layer_info() {
+        layer = block_layer_info();
+        radius = 1;
+    }
+};
+
 struct biome_game_info {
     std::string name;
     float strength;
     float persistence;
     std::vector<block_layer_info> blocks;
-    std::vector<block_layer_info> structures;
+    std::vector<spawn_layer_info> spawn;
+    std::vector<spawn_ore_layer_info> spawnores;
     biome_game_info() {
         name = "empty";
         strength = 0;

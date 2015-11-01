@@ -219,8 +219,8 @@
                    "blocks": [{"id": "grass", "lower": 0, "upper": 0, "frequency": 1},
                               {"id": "dirt",  "lower": 1, "upper": 15, "frequency": 1},
                               {"id": "stone", "lower": 5, "frequency": 2}],
-                   "structures": [{"id": "sapling", "lower": 0, "upper": 0, "frequency": 0.02},
-                                  {"id": "ore", "lower": 10, "frequency": 0.005}]
+                   "events": [{"id": "spawn", "rid": "tree" ,"lower": 0, "upper": 0, "frequency": 0.02, "offset": [-1, 0, -1]},
+                              {"id": "orespawn", "rid": 4, "lower": 10, "frequency": 0.005, "radius": 3}]
                    },
                    {
                    "name": "desert",
@@ -228,15 +228,15 @@
                    "persistence": 0.9,
                    "blocks": [{"id": "sand", "lower": 0, "upper": 8, "frequency": 1},
                               {"id": "stone", "lower": 5, "frequency": 1}],
-                   "structures": [{"id": "cactus", "lower": 0, "upper": 0, "frequency": 0.02},
-                                  {"id": "ore", "lower": 10, "frequency": 0.005}]
+                   "events": [{"id": "spawn", "rid": "cactus" ,"lower": 0, "upper": 0, "frequency": 0.02},
+                              {"id": "orespawn", "rid": 4, "lower": 10, "frequency": 0.005, "radius": 3}]
                    },
                    {
                    "name": "snow",
                    "strength": 40.0,
                    "persistence": 0.7,
                    "blocks": [{"id": "stone", "lower": 0, "upper": 8, "frequency": 1}],
-                   "structures": [{"id": "ore", "lower": 10, "frequency": 0.005}]
+                   "events": [{"id": "orespawn", "rid": 4, "lower": 10, "frequency": 0.005, "radius": 3}]
                    },
                    {
                    "name": "allsupportedfeatures",
@@ -244,8 +244,8 @@
                    "roughness": 10,
                    "blocks": [{"id": 3, "lower": 0, "upper": 10, "frequency": 1},
                               {"id": "allsupportedfeatures", "lower": 11, "upper": 20, "frequency": 2}],
-                   "structures": [{"id": "ore", "frequency": 0.005},
-                                  {"id": "allsupportedfeatures", "frequency": 0.005}]
+                   "events": [{"id": "orespawn", "rid": 4, "lower": 0, "upper": 8, "frequency": 0.005, "radius": 3},
+                              {"id": "allsupportedfeatures", "frequency": 0.005}]
                    }
         ]
     }

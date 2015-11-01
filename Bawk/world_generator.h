@@ -19,8 +19,6 @@ void clean_world_generator();
 
 // fills the general player world with new chunks/islands
 void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]);
-// fills a portal map with one island of content, for farming
-void fill_chunk_at_one_island(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]);
 
 void test_world_generator();
 

@@ -27,18 +27,20 @@
 #include "basic_types.h"
 #include "worldrender.h"
 #include "entityholder.h"
+#include "worldevent.h"
 
 class Game;
 
 class World {
-    
-    // how many cycles the world has lived through
-    unsigned long age;
-    
+
     SuperObject* base_world;
     EntityHolder holder;
+    
+    std::vector<WorldEvent*> events;
 public:
     std::string name;
+    // how many cycles the world has lived through
+    unsigned long age;
     World(std::string id);
     int load_self();
     void remove_self();
@@ -55,6 +57,7 @@ public:
     bool kill_block(ivec3* src);
     void add_player(Player* player);
     void add_entity(Entity* entity);
+    void add_event(WorldEvent* event);
     void step();
     bool will_collide_with_anything(Entity* superobject);
     SuperObject* create_superobject(Player* player, ivec3 pos);

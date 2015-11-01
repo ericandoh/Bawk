@@ -13,91 +13,6 @@
 #include <glm/gtc/noise.hpp>
 #include "game_info_loader.h"
 
-/*
-namespace std
-{
-    template<>
-    struct hash<ivec3> {
-        size_t operator()(const ivec3 &pt) const {
-            // turn first 9 bits to a 27 bit string, then add together
-            // the result should be XYZXYZXYZXYZ for XXXX, YYYY, ZZZZ (but with more bits)
-            uint32_t xb = spread_bits(pt.x);
-            uint32_t yb = spread_bits(pt.y) << 1;
-            uint32_t zb = spread_bits(pt.z) << 2;
-            return xb + yb + zb;
-        }
-    };
-}*/
-
-/*
-// per biome, holds info about how to generate said biome
-struct BiomeNoiseGenerationInfo {
-    float strength_lower;
-    float persistence_lower;
-    float strength_upper;
-    float persistence_upper;
-    BiomeNoiseGenerationInfo();
-    BiomeNoiseGenerationInfo(float s, float p);
-    BiomeNoiseGenerationInfo(float sl, float pl, float su, float pu);
-};
-
-BiomeNoiseGenerationInfo::BiomeNoiseGenerationInfo() {
-    strength_lower = persistence_lower = strength_upper = persistence_upper = 0.0f;
-}
-
-BiomeNoiseGenerationInfo::BiomeNoiseGenerationInfo(float s, float p) {
-    strength_lower = 4.0f;
-    persistence_lower = 0.3f;
-    strength_upper = s;
-    persistence_upper = p;
-}
-BiomeNoiseGenerationInfo::BiomeNoiseGenerationInfo(float sl, float pl, float su, float pu) {
-    strength_lower = sl;
-    persistence_lower = pl;
-    strength_upper = su;
-    persistence_upper = pu;
-}
-
-// holds info about the world generation
-struct WorldGeneratorInfo {
-    // sizes of the sectors where islands spawn (RWC)
-    int xsector_size;
-    int ysector_size;   // largely irrelevant
-    int zsector_size;
-    
-    // the below - not exactly variance, but close enough...
-    // number of possible biome points to pick per sector
-    int biome_points_per_sector_average;
-    int biome_points_per_sector_variance;
-    
-    // minimum distance between biome points (RWC)
-    float min_biome_point_separation;
-    
-    // number of biome points to put into an island
-    int biome_points_per_island_average;
-    int biome_points_per_island_variance;
-    
-    // how fat the island is (top-down)
-    // haha, fat
-    float island_fatness;
-    
-    // how much to seam
-    float melt_distance;
-    
-    int octaves;
-    
-    std::vector<BiomeNoiseGenerationInfo> biome_noise_info;
-    
-    ///
-     Seeds
-     Most turn out to be weeds
-     But a few dream
-     And expand the seam
-     Of our reality
-     //
-    int seed;
-};*/
-
 // holds state of the world generation, for easier generation
 struct WorldGeneratorState {
     // biome points per sector (sector pos (QPC) TO position within sector(RWC))
@@ -108,13 +23,30 @@ struct WorldGeneratorState {
     std::unordered_map<ivec3, int> island_heights;
 };
 
+typedef std::map<int, float> biomedist;
+
+struct chunk_heights {
+    ivec3 chunk_pos;
+    int last_used;
+    int lowers[CX][CZ];
+    int uppers[CX][CZ];
+    biomedist weights[CX][CY];
+};
+
 world_gen_mode_info* info;
 WorldGeneratorState state;
+const int chunk_height_cache_size = 25;
+chunk_heights chunk_height_cache[25];
+int last_time = 0;
 int seed;
 
 void setup_world_generator(world_gen_mode_info* inf, int s) {
     info = inf;
     seed = s;
+    
+    for (int i = 0; i < chunk_height_cache_size; i++) {
+        chunk_height_cache[i].last_used = -1;
+    }
     /*
     // later pass in arguments from above
     int side = 256;  //1600
@@ -434,6 +366,46 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
     return false;
 }
 
+chunk_heights* get_chunk_height_cached(ivec3 chunk_pos) {
+    int lowest_last_used = last_time + 1;
+    int j = -1;
+    for (int i = 0; i < chunk_height_cache_size; i++) {
+        if (chunk_height_cache[i].last_used < 0) {
+            j = i;
+            break;
+        }
+        else if (chunk_height_cache[i].chunk_pos == chunk_pos) {
+            return &(chunk_height_cache[i]);
+        }
+        else if (j < 0 || chunk_height_cache[i].last_used < lowest_last_used) {
+            j = i;
+            lowest_last_used = chunk_height_cache[i].last_used;
+        }
+    }
+    
+    if (j < 0)
+        j = 0;
+    
+    chunk_height_cache[j].last_used = last_time;
+    chunk_height_cache[j].chunk_pos = chunk_pos;
+    for (int x = 0; x < CX; x++) {
+        for (int z = 0; z < CZ; z++) {
+            chunk_height_cache[j].weights[x][z].clear();
+        }
+    }
+    last_time++;
+    
+    for (int x = 0; x < CX; x++) {
+        for (int z = 0; z < CZ; z++) {
+            ivec3 pos(x + chunk_pos.x*CX, 0, z + chunk_pos.z*CZ);
+            get_heights_at(&(chunk_height_cache[j].lowers[x][z]),
+                           &(chunk_height_cache[j].uppers[x][z]),
+                           pos, chunk_height_cache[j].weights[x][z]);
+        }
+    }
+    return &(chunk_height_cache[j]);
+}
+
 void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
     //printf("Generating chunk %d %d %d\n", chunk_pos.x, chunk_pos.y, chunk_pos.z);
     get_empty_chunk(to_arr);
@@ -442,24 +414,23 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
         return;
     }
     
-    int lower, upper;
-    std::map<int, float> weights;
+    chunk_heights* height = get_chunk_height_cached(chunk_pos);
+    
+    srand(seed);
+    srand(rand() + chunk_pos.x*CX);
+    srand(rand() + chunk_pos.y*CY);
+    srand(rand() + chunk_pos.z*CZ);
     for (int x = 0; x < CX; x++) {
         for (int z = 0; z < CZ; z++) {
-            weights.clear();
             ivec3 pos(x + chunk_pos.x*CX, 0, z + chunk_pos.z*CZ);
-            get_heights_at(&lower, &upper, pos, weights);
+            int lower = height->lowers[x][z];
+            int upper = height->uppers[x][z];
             int bottom = std::max(lower - chunk_pos.y*CY, 0);
             int top = std::min(upper - chunk_pos.y*CY, CY);
             if (bottom >= top || bottom > CY - 1 || top < 1)
                 continue;
             for (int y = bottom; y < top; y++) {
-                // hacky, but adding 5 to biome to get block
-                srand(seed);
-                srand(rand() + chunk_pos.x*CX+x);
-                srand(rand() + chunk_pos.y*CY+y);
-                srand(rand() + chunk_pos.z*CZ+z);
-                uint16_t type = pick_biome_from_weights(weights);
+                uint16_t type = pick_biome_from_weights(height->weights[x][z]);
                 if (type) {
                     to_arr[x][y][z] = get_random_block_from_biome(type, upper - y-chunk_pos.y*CY - 1);
                 }
@@ -489,11 +460,6 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
             }
         }
     }*/
-}
-
-void fill_chunk_at_one_island(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
-    
-    
 }
 
 void clean_world_generator() {

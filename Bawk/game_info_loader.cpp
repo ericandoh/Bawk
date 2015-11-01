@@ -464,16 +464,13 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
                     binfo.blocks.push_back(blk_layer);
                 }
             }
-            if (biome_node.isMember("structures") && biome_node["structures"].type() == Json::arrayValue) {
-                int structure_size = biome_node["structures"].size();
+            if (biome_node.isMember("events") && biome_node["events"].type() == Json::arrayValue) {
+                int structure_size = biome_node["events"].size();
                 for (int j = 0; j < structure_size; j++) {
-                    Json::Value struct_root = biome_node["structures"][j];
+                    Json::Value struct_root = biome_node["events"][j];
                     if (struct_root.type() != Json::objectValue)
                     continue;
                     block_layer_info str_layer;
-                    if (struct_root.isMember("id")) {
-                        str_layer.type = get_block_id_from_name(struct_root["id"]);
-                    }
                     if (struct_root.isMember("lower") && struct_root["lower"].type() == Json::intValue) {
                         str_layer.lower = struct_root["lower"].asInt();
                     }
@@ -483,7 +480,31 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
                     if (struct_root.isMember("frequency") && (struct_root["frequency"].type() == Json::realValue || struct_root["frequency"].type() == Json::intValue)) {
                         str_layer.frequency = struct_root["frequency"].asFloat();
                     }
-                    binfo.structures.push_back(str_layer);
+                    if (struct_root.isMember("id") && struct_root["id"].type() == Json::stringValue) {
+                        const std::string &action = struct_root["id"].asString();
+                        if (action.compare("spawn") == 0) {
+                            // TOFU this is checkless, fuck that shit
+                            str_layer.type = get_block_id_from_name(struct_root["rid"]) - recipe_mask;
+                            spawn_layer_info spawn;
+                            if (struct_root.isMember("offset")) {
+                                spawn.offset = fvec3(struct_root["offset"][0].asInt(),
+                                                     struct_root["offset"][1].asInt(),
+                                                     struct_root["offset"][2].asInt());
+                            }
+                            spawn.layer = str_layer;
+                            binfo.spawn.push_back(spawn);
+                        }
+                        else if (action.compare("orespawn") == 0) {
+                            // TOFU this is checkless, fuck that shit
+                            str_layer.type = get_block_id_from_name(struct_root["rid"]);
+                            spawn_ore_layer_info spawn;
+                            if (struct_root.isMember("radius")) {
+                                spawn.radius = struct_root["radius"].asInt();
+                            }
+                            spawn.layer = str_layer;
+                            binfo.spawnores.push_back(spawn);
+                        }
+                    }
                 }
             }
             game_data_object->biome_info.push_back(binfo);
