@@ -47,7 +47,11 @@ void World::remove_self() {
 }
 
 // renders the world
-void World::render(fmat4* transform) {
+void World::render(fmat4* transform, float shade_intensity) {
+    shade_intensity -= (abs((int)(age % 400) - 200)/200.0f) * 0.5f;
+    if (shade_intensity < 0.2f)
+        shade_intensity = 0.2f;
+    set_shader_intensity(shade_intensity);
     holder.render(transform);
 }
 

@@ -114,11 +114,12 @@ void Game::render() {
     glEnable(GL_CULL_FACE);
     // get transform from player's perspective
     fmat4* transform = player->set_camera();
+    float shader_intensity = 1.0f;
     if (place_into) {
-        set_shader_intensity(0.5f);
+        shader_intensity = 0.5f;
     }
     // render world in player's perspective
-    world->render(transform);
+    world->render(transform, shader_intensity);
     set_shader_intensity(1.0f);
     // get depth coordinates
     player->query_depth(world);
@@ -131,11 +132,11 @@ void Game::render() {
     glDisable(GL_POLYGON_OFFSET_FILL);
     //glDisable(GL_CULL_FACE);
     
+    glDisable(GL_DEPTH_TEST);
     // render the cursor
     player->render();
-    
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_POLYGON_OFFSET_FILL);
-    
     // Render UI elements here
     // always render the item bar (for now)
     story->render();

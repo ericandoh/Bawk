@@ -44,7 +44,7 @@ public:
     World(std::string id);
     int load_self();
     void remove_self();
-    void render(fmat4* transform);
+    void render(fmat4* transform, float shade_intensity);
     void update_chunks(fvec3* old_pos, fvec3* new_pos);
     // called by cursor item, places block into baseworld
     void place_block(ivec3 position, block_type block);
