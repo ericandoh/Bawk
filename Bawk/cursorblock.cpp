@@ -11,6 +11,7 @@
 #include "worldrender.h"
 #include "blockrender.h"
 #include "temporarytemplate.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 CursorBlock::CursorBlock(block_type type) {
     block = type;
@@ -61,58 +62,61 @@ void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
     
     int i = 0;
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 0, block, BlockOrientation::BACK);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BACK);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::BACK);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::BACK);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BACK);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::BACK);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::BACK);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::FRONT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::FRONT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::FRONT);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::FRONT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 1, block, BlockOrientation::FRONT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 1, block, BlockOrientation::FRONT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::FRONT);
     
     // y
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 0, block, BlockOrientation::BOTTOM);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::BOTTOM);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::BOTTOM);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::BOTTOM);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::BOTTOM);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::BOTTOM);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::BOTTOM);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::TOP);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::TOP);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::TOP);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::TOP);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 1, block, BlockOrientation::TOP);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 1, block, BlockOrientation::TOP);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::TOP);
     
     // z
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::LEFT);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::LEFT);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 0, bz + 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::RIGHT);
     
-    set_coord_and_texture(box, box_texture, i++, bx + 0, by + 1, bz + 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 1, bz + 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, bx + 1, by + 0, bz + 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::RIGHT);
     
-    set_transform_matrix(*transform);
     
+    fmat4 view = glm::translate(fmat4(1), fvec3(bx,by,bz));
+    fmat4 mvp = *transform * view;
+    
+    set_transform_matrix(mvp);
     set_block_draw_mode(1);
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
