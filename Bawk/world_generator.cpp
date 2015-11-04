@@ -358,7 +358,7 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
         }
     }
     if (fraction_island > 0.01) {
-        float rlower = noise2d(pos.x, pos.z, seed, info->octaves, lpers, lstrength);// * fraction_island;
+        float rlower = -noise2d(pos.x, pos.z, seed, info->octaves, lpers, lstrength);// * fraction_island;
         rlower -= (info->fatness * fraction_island);
         //rlower += (state.island_heights[sac]);
         float rupper = noise2d(pos.x, pos.z, seed + 1, info->octaves, upers, ustrength);// * fraction_island;
@@ -431,6 +431,7 @@ chunk_heights* get_chunk_height_cached(ivec3 chunk_pos) {
                                              chunk_height_cache[j].structure_positions.dimensions,
                                              chunk_height_cache[j].structure_positions.positions);
             }
+            // TODO check why we have places where upper > lower but we have one biome...thats hellava strange
         }
     }
     return &(chunk_height_cache[j]);
