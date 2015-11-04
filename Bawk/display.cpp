@@ -233,7 +233,7 @@ int display_run()
         glfwGetFramebufferSize(window, &width, &height);
         
         // reset viewport to window width, assume we're rendering on the whole screen
-        /*glViewport(0, 0, width, height);
+        glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         set_alpha_set(1.0f);
         bind_to_tiles();
@@ -242,7 +242,7 @@ int display_run()
         glFlush();
         
         glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);*/
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
         
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -253,7 +253,7 @@ int display_run()
         // render the transparency texture
         glViewport(0, 0, width, height);
         set_alpha_set(0.5f);
-        //show_depth_peeler();
+        show_depth_peeler();
         
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
