@@ -28,13 +28,6 @@
 #include <stdio.h>
 #include "includeglfw.h"
 
-int set_shaders(GLuint* block_attribute_coord,
-                GLuint* texture_attribute_coord,
-                GLuint* block_uniform_mvp,
-                GLuint* block_uniform_draw_mode,
-                GLuint* block_shade_intensity,
-                GLuint* alpha_cutoff,
-                GLuint* alpha_set,
-                GLuint* program);
+int set_shaders();
 
 #endif /* defined(__Bawk__shader_loader__) */

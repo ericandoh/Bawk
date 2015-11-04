@@ -13,6 +13,7 @@
 #include <iostream>
 #include "includeglfw.h"
 #include "shader_loader.h"
+#include "worldrender.h"
 
 const std::string VERTEX_SHADER = "vertex_shader.glsl";
 const std::string FRAG_SHADER = "frag_shader.glsl";
@@ -32,16 +33,7 @@ void load_file(std::string& str, std::string file_name) {
                std::istreambuf_iterator<char>());
 }
 
-int set_shaders(GLuint* block_attribute_coord,
-                GLuint* texture_attribute_coord,
-                GLuint* block_uniform_mvp,
-                GLuint* block_uniform_draw_mode,
-                GLuint* block_shade_intensity,
-                GLuint* alpha_cutoff,
-                GLuint* alpha_set,
-                GLuint* program)
-{
-    
+int set_shaders() {
     printf("Setting shaders\n");
     
     std::string vertexSource;
@@ -131,32 +123,32 @@ int set_shaders(GLuint* block_attribute_coord,
     //Vertex and fragment shaders are successfully compiled.
     //Now time to link them together into a program.
     //Get a program object.
-    *program = glCreateProgram();
+    program = glCreateProgram();
     
     //Attach our shaders to our program
-    glAttachShader(*program, vertexShader);
-    glAttachShader(*program, fragmentShader);
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
     
     //Link our program
-    glLinkProgram(*program);
+    glLinkProgram(program);
     
     //Note the different functions here: glGetProgram* instead of glGetShader*.
     GLint isLinked = 0;
-    glGetProgramiv(*program, GL_LINK_STATUS, (int *)&isLinked);
+    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
     if(isLinked == GL_FALSE)
     {
         GLint maxLength = 0;
-        glGetProgramiv(*program, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
         
         //The maxLength includes the NULL character
         GLchar *info_log;
         info_log = (GLchar*)malloc(maxLength);
-        glGetProgramInfoLog(*program, maxLength, &maxLength, info_log);
+        glGetProgramInfoLog(program, maxLength, &maxLength, info_log);
         fprintf(stderr, "Program compilation failed: %*s\n", maxLength, info_log);
         free(info_log);
         
         //We don't need the program anymore.
-        glDeleteProgram(*program);
+        glDeleteProgram(program);
         //Don't leak shaders either.
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
@@ -167,57 +159,62 @@ int set_shaders(GLuint* block_attribute_coord,
         return -1;
     }
     
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    
     const char* attribute_name = "coord";
-    *block_attribute_coord = glGetAttribLocation(*program, attribute_name);
-    if (*block_attribute_coord == -1) {
+    block_attribute_coord = glGetAttribLocation(program, attribute_name);
+    if (block_attribute_coord == -1) {
         fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
         return -1;
     }
     
     const char* texture_attribute_name = "texture_coord";
-    *texture_attribute_coord = glGetAttribLocation(*program, texture_attribute_name);
-    if (*texture_attribute_coord == -1) {
+    texture_attribute_coord = glGetAttribLocation(program, texture_attribute_name);
+    if (texture_attribute_coord == -1) {
         fprintf(stderr, "Could not bind attribute %s\n", texture_attribute_name);
         return -1;
     }
     
     const char* uniform_name = "mvp";
-    *block_uniform_mvp = glGetUniformLocation(*program, uniform_name);
-    if (*block_uniform_mvp == -1) {
+    block_uniform_mvp = glGetUniformLocation(program, uniform_name);
+    if (block_uniform_mvp == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_name);
         return false;
     }
     
     const char* uniform_draw_mode_name = "draw_mode";
-    *block_uniform_draw_mode = glGetUniformLocation(*program, uniform_draw_mode_name);
-    if (*block_uniform_draw_mode == -1) {
+    block_uniform_draw_mode = glGetUniformLocation(program, uniform_draw_mode_name);
+    if (block_uniform_draw_mode == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_draw_mode_name);
         return false;
     }
     
     const char* uniform_shade_intensity_name = "shade_intensity";
-    *block_shade_intensity = glGetUniformLocation(*program, uniform_shade_intensity_name);
-    if (*block_shade_intensity == -1) {
+    block_shader_intensity = glGetUniformLocation(program, uniform_shade_intensity_name);
+    if (block_shader_intensity == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_shade_intensity_name);
         return false;
     }
     
     const char* uniform_alpha_cutoff_name = "alpha_cutoff";
-    *alpha_cutoff = glGetUniformLocation(*program, uniform_alpha_cutoff_name);
-    if (*alpha_cutoff == -1) {
+    block_alpha_cutoff = glGetUniformLocation(program, uniform_alpha_cutoff_name);
+    if (block_alpha_cutoff == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_alpha_cutoff_name);
         return false;
     }
     
     const char* uniform_alpha_set_name = "alpha_set";
-    *alpha_set = glGetUniformLocation(*program, uniform_alpha_set_name);
-    if (*alpha_set == -1) {
+    block_alpha_set = glGetUniformLocation(program, uniform_alpha_set_name);
+    if (block_alpha_set == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_alpha_set_name);
         return false;
     }
     
-    glEnableVertexAttribArray(*block_attribute_coord);
-    glEnableVertexAttribArray(*texture_attribute_coord);
+    glEnableVertexAttribArray(block_attribute_coord);
+    glEnableVertexAttribArray(texture_attribute_coord);
+    
+    printf("4 %d\n",glGetError());
     
     printf("Done loading shaders\n");
     return 0;

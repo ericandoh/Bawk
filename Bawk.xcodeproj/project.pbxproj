@@ -185,6 +185,8 @@
 		07FA18371BE598CA00C7319C /* world_generator_structures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = world_generator_structures.h; sourceTree = "<group>"; };
 		07FA18381BE5ACAB00C7319C /* worldevent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = worldevent.cpp; sourceTree = "<group>"; };
 		07FA18391BE5ACAB00C7319C /* worldevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = worldevent.h; sourceTree = "<group>"; };
+		07FE042E1BEA79D5001B26D9 /* frag_shader_old.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader_old.glsl; path = Bawk/frag_shader_old.glsl; sourceTree = "<group>"; };
+		07FE042F1BEA79D5001B26D9 /* vertex_shader_old.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader_old.glsl; path = Bawk/vertex_shader_old.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +239,8 @@
 				0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */,
 				071A040C1BD9875C003BF218 /* gameinfo.json */,
 				0766EAF41BBF7CDA00477144 /* tiles.png */,
+				07FE042E1BEA79D5001B26D9 /* frag_shader_old.glsl */,
+				07FE042F1BEA79D5001B26D9 /* vertex_shader_old.glsl */,
 				07C4260C1BBB18AB0045D796 /* frag_shader.glsl */,
 				07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */,
 				071A04091BD98454003BF218 /* json */,

@@ -19,14 +19,14 @@
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <wingdi.h>
-	#include <GL/gl.h>
+	#include <GL/gl3.h>
 #elif defined(__APPLE__) || defined(__APPLE_CC__)
 	/*	I can't test this Apple stuff!	*/
-	#include <OpenGL/gl.h>
+	#include <OpenGL/gl3.h>
 	#include <Carbon/Carbon.h>
 	#define APIENTRY
 #else
-	#include <GL/gl.h>
+	#include <GL/gl3.h>
 	#include <GL/glx.h>
 #endif
 
@@ -1177,10 +1177,10 @@ unsigned int
 		switch( channels )
 		{
 		case 1:
-			original_texture_format = GL_LUMINANCE;
+			original_texture_format = GL_RED;
 			break;
 		case 2:
-			original_texture_format = GL_LUMINANCE_ALPHA;
+			original_texture_format = GL_RG;
 			break;
 		case 3:
 			original_texture_format = GL_RGB;
@@ -1343,7 +1343,7 @@ unsigned int
 		} else
 		{
 			/*	unsigned int clamp_mode = SOIL_CLAMP_TO_EDGE;	*/
-			unsigned int clamp_mode = GL_CLAMP;
+			unsigned int clamp_mode = GL_CLAMP_TO_EDGE;
 			glTexParameteri( opengl_texture_type, GL_TEXTURE_WRAP_S, clamp_mode );
 			glTexParameteri( opengl_texture_type, GL_TEXTURE_WRAP_T, clamp_mode );
 			if( opengl_texture_type == SOIL_TEXTURE_CUBE_MAP )
@@ -1810,7 +1810,7 @@ unsigned int SOIL_direct_load_DDS_from_memory(
 		} else
 		{
 			/*	unsigned int clamp_mode = SOIL_CLAMP_TO_EDGE;	*/
-			unsigned int clamp_mode = GL_CLAMP;
+			unsigned int clamp_mode = GL_CLAMP_TO_EDGE;
 			glTexParameteri( opengl_texture_type, GL_TEXTURE_WRAP_S, clamp_mode );
 			glTexParameteri( opengl_texture_type, GL_TEXTURE_WRAP_T, clamp_mode );
 			glTexParameteri( opengl_texture_type, SOIL_TEXTURE_WRAP_R, clamp_mode );
@@ -1870,6 +1870,17 @@ unsigned int SOIL_direct_load_DDS(
 	return tex_ID;
 }
 
+bool missing_extension_hack(const char* extension) {
+    GLint n, i;
+    glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+    for (i = 0; i < n; i++) {
+        if (strcoll(extension, glGetStringi(GL_EXTENSIONS, i)) == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int query_NPOT_capability( void )
 {
 	/*	check for the capability	*/
@@ -1877,8 +1888,7 @@ int query_NPOT_capability( void )
 	{
 		/*	we haven't yet checked for the capability, do so	*/
 		if(
-			(NULL == strstr( (char const*)glGetString( GL_EXTENSIONS ),
-				"GL_ARB_texture_non_power_of_two" ) )
+           missing_extension_hack( "GL_ARB_texture_non_power_of_two" )
 			)
 		{
 			/*	not there, flag the failure	*/
@@ -1900,14 +1910,11 @@ int query_tex_rectangle_capability( void )
 	{
 		/*	we haven't yet checked for the capability, do so	*/
 		if(
-			(NULL == strstr( (char const*)glGetString( GL_EXTENSIONS ),
-				"GL_ARB_texture_rectangle" ) )
+			missing_extension_hack( "GL_ARB_texture_rectangle" )
 		&&
-			(NULL == strstr( (char const*)glGetString( GL_EXTENSIONS ),
-				"GL_EXT_texture_rectangle" ) )
+			missing_extension_hack("GL_EXT_texture_rectangle" )
 		&&
-			(NULL == strstr( (char const*)glGetString( GL_EXTENSIONS ),
-				"GL_NV_texture_rectangle" ) )
+			missing_extension_hack("GL_NV_texture_rectangle" )
 			)
 		{
 			/*	not there, flag the failure	*/
@@ -1929,11 +1936,9 @@ int query_cubemap_capability( void )
 	{
 		/*	we haven't yet checked for the capability, do so	*/
 		if(
-			(NULL == strstr( (char const*)glGetString( GL_EXTENSIONS ),
-				"GL_ARB_texture_cube_map" ) )
+           missing_extension_hack("GL_ARB_texture_cube_map" )
 		&&
-			(NULL == strstr( (char const*)glGetString( GL_EXTENSIONS ),
-				"GL_EXT_texture_cube_map" ) )
+			missing_extension_hack("GL_EXT_texture_cube_map" )
 			)
 		{
 			/*	not there, flag the failure	*/
@@ -1954,9 +1959,7 @@ int query_DXT_capability( void )
 	if( has_DXT_capability == SOIL_CAPABILITY_UNKNOWN )
 	{
 		/*	we haven't yet checked for the capability, do so	*/
-		if( NULL == strstr(
-				(char const*)glGetString( GL_EXTENSIONS ),
-				"GL_EXT_texture_compression_s3tc" ) )
+		if( missing_extension_hack("GL_EXT_texture_compression_s3tc" ))
 		{
 			/*	not there, flag the failure	*/
 			has_DXT_capability = SOIL_CAPABILITY_NONE;

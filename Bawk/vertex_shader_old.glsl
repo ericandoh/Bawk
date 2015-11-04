@@ -1,11 +1,11 @@
-#version 150
+#version 120
 
-in vec3 coord;
-in vec3 texture_coord;
+attribute vec3 coord;
+attribute vec3 texture_coord;
 uniform mat4 mvp;
 
-out vec3 v_coord;
-out vec3 texcoord;
+varying vec3 v_coord;
+varying vec3 texcoord;
 
 void main(void) {
     v_coord = coord;

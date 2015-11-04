@@ -29,11 +29,15 @@
 #include "superobject.h"
 #include "block.h"
 
+extern GLuint vao;
+
 extern GLuint block_attribute_coord;
 extern GLuint texture_attribute_coord;
 extern GLuint block_uniform_mvp;
 extern GLuint block_uniform_draw_mode;
+extern GLuint block_shader_intensity;
 extern GLuint block_alpha_cutoff;
+extern GLuint block_alpha_set;
 extern GLuint tile_texture;
 extern GLuint program;
 

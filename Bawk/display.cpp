@@ -107,13 +107,28 @@ int init_display() {
     int width = 720;   //1080
     int height = 480;   //640
     
+    int version;
+    //version = 1;
+    version = 3;
+    
+    // change for different versions, or well this does the versioning actually lol
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    // later change this to support 1.1 as well, if we have time/are okay with this
+    // then we can use/load in frag_shader_old and vertex_shader_old instead
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(width, height, "Bawk", NULL, NULL);
     if (!window)
     {
+        printf("Could not create GLFW context window...\n");
         glfwTerminate();
         return -1;
     }
+    
+    std::cout<<"OpenGL "<<glGetString(GL_VERSION)<<" (GLSL "<<glGetString(GL_SHADING_LANGUAGE_VERSION)<<')'<<std::endl;
     
     // can set vsync interval later on
     //glfwSwapInterval(1);
@@ -130,14 +145,24 @@ int init_display() {
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
     
-    glEnable(GL_TEXTURE_2D);
+    printf("1 %d\n",glGetError());
     
+    if (version <= 1) {
+        // VERSION 1.1
+        glEnable(GL_TEXTURE_2D);
+    }
+    else {
+        
+    }
+    
+    printf("2 %d\n",glGetError());
     glGenTextures(1, &depth_peeling_texture);
     glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
     get_window_size(&width, &height);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    printf("3 %d\n",glGetError());
     return 0;
 }
 
@@ -208,7 +233,7 @@ int display_run()
         glfwGetFramebufferSize(window, &width, &height);
         
         // reset viewport to window width, assume we're rendering on the whole screen
-        glViewport(0, 0, width, height);
+        /*glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         set_alpha_set(1.0f);
         bind_to_tiles();
@@ -217,7 +242,7 @@ int display_run()
         glFlush();
         
         glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);*/
         
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -228,7 +253,7 @@ int display_run()
         // render the transparency texture
         glViewport(0, 0, width, height);
         set_alpha_set(0.5f);
-        show_depth_peeler();
+        //show_depth_peeler();
         
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

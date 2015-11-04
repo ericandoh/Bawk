@@ -16,6 +16,9 @@
 #include "game_info_loader.h"
 
 // shaders and attributes set by shader loading program
+// put these inside a namespace or some shizzle
+GLuint vao;
+
 GLuint block_attribute_coord;
 GLuint texture_attribute_coord;
 GLuint block_uniform_mvp;
@@ -26,22 +29,13 @@ GLuint block_alpha_set;
 GLuint tile_texture;
 GLuint program;
 
-static GLint uniform_texture;
-
 int CHUNK_RENDER_DIST = 3;
 
 GLuint common_vertex_vbo;
 GLuint common_texture_vbo;
 
 int world_load_resources() {
-    if (set_shaders(&block_attribute_coord,
-                    &texture_attribute_coord,
-                    &block_uniform_mvp,
-                    &block_uniform_draw_mode,
-                    &block_shader_intensity,
-                    &block_alpha_cutoff,
-                    &block_alpha_set,
-                    &program)) {
+    if (set_shaders()) {
         return 1;
     }
     glActiveTexture(GL_TEXTURE0);
@@ -92,6 +86,14 @@ GLuint get_vertex_attribute_vbo() {
 
 GLuint get_texture_attribute_vbo() {
     return common_texture_vbo;
+}
+
+GLuint get_block_attribute() {
+    return block_attribute_coord;
+}
+
+GLuint get_texture_attribute() {
+    return texture_attribute_coord;
 }
 
 void set_block_draw_mode(int v) {
