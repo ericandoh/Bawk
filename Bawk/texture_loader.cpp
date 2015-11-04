@@ -9,6 +9,7 @@
 #include "texture_loader.h"
 #include <string>
 #include "SOIL.h"
+#include "display.h"
 
 const char* TILE_IMAGE = "tiles.png";
 
@@ -30,6 +31,8 @@ GLuint load_tiles() {
 }
 
 void save_tile() {
-    int reuslt = SOIL_save_screenshot("/Users/Eric/haha.png", SOIL_SAVE_TYPE_BMP, 0, 0, 640, 480);
-    printf("%d\n", reuslt);
+    int width, height;
+    get_window_size(&width, &height);
+    int result = SOIL_save_screenshot("/Users/Eric/haha.png", SOIL_SAVE_TYPE_BMP, 0, 0, width, height);
+    printf("%d\n", result);
 }

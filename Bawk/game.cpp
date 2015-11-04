@@ -16,6 +16,7 @@
 #include "display.h"
 #include "blocktracer.h"
 #include "temporarytemplate.h"
+#include "debug_action.h"
 
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
@@ -83,7 +84,7 @@ int Game::init() {
     key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
     
     // WHYYYYYYYY (the key Y LOL)
-    key_to_action[GLFW_KEY_L] = DEBUG_ACTION;
+    key_to_action[GLFW_KEY_M] = DEBUG_ACTION;
     
     mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
     mouse_to_action[GLFW_MOUSE_BUTTON_RIGHT] = CLICK_CREATE;
@@ -320,6 +321,7 @@ void Game::key_callback_default(int key) {
     }
     else if (do_this == DEBUG_ACTION) {
         // use this for debugging only
+        debug_action(this);
         player->query_depth(world);
     }
     else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {

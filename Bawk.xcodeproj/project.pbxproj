@@ -60,6 +60,7 @@
 		07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C4263A1BBCC5700045D796 /* chunkrender.cpp */; };
 		07F6906F1BD388F900818867 /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F6906D1BD388F900818867 /* testing.cpp */; };
 		07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FA18381BE5ACAB00C7319C /* worldevent.cpp */; };
+		07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FE04301BEABB90001B26D9 /* debug_action.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -187,6 +188,8 @@
 		07FA18391BE5ACAB00C7319C /* worldevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = worldevent.h; sourceTree = "<group>"; };
 		07FE042E1BEA79D5001B26D9 /* frag_shader_old.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader_old.glsl; path = Bawk/frag_shader_old.glsl; sourceTree = "<group>"; };
 		07FE042F1BEA79D5001B26D9 /* vertex_shader_old.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader_old.glsl; path = Bawk/vertex_shader_old.glsl; sourceTree = "<group>"; };
+		07FE04301BEABB90001B26D9 /* debug_action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = debug_action.cpp; sourceTree = "<group>"; };
+		07FE04311BEABB90001B26D9 /* debug_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = debug_action.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -302,6 +305,8 @@
 				075C67391BBA350200CB87DE /* game.cpp */,
 				075C673A1BBA350200CB87DE /* game.h */,
 				07C426361BBCB2060045D796 /* displayable.h */,
+				07FE04301BEABB90001B26D9 /* debug_action.cpp */,
+				07FE04311BEABB90001B26D9 /* debug_action.h */,
 			);
 			name = game;
 			sourceTree = "<group>";
@@ -470,6 +475,7 @@
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
+				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
 				071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */,
