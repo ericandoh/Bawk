@@ -25,19 +25,30 @@ struct WorldGeneratorState {
 
 typedef std::map<int, float> biomedist;
 
+struct chunk_structure_positions {
+    std::vector<uint16_t> sids;
+    std::vector<ivec3> positions;   // this is centered btw, not at 0,0,0
+    std::vector<ivec3> dimensions;
+};
+
 struct chunk_heights {
     ivec3 chunk_pos;
-    int last_used;
+    long last_used;
     int lowers[CX][CZ];
     int uppers[CX][CZ];
     biomedist weights[CX][CY];
+    chunk_structure_positions structure_positions;  // for structures ONLY centered inside this chunk
+                                                    // this chunk MIGHT have periphery structures that are centered in other chunks
+                                                    // but bleed into this chunk
 };
 
 world_gen_mode_info* info;
 WorldGeneratorState state;
-const int chunk_height_cache_size = 25;
-chunk_heights chunk_height_cache[25];
-int last_time = 0;
+
+const int chunk_height_cache_size = 40;
+chunk_heights chunk_height_cache[chunk_height_cache_size];
+
+long last_time = 0;
 int seed;
 
 void setup_world_generator(world_gen_mode_info* inf, int s) {
@@ -367,7 +378,8 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
 }
 
 chunk_heights* get_chunk_height_cached(ivec3 chunk_pos) {
-    int lowest_last_used = last_time + 1;
+    chunk_pos.y = 0;
+    long lowest_last_used = last_time + 1;
     int j = -1;
     for (int i = 0; i < chunk_height_cache_size; i++) {
         if (chunk_height_cache[i].last_used < 0) {
@@ -375,6 +387,8 @@ chunk_heights* get_chunk_height_cached(ivec3 chunk_pos) {
             break;
         }
         else if (chunk_height_cache[i].chunk_pos == chunk_pos) {
+            chunk_height_cache[i].last_used = last_time;
+            last_time++;
             return &(chunk_height_cache[i]);
         }
         else if (j < 0 || chunk_height_cache[i].last_used < lowest_last_used) {
@@ -394,16 +408,62 @@ chunk_heights* get_chunk_height_cached(ivec3 chunk_pos) {
         }
     }
     last_time++;
-    
+    // generate heightmap and chunk biome weights
     for (int x = 0; x < CX; x++) {
         for (int z = 0; z < CZ; z++) {
             ivec3 pos(x + chunk_pos.x*CX, 0, z + chunk_pos.z*CZ);
-            get_heights_at(&(chunk_height_cache[j].lowers[x][z]),
-                           &(chunk_height_cache[j].uppers[x][z]),
+            int lower, upper;
+            get_heights_at(&(lower),
+                           &(upper),
                            pos, chunk_height_cache[j].weights[x][z]);
+            chunk_height_cache[j].lowers[x][z] = lower;
+            chunk_height_cache[j].uppers[x][z] = upper;
+            // now for each position, decide if we want a structure centered there or not
+            if (chunk_height_cache[j].weights[x][z].size() == 1 && lower < upper) {
+                // we have one and only one biome is the sufficient and necessary condition to generate a structure
+                // we might change this later depending on how we feel like
+                biomedist::iterator it = chunk_height_cache[j].weights[x][z].begin();
+                int biome = it->first;
+                srand(seed+(chunk_pos.x*CX+x)*2);
+                srand(rand() + (chunk_pos.z*CZ+z)*2);
+                add_struct_in_biome_randomly(biome,ivec3(chunk_pos.x*CX+x,upper,chunk_pos.z*CZ+z),
+                                             chunk_height_cache[j].structure_positions.sids,
+                                             chunk_height_cache[j].structure_positions.dimensions,
+                                             chunk_height_cache[j].structure_positions.positions);
+            }
         }
     }
     return &(chunk_height_cache[j]);
+}
+
+void get_chunk_structures_in_range(chunk_structure_positions* dst, ivec3 chunk_pos) {
+    
+    bounding_box chunk_bb(fvec3(chunk_pos.x*CX,chunk_pos.y*CY,chunk_pos.z*CZ),
+                          fvec3(chunk_pos.x*CX+CX,chunk_pos.y*CY+CY,chunk_pos.z*CZ+CZ));
+    
+    // now iterate through our chunks around our chunk
+    // this part restricts our structures from being greater than
+    for (int xoff = -1; xoff <= 1; xoff++) {
+        for (int zoff = -1; zoff <=1 ; zoff++) {
+            chunk_heights* at = get_chunk_height_cached(ivec3(chunk_pos.x + xoff,
+                                                              0,
+                                                              chunk_pos.z + zoff));
+            for (int i = 0 ; i < at->structure_positions.sids.size(); i++) {
+                ivec3 pos = at->structure_positions.positions[i];
+                ivec3 dimensions = at->structure_positions.dimensions[i];
+                bounding_box struct_bb(fvec3(pos.x,pos.y,pos.z),
+                                       fvec3(pos.x+dimensions.x,
+                                             pos.y+dimensions.y,
+                                             pos.z+dimensions.z));
+                if (chunk_bb.hits(struct_bb)) {
+                    // this structure is within our chunk bounding box
+                    dst->sids.push_back(at->structure_positions.sids[i]);
+                    dst->positions.push_back(at->structure_positions.positions[i]);
+                    dst->dimensions.push_back(at->structure_positions.dimensions[i]);
+                }
+            }
+        }
+    }
 }
 
 void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
@@ -437,29 +497,16 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
             }
         }
     }
+    
+    // now add in structures
+    chunk_structure_positions positions;
+    get_chunk_structures_in_range(&positions, chunk_pos);
+    for (int i = 0; i < positions.sids.size(); i++) {
+        add_recipe_block_to_chunk(to_arr, positions.sids[i],
+                                  chunk_pos, positions.positions[i]);
+        
+    }
     //printf("Done\n");
-    
-    /*
-    info.seed = 100;
-    
-    int octaves = 5; //how many frequencies to have, let's not change this
-    float persistence = 0.7;    // how much of the higher frequencies to have?
-    float strength = 4.0;      // how much the terrain should change
-    
-    // copy me
-    for (int x = 0; x < CX; x++) {
-        for (int z = 0; z < CZ; z++) {
-            int height = (int)floorf(noise2d(x + chunk_pos.x*CX, z + chunk_pos.z*CZ, info.seed, octaves, persistence, strength));
-            height = abs(height);
-            if (height > CY)
-                height = CY;
-            if (height < 2)
-                height = 2;
-            for (int y = 0; y < height; y++) {
-                to_arr[x][y][z].type = 2;
-            }
-        }
-    }*/
 }
 
 void clean_world_generator() {

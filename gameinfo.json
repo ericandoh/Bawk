@@ -162,10 +162,17 @@
                        {"id": "grass", "position": [0, 3, -1]},
                        {"id": "grass", "position": [0, 4, 0]}],
             "resistance": 40,
-            "weight": 100,
-            "vehicle": 1
+            "weight": 100
         },
         "2": {
+            "name": "cactus",
+            "blocks": [{"id": "grass", "position": [0, 0, 0]},
+                       {"id": "grass", "position": [0, 1, 0]},
+                       {"id": "grass", "position": [0, 2, 0]}],
+            "resistance": 40,
+            "weight": 100
+        },
+        "3": {
             "name": "allsupportedfeatures",
             "blocks": [{"id": 3, "orientation": 5, "position": [0, 0, 0]},
                        {"id": 3, "orientation": "top", "position": [0, 0, 1]},
@@ -219,8 +226,9 @@
                    "blocks": [{"id": "grass", "lower": 0, "upper": 0, "frequency": 1},
                               {"id": "dirt",  "lower": 1, "upper": 15, "frequency": 1},
                               {"id": "stone", "lower": 5, "frequency": 2}],
-                   "events": [{"id": "spawn", "rid": "tree" ,"lower": 0, "upper": 0, "frequency": 0.02, "offset": [-1, 0, -1]},
-                              {"id": "orespawn", "rid": 4, "lower": 10, "frequency": 0.005, "radius": 3}]
+                   "events": [{"id": "spawn", "mob": 0, "lower": 0, "upper": 0, "frequency": 0.02},
+                              {"id": "earthquake", "lower": 20, "frequency": 0.005}],
+                   "structures": [{"id": "tree", "lower": -1, "upper": -1, "frequency": 0.01}]
                    },
                    {
                    "name": "desert",
@@ -228,8 +236,9 @@
                    "persistence": 0.9,
                    "blocks": [{"id": "sand", "lower": 0, "upper": 8, "frequency": 1},
                               {"id": "stone", "lower": 5, "frequency": 1}],
-                   "events": [{"id": "spawn", "rid": "cactus" ,"lower": 0, "upper": 0, "frequency": 0.02},
-                              {"id": "orespawn", "rid": 4, "lower": 10, "frequency": 0.005, "radius": 3}]
+                   "events": [{"id": "spawn", "mob": 1, "lower": 0, "upper": 0, "frequency": 0.02},
+                              {"id": "earthquake", "lower": 20, "frequency": 0.005}],
+                   "structures": [{"id": "cactus", "lower": -1, "upper": -1, "frequency": 0.01}]
                    },
                    {
                    "name": "snow",
@@ -244,8 +253,9 @@
                    "roughness": 10,
                    "blocks": [{"id": 3, "lower": 0, "upper": 10, "frequency": 1},
                               {"id": "allsupportedfeatures", "lower": 11, "upper": 20, "frequency": 2}],
-                   "events": [{"id": "orespawn", "rid": 4, "lower": 0, "upper": 8, "frequency": 0.005, "radius": 3},
-                              {"id": "allsupportedfeatures", "frequency": 0.005}]
+                   "events": [{"id": "spawn", "mob": 0, "lower": 0, "upper": 0, "frequency": 0.02},
+                              {"id": "earthquake", "lower": 20, "frequency": 0.005}],
+                   "structures": [{"id": "tree", "lower": 0, "upper": 0, "frequency": 0.01}]
                    }
         ]
     }

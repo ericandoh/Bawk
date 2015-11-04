@@ -57,6 +57,7 @@ struct recipe_game_info {
     bool from_file;
     std::string file_path;
     std::vector<ivec3> positions;
+    ivec3 upper;    // the bounds of this object, after it has been zero'd (which will happen automatically)
     std::vector<uint16_t> blks;
     std::vector<BlockOrientation> orientations;
 };
@@ -270,8 +271,8 @@ uint16_t get_block_id_from_name(Json::Value node) {
                 return i;
             }
         }
-        for (uint16_t i = 0; i < game_data_object->recipe_block_info.size(); i++) {
-            if (game_data_object->recipe_block_info[i].name.compare(node.asString()) == 0) {
+        for (uint16_t i = 0; i < game_data_object->recipe_info.size(); i++) {
+            if (game_data_object->recipe_info[i].name.compare(node.asString()) == 0) {
                 return i + recipe_mask;
             }
         }
@@ -314,7 +315,7 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
             for (int i = 0; i < size; i++) {
                 submember = recipe["blocks"][i];
                 if(submember.type() == Json::objectValue) {
-                    if ((!submember.isMember("id") || submember["id"].type() == Json::intValue) && (!submember.isMember("orientation") || submember["orientation"].type() == Json::intValue || submember["orientation"].type() == Json::stringValue) && submember["position"].type() == Json::arrayValue) {
+                    if ((!submember.isMember("id") || submember["id"].type() == Json::intValue || submember["id"].type() == Json::stringValue) && (!submember.isMember("orientation") || submember["orientation"].type() == Json::intValue || submember["orientation"].type() == Json::stringValue) && submember["position"].type() == Json::arrayValue) {
                         ivec3 position(0, 0, 0);
                         int subsize = submember["position"].size();
                         if (subsize >= 3) {
@@ -369,12 +370,15 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
                     
                 }
             }
+            ivec3 max_pos(0,0,0);
             for (int i = 0; i < info->positions.size(); i++) {
                 ivec3 real_pos = ivec3(info->positions[i].x - left_corner.x,
                                        info->positions[i].y - left_corner.y,
                                        info->positions[i].z - left_corner.z);
                 info->positions[i] = real_pos;
+                max_pos = get_ivec3_maximum(max_pos, real_pos);
             }
+            info->upper = ivec3(max_pos.x + 1, max_pos.y + 1, max_pos.z + 1);
             info->from_file = false;
         }
         if (recipe.isMember("blocks") && recipe["blocks"].type() == Json::stringValue) {
@@ -464,47 +468,65 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
                     binfo.blocks.push_back(blk_layer);
                 }
             }
-            if (biome_node.isMember("events") && biome_node["events"].type() == Json::arrayValue) {
-                int structure_size = biome_node["events"].size();
+            if (biome_node.isMember("structures") && biome_node["structures"].type() == Json::arrayValue) {
+                int structure_size = biome_node["structures"].size();
                 for (int j = 0; j < structure_size; j++) {
-                    Json::Value struct_root = biome_node["events"][j];
-                    if (struct_root.type() != Json::objectValue)
-                    continue;
-                    block_layer_info str_layer;
-                    if (struct_root.isMember("lower") && struct_root["lower"].type() == Json::intValue) {
-                        str_layer.lower = struct_root["lower"].asInt();
+                    Json::Value structure_root = biome_node["structures"][j];
+                    if (structure_root.type() != Json::objectValue)
+                        continue;
+                    block_layer_info struct_layer;
+                    if (structure_root.isMember("id")) {
+                        struct_layer.type = get_block_id_from_name(structure_root["id"]);
                     }
-                    if (struct_root.isMember("upper") && struct_root["upper"].type() == Json::intValue) {
-                        str_layer.upper = struct_root["upper"].asInt();
+                    if (structure_root.isMember("lower") && structure_root["lower"].type() == Json::intValue) {
+                        struct_layer.lower = structure_root["lower"].asInt();
                     }
-                    if (struct_root.isMember("frequency") && (struct_root["frequency"].type() == Json::realValue || struct_root["frequency"].type() == Json::intValue)) {
-                        str_layer.frequency = struct_root["frequency"].asFloat();
+                    if (structure_root.isMember("upper") && structure_root["upper"].type() == Json::intValue) {
+                        struct_layer.upper = structure_root["upper"].asInt();
                     }
-                    if (struct_root.isMember("id") && struct_root["id"].type() == Json::stringValue) {
-                        const std::string &action = struct_root["id"].asString();
-                        if (action.compare("spawn") == 0) {
-                            // TOFU this is checkless, fuck that shit
-                            str_layer.type = get_block_id_from_name(struct_root["rid"]) - recipe_mask;
-                            spawn_layer_info spawn;
-                            if (struct_root.isMember("offset")) {
-                                spawn.offset = fvec3(struct_root["offset"][0].asInt(),
-                                                     struct_root["offset"][1].asInt(),
-                                                     struct_root["offset"][2].asInt());
-                            }
-                            spawn.layer = str_layer;
-                            binfo.spawn.push_back(spawn);
+                    if (structure_root.isMember("frequency") && (structure_root["frequency"].type() == Json::realValue || structure_root["frequency"].type() == Json::intValue) ) {
+                        struct_layer.frequency = structure_root["frequency"].asFloat();
+                    }
+                    binfo.structures.push_back(struct_layer);
+                }
+            }
+            if (biome_node.isMember("events") && biome_node["events"].type() == Json::arrayValue) {
+                int event_size = biome_node["events"].size();
+                for (int j = 0; j < event_size; j++) {
+                    Json::Value event_root = biome_node["events"][j];
+                    if (event_root.type() != Json::objectValue)
+                        continue;
+                    
+                    event_layer_info evt_layer;
+                    block_layer_info* evt_blk_layer = &(evt_layer.layer);
+                    Json::Value::Members members(event_root.getMemberNames());
+                    for (Json::Value::Members::iterator it = members.end() - 1;
+                         it >= members.begin();
+                         --it) {
+                        const std::string& name = *it;
+                        if (name.compare("lower") == 0 && event_root[name].type() == Json::intValue) {
+                            evt_blk_layer->lower = event_root[name].asInt();
                         }
-                        else if (action.compare("orespawn") == 0) {
-                            // TOFU this is checkless, fuck that shit
-                            str_layer.type = get_block_id_from_name(struct_root["rid"]);
-                            spawn_ore_layer_info spawn;
-                            if (struct_root.isMember("radius")) {
-                                spawn.radius = struct_root["radius"].asInt();
-                            }
-                            spawn.layer = str_layer;
-                            binfo.spawnores.push_back(spawn);
+                        else if (name.compare("upper") == 0 && event_root[name].type() == Json::intValue) {
+                            evt_blk_layer->upper = event_root[name].asInt();
+                        }
+                        else if (name.compare("frequency") == 0 && (event_root[name].type() == Json::realValue || event_root[name].type() == Json::intValue)) {
+                            evt_blk_layer->frequency = event_root[name].asFloat();
+                        }
+                        else if (name.compare("id") == 0 && event_root[name].type() == Json::stringValue) {
+                            evt_layer.name = event_root[name].asString();
+                        }
+                        else if (event_root[name].type() == Json::intValue || event_root[name].type() == Json::realValue) {
+                            // save into mapping directly
+                            evt_layer.event_parameters[name] = event_root[name].asFloat();
+                        }
+                        else if (event_root[name].type() == Json::stringValue) {
+                            // this must be a string referring to a block ID
+                            uint16_t bid = get_block_id_from_name(event_root[name]);
+                            evt_layer.event_parameters[name] = bid;
                         }
                     }
+                    binfo.events.push_back(evt_layer);
                 }
             }
             game_data_object->biome_info.push_back(binfo);
@@ -805,6 +827,11 @@ void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets) {
     }
 }
 
+ivec3 get_recipe_block_bounds(uint16_t vid) {
+    vid -= recipe_mask;
+    return game_data_object->recipe_info[vid].upper;
+}
+
 void fill_game_models(std::vector<fvec3> &model_vertices,
                       std::vector<fvec3> &model_normals,
                       std::vector<fvec3> &model_uvs,
@@ -858,3 +885,72 @@ uint16_t get_random_block_from_biome(uint16_t biome, int depth) {
     return 0;
     
 }
+
+void add_struct_in_biome_randomly(uint16_t biome, ivec3 pos,
+                                  std::vector<uint16_t> &sids,
+                                  std::vector<ivec3> &dimensions,
+                                  std::vector<ivec3> &positions) {
+    int precision = 10000;
+    for (int i = 0; i < game_data_object->biome_info[biome].structures.size(); i++) {
+        float rv = (rand() % precision) * 1.0 / precision;
+        block_layer_info current = game_data_object->biome_info[biome].structures[i];
+        if (rv < current.frequency) {
+            sids.push_back(current.type);
+            ivec3 pos_off;
+            if (current.type >= recipe_mask) {
+                // this is a recipe
+                dimensions.push_back(game_data_object->recipe_info[current.type - recipe_mask].upper);
+                pos_off.x = game_data_object->recipe_info[current.type - recipe_mask].upper.x / 2;
+                pos_off.y = game_data_object->recipe_info[current.type - recipe_mask].upper.y / 2;
+                pos_off.z = game_data_object->recipe_info[current.type - recipe_mask].upper.z / 2;
+            }
+            else {
+                dimensions.push_back(ivec3(1, 1, 1));
+                pos_off = ivec3(0,0,0);
+            }
+            int height = current.lower;
+            if (current.upper > current.lower) {
+                height = current.lower + (rand() % (current.upper - current.lower));
+            }
+            ivec3 struct_pos = ivec3(pos.x - pos_off.x, pos.y - height - 1, pos.z - pos_off.z);
+            positions.push_back(struct_pos);
+        }
+    }
+}
+
+bool is_within_chunk(ivec3 pos) {
+    return pos.x >= 0 && pos.x < CX
+    && pos.y >= 0 && pos.y < CY
+    && pos.z >= 0 && pos.z < CZ;
+}
+
+void add_recipe_block_to_chunk(block_type to_arr[CX][CY][CZ], uint16_t recipe,
+                               ivec3 chunk_pos, ivec3 recipe_pos) {
+    // get vector of blocks at the position
+    // offset it by the position of the structure
+    // then see if that position is within our chunk
+    // if so, then scale it into CRC and then set it in our array
+    if (recipe < recipe_mask) {
+        ivec3 aligned_pos = ivec3(recipe_pos.x - chunk_pos.x*CX,
+                                  recipe_pos.y - chunk_pos.y*CY,
+                                  recipe_pos.z - chunk_pos.z*CZ);
+        if (is_within_chunk(aligned_pos)) {
+            to_arr[aligned_pos.x][aligned_pos.y][aligned_pos.z] = block_type(recipe);
+        }
+    }
+    else {
+        int recipe_block_count = (int)game_data_object->recipe_info[recipe - recipe_mask].blks.size();
+        for (int i = 0; i < recipe_block_count; i++) {
+            ivec3 offset = game_data_object->recipe_info[recipe - recipe_mask].positions[i];
+            ivec3 aligned_pos = ivec3(recipe_pos.x - chunk_pos.x*CX + offset.x,
+                                      recipe_pos.y - chunk_pos.y*CY + offset.y,
+                                      recipe_pos.z - chunk_pos.z*CZ + offset.z);
+            if (is_within_chunk(aligned_pos)) {
+                uint16_t block = game_data_object->recipe_info[recipe - recipe_mask].blks[i];
+                to_arr[aligned_pos.x][aligned_pos.y][aligned_pos.z] = block_type(block);
+            }
+        }
+    }
+}
+
+

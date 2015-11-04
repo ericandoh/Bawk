@@ -10,7 +10,7 @@
 #define Bawk_world_generator_structures_h
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <climits>
 
@@ -52,21 +52,12 @@ struct block_layer_info {
     }
 };
 
-struct spawn_layer_info {
+struct event_layer_info {
     block_layer_info layer;
-    fvec3 offset;
-    spawn_layer_info() {
+    std::string name;
+    std::unordered_map<std::string, float> event_parameters;
+    event_layer_info() {
         layer = block_layer_info();
-        offset = fvec3(0, 0, 0);
-    }
-};
-
-struct spawn_ore_layer_info {
-    block_layer_info layer;
-    int radius;
-    spawn_ore_layer_info() {
-        layer = block_layer_info();
-        radius = 1;
     }
 };
 
@@ -75,8 +66,8 @@ struct biome_game_info {
     float strength;
     float persistence;
     std::vector<block_layer_info> blocks;
-    std::vector<spawn_layer_info> spawn;
-    std::vector<spawn_ore_layer_info> spawnores;
+    std::vector<block_layer_info> structures;
+    std::vector<event_layer_info> events;
     biome_game_info() {
         name = "empty";
         strength = 0;

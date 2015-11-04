@@ -46,6 +46,7 @@ std::vector<int> get_block_default_keyboard_bindings(block_type block_id);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);
 void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets);
+ivec3 get_recipe_block_bounds(uint16_t vid);
 
 // some world generation methods below
 
@@ -58,5 +59,11 @@ void fill_game_models(std::vector<fvec3> &model_vertices,
 float get_biome_strength(uint16_t biome);
 float get_biome_persistence(uint16_t biome);
 uint16_t get_random_block_from_biome(uint16_t biome, int depth);
-
+void add_struct_in_biome_randomly(uint16_t biome, ivec3 pos,
+                                  std::vector<uint16_t> &sids,
+                                  std::vector<ivec3> &dimensions,
+                                  std::vector<ivec3> &positions);
+// adds the recipe ID
+void add_recipe_block_to_chunk(block_type to_arr[CX][CY][CZ], uint16_t recipe,
+                               ivec3 chunk_pos, ivec3 recipe_pos);
 #endif /* defined(__Bawk__game_info_loader__) */

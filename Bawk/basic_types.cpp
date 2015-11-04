@@ -39,6 +39,14 @@ ivec3 get_ivec3_minimum(ivec3 a, ivec3 b) {
     return result;
 }
 
+ivec3 get_ivec3_maximum(ivec3 a, ivec3 b) {
+    ivec3 result;
+    result.x = std::max(a.x, b.x);
+    result.y = std::max(a.y, b.y);
+    result.z = std::max(a.z, b.z);
+    return result;
+}
+
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b) {
     bounding_box result;
     result.lower.x = std::max(a.lower.x, b.lower.x);
