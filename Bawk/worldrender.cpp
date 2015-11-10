@@ -106,12 +106,28 @@ void set_block_draw_mode(int v) {
     glUniform1i(geometry_draw_mode, v);
 }
 
-void set_transform_matrix(fmat4 mvp) {
+void set_unitary_transform_matrix() {
+    glm::mat4 one(1);
+    glUniformMatrix4fv(geometry_mvp, 1, GL_FALSE, glm::value_ptr(one));
+    glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(one));
+}
+
+void set_transform_matrix(fmat4 mvp, fmat4 view) {
     glUniformMatrix4fv(geometry_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-    // TODO FROG FROG FROG THIS NEEDS TO BE CHANGED LIKE MAJOR CHANGED
-    glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(view));
 }
 
 void set_shader_intensity(float m) {
     glUniform1f(geometry_intensity, m);
+}
+
+void set_lighting_block_draw_mode(int v) {
+    glUniform1i(lighting_draw_mode, v);
+}
+void set_lighting_transform_matrix(fmat4 mvp) {
+    glUniformMatrix4fv(lighting_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+}
+
+void set_lighting_screen_size(float width, float height) {
+    glUniform2f(lighting_screen_size, width, height);
 }

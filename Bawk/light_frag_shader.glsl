@@ -36,6 +36,7 @@ vec2 get_tex_coord() {
 
 void main(void) {
     vec2 texcoord = get_tex_coord();
+    // use the worldpos to do lighting calculations
     vec3 worldpos = texture(g_position_map, texcoord).xyz;
     vec3 color_o = texture(g_color_map, texcoord).xyz;
     vec3 color_t = texture(g_color_t_map, texcoord).xyz;
@@ -56,4 +57,6 @@ void main(void) {
         // directional light or whatnot
         out_color.xyz = color;
     }
+    out_color.w = 1.0;
+    //out_color = vec4(0.5,0.6,0.3,0.4);
 }

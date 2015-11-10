@@ -24,11 +24,14 @@ void main(void) {
         //vec4 color = texture(tile_texture, g_texcoord.xy);
         vec4 color = texture(tile_texture, imgcoord);
         color.xyz *= g_intensity;
-        //if(color.a < 0.3)
-        //    discard;
+        if(color.a < 0.3)
+            discard;
         color_out_t = color.xyz;
-        //if(color.a > 0.7)
-        color_out = color.xyz;
+        if(color.a > 0.7)
+            color_out = color.xyz;
+        else
+            discard;
+        //color_out = vec3(0,0,0);
     }
     else if (g_drawmode == 1) {
         int shaderflags = int(g_texcoord.z);
@@ -36,8 +39,7 @@ void main(void) {
         float intensity;
         if (mod(shaderflags, 0x2) > 0) {
             // we have a top or bottom face (texture_coord.z = 1)
-            //imgcoord = vec2((fract(gv_coord.x) + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.z) + g_texcoord.y) / 16.0);
-            imgcoord = vec2((fract(gv_coord.x) + g_texcoord.x + 1) / 16.0, 1.0 - (fract(gv_coord.z) + g_texcoord.y + 6) / 16.0);
+            imgcoord = vec2((fract(gv_coord.x) + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.z) + g_texcoord.y) / 16.0);
             intensity = 1.0;
         } else {
             // we have a side face
@@ -47,11 +49,14 @@ void main(void) {
         vec4 color = texture(tile_texture, imgcoord);
         color.xyz *= intensity;
         color.xyz *= g_intensity;
-        //if(color.a < 0.3)
-        //    discard;
+        if(color.a < 0.3)
+            discard;
         color_out_t = color.xyz;
-        //if(color.a > 0.7)
-        color_out = color.xyz;
+        if(color.a > 0.7)
+            color_out = color.xyz;
+        else
+            discard;
+        //color_out = vec3(0,0,0);
     }
     else {
         color_out = g_texcoord.xyz * g_intensity;

@@ -189,9 +189,6 @@ int bind_geometry_shader_attributes(GLuint program) {
     errors += get_uniform_location(&geometry_intensity, "g_intensity", program);
     errors += get_uniform_location(&geometry_tile_texture, "tile_texture", program);
     
-    glEnableVertexAttribArray(geometry_coord);
-    glEnableVertexAttribArray(geometry_texture_coord);
-    
     if (errors) {
         printf("Could not bind one of the above variables. Aborting\n");
         return errors;
@@ -215,8 +212,6 @@ int bind_light_shader_attributes(GLuint program) {
     errors += get_uniform_location(&lighting_screen_size, "l_screen_size", program);
     //errors += get_uniform_location(&lighting_val, "l_val", program);
     errors += get_uniform_location(&lighting_draw_mode, "l_draw_mode", program);
-    
-    glEnableVertexAttribArray(lighting_coord);
     
     if (errors) {
         printf("Could not bind one of the above variables. Aborting\n");

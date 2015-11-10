@@ -109,7 +109,7 @@ void GBuffer::bind_for_read() {
     glUniform1i(lighting_position_map, texture_offset);
     glUniform1i(lighting_color_map, texture_offset + 1);
     glUniform1i(lighting_color_t_map, texture_offset + 2);
-    glUniform1i(lighting_normal_map, texture_offset + 3);
+    //glUniform1i(lighting_normal_map, texture_offset + 3);
 }
 
 void GBuffer::bind_for_readg() {

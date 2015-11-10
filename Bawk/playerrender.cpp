@@ -72,8 +72,7 @@ void RenderablePlayer::render() {
         {0.5f, 0.5f, 0.5f},
     };
     
-    glm::mat4 one(1);
-    set_transform_matrix(one);
+    set_unitary_transform_matrix();
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof cross, cross, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(geometry_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);

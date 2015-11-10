@@ -116,7 +116,7 @@ void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
     fmat4 view = glm::translate(fmat4(1), fvec3(bx,by,bz));
     fmat4 mvp = *transform * view;
     
-    set_transform_matrix(mvp);
+    set_transform_matrix(mvp, view);
     set_block_draw_mode(1);
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());

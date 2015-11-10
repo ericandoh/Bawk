@@ -207,7 +207,10 @@ void display_close() {
     glfwTerminate();
 }
 
+// DEPRECATED THIS IS DEPRECATED
+// VERSION 1.1
 void show_depth_peeler() {
+    // DEPRECATED
     //glViewport(0, 0, width, height);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, tile_texture);
@@ -233,7 +236,7 @@ void show_depth_peeler() {
     };
     
     glm::mat4 one(1);
-    set_transform_matrix(one);
+    set_unitary_transform_matrix();
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
@@ -250,13 +253,12 @@ void render_geometry() {
     check_for_error();
     // VERSION 1.1 NOT SUPPORTED
     glUseProgram(geometry_program);
+    glEnableVertexAttribArray(geometry_coord);
+    glEnableVertexAttribArray(geometry_texture_coord);
     glUniform1i(geometry_tile_texture, 0);
     g_buffer.bind_for_write();
     
     check_for_error();
-    
-    glEnableVertexAttribArray(geometry_coord);
-    glEnableVertexAttribArray(geometry_texture_coord);
     
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
@@ -345,13 +347,30 @@ void render_g_buffer() {
 void render_lights() {
     check_for_error();
     glUseProgram(lighting_program);
+    check_for_error();
+    glEnableVertexAttribArray(lighting_coord);
+    
+    check_for_error();
+    
+    int wwidth, wheight;
+    glfwGetFramebufferSize(window, &wwidth, &wheight);
+    // VERSION 1.1 NOT SUPPORTED
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    check_for_error();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, wwidth, wheight);
+    check_for_error();
+    
     g_buffer.bind_for_read();
+    
+    check_for_error();
     
     glDisable(GL_DEPTH_TEST);
     // TODO set a BLENDING FUNCTION HERE URGENT URGENT IF SHIT GOES WRONG THIS IS IT
     // FROG FROG FROG
     
-    set_block_draw_mode(0);
+    set_lighting_block_draw_mode(0);
+    set_lighting_screen_size(wwidth, wheight);
     float vertex[6][3] = {
         {-1, -1, 0},
         {1, -1, 0},
@@ -362,7 +381,9 @@ void render_lights() {
     };
     
     glm::mat4 one(1);
-    set_transform_matrix(one);
+    set_lighting_transform_matrix(one);
+    
+    check_for_error();
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
@@ -389,7 +410,8 @@ int display_run()
         }
         
         render_geometry();
-        render_g_buffer();
+        //render_g_buffer();
+        render_lights();
         
         check_for_error();
         
