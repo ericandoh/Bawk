@@ -14,6 +14,8 @@
 // REMOVEME
 #include "texture_loader.h"
 #include "gbuffer.h"
+#include "shader_loader.h"
+#include "worldrender.h"
 
 // 30 fps
 const double FRAME_RATE=30.0;
@@ -101,6 +103,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
         current_display->scroll_callback(xoffset, yoffset);
 }
 
+void check_for_error() {
+    int error = glGetError();
+    if (error != 0) {
+        printf("Error in OPENGL: %d\n",error);
+    }
+}
+
 int init_display() {
     /* Initialize the library */
     if (!glfwInit())
@@ -144,7 +153,8 @@ int init_display() {
     // note: window width, height NOT equal to pixel width we give to GLFW window
     get_window_size(&wwidth, &wheight);
     printf("0 %d\n",glGetError());
-    g_buffer.init(wwidth, wheight);
+    // 1 for the tile texture we have at GL_TEXTURE0
+    g_buffer.init(wwidth, wheight, 1);
     
     /* Connect inputs to game */
     glfwSetKeyCallback(window, key_callback);
@@ -155,8 +165,7 @@ int init_display() {
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
     
-    printf("1 %d\n",glGetError());
-    
+    check_for_error();
     if (version <= 1) {
         // VERSION 1.1
         glEnable(GL_TEXTURE_2D);
@@ -173,6 +182,13 @@ int init_display() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     printf("3 %d\n",glGetError());*/
+    
+    if (set_shaders()) {
+        return 1;
+    }
+    
+    check_for_error();
+    
     return 0;
 }
 
@@ -186,12 +202,15 @@ void close_render_loop() {
 
 void display_close() {
     glDeleteTextures(1, &depth_peeling_texture);
+    glDeleteProgram(geometry_program);
+    glDeleteProgram(lighting_program);
     glfwTerminate();
 }
 
 void show_depth_peeler() {
     //glViewport(0, 0, width, height);
-    glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tile_texture);
     glDisable(GL_DEPTH_TEST);
     
     set_block_draw_mode(0);
@@ -218,22 +237,32 @@ void show_depth_peeler() {
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(geometry_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
     glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof texture, texture, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(texture_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(geometry_texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void render_geometry() {
+    check_for_error();
     // VERSION 1.1 NOT SUPPORTED
+    glUseProgram(geometry_program);
+    glUniform1i(geometry_tile_texture, 0);
     g_buffer.bind_for_write();
+    
+    check_for_error();
+    
+    glEnableVertexAttribArray(geometry_coord);
+    glEnableVertexAttribArray(geometry_texture_coord);
     
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glEnable(GL_DEPTH_TEST);
+    
+    check_for_error();
     
     /*// reset viewport to window width, assume we're rendering on the whole screen
     glViewport(0, 0, width, height);
@@ -249,59 +278,98 @@ void render_geometry() {
     
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glActiveTexture(GL_TEXTURE0);
-    glEnable(GL_TEXTURE_2D);
+    check_for_error();
+    set_shader_intensity(0.5f);
+    check_for_error();
     
-    set_alpha_set(1.0f);
-    bind_to_tiles();
-    set_alpha_cutoff(2.0f/3.0f);
+    //set_alpha_set(1.0f);
+    //bind_to_tiles();
+    //set_alpha_cutoff(2.0f/3.0f);
     current_display->render();
+    check_for_error();
+    
+    glViewport(0, 0, width, height);
+    //show_depth_peeler();
+    
     //glFlush();
     glFinish();
     // render the transparency texture
     //set_alpha_set(0.5f);
     //show_depth_peeler();
+    check_for_error();
 }
 
 void render_g_buffer() {
-    // use only for debugging
-    //printf("4 %d\n",glGetError());
+    check_for_error();
     
     int wwidth, wheight;
     glfwGetFramebufferSize(window, &wwidth, &wheight);
     
     // VERSION 1.1 NOT SUPPORTED
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
+    check_for_error();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, wwidth, wheight);
-    
-    g_buffer.bind_for_read();
+    check_for_error();
+    g_buffer.bind_for_readg();
     
     GLsizei halfwwidth = (GLsizei)(wwidth / 2.0f);
     GLsizei halfwheight = (GLsizei)(wheight / 2.0f);
     
-    // bottom left is position
+    check_for_error();
+    
     g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
     glBlitFramebuffer(0, 0, wwidth, wheight,
                       0, 0, halfwwidth, halfwheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     
     // top left is diffuse
-    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_COLOR);
     glBlitFramebuffer(0, 0, wwidth, wheight,
                       0, halfwheight, halfwwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     
     // top right is normals
-    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_COLOR_T);
     glBlitFramebuffer(0, 0, wwidth, wheight,
                       halfwwidth, halfwheight, wwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     
     // bottom right is texcoord...?
-    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_TEXCOORD);
+    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
     glBlitFramebuffer(0, 0, wwidth, wheight,
                       halfwwidth, 0, wwidth, halfwheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     //glFlush();
+    check_for_error();
     glFinish();
+    check_for_error();
+}
+
+void render_lights() {
+    check_for_error();
+    glUseProgram(lighting_program);
+    g_buffer.bind_for_read();
+    
+    glDisable(GL_DEPTH_TEST);
+    // TODO set a BLENDING FUNCTION HERE URGENT URGENT IF SHIT GOES WRONG THIS IS IT
+    // FROG FROG FROG
+    
+    set_block_draw_mode(0);
+    float vertex[6][3] = {
+        {-1, -1, 0},
+        {1, -1, 0},
+        {-1, 1, 0},
+        {-1, 1, 0},
+        {1, -1, 0},
+        {1, 1, 0},
+    };
+    
+    glm::mat4 one(1);
+    set_transform_matrix(one);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(lighting_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    check_for_error();
 }
 
 int display_run()
@@ -322,6 +390,8 @@ int display_run()
         
         render_geometry();
         render_g_buffer();
+        
+        check_for_error();
         
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

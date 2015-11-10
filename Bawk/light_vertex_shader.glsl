@@ -1,8 +1,8 @@
-#version 150
+#version 330
 
-in vec3 coord;
-uniform mat4 mvp;
+in vec3 l_coord;
+uniform mat4 l_mvp;
 
 void main(void) {
-    gl_Position = mvp * vec4(coord, 1);
+    gl_Position = l_mvp * vec4(l_coord, 1);
 }

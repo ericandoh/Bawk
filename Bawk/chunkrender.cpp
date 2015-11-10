@@ -474,10 +474,10 @@ void RenderableChunk::render() {
         
         // Render the VBO here
         glBindBuffer(GL_ARRAY_BUFFER, coord_vbo);
-        glVertexAttribPointer(block_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+        glVertexAttribPointer(geometry_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
         
         glBindBuffer(GL_ARRAY_BUFFER, texture_vbo);
-        glVertexAttribPointer(texture_attribute_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+        glVertexAttribPointer(geometry_texture_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
         
         glDrawArrays(GL_TRIANGLES, 0, elements);
     }
@@ -489,11 +489,11 @@ void RenderableChunk::render() {
         
         glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
         glBufferData(GL_ARRAY_BUFFER, model_vertices.size() * sizeof(fvec3), &(model_vertices[0]), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(block_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(geometry_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
         
         glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
         glBufferData(GL_ARRAY_BUFFER, model_uvs.size() * sizeof(fvec3), &(model_uvs[0]), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(texture_attribute_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(geometry_texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_TRIANGLES, 0, num_triangles);
     }
 }

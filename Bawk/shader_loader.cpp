@@ -15,8 +15,13 @@
 #include "shader_loader.h"
 #include "worldrender.h"
 
-const std::string VERTEX_SHADER = "vertex_shader.glsl";
-const std::string FRAG_SHADER = "frag_shader.glsl";
+// VERSION 1.1
+// TODO references to old shaders here
+
+const std::string GEOMETRY_VERTEX_SHADER = "vertex_shader.glsl";
+const std::string GEOMETRY_FRAG_SHADER = "frag_shader.glsl";
+const std::string LIGHTING_VERTEX_SHADER = "light_vertex_shader.glsl";
+const std::string LIGHTING_FRAG_SHADER = "light_frag_shader.glsl";
 
 long get_file_length(std::string file_name) {
     // TODO (handle if file not found)
@@ -33,21 +38,21 @@ void load_file(std::string& str, std::string file_name) {
                std::istreambuf_iterator<char>());
 }
 
-int set_shaders() {
-    printf("Setting shaders\n");
-    
+int compile_program(GLuint* program,
+                    const std::string vertex_shader_file,
+                    const std::string frag_shader_file) {
     std::string vertexSource;
     std::string fragmentSource;
     
-    long vertex_shader_length = get_file_length(VERTEX_SHADER);
-    long frag_shader_length = get_file_length(FRAG_SHADER);
+    long vertex_shader_length = get_file_length(vertex_shader_file);
+    long frag_shader_length = get_file_length(frag_shader_file);
     
     vertexSource.reserve(vertex_shader_length);
     fragmentSource.reserve(frag_shader_length);
     
     //Read our shaders into the appropriate buffers
-    load_file(vertexSource, VERTEX_SHADER); //Get source code for vertex shader.
-    load_file(fragmentSource, FRAG_SHADER); //Get source code for fragment shader.
+    load_file(vertexSource, vertex_shader_file); //Get source code for vertex shader.
+    load_file(fragmentSource, frag_shader_file); //Get source code for fragment shader.
     
     //Create an empty vertex shader handle
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -76,11 +81,7 @@ int set_shaders() {
         
         //We don't need the shader anymore.
         glDeleteShader(vertexShader);
-        
-        //Use the infoLog as you see fit.
-        
-        //In this simple program, we'll just leave
-        return -1;
+        return 1;
     }
     
     //Create an empty fragment shader handle
@@ -111,111 +112,129 @@ int set_shaders() {
         glDeleteShader(fragmentShader);
         //Either of them. Don't leak shaders.
         glDeleteShader(vertexShader);
-        
-        //Use the infoLog as you see fit.
-        
-        //In this simple program, we'll just leave
-        return -1;
+        return 1;
     }
-    
-    
     
     //Vertex and fragment shaders are successfully compiled.
     //Now time to link them together into a program.
     //Get a program object.
-    program = glCreateProgram();
+    *program = glCreateProgram();
     
     //Attach our shaders to our program
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
+    glAttachShader(*program, vertexShader);
+    glAttachShader(*program, fragmentShader);
     
     //Link our program
-    glLinkProgram(program);
+    glLinkProgram(*program);
     
     //Note the different functions here: glGetProgram* instead of glGetShader*.
     GLint isLinked = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
+    glGetProgramiv(*program, GL_LINK_STATUS, (int *)&isLinked);
     if(isLinked == GL_FALSE)
     {
         GLint maxLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+        glGetProgramiv(*program, GL_INFO_LOG_LENGTH, &maxLength);
         
         //The maxLength includes the NULL character
         GLchar *info_log;
         info_log = (GLchar*)malloc(maxLength);
-        glGetProgramInfoLog(program, maxLength, &maxLength, info_log);
+        glGetProgramInfoLog(*program, maxLength, &maxLength, info_log);
         fprintf(stderr, "Program compilation failed: %*s\n", maxLength, info_log);
         free(info_log);
         
         //We don't need the program anymore.
-        glDeleteProgram(program);
+        glDeleteProgram(*program);
         //Don't leak shaders either.
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
-        
-        //Use the infoLog as you see fit.
-        
-        //In this simple program, we'll just leave
-        return -1;
+        return 1;
     }
+    //We don't need these anymore
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
     
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
-    
-    const char* attribute_name = "coord";
-    block_attribute_coord = glGetAttribLocation(program, attribute_name);
-    if (block_attribute_coord == -1) {
-        fprintf(stderr, "Could not bind attribute %s\n", attribute_name);
-        return -1;
+    return 0;
+}
+
+int get_attrib_location(GLuint* dst, const std::string &attribute_name, GLuint program) {
+    *dst = glGetAttribLocation(program, attribute_name.c_str());
+    if (*dst == -1) {
+        fprintf(stderr, "Could not bind attribute %s\n", attribute_name.c_str());
+        return 1;
     }
-    
-    const char* texture_attribute_name = "texture_coord";
-    texture_attribute_coord = glGetAttribLocation(program, texture_attribute_name);
-    if (texture_attribute_coord == -1) {
-        fprintf(stderr, "Could not bind attribute %s\n", texture_attribute_name);
-        return -1;
+    return 0;
+}
+
+int get_uniform_location(GLuint* dst, const std::string &attribute_name, GLuint program) {
+    *dst = glGetUniformLocation(program, attribute_name.c_str());
+    if (*dst == -1) {
+        fprintf(stderr, "Could not bind uniform %s\n", attribute_name.c_str());
+        return 1;
     }
+    return 0;
+}
+
+// call this to bind attribute names 
+int bind_geometry_shader_attributes(GLuint program) {
+    int errors = 0;
     
-    const char* uniform_name = "mvp";
-    block_uniform_mvp = glGetUniformLocation(program, uniform_name);
-    if (block_uniform_mvp == -1) {
-        fprintf(stderr, "Could not bind attribute %s\n",uniform_name);
-        return false;
+    errors += get_attrib_location(&geometry_coord, "g_coord", program);
+    errors += get_attrib_location(&geometry_texture_coord, "g_texturecoord", program);
+    
+    errors += get_uniform_location(&geometry_mvp, "g_mvp", program);
+    errors += get_uniform_location(&geometry_world_transform, "g_worldtransform", program);
+    errors += get_uniform_location(&geometry_draw_mode, "g_drawmode", program);
+    errors += get_uniform_location(&geometry_intensity, "g_intensity", program);
+    errors += get_uniform_location(&geometry_tile_texture, "tile_texture", program);
+    
+    glEnableVertexAttribArray(geometry_coord);
+    glEnableVertexAttribArray(geometry_texture_coord);
+    
+    if (errors) {
+        printf("Could not bind one of the above variables. Aborting\n");
+        return errors;
     }
+    printf("Done loading geometry shaders: %d\n", glGetError());
+    return 0;
+}
+
+// call this to bind attribute names
+int bind_light_shader_attributes(GLuint program) {
+    int errors = 0;
     
-    const char* uniform_draw_mode_name = "draw_mode";
-    block_uniform_draw_mode = glGetUniformLocation(program, uniform_draw_mode_name);
-    if (block_uniform_draw_mode == -1) {
-        fprintf(stderr, "Could not bind attribute %s\n",uniform_draw_mode_name);
-        return false;
+    errors += get_attrib_location(&lighting_coord, "l_coord", program);
+    errors += get_uniform_location(&lighting_mvp, "l_mvp", program);
+    
+    errors += get_uniform_location(&lighting_position_map, "g_position_map", program);
+    errors += get_uniform_location(&lighting_color_map, "g_color_map", program);
+    errors += get_uniform_location(&lighting_color_t_map, "g_color_t_map", program);
+    //errors += get_uniform_location(&lighting_normal_map, "g_normal_map", program);
+    
+    errors += get_uniform_location(&lighting_screen_size, "l_screen_size", program);
+    //errors += get_uniform_location(&lighting_val, "l_val", program);
+    errors += get_uniform_location(&lighting_draw_mode, "l_draw_mode", program);
+    
+    glEnableVertexAttribArray(lighting_coord);
+    
+    if (errors) {
+        printf("Could not bind one of the above variables. Aborting\n");
+        return errors;
     }
-    /*
-    const char* uniform_shade_intensity_name = "shade_intensity";
-    block_shader_intensity = glGetUniformLocation(program, uniform_shade_intensity_name);
-    if (block_shader_intensity == -1) {
-        fprintf(stderr, "Could not bind attribute %s\n",uniform_shade_intensity_name);
-        return false;
-    }
+    printf("Done loading lighting shaders: %d\n", glGetError());
+    return 0;
+}
+
+int set_shaders() {
+    if (compile_program(&geometry_program, GEOMETRY_VERTEX_SHADER, GEOMETRY_FRAG_SHADER))
+        return 1;
+    if (bind_geometry_shader_attributes(geometry_program))
+        return 1;
     
-    const char* uniform_alpha_cutoff_name = "alpha_cutoff";
-    block_alpha_cutoff = glGetUniformLocation(program, uniform_alpha_cutoff_name);
-    if (block_alpha_cutoff == -1) {
-        fprintf(stderr, "Could not bind attribute %s\n",uniform_alpha_cutoff_name);
-        return false;
-    }
-    
-    const char* uniform_alpha_set_name = "alpha_set";
-    block_alpha_set = glGetUniformLocation(program, uniform_alpha_set_name);
-    if (block_alpha_set == -1) {
-        fprintf(stderr, "Could not bind attribute %s\n",uniform_alpha_set_name);
-        return false;
-    }*/
-    
-    glEnableVertexAttribArray(block_attribute_coord);
-    glEnableVertexAttribArray(texture_attribute_coord);
-    
-    printf("4 %d\n",glGetError());
-    
-    printf("Done loading shaders\n");
+    if (compile_program(&lighting_program, LIGHTING_VERTEX_SHADER, LIGHTING_FRAG_SHADER))
+        return 1;
+    if (bind_light_shader_attributes(lighting_program))
+        return 1;
     return 0;
 }

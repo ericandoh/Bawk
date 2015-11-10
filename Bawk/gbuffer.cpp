@@ -7,6 +7,7 @@
 //
 
 #include "gbuffer.h"
+#include "worldrender.h"
 
 GBuffer::GBuffer()
 {
@@ -15,6 +16,7 @@ GBuffer::GBuffer()
     for (int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
         m_textures[i] = 0;
     }
+    texture_offset = 0;
 }
 
 GBuffer::~GBuffer()
@@ -32,7 +34,7 @@ GBuffer::~GBuffer()
     }
 }
 
-bool GBuffer::init(unsigned int wwidth, unsigned int wheight) {
+bool GBuffer::init(unsigned int wwidth, unsigned int wheight, unsigned int to) {
     // Create the FBO
     glGenFramebuffers(1, &m_fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
@@ -89,6 +91,8 @@ bool GBuffer::init(unsigned int wwidth, unsigned int wheight) {
     // restore default FBO
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     
+    texture_offset = to;
+    
     return true;
 }
 
@@ -97,6 +101,18 @@ void GBuffer::bind_for_write() {
 }
 
 void GBuffer::bind_for_read() {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
+    for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
+        glActiveTexture(GL_TEXTURE0 + i + texture_offset);
+        glBindTexture(GL_TEXTURE_2D, m_textures[i]);
+    }
+    glUniform1i(lighting_position_map, texture_offset);
+    glUniform1i(lighting_color_map, texture_offset + 1);
+    glUniform1i(lighting_color_t_map, texture_offset + 2);
+    glUniform1i(lighting_normal_map, texture_offset + 3);
+}
+
+void GBuffer::bind_for_readg() {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
 }
 

@@ -58,6 +58,8 @@
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
 		07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C4263A1BBCC5700045D796 /* chunkrender.cpp */; };
+		07CCD6571BF1D309001C50CF /* light_frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3F91BED27860088744F /* light_frag_shader.glsl */; };
+		07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3FA1BED27860088744F /* light_vertex_shader.glsl */; };
 		07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */; };
 		07F6906F1BD388F900818867 /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F6906D1BD388F900818867 /* testing.cpp */; };
 		07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FA18381BE5ACAB00C7319C /* worldevent.cpp */; };
@@ -71,6 +73,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				07CCD6571BF1D309001C50CF /* light_frag_shader.glsl in CopyFiles */,
+				07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */,
 				071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */,
 				0766EAF51BBF7CDA00477144 /* tiles.png in CopyFiles */,
 				07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */,

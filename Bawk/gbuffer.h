@@ -17,22 +17,24 @@
 class GBuffer {
 public:
     enum GBUFFER_TEXTURE_TYPE {
-        GBUFFER_TEXTURE_TYPE_POSITION = 0,
-        GBUFFER_TEXTURE_TYPE_DIFFUSE = 1,
-        GBUFFER_TEXTURE_TYPE_NORMAL = 2,
-        GBUFFER_TEXTURE_TYPE_TEXCOORD = 3,
-        GBUFFER_NUM_TEXTURES = 4
+        GBUFFER_TEXTURE_TYPE_POSITION,
+        GBUFFER_TEXTURE_TYPE_COLOR,
+        GBUFFER_TEXTURE_TYPE_COLOR_T,
+        GBUFFER_TEXTURE_TYPE_NORMAL,
+        GBUFFER_NUM_TEXTURES
     };
     GBuffer();
     ~GBuffer();
-    bool init(unsigned int wwidth, unsigned int wheight);
+    bool init(unsigned int wwidth, unsigned int wheight, unsigned int to);
     void bind_for_write();
     void bind_for_read();
+    void bind_for_readg();
     void set_read_buffer(GBUFFER_TEXTURE_TYPE type);
 private:
     GLuint m_fbo;
     GLuint m_textures[GBUFFER_NUM_TEXTURES];
     GLuint m_depthTexture;
+    unsigned int texture_offset;
 };
 
 #endif /* defined(__Bawk__gbuffer__) */

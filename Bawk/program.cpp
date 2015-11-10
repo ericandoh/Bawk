@@ -53,7 +53,8 @@ void exit_game() {
 
 int run_game() {
     // initializes the display for the game
-    init_display();
+    if (init_display())
+        return 1;
     
     // the starting display of the game
     current = GAME;
