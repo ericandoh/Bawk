@@ -13,12 +13,14 @@
 
 // REMOVEME
 #include "texture_loader.h"
+#include "gbuffer.h"
 
 // 30 fps
 const double FRAME_RATE=30.0;
 const double TIME_PER_FRAME = 1.0 / FRAME_RATE;
 
 GLFWwindow* window;
+GBuffer g_buffer;
 
 GLuint depth_peeling_texture;
 
@@ -136,6 +138,14 @@ int init_display() {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     
+    /* Create the G-Buffer */
+    // VERSION 1.1 NOT SUPPORTED
+    int wwidth, wheight;
+    // note: window width, height NOT equal to pixel width we give to GLFW window
+    get_window_size(&wwidth, &wheight);
+    printf("0 %d\n",glGetError());
+    g_buffer.init(wwidth, wheight);
+    
     /* Connect inputs to game */
     glfwSetKeyCallback(window, key_callback);
     
@@ -155,14 +165,14 @@ int init_display() {
         
     }
     
-    printf("2 %d\n",glGetError());
+    /*printf("2 %d\n",glGetError());
     glGenTextures(1, &depth_peeling_texture);
     glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
     get_window_size(&width, &height);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    printf("3 %d\n",glGetError());
+    printf("3 %d\n",glGetError());*/
     return 0;
 }
 
@@ -180,6 +190,7 @@ void display_close() {
 }
 
 void show_depth_peeler() {
+    //glViewport(0, 0, width, height);
     glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
     glDisable(GL_DEPTH_TEST);
     
@@ -216,44 +227,101 @@ void show_depth_peeler() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
+void render_geometry() {
+    // VERSION 1.1 NOT SUPPORTED
+    g_buffer.bind_for_write();
+    
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    glEnable(GL_DEPTH_TEST);
+    
+    /*// reset viewport to window width, assume we're rendering on the whole screen
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    set_alpha_set(1.0f);
+    bind_to_tiles();
+    set_alpha_cutoff(1.0f/3.0f);
+    current_display->render();
+    glFlush();
+    
+    glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
+    glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);*/
+    
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    
+    set_alpha_set(1.0f);
+    bind_to_tiles();
+    set_alpha_cutoff(2.0f/3.0f);
+    current_display->render();
+    //glFlush();
+    glFinish();
+    // render the transparency texture
+    //set_alpha_set(0.5f);
+    //show_depth_peeler();
+}
+
+void render_g_buffer() {
+    // use only for debugging
+    //printf("4 %d\n",glGetError());
+    
+    int wwidth, wheight;
+    glfwGetFramebufferSize(window, &wwidth, &wheight);
+    
+    // VERSION 1.1 NOT SUPPORTED
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, wwidth, wheight);
+    
+    g_buffer.bind_for_read();
+    
+    GLsizei halfwwidth = (GLsizei)(wwidth / 2.0f);
+    GLsizei halfwheight = (GLsizei)(wheight / 2.0f);
+    
+    // bottom left is position
+    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+    glBlitFramebuffer(0, 0, wwidth, wheight,
+                      0, 0, halfwwidth, halfwheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    
+    // top left is diffuse
+    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+    glBlitFramebuffer(0, 0, wwidth, wheight,
+                      0, halfwheight, halfwwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    
+    // top right is normals
+    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+    glBlitFramebuffer(0, 0, wwidth, wheight,
+                      halfwwidth, halfwheight, wwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    
+    // bottom right is texcoord...?
+    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_TEXCOORD);
+    glBlitFramebuffer(0, 0, wwidth, wheight,
+                      halfwwidth, 0, wwidth, halfwheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    //glFlush();
+    glFinish();
+}
+
 int display_run()
 {
     should_exit = false;
     need_refresh_time = glfwGetTime() + TIME_PER_FRAME;
     /* Loop until the user closes the window */
-    int width, height;
     while (!(glfwWindowShouldClose(window) || should_exit))
     {
+        
+        //printf("4 %d\n",glGetError());
+        
         // change to while to make it catch up to events
         if (glfwGetTime() > need_refresh_time) {
             need_refresh_time += TIME_PER_FRAME;
             current_display->frame();
         }
         
-        glfwGetFramebufferSize(window, &width, &height);
-        
-        // reset viewport to window width, assume we're rendering on the whole screen
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        set_alpha_set(1.0f);
-        bind_to_tiles();
-        set_alpha_cutoff(1.0f/3.0f);
-        current_display->render();
-        glFlush();
-        
-        glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
-        glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
-        
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        set_alpha_set(1.0f);
-        bind_to_tiles();
-        set_alpha_cutoff(2.0f/3.0f);
-        current_display->render();
-        // render the transparency texture
-        glViewport(0, 0, width, height);
-        set_alpha_set(0.5f);
-        show_depth_peeler();
+        render_geometry();
+        render_g_buffer();
         
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

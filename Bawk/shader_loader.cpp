@@ -189,7 +189,7 @@ int set_shaders() {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_draw_mode_name);
         return false;
     }
-    
+    /*
     const char* uniform_shade_intensity_name = "shade_intensity";
     block_shader_intensity = glGetUniformLocation(program, uniform_shade_intensity_name);
     if (block_shader_intensity == -1) {
@@ -209,7 +209,7 @@ int set_shaders() {
     if (block_alpha_set == -1) {
         fprintf(stderr, "Could not bind attribute %s\n",uniform_alpha_set_name);
         return false;
-    }
+    }*/
     
     glEnableVertexAttribArray(block_attribute_coord);
     glEnableVertexAttribArray(texture_attribute_coord);

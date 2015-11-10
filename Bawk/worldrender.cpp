@@ -51,8 +51,10 @@ int world_load_resources() {
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     glPolygonOffset(1, 1);
-    glEnable (GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable (GL_BLEND);
+    glDisable(GL_BLEND);
+    
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     set_up_for_world_render();
     
@@ -105,15 +107,15 @@ void set_transform_matrix(fmat4 mvp) {
 }
 
 void set_shader_intensity(float m) {
-    glUniform1f(block_shader_intensity, m);
+    //glUniform1f(block_shader_intensity, m);
 }
 
 void set_alpha_cutoff(float a) {
-    glUniform1f(block_alpha_cutoff, a);
+    //glUniform1f(block_alpha_cutoff, a);
 }
 
 void set_alpha_set(float a) {
-    glUniform1f(block_alpha_set, a);
+    //glUniform1f(block_alpha_set, a);
 }
 
 void set_up_for_world_render() {
