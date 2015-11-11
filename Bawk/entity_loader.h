@@ -15,5 +15,6 @@
 class Entity;
 
 Entity* get_entity_from(uint32_t pid, uint32_t vid, int entity_class);
+void delete_entity_from_memory(Entity* entity);
 
 #endif /* defined(__Bawk__entity_loader__) */

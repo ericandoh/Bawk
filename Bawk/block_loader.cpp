@@ -92,8 +92,6 @@ std::string get_variable_metadata_path(std::string base_path, std::string name) 
 // ----- GET FILE LENGTH -----
 long get_file_length_c(std::string file_name) {
     // this is copied from shader_loader.cpp
-    // TODO (handle if file not found)
-    // right now will return -1 => can't reserve string lol
     std::ifstream t(file_name, std::ifstream::ate | std::ifstream::binary);
     return t.tellg();
 }
@@ -131,7 +129,6 @@ int read_data_from_file(std::string path, char** data, int length) {
     
     // TOFU use any decoding function here
     //in.seekg(0, std::ios::beg);
-    // TODO check if file length > length, if so throw error
     long file_length = get_file_length_c(path);
     if (*data == 0 || file_length > length) {
         printf("Data longer than expected. (%ld vs %d) Bit memory inefficient but w/e\n", file_length, length);

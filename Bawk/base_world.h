@@ -28,10 +28,10 @@
 #include "superobject.h"
 
 class BaseWorld: public SuperObject {
-    std::string world_name;
     block_type air[CX][CY][CZ];
     block_type ground[CX][CY][CZ];
 public:
+    std::string world_name;
     BaseWorld(std::string wid);
     std::string get_save_path() override;
     std::string get_chunk_save_path(ivec3* pos) override;

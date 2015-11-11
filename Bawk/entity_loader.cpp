@@ -9,7 +9,7 @@
 #include "entity_loader.h"
 #include "superobject.h"
 //#include "player.h"
-//#include "base_world.h"
+#include "base_world.h"
 //#include "cursorsuperobject.h"
 
 Entity* get_entity_from(uint32_t pid, uint32_t vid, int entity_class) {
@@ -51,4 +51,24 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, int entity_class) {
         return 0;
     }
     return val;
+}
+
+void delete_entity_from_memory(Entity* entity) {
+    int entity_class = entity->entity_class;
+    // we should not erase entity class 0 => undefined
+    if (entity_class == 1) {
+        printf("Deleting a baseworld entity object, are you sure you want to do this?\n");
+        delete_at_path(get_path_to_world_folder(((BaseWorld*)entity)->world_name));
+    }
+    else if (entity_class == 2) {
+        printf("Deleting a player, are you sure you want to do this?\n");
+        delete_at_path(get_path_to_player_folder(entity->pid));
+    }
+    else if (entity_class == 3) {
+        printf("Deleting a cursorsuperobject...\n");
+        delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
+    }
+    else if (entity_class == 4) {
+        delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
+    }
 }

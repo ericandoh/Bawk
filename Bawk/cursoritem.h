@@ -30,8 +30,10 @@ class TemporaryTemplate;
 
 // represents an item (either a single block or a template, pretty much)
 class CursorItem {
-public:
+protected:
+    // internal function used to fetch where cursor is pointing on the screen
     bool update_pointing_position(int* tx, int* ty, int* tz, BlockOrientation* orient, bool nonempty);
+public:
     // sets the blocks in this representation into the world, and if template is not null, into the
     // template as well
     virtual bool set_blocks(Player* player, World* world, TemporaryTemplate* temp) = 0;

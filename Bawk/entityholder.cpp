@@ -26,8 +26,7 @@ void EntityHolder::remove_entity(Entity* entity, bool del) {
         }
     }
     if (del) {
-        printf("frog\n");
-        // TODO make call to delete object from memory!
+        delete_entity_from_memory(entity);
     }
 }
 

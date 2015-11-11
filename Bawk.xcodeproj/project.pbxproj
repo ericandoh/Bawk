@@ -10,6 +10,7 @@
 		0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF6F1BC98D300050EE52 /* base_widget.cpp */; };
 		0704CF741BC997550050EE52 /* item_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF721BC997550050EE52 /* item_bar.cpp */; };
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
+		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
 		071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 071A040C1BD9875C003BF218 /* gameinfo.json */; };
@@ -93,6 +94,8 @@
 		0704CF761BC997DE0050EE52 /* item_barlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_barlet.h; sourceTree = "<group>"; };
 		0705F3F91BED27860088744F /* light_frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = light_frag_shader.glsl; path = Bawk/light_frag_shader.glsl; sourceTree = "<group>"; };
 		0705F3FA1BED27860088744F /* light_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = light_vertex_shader.glsl; path = Bawk/light_vertex_shader.glsl; sourceTree = "<group>"; };
+		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
+		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
 		071A04031BD96349003BF218 /* game_info_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game_info_loader.cpp; sourceTree = "<group>"; };
 		071A04041BD96349003BF218 /* game_info_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game_info_loader.h; sourceTree = "<group>"; };
 		071A04091BD98454003BF218 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
@@ -405,6 +408,8 @@
 				076BEFE11BD19E9F00D68C8F /* entity.h */,
 				076BEFE31BD1A09A00D68C8F /* entityholder.cpp */,
 				076BEFE41BD1A09A00D68C8F /* entityholder.h */,
+				0715F1101BF2D3CC00242F86 /* rotation_math.cpp */,
+				0715F1111BF2D3CC00242F86 /* rotation_math.h */,
 			);
 			name = physics;
 			sourceTree = "<group>";
@@ -486,6 +491,7 @@
 				076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */,
 				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
+				0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,

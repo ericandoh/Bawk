@@ -16,7 +16,7 @@
 #include "worldrender.h"
 
 // VERSION 1.1
-// TODO references to old shaders here
+// TOFU references to old shaders here
 
 const std::string GEOMETRY_VERTEX_SHADER = "vertex_shader.glsl";
 const std::string GEOMETRY_FRAG_SHADER = "frag_shader.glsl";
@@ -24,8 +24,6 @@ const std::string LIGHTING_VERTEX_SHADER = "light_vertex_shader.glsl";
 const std::string LIGHTING_FRAG_SHADER = "light_frag_shader.glsl";
 
 long get_file_length(std::string file_name) {
-    // TODO (handle if file not found)
-    // right now will return -1 => can't reserve string lol
     std::ifstream t(file_name, std::ifstream::ate | std::ifstream::binary);
     return t.tellg();
 }
@@ -46,6 +44,11 @@ int compile_program(GLuint* program,
     
     long vertex_shader_length = get_file_length(vertex_shader_file);
     long frag_shader_length = get_file_length(frag_shader_file);
+    
+    if (vertex_shader_length < 0 || frag_shader_length < 0) {
+        printf("Could not find files %s or %s\n", vertex_shader_file.c_str(), frag_shader_file.c_str());
+        return 1;
+    }
     
     vertexSource.reserve(vertex_shader_length);
     fragmentSource.reserve(frag_shader_length);

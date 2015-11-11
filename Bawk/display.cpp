@@ -380,8 +380,6 @@ void render_lights() {
     check_for_error();
     
     glDisable(GL_DEPTH_TEST);
-    // TODO set a BLENDING FUNCTION HERE URGENT URGENT IF SHIT GOES WRONG THIS IS IT
-    // FROG FROG FROG
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
    	glBlendFunc(GL_ONE, GL_ONE);
