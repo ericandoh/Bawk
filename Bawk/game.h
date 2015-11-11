@@ -67,6 +67,7 @@ public:
     void set_parameters(std::string wn, uint32_t p);
     int init() override;
     void render() override;
+    void render_lights() override;
     void frame() override;
     void switch_current_item(int to_index);
     

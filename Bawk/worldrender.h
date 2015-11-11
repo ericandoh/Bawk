@@ -68,6 +68,7 @@ void set_shader_intensity(float m);
 void set_alpha_cutoff(float a);
 
 void set_lighting_block_draw_mode(int v);
+void set_lighting_val(fvec3 val);
 void set_lighting_transform_matrix(fmat4 mvp);
 void set_lighting_screen_size(float width, float height);
 

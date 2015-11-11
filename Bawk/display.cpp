@@ -382,7 +382,11 @@ void render_lights() {
     glDisable(GL_DEPTH_TEST);
     // TODO set a BLENDING FUNCTION HERE URGENT URGENT IF SHIT GOES WRONG THIS IS IT
     // FROG FROG FROG
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+   	glBlendFunc(GL_ONE, GL_ONE);
     
+    // drawing ambient lighting here
     set_lighting_block_draw_mode(0);
     set_lighting_screen_size(wwidth, wheight);
     float vertex[6][3] = {
@@ -408,6 +412,8 @@ void render_lights() {
     
     // draw more lights here, by drawing a box, then sending coordinates to the renderer above
     // this will mainly be just point lights top kek
+    
+    current_display->render_lights();
 }
 
 int display_run()

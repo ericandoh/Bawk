@@ -130,6 +130,11 @@ void set_alpha_cutoff(float a) {
 void set_lighting_block_draw_mode(int v) {
     glUniform1i(lighting_draw_mode, v);
 }
+
+void set_lighting_val(fvec3 val) {
+    glUniform3f(lighting_val, val.x, val.y, val.z);
+}
+
 void set_lighting_transform_matrix(fmat4 mvp) {
     glUniformMatrix4fv(lighting_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
 }

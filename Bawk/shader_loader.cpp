@@ -211,7 +211,7 @@ int bind_light_shader_attributes(GLuint program) {
     //errors += get_uniform_location(&lighting_normal_map, "g_normal_map", program);
     
     errors += get_uniform_location(&lighting_screen_size, "l_screen_size", program);
-    //errors += get_uniform_location(&lighting_val, "l_val", program);
+    errors += get_uniform_location(&lighting_val, "l_val", program);
     errors += get_uniform_location(&lighting_draw_mode, "l_draw_mode", program);
     
     if (errors) {

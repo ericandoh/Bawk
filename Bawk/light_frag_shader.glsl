@@ -18,21 +18,26 @@ vec2 get_tex_coord() {
     return gl_FragCoord.xy / l_screen_size;
 }
 
-/*vec4 get_point_light(vec3 worldpos, vec3 normal) {
-    vec3 LightDirection = WorldPos - gPointLight.Position;
-    float Distance = length(LightDirection);
-    LightDirection = normalize(LightDirection);
-    
+float get_point_light(vec3 worldpos) {
+    float peak = 10;
+    vec3 lightdir = worldpos - l_val;
+    float distance = length(lightdir);
+    if (distance > peak) {
+        return 0;
+    }
+    // fraction will be greater the closer you are
+    float fraction = 1.0 - distance / peak;
+    return fraction * fraction * 7.0;
+    //return 1;
+    /*
+    lightdir = normalize(lightdir);
     vec4 Color = CalcLightInternal(gPointLight.Base, LightDirection, WorldPos, Normal);
-    
     float Attenuation =  gPointLight.Atten.Constant +
     gPointLight.Atten.Linear * Distance +
     gPointLight.Atten.Exp * Distance * Distance;
-    
     Attenuation = max(1.0, Attenuation);
-    
-    return Color / Attenuation;
-}*/
+    return Color / Attenuation;*/
+}
 
 void main(void) {
     vec2 texcoord = get_tex_coord();
@@ -40,25 +45,22 @@ void main(void) {
     vec3 worldpos = texture(g_position_map, texcoord).xyz;
     vec3 color_o = texture(g_color_map, texcoord).xyz;
     vec3 color_t = texture(g_color_t_map, texcoord).xyz;
-    vec4 color;
-    color.xyz = (color_o + color_t) / 2.0;
-    color.w = 1.0;
+    vec3 color = (color_o + color_t) / 2.0;
     //vec3 normal = texture(gNormalMap, texcoord).xyz;
     //normal = normalize(normal);
     
     if (l_draw_mode == 0) {
         // ambient lighting
-        out_color = color;
+        out_color.xyz = color;
     }
     else if (l_draw_mode == 1) {
         // point light
-        // out_color = vec4(color, 1.0) * get_point_light(worldpos, normal);
-        out_color = color;
+        out_color.xyz = color * get_point_light(worldpos);
+        // out_color = color;
     }
     else {
         // directional light or whatnot
-        out_color = color;
+        out_color.xyz = color;
     }
-    //out_color.w = 1.0;
-    //out_color = vec4(0.5,0.6,0.3,0.4);
+    out_color.w = 1.0;
 }

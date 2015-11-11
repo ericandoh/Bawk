@@ -18,6 +18,10 @@
 #include "temporarytemplate.h"
 #include "debug_action.h"
 
+// THIS IS USEDF OR LIGHTING< MOVE TO A CUSTOM LIGHT RENDERING METHOD
+// TODO FROG
+#include <glm/gtc/matrix_transform.hpp>
+
 enum Action {
     MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_FORWARD, MOVE_BACKWARD, CONFIRM, CANCEL,
     MOVE_BLOCK_UP, MOVE_BLOCK_DOWN, MOVE_BLOCK_LEFT, MOVE_BLOCK_RIGHT, MOVE_BLOCK_FORWARD,
@@ -141,6 +145,80 @@ void Game::render() {
     // Render UI elements here
     // always render the item bar (for now)
     story->render();
+}
+
+void Game::render_lights() {
+    // render a light around the player for now
+    
+    fmat4* transform = player->set_camera();
+    
+    // Render a box around the block we are pointing at
+    GLbyte box[36][3] = {
+        {0,0,0},
+        {0,0,1},
+        {0,1,0},
+        
+        {0,1,0},
+        {0,0,1},
+        {0,1,1},
+        
+        {1,0,0},
+        {1,1,0},
+        {1,0,1},
+        
+        {1,1,0},
+        {1,1,1},
+        {1,0,1},
+        
+        {0,0,0},
+        {1,0,0},
+        {0,0,1},
+        
+        {0,0,1},
+        {1,0,0},
+        {1,0,1},
+        
+        {0,1,0},
+        {0,1,1},
+        {1,1,0},
+        
+        {0,1,1},
+        {1,1,1},
+        {1,1,0},
+        
+        {0,0,0},
+        {1,0,0},
+        {0,1,0},
+        
+        {0,1,0},
+        {1,0,0},
+        {1,1,0},
+        
+        {0,0,1},
+        {0,1,1},
+        {1,0,1},
+        
+        {0,1,1},
+        {1,1,1},
+        {1,0,1},
+    };
+    for (int i = 0; i < 36; i++) {
+        for (int j = 0; j < 3; j++) {
+            box[i][j] *= 10;
+        }
+    }
+    
+    fmat4 view = glm::translate(fmat4(1), player->pos);
+    fmat4 mvp = *transform * view;
+    set_lighting_transform_matrix(mvp);
+    set_lighting_block_draw_mode(1);
+    set_lighting_val(player->pos);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(lighting_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+    
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
 // runs one frame of the game
