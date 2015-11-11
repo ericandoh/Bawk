@@ -28,6 +28,7 @@ float get_point_light(vec3 worldpos) {
     // fraction will be greater the closer you are
     float fraction = 1.0 - distance / peak;
     return fraction * fraction * 7.0;
+    
     //return 1;
     /*
     lightdir = normalize(lightdir);

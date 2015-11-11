@@ -102,7 +102,8 @@ int Game::init() {
     int width, height;
     get_window_size(&width, &height);
     story = new ParentWidget(0, 0, width, height);
-    bar = new ItemBar(player->inventory, 128*10, 128);
+    int bar_width = width * 7 / 100;
+    bar = new ItemBar(player->inventory, bar_width*10, bar_width);
     story->add_child(bar);
     
     inventory_ui = new MainInventoryWidget(bar, player->inventory, width / 2, height / 2);
