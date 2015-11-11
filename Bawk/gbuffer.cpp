@@ -102,14 +102,23 @@ void GBuffer::bind_for_write() {
 
 void GBuffer::bind_for_read() {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
-    for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
+    int num_textures;
+    //num_textures = GBUFFER_NUM_TEXTURES;
+    num_textures = 2;
+    for (unsigned int i = 0; i < num_textures; i++) {
         glActiveTexture(GL_TEXTURE0 + i + texture_offset);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]);
     }
     glUniform1i(lighting_position_map, texture_offset);
     glUniform1i(lighting_color_map, texture_offset + 1);
-    glUniform1i(lighting_color_t_map, texture_offset + 2);
-    //glUniform1i(lighting_normal_map, texture_offset + 3);
+    //glUniform1i(lighting_normal_map, texture_offset + 2);
+}
+
+void GBuffer::bind_for_read_color_map_only() {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
+    glActiveTexture(GL_TEXTURE0 + 1 + texture_offset);
+    glBindTexture(GL_TEXTURE_2D, m_textures[1]);
+    glUniform1i(lighting_color_t_map, texture_offset + 1);
 }
 
 void GBuffer::bind_for_readg() {

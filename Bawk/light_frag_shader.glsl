@@ -40,23 +40,25 @@ void main(void) {
     vec3 worldpos = texture(g_position_map, texcoord).xyz;
     vec3 color_o = texture(g_color_map, texcoord).xyz;
     vec3 color_t = texture(g_color_t_map, texcoord).xyz;
-    vec3 color = (color_o + color_t) / 2.0;
+    vec4 color;
+    color.xyz = (color_o + color_t) / 2.0;
+    color.w = 1.0;
     //vec3 normal = texture(gNormalMap, texcoord).xyz;
     //normal = normalize(normal);
     
     if (l_draw_mode == 0) {
         // ambient lighting
-        out_color.xyz = color;
+        out_color = color;
     }
     else if (l_draw_mode == 1) {
         // point light
         // out_color = vec4(color, 1.0) * get_point_light(worldpos, normal);
-        out_color.xyz = color;
+        out_color = color;
     }
     else {
         // directional light or whatnot
-        out_color.xyz = color;
+        out_color = color;
     }
-    out_color.w = 1.0;
+    //out_color.w = 1.0;
     //out_color = vec4(0.5,0.6,0.3,0.4);
 }

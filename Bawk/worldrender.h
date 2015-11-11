@@ -40,6 +40,7 @@ extern GLuint geometry_mvp;
 extern GLuint geometry_world_transform;
 extern GLuint geometry_draw_mode;
 extern GLuint geometry_intensity;
+extern GLuint geometry_alphacutoff;
 extern GLuint geometry_tile_texture;
 
 extern GLuint lighting_coord;
@@ -64,6 +65,7 @@ void set_block_draw_mode(int v);
 void set_unitary_transform_matrix();
 void set_transform_matrix(fmat4 mvp, fmat4 view);
 void set_shader_intensity(float m);
+void set_alpha_cutoff(float a);
 
 void set_lighting_block_draw_mode(int v);
 void set_lighting_transform_matrix(fmat4 mvp);

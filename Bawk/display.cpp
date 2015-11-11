@@ -23,6 +23,7 @@ const double TIME_PER_FRAME = 1.0 / FRAME_RATE;
 
 GLFWwindow* window;
 GBuffer g_buffer;
+GBuffer g_buffer_transparent;
 
 GLuint depth_peeling_texture;
 
@@ -153,8 +154,11 @@ int init_display() {
     // note: window width, height NOT equal to pixel width we give to GLFW window
     get_window_size(&wwidth, &wheight);
     printf("0 %d\n",glGetError());
-    // 1 for the tile texture we have at GL_TEXTURE0
+    // 0        => tile_texture
+    // 1,2,3    => G_BUFFER textures
+    // 4,5,6    => G_BUFFER transparent textures (for depth peeling)
     g_buffer.init(wwidth, wheight, 1);
+    g_buffer_transparent.init(wwidth, wheight, 4);
     
     /* Connect inputs to game */
     glfwSetKeyCallback(window, key_callback);
@@ -174,6 +178,8 @@ int init_display() {
         
     }
     
+    // THIS IS DEPRECATED CODE FOR
+    // VERSION 1.1
     /*printf("2 %d\n",glGetError());
     glGenTextures(1, &depth_peeling_texture);
     glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
@@ -255,17 +261,23 @@ void render_geometry() {
     glUseProgram(geometry_program);
     glEnableVertexAttribArray(geometry_coord);
     glEnableVertexAttribArray(geometry_texture_coord);
-    glUniform1i(geometry_tile_texture, 0);
-    g_buffer.bind_for_write();
     
-    check_for_error();
+    // disable blending. we have only RGB (not RGBA)
+    glDisable(GL_BLEND);
+    
+    glUniform1i(geometry_tile_texture, 0);
     
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glEnable(GL_DEPTH_TEST);
     
+    // first, write to our regular G-buffer with a low alpha-cutoff
+    g_buffer.bind_for_write();
+    check_for_error();
+    set_alpha_cutoff(0.3f);
     check_for_error();
     
+    // VERSION 1.1
     /*// reset viewport to window width, assume we're rendering on the whole screen
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -274,30 +286,34 @@ void render_geometry() {
     set_alpha_cutoff(1.0f/3.0f);
     current_display->render();
     glFlush();
-    
     glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);*/
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
+    // clear the viewport, screen
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    set_shader_intensity(0.5f); // this needs to be deprecated/changed
     check_for_error();
-    set_shader_intensity(0.5f);
-    check_for_error();
-    
-    //set_alpha_set(1.0f);
-    //bind_to_tiles();
-    //set_alpha_cutoff(2.0f/3.0f);
     current_display->render();
     check_for_error();
-    
-    glViewport(0, 0, width, height);
-    //show_depth_peeler();
-    
-    //glFlush();
     glFinish();
-    // render the transparency texture
-    //set_alpha_set(0.5f);
-    //show_depth_peeler();
+    
+    // now, write to our depth-peeled, 2nd G-buffer which will NOT render medium alpha components
+    g_buffer_transparent.bind_for_write();
+    check_for_error();
+    set_alpha_cutoff(0.7f);
+    check_for_error();
+    
+    // clear the viewport, screen
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    set_shader_intensity(0.5f); // this needs to be deprecated/changed
+    check_for_error();
+    current_display->render();
+    check_for_error();
+    glFinish();
     check_for_error();
 }
 
@@ -323,22 +339,19 @@ void render_g_buffer() {
     g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
     glBlitFramebuffer(0, 0, wwidth, wheight,
                       0, 0, halfwwidth, halfwheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    
-    // top left is diffuse
     g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_COLOR);
     glBlitFramebuffer(0, 0, wwidth, wheight,
                       0, halfwheight, halfwwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    
-    // top right is normals
-    g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_COLOR_T);
-    glBlitFramebuffer(0, 0, wwidth, wheight,
-                      halfwwidth, halfwheight, wwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    
-    // bottom right is texcoord...?
     g_buffer.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
     glBlitFramebuffer(0, 0, wwidth, wheight,
                       halfwwidth, 0, wwidth, halfwheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    //glFlush();
+    
+    g_buffer_transparent.bind_for_readg();
+    // top right is normals
+    g_buffer_transparent.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_COLOR);
+    glBlitFramebuffer(0, 0, wwidth, wheight,
+                      halfwwidth, halfwheight, wwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    
     check_for_error();
     glFinish();
     check_for_error();
@@ -362,6 +375,7 @@ void render_lights() {
     check_for_error();
     
     g_buffer.bind_for_read();
+    g_buffer_transparent.bind_for_read_color_map_only();
     
     check_for_error();
     
@@ -391,6 +405,9 @@ void render_lights() {
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
     check_for_error();
+    
+    // draw more lights here, by drawing a box, then sending coordinates to the renderer above
+    // this will mainly be just point lights top kek
 }
 
 int display_run()

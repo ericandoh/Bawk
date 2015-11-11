@@ -27,6 +27,7 @@ GLuint geometry_mvp;
 GLuint geometry_world_transform;
 GLuint geometry_draw_mode;
 GLuint geometry_intensity;
+GLuint geometry_alphacutoff;
 GLuint geometry_tile_texture;
 
 GLuint lighting_coord;
@@ -71,7 +72,7 @@ int world_load_resources() {
     
     glPolygonOffset(1, 1);
     //glEnable (GL_BLEND);
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
@@ -118,7 +119,12 @@ void set_transform_matrix(fmat4 mvp, fmat4 view) {
 }
 
 void set_shader_intensity(float m) {
-    glUniform1f(geometry_intensity, m);
+    //glUniform1f(geometry_intensity, m);
+    glUniform1f(geometry_intensity, 1.0f);
+}
+
+void set_alpha_cutoff(float a) {
+    glUniform1f(geometry_alphacutoff, a);
 }
 
 void set_lighting_block_draw_mode(int v) {

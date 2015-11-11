@@ -187,6 +187,7 @@ int bind_geometry_shader_attributes(GLuint program) {
     errors += get_uniform_location(&geometry_world_transform, "g_worldtransform", program);
     errors += get_uniform_location(&geometry_draw_mode, "g_drawmode", program);
     errors += get_uniform_location(&geometry_intensity, "g_intensity", program);
+    errors += get_uniform_location(&geometry_alphacutoff, "g_alphacutoff", program);
     errors += get_uniform_location(&geometry_tile_texture, "tile_texture", program);
     
     if (errors) {

@@ -19,7 +19,6 @@ public:
     enum GBUFFER_TEXTURE_TYPE {
         GBUFFER_TEXTURE_TYPE_POSITION,
         GBUFFER_TEXTURE_TYPE_COLOR,
-        GBUFFER_TEXTURE_TYPE_COLOR_T,
         GBUFFER_TEXTURE_TYPE_NORMAL,
         GBUFFER_NUM_TEXTURES
     };
@@ -28,6 +27,7 @@ public:
     bool init(unsigned int wwidth, unsigned int wheight, unsigned int to);
     void bind_for_write();
     void bind_for_read();
+    void bind_for_read_color_map_only();
     void bind_for_readg();
     void set_read_buffer(GBUFFER_TEXTURE_TYPE type);
 private:
