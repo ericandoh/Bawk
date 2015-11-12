@@ -86,14 +86,6 @@ struct player_and_id {
     }
 };
 
-struct cursor_item_distinguisher {
-    bool is_blk;
-    bool is_recipe;
-    uint16_t bid;
-    uint32_t pid;
-    uint32_t vid;
-};
-
 enum SaveMode {
     READ, WRITE,
 };

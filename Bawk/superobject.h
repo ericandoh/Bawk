@@ -45,9 +45,9 @@ protected:
 public:
     SuperObject();
     SuperObject(uint32_t p, uint32_t v);
-    SuperObject(uint32_t p, uint32_t v, ivec3 po);
     
     virtual void set_block(float x, float y, float z, block_type type) override;
+    void remove_block(float x, float y, float z);
     
     void step() override;
     

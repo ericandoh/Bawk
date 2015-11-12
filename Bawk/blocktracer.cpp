@@ -135,6 +135,34 @@ bool get_look_at_vehicle(fvec4* src) {
     return false;
 }
 
+bool get_pointing_position(ivec3* dst, BlockOrientation* orient, ivec3 bounds) {
+    ivec4 looking_at;
+    if (!get_look_at(&looking_at)) {
+        return false;
+    }
+    int mx = looking_at.x;
+    int my = looking_at.y;
+    int mz = looking_at.z;
+    BlockOrientation face = static_cast<BlockOrientation>(looking_at.w);
+    if(face == BlockOrientation::FRONT)
+        mx++;
+    if(face == BlockOrientation::BACK)
+        mx-=bounds.x;
+    if(face == BlockOrientation::TOP)
+        my++;
+    if(face == BlockOrientation::BOTTOM)
+        my-=bounds.y;
+    if(face == BlockOrientation::RIGHT)
+        mz++;
+    if(face == BlockOrientation::LEFT)
+        mz-=bounds.z;
+    dst->x = mx;
+    dst->y = my;
+    dst->z = mz;
+    *orient = face;
+    return true;
+}
+
 Entity* get_look_at() {
     return selected;
 }

@@ -29,17 +29,6 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     block_counter = 0;
 }
 
-SuperObject::SuperObject(uint32_t p, uint32_t v, ivec3 po) {
-    // this constructor should be called by a player wanting to make a new object
-    // the player will assign the object an ID
-    vid = v;
-    pid = p;
-    entity_class = 4;
-    pos = fvec3((float)po.x, (float)po.y, (float)po.z);
-    can_rotate = true;
-    block_counter = 0;
-}
-
 void SuperObject::set_block(float x, float y, float z, block_type type) {
     if (type.type) {
         // set key binding (to default one) if it has one
@@ -120,6 +109,10 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
         block_counter++;
     }
     RenderableSuperObject::set_block(x, y, z, type);
+}
+
+void SuperObject::remove_block(float x, float y, float z) {
+    set_block(x, y, z, block_type());
 }
 
 void SuperObject::step() {

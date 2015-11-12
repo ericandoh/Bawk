@@ -18,16 +18,14 @@ void EntityHolder::add_entity(Entity* entity) {
     entities.push_back(entity);
 }
 
-void EntityHolder::remove_entity(Entity* entity, bool del) {
+void EntityHolder::remove_entity(Entity* entity) {
     for (unsigned int i = 0; i < entities.size(); i++) {
         if (entities.at(i) == entity) {
             entities.erase(entities.begin() + i);
             break;
         }
     }
-    if (del) {
-        delete_entity_from_memory(entity);
-    }
+    delete_entity_from_memory(entity);
 }
 
 struct EntityPair {

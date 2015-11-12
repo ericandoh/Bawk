@@ -2,56 +2,31 @@
 //  cursoritem.cpp
 //  Bawk
 //
-//  Created by Eric Oh on 10/6/15.
+//  Created by Eric Oh on 11/11/15.
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
 #include "cursoritem.h"
-#include "blocktracer.h"
-#include "temporarytemplate.h"
 
-bool CursorItem::update_pointing_position(int* tx, int* ty, int* tz,
-                                          BlockOrientation* orient,
-                                          bool nonempty) {
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
-        return false;
-    }
-    ivec3 bounds;
-    get_bounds(&bounds);
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    BlockOrientation face = static_cast<BlockOrientation>(looking_at.w);
-    if (nonempty) {
-        if(face == BlockOrientation::FRONT)
-            mx++;
-        if(face == BlockOrientation::BACK)
-            mx-=bounds.x;
-        if(face == BlockOrientation::TOP)
-            my++;
-        if(face == BlockOrientation::BOTTOM)
-            my-=bounds.y;
-        if(face == BlockOrientation::RIGHT)
-            mz++;
-        if(face == BlockOrientation::LEFT)
-            mz-=bounds.z;
-    }
-    *tx = mx;
-    *ty = my;
-    *tz = mz;
-    *orient = face;
-    return true;
-}
+// methods to initialize/cleanup this entity
+void CursorItem::init() { }
 
-bool CursorItem::is_locked_in() {
+void CursorItem::cleanup() { }
+
+// behaviour when this cursor item is clicked
+bool CursorItem::clicked(Game* game, int mouse) {
     return false;
 }
 
-void CursorItem::unlock() {
-    // does nothing
+// behaviour when this cursor item is entered
+bool CursorItem::confirmed(Game* game) {
+    return false;
 }
 
-void CursorItem::load_all() {
-    // do nothing
+bool CursorItem::canceled(Game* game) {
+    return false;
+}
+
+bool CursorItem::handle_movement(ivec3 dir) {
+    return false;
 }

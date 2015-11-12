@@ -48,8 +48,7 @@ class Game : public Displayable {
     
     // block placement related objects
     
-    // template holding current template we're working on (if any)
-    TemporaryTemplate* place_into;
+   
     
     ItemBar* bar;
     MainInventoryWidget* inventory_ui;
@@ -64,6 +63,8 @@ public:
     // game data objects
     World* world;
     Player* player;
+    // template holding current template we're working on (if any)
+    GameTemplate* game_template;
     void set_parameters(std::string wn, uint32_t p);
     int init() override;
     void render() override;

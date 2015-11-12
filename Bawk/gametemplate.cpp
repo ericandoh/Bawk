@@ -6,37 +6,41 @@
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
-#include "temporarytemplate.h"
-#include "game_info_loader.h"
+#include "gametemplate.h"
+#include "world.h"
+#include "cursorsuperobject.h"
 
-TemporaryTemplate::TemporaryTemplate() {
-    will_be_independent = 0;
-    entity_class = 0;   // this shouldnt matter since this wont be saved in memory
-    can_rotate = false;  // we CANNOT rotate the current template - because this will MESS with the recipe block offsets for removal
+GameTemplate::GameTemplate() {
     pos = fvec3(0, 0, 0);   // unlike any other objects, this is alwas 0-aligned then
-    // blocks are placed at an offset
-    stable = true;
+    entity_class = 5;
 }
 
-void TemporaryTemplate::add_block(ivec3 position, block_type block) {
-    blocks.push_back(block_data(position, block));
-    if (get_block_independence(block.type)) {
-        will_be_independent++;
-    }
-    set_block(position.x, position.y, position.z, block);
+int GameTemplate::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
+    get_empty_chunk(to_arr);
+    return 0;
 }
 
-void TemporaryTemplate::remove_block(ivec3 position) {
-    for (unsigned int i = 0; i < blocks.size(); i++) {
-        if (blocks.at(i).position == position) {
-            if (get_block_independence(blocks.at(i).block.type)) {
-                will_be_independent--;
-            }
-            blocks.erase(blocks.begin() + i);
-            break;
-        }
+CursorSuperObject* GameTemplate::create_from_template(Player* player, World* world, TemporaryTemplate* temp) {
+    printf("Publishing template!\n");
+    // package our blocks into a cursorsuperobject
+    // TODO do not call this if we have no blocks here
+    CursorSuperObject* object = new CursorSuperObject(player->getID(),
+                                                      player->assignID());// all templates are made on the bar
+    object->pos = bounds.lower;
+    if (set_blocks(player, world, object)) {
+        // save the object to disk
+        // this doesn't actually delete the object from memory
+        object->remove_selfs();
+        return object;
     }
-    set_block(position.x, position.y, position.z, block_type());
+    delete object;
+    return 0;
+}
+
+void GameTemplate::publish(Player* player, World* world) {
+    if (PlaceableSuperObject::set_blocks(player, world, world->base_world)) {
+        world->remove_entity(this);
+    }
 }
 
 std::vector<block_data> TemporaryTemplate::publish(Player* player, World* world) {

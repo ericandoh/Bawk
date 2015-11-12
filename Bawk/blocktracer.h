@@ -17,6 +17,7 @@ class World;
 void set_look_at(fvec3 pos, fvec3 dir, World* world);
 bool get_look_at(ivec4* src);
 bool get_look_at_vehicle(fvec4* src);
+bool get_pointing_position(ivec3* dst, BlockOrientation* orient, ivec3 bounds);
 Entity* get_look_at();
 
 #endif /* defined(__Bawk__blocktracer__) */

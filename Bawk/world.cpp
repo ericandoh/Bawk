@@ -168,16 +168,16 @@ bool World::will_collide_with_anything(Entity* other) {
     return holder.collides_with(other);
 }
 
-SuperObject* World::create_superobject(Player* player, ivec3 pos) {
+SuperObject* World::create_superobject(Player* player) {
     SuperObject* obj;
     if (player)
-        obj = new SuperObject(player->getID(), player->assignID(), pos);
+        obj = new SuperObject(player->getID(), player->assignID());
     else
-        obj = new SuperObject(0, player->assignID(), pos);
+        obj = new SuperObject(0, player->assignID());
     holder.add_entity(obj);
     return obj;
 }
 
-void World::remove_entity(Entity* entity, bool del) {
-    holder.remove_entity(entity, del);
+void World::remove_entity(Entity* entity) {
+    holder.remove_entity(entity);
 }

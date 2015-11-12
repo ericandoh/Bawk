@@ -40,6 +40,10 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, int entity_class) {
     else if (entity_class == 4) {
         val = new SuperObject(pid, vid);
     }
+    else if (entity_class == 5) {
+        // TODO handle game template being like, ottally not made
+        // TODO change entity_class to an enum
+    }
     else {
         printf("Unknown entity class %d for (%d,%d)\n", entity_class, pid, vid);
         return 0;
@@ -69,6 +73,10 @@ void delete_entity_from_memory(Entity* entity) {
         delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
     }
     else if (entity_class == 4) {
+        // delete superobject
         delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
+    }
+    else if (entity_class == 5) {
+        // do not delete game templates, there is nothing to delete
     }
 }

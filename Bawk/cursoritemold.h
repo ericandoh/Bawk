@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include "world.h"
+#include "basic_types.h"
 
 struct cursor_item_identifier {
     bool is_blk;
@@ -39,7 +40,6 @@ class Game;
 // represents an item (either a single block or a template, pretty much)
 class CursorItem {
 public:
-    
     // methods to initialize/cleanup this entity
     virtual void init();
     virtual void cleanup();
@@ -52,11 +52,8 @@ public:
     virtual bool canceled(Game* game);
     virtual bool handle_movement(ivec3 dir);
     
-    // called every step
-    virtual void step();
-    
     // render the item with transform in a small box or whatnot
-    virtual void render_item() = 0;
+    virtual void render_item(fmat4* transform) = 0;
     
     virtual cursor_item_identifier get_identifier() = 0;
 };

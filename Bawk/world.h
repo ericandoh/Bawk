@@ -32,8 +32,6 @@
 class Game;
 
 class World {
-
-    SuperObject* base_world;
     EntityHolder holder;
     
     std::vector<WorldEvent*> events;
@@ -41,6 +39,8 @@ public:
     std::string name;
     // how many cycles the world has lived through
     unsigned long age;
+    // the base world
+    SuperObject* base_world;
     World(std::string id);
     int load_self();
     void remove_self();
@@ -60,8 +60,8 @@ public:
     void add_event(WorldEvent* event);
     void step();
     bool will_collide_with_anything(Entity* superobject);
-    SuperObject* create_superobject(Player* player, ivec3 pos);
-    void remove_entity(Entity* entity, bool del);
+    SuperObject* create_superobject(Player* player);
+    void remove_entity(Entity* entity);
 };
 
 #endif /* defined(__Bawk__world__) */
