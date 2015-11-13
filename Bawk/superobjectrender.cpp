@@ -417,9 +417,9 @@ bool RenderableSuperObject::collides_with(Entity* other, bounding_box* my_bounds
         // now transform into cac, crc
         ivec3 upper_cac, upper_crc;
         transform_into_chunk_bounds(&upper_cac, &upper_crc,
-                                    oac_intersection_box.upper.x,
-                                    oac_intersection_box.upper.y,
-                                    oac_intersection_box.upper.z);
+                                    ceilf(oac_intersection_box.upper.x),
+                                    ceilf(oac_intersection_box.upper.y),
+                                    ceilf(oac_intersection_box.upper.z));
         
         for (int x = lower_cac.x; x <= upper_cac.x; x++) {
             for (int y = lower_cac.y; y <= upper_cac.y; y++) {
