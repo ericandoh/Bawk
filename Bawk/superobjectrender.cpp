@@ -93,6 +93,7 @@ void RenderableSuperObject::delete_chunk(int x, int y, int z) {
     // this will call destructor which will (hopefully) cleanly erase/detach the chunk!
     // TODO WRONG WRONG WRONG THIS WONT SAVE THE CHUNK FUCK
     chunks[pos]->cleanup();
+    delete chunks[pos];
     chunks.erase(pos);
 }
 

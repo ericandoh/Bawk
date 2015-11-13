@@ -39,6 +39,8 @@
 
 const int VERSION = 4;
 
+class GameTemplate;
+
 class Game : public Displayable {
     std::string world_name;
     uint32_t pid;
@@ -47,8 +49,6 @@ class Game : public Displayable {
     fvec3 last_player_pos;
     
     // block placement related objects
-    
-   
     
     ItemBar* bar;
     MainInventoryWidget* inventory_ui;

@@ -14,7 +14,7 @@
 
 class Player;
 class World;
-class GameTemplate;
+class Game;
 class SuperObject;
 
 class PlaceableObject {
@@ -25,6 +25,7 @@ protected:
 public:
     PlaceableObject();
     // sets blocks into another superobject
+    virtual bool set_blocks(Game* game);
     virtual bool set_blocks(Player* player, World* world, SuperObject* object) = 0;
 };
 

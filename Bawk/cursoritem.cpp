@@ -13,8 +13,10 @@ void CursorItem::init() { }
 
 void CursorItem::cleanup() { }
 
+void CursorItem::reset() { }
+
 // behaviour when this cursor item is clicked
-bool CursorItem::clicked(Game* game, int mouse) {
+bool CursorItem::clicked(Game* game, Action mouse) {
     return false;
 }
 
@@ -30,3 +32,5 @@ bool CursorItem::canceled(Game* game) {
 bool CursorItem::handle_movement(ivec3 dir) {
     return false;
 }
+
+void CursorItem::step() { }

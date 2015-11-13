@@ -154,7 +154,7 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
     else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
         // move item to bar
         if (item) {
-            itembar->set_current(inventory->get_item_from(item->get_distinguisher()));
+            itembar->set_current(inventory->get_item_from(item->get_identifier()));
         }
         else {
             itembar->set_current(0);

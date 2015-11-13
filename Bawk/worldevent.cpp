@@ -53,7 +53,7 @@ void SpawnEvent::action(World* world) {
     // set position
     item->pos = position;
     item->set_blocks(0, world, 0);
-    item->delete_self();
+    item->cleanup();
 }
 
 void publish_world_event(World* world, WorldEvent* event) {

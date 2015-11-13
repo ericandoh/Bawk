@@ -14,8 +14,7 @@
 #include <map>
 #include "basic_types.h"
 #include "block_loader.h"
-
-class CursorItem;
+#include "cursoritem.h"
 
 class PlayerInventory {
     // some basics
@@ -32,7 +31,7 @@ class PlayerInventory {
     std::vector<uint16_t> found_recipes;
     // list of player-made templates, numbered by player who made them and the id under said player
     std::vector<player_and_id> customs;
-    std::vector<cursor_item_distinguisher> cursor_items;
+    std::vector<cursor_item_identifier> cursor_items;
 public:
     PlayerInventory();
     
@@ -45,7 +44,7 @@ public:
     CursorItem* get_block_at(int index);
     CursorItem* get_recipe_at(int index);
     CursorItem* get_custom_at(int index);
-    CursorItem* get_item_from(cursor_item_distinguisher distinguish);
+    CursorItem* get_item_from(cursor_item_identifier distinguish);
     CursorItem* get_cursoritem_at(int index);
     
     bool has_custom(uint32_t pid, uint32_t vid);

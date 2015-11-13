@@ -30,7 +30,6 @@
 class ItemBarlet: public BaseWidget {
     CursorItem* entity;
     bool current;
-    fmat4 mvp;
 public:
     ItemBarlet(int x, int y, int width, int height);
     ~ItemBarlet();

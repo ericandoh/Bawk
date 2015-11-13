@@ -41,16 +41,12 @@ public:
     // --- SuperObject ---
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
-    
-    // --- GameTemplate ---
-    CursorSuperObject* create_from_template(Player* player, World* world, TemporaryTemplate* temp);
-    void publish(Player* player, World* world);
-    void unpublish(World* world);
-    
-    
     void render(fmat4* transform) override;
     
-    
+    // --- GameTemplate ---
+    CursorSuperObject* create_from_template(Player* player, World* world);
+    void publish(Game* game);
+    void unpublish(World* world);
 };
 
 #endif /* defined(__Bawk__gametemplate__) */

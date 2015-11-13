@@ -15,7 +15,6 @@
 
 class PlaceableSuperObject: public SuperObject, public PlaceableObject {
     int makes_vehicle;
-    int block_count;
 public:
     // for game templates
     PlaceableSuperObject();
@@ -29,11 +28,13 @@ public:
     void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
     
     // --- PlaceableObject ---
+    bool set_blocks(Game* game) override;
     bool set_blocks(Player* player, World* world, SuperObject* object) override;
     
     // --- PlaceableSuperObject ---
     void move_template(ivec3 dir);
     void rotate_template();
+    void render_blocks(fmat4* transform);
 };
 
 #endif /* defined(__Bawk__placeablesuperobject__) */

@@ -6,55 +6,99 @@
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
+#include "cursorblock.h"
+#include "blocktracer.h"
+#include "game.h"
+#include "gametemplate.h"
+#include "blockrender.h"
+#include <glm/gtc/matrix_transform.hpp>
+
+/*
 #include "includeglfw.h"
 #include "cursorblock.h"
 #include "worldrender.h"
-#include "blockrender.h"
 #include "temporarytemplate.h"
-#include <glm/gtc/matrix_transform.hpp>
+*/
 
 CursorBlock::CursorBlock(block_type type) {
     block = type;
+    pos = fvec3(0,0,0);
 }
 
-// sets the blocks in this representation into the world, and if template is not null, into the
-// template as well
-bool CursorBlock::set_blocks(Player* player, World* world, TemporaryTemplate* temp) {
-    int mx, my, mz;
-    BlockOrientation orient;
-    if (!update_pointing_position(&mx, &my, &mz, &orient, block.type)) {
-        return false;
+// --- PlaceableObject
+bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) {
+    ivec3 locked_pos;
+    // TODO change this to another orientation class
+    BlockOrientation orientation;
+    ivec3 upper(1, 1, 1);
+    if (get_pointing_position(&locked_pos, &orientation, upper)) {
+        fvec3 pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+        if (object->get_block(pos.x, pos.y, pos.z).type) {
+            // there's already a block here!
+            return false;
+        }
+        object->set_block(pos.x, pos.y, pos.z, block);
+        return true;
     }
-    ivec3 block_pos = ivec3(mx, my, mz);
-    block.orientation = orient;
-    block.owner = player->getID();
-    if (temp)
-        temp->add_block(block_pos, block);
-    else
-        world->place_block(block_pos, block);
-    return true;
-}
-// for a single block, this will call set_blocks (above) directly.
-// for a template block, this will lock the position of the current cursoritem template
-// then a call to set_blocks will be made later
-bool CursorBlock::place_blocks(Player* player, World* world, TemporaryTemplate* temp) {
-    set_blocks(player, world, temp);
-    // this gets passed to placed_current_item, that needs to be set to false
-    // since this is a single block and is already placed
     return false;
 }
-// only needed for instances of template. the default does jack shit
-void CursorBlock::move_block(ivec3 dir) {
-    printf("Warning: Move block called on a singe block entity");
+
+// --- CursorItem ---
+bool CursorBlock::clicked(Game* game, Action mouse) {
+    if (mouse == CLICK_DESTROY) {
+        // attempt to remove a block...
+        ivec4 looking_at;
+        if (get_look_at(&looking_at)) {
+            ivec3 at_pos(looking_at.x,looking_at.y,looking_at.z);
+            game->world->kill_block(&at_pos);
+        }
+    }
+    else if (mouse == CLICK_CREATE) {
+        PlaceableObject::set_blocks(game);
+    }
+    return true;
 }
 
-void CursorBlock::get_bounds(ivec3* upper) {
-    upper->x = 1;
-    upper->y = 1;
-    upper->z = 1;
+bool CursorBlock::confirmed(Game* game) {
+    return false;
 }
 
-void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
+void CursorBlock::step() {
+    ivec3 locked_pos;
+    // TODO change this to another orientation class
+    BlockOrientation orientation;
+    ivec3 upper(1, 1, 1);
+    if (get_pointing_position(&locked_pos, &orientation, upper)) {
+        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+    }
+}
+
+void CursorBlock::render_item() {
+    if (!mvp_set) {
+        ivec3 upper(1, 1, 1);
+        set_mvp(upper);
+    }
+    fvec3 old_pos = pos;
+    pos = fvec3(0, 0, 0);
+    render_block(&mvp);
+    pos = old_pos;
+}
+
+void CursorBlock::render_in_world(fmat4* transform) {
+    render_block(transform);
+}
+
+cursor_item_identifier CursorBlock::get_identifier() {
+    cursor_item_identifier val;
+    val.is_blk = true;
+    val.is_recipe = false;
+    val.bid = block.type;
+    val.pid = 0;
+    val.vid = 0;
+    return val;
+}
+
+void CursorBlock::render_block(fmat4* transform) {
     
     // Render a box around the block we are pointing at
     GLbyte box[36][3];
@@ -112,11 +156,10 @@ void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
     set_coord_and_texture(box, box_texture, i++, 1, 1, 1, block, BlockOrientation::RIGHT);
     set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::RIGHT);
     
+    fmat4 view = glm::translate(fmat4(1), pos);
+    fmat4 mvp2 = *transform * view;
     
-    fmat4 view = glm::translate(fmat4(1), fvec3(bx,by,bz));
-    fmat4 mvp = *transform * view;
-    
-    set_transform_matrix(mvp, view);
+    set_transform_matrix(mvp2, view);
     set_block_draw_mode(1);
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
@@ -127,36 +170,4 @@ void CursorBlock::render_block(fmat4* transform, float bx, float by, float bz) {
     glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(geometry_texture_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
-}
-
-void CursorBlock::render_at_zero(fmat4* transform) {
-    if (block.type == 0)
-        return;
-    render_block(transform, 0, 0, 0);
-}
-
-void CursorBlock::render_and_position(fmat4* transform) {
-    if (block.type == 0)
-        return;
-    int mx, my, mz;
-    BlockOrientation orient;
-    if (!update_pointing_position(&mx, &my, &mz, &orient, block.type)) {
-        return;
-    }
-    render_block(transform, mx, my, mz);
-}
-
-cursor_item_distinguisher CursorBlock::get_distinguisher() {
-    cursor_item_distinguisher val;
-    val.is_blk = true;
-    val.is_recipe = false;
-    val.bid = block.type;
-    val.pid = 0;
-    val.vid = 0;
-    return val;
-}
-
-void CursorBlock::delete_self() {
-    delete this;
 }

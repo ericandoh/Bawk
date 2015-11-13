@@ -41,12 +41,14 @@ public:
     // --- CursorItem ---
     void init() override;
     void cleanup() override;
-    bool clicked(Game* game, int mouse) override;
+    void reset() override;
+    bool clicked(Game* game, Action mouse) override;
     bool confirmed(Game* game) override;
     bool canceled(Game* game) override;
     bool handle_movement(ivec3 dir) override;
     void step() override;
     void render_item() override;
+    void render_in_world(fmat4* transform) override;
     
     cursor_item_identifier get_identifier() override;
     

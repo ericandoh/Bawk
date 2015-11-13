@@ -24,7 +24,8 @@
 #define __Bawk__cursoritem__
 
 #include <stdio.h>
-#include "world.h"
+#include "basic_types.h"
+#include "game_actions.h"
 
 struct cursor_item_identifier {
     bool is_blk;
@@ -43,9 +44,10 @@ public:
     // methods to initialize/cleanup this entity
     virtual void init();
     virtual void cleanup();
+    virtual void reset();
     
     // behaviour when this cursor item is clicked
-    virtual bool clicked(Game* game, int mouse);
+    virtual bool clicked(Game* game, Action mouse);
     
     // behaviour when this cursor item is entered
     virtual bool confirmed(Game* game);
@@ -57,6 +59,8 @@ public:
     
     // render the item with transform in a small box or whatnot
     virtual void render_item() = 0;
+    // render the item in the world
+    virtual void render_in_world(fmat4* transform) = 0;
     
     virtual cursor_item_identifier get_identifier() = 0;
 };

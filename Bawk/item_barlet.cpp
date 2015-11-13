@@ -18,7 +18,7 @@ ItemBarlet::ItemBarlet(int x, int y, int width, int height): BaseWidget(x, y, wi
 
 ItemBarlet::~ItemBarlet() {
     if (entity) {
-        entity->delete_self();
+        entity->cleanup();
     }
 }
 
@@ -75,7 +75,7 @@ void ItemBarlet::render_elements() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     if (entity) {
-        entity->render_at_zero(&mvp);
+        entity->render_item();
     }
 }
 
@@ -85,40 +85,12 @@ CursorItem* ItemBarlet::get_cursor_item() {
 
 void ItemBarlet::set_cursor_item(CursorItem* item) {
     if (entity)
-        entity->delete_self();
-    
+        entity->cleanup();
     entity = item;
-    
-    if (!entity) {
-        return;
-    }
-    ivec3 upper;
-    entity->get_bounds(&upper);
-    
-    float length = sqrtf(upper.x*upper.x + upper.y*upper.y + upper.z*upper.z) / 1.4f;
-    
-    fvec3 v1 = fvec3(-upper.x, 0, upper.z);
-    fvec3 v2 = fvec3(0, -upper.y, upper.z);
-    fvec3 perp = glm::cross(v1, v2);
-    // normalize perp
-    fvec3 perp_normalized = glm::normalize(perp);
-    perp.x = perp_normalized.x * length * 2.0f;
-    perp.y = perp_normalized.y * length * 2.0f;
-    perp.z = perp_normalized.z * length * 2.0f;
-    
-    fvec3 upper_pos = fvec3(perp.x*2.0f, perp.y*2.0f, perp.z*2.0f);
-    fvec3 toward_pos = fvec3(upper.x/2.0f, upper.y/2.0f, upper.z/2.0f);
-    
-    fmat4 view = glm::lookAt(upper_pos, toward_pos, fvec3(0, 1, 0));
-    //fmat4 projection = glm::perspective(45.0f, 1.0f, 0.01f, 100.0f); //1.0f * width/height
-    
-    // left, right, bottom, top
-    fmat4 projection = glm::ortho(-length, length, -length, length, 0.01f, 100.0f);
-    mvp = projection * view;
 }
 
 void ItemBarlet::set_current(bool curr) {
     current = curr;
     if (entity)
-        entity->unlock();
+        entity->reset();
 }

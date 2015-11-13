@@ -7,7 +7,7 @@
 //
 
 #include "placeableobject.h"
-#include "world.h"
+#include "game.h"
 #include "gametemplate.h"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -39,17 +39,11 @@ void PlaceableObject::set_mvp(ivec3 bounds) {
     mvp_set = true;
 }
 
-bool PlaceableObject::set_blocks(Player* player, World* world, GameTemplate* temp) {
-    if (temp) {
-        // we want to place these blocks into temp, and temp only
+bool PlaceableObject::set_blocks(Game* game) {
+    if (game->game_template) {
+        return set_blocks(game->player, game->world, game->game_template);
     }
     else {
-        // place blocks into the world
-        if (set_blocks(world, world->base_world, true)) {
-            set_blocks(world, temp, false);
-            return true;
-        }
+        return set_blocks(game->player, game->world, game->world->base_world);
     }
-    
-    return false;
 }

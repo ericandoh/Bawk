@@ -62,7 +62,7 @@ void PlayerInventory::new_inv() {
     // created_templates.push(...);
     
     // add block 7 to first item of cursor
-    cursor_item_distinguisher val;
+    cursor_item_identifier val;
     val.is_blk = true;
     val.is_recipe = false;
     val.bid = 7;
@@ -105,11 +105,11 @@ CursorItem* PlayerInventory::get_custom_at(int index) {
     uint32_t pid = customs[index].pid;
     uint32_t custom_id = customs[index].sid;
     CursorSuperObject* superobject = new CursorSuperObject(pid, custom_id);
-    superobject->load_all();
+    superobject->init();
     return superobject;
 }
 
-CursorItem* PlayerInventory::get_item_from(cursor_item_distinguisher distinguish) {
+CursorItem* PlayerInventory::get_item_from(cursor_item_identifier distinguish) {
     if (distinguish.is_blk) {
         return new CursorBlock(distinguish.bid);
     }
@@ -119,7 +119,7 @@ CursorItem* PlayerInventory::get_item_from(cursor_item_distinguisher distinguish
     else {
         // must be a custom superobject
         CursorSuperObject* superobject = new CursorSuperObject(distinguish.pid, distinguish.vid);
-        superobject->load_all();
+        superobject->init();
         return superobject;
     }
 }
@@ -127,7 +127,7 @@ CursorItem* PlayerInventory::get_item_from(cursor_item_distinguisher distinguish
 CursorItem* PlayerInventory::get_cursoritem_at(int index) {
     if (index >= cursor_items.size())
         return 0;
-    cursor_item_distinguisher item = cursor_items[index];
+    cursor_item_identifier item = cursor_items[index];
     return get_item_from(item);
 }
 
@@ -173,7 +173,7 @@ void PlayerInventory::add_recipe_at(uint16_t type, int count) {
 
 // for adding a custom item that previously didn't exist
 void PlayerInventory::add_custom_at(CursorItem* to) {
-    cursor_item_distinguisher distinguish = to->get_distinguisher();
+    cursor_item_identifier distinguish = to->get_identifier();
     if (distinguish.is_blk || distinguish.is_recipe) {
         // this is not a custom item
         return;
@@ -191,7 +191,7 @@ void PlayerInventory::add_custom_at(CursorItem* to) {
 // later modify this to be insert_custom_at and remove the existing from the current index
 void PlayerInventory::set_custom_at(CursorItem* to, int index) {
     printf("frog\n");
-    cursor_item_distinguisher distinguish = to->get_distinguisher();
+    cursor_item_identifier distinguish = to->get_identifier();
     if (distinguish.is_blk || distinguish.is_recipe) {
         // this is not a custom item
         return;
@@ -204,7 +204,7 @@ void PlayerInventory::set_custom_at(CursorItem* to, int index) {
 
 void PlayerInventory::set_cursoritem_at(CursorItem* to, int index) {
     if (index >= cursor_items.size()) {
-        cursor_item_distinguisher val;
+        cursor_item_identifier val;
         val.is_blk = true;
         val.is_recipe = false;
         val.bid = 0;
@@ -224,7 +224,7 @@ void PlayerInventory::set_cursoritem_at(CursorItem* to, int index) {
     }
     
     if (!to) {
-        cursor_item_distinguisher val;
+        cursor_item_identifier val;
         val.is_blk = true;
         val.is_recipe = false;
         val.bid = 0;
@@ -232,12 +232,12 @@ void PlayerInventory::set_cursoritem_at(CursorItem* to, int index) {
         val.vid = 0;
         cursor_items[index] = val;
     } else {
-        cursor_items[index] = to->get_distinguisher();
+        cursor_items[index] = to->get_identifier();
     }
 }
 
 void PlayerInventory::del_custom_at(CursorItem* item) {
-    cursor_item_distinguisher distinguish = item->get_distinguisher();
+    cursor_item_identifier distinguish = item->get_identifier();
     if (distinguish.is_blk || distinguish.is_recipe) {
         // this is not a custom item
         return;
@@ -286,7 +286,7 @@ int PlayerInventory::load_self(IODataObject* obj) {
     
     int cursor_items_count = obj->read_value<int>();
     for (int i = 0; i < cursor_items_count; i++) {
-        cursor_items.push_back(obj->read_value<cursor_item_distinguisher>());
+        cursor_items.push_back(obj->read_value<cursor_item_identifier>());
     }
     
     return 0;

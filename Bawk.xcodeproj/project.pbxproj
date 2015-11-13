@@ -36,7 +36,6 @@
 		075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075EA6D81BBE078B001CC402 /* basic_types.cpp */; };
 		076410711BC45EA300135EDC /* gametemplate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0764106F1BC45EA300135EDC /* gametemplate.cpp */; };
 		076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410721BC48F7B00135EDC /* cursorblock.cpp */; };
-		076410771BC48F8B00135EDC /* cursoritemold.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410751BC48F8B00135EDC /* cursoritemold.cpp */; };
 		0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410781BC48F9B00135EDC /* cursorsuperobject.cpp */; };
 		0766EAEE1BBF74FD00477144 /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAEC1BBF74FD00477144 /* block.cpp */; };
 		0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAEF1BBF75E900477144 /* superobjectrender.cpp */; };
@@ -99,6 +98,7 @@
 		0705F3FA1BED27860088744F /* light_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = light_vertex_shader.glsl; path = Bawk/light_vertex_shader.glsl; sourceTree = "<group>"; };
 		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
 		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
+		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
 		071A04031BD96349003BF218 /* game_info_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game_info_loader.cpp; sourceTree = "<group>"; };
 		071A04041BD96349003BF218 /* game_info_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game_info_loader.h; sourceTree = "<group>"; };
 		071A04091BD98454003BF218 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
@@ -147,8 +147,6 @@
 		076410701BC45EA300135EDC /* gametemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gametemplate.h; sourceTree = "<group>"; };
 		076410721BC48F7B00135EDC /* cursorblock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorblock.cpp; sourceTree = "<group>"; };
 		076410731BC48F7B00135EDC /* cursorblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorblock.h; sourceTree = "<group>"; };
-		076410751BC48F8B00135EDC /* cursoritemold.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursoritemold.cpp; sourceTree = "<group>"; };
-		076410761BC48F8B00135EDC /* cursoritemold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursoritemold.h; sourceTree = "<group>"; };
 		076410781BC48F9B00135EDC /* cursorsuperobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorsuperobject.cpp; sourceTree = "<group>"; };
 		076410791BC48F9B00135EDC /* cursorsuperobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorsuperobject.h; sourceTree = "<group>"; };
 		0766EAEC1BBF74FD00477144 /* block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block.cpp; sourceTree = "<group>"; };
@@ -255,8 +253,6 @@
 				076410701BC45EA300135EDC /* gametemplate.h */,
 				076410721BC48F7B00135EDC /* cursorblock.cpp */,
 				076410731BC48F7B00135EDC /* cursorblock.h */,
-				076410751BC48F8B00135EDC /* cursoritemold.cpp */,
-				076410761BC48F8B00135EDC /* cursoritemold.h */,
 				076410781BC48F9B00135EDC /* cursorsuperobject.cpp */,
 				076410791BC48F9B00135EDC /* cursorsuperobject.h */,
 				071B46841BF3C1D8000CB782 /* cursoritem.cpp */,
@@ -344,6 +340,7 @@
 				07C426361BBCB2060045D796 /* displayable.h */,
 				07FE04301BEABB90001B26D9 /* debug_action.cpp */,
 				07FE04311BEABB90001B26D9 /* debug_action.h */,
+				0718C84D1BF57053005615F5 /* game_actions.h */,
 			);
 			name = game;
 			sourceTree = "<group>";
@@ -538,7 +535,6 @@
 				076410711BC45EA300135EDC /* gametemplate.cpp in Sources */,
 				076BEFEE1BD204D200D68C8F /* inventory_widget.cpp in Sources */,
 				075C67401BBA3EE800CB87DE /* world.cpp in Sources */,
-				076410771BC48F8B00135EDC /* cursoritemold.cpp in Sources */,
 				075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */,
 				073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */,
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,

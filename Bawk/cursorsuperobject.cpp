@@ -10,6 +10,7 @@
 #include "blocktracer.h"
 #include "game.h"
 #include "block.h"
+#include "gametemplate.h"
 
 CursorSuperObject::CursorSuperObject(uint32_t s): PlaceableSuperObject(s) {
     locked = false;
@@ -40,10 +41,15 @@ void CursorSuperObject::init() {
 }
 
 void CursorSuperObject::cleanup() {
-    
+    // do nothing top kek
+    delete this;
 }
 
-bool CursorSuperObject::clicked(Game* game, int mouse) {
+void CursorSuperObject::reset() {
+    locked = false;
+}
+
+bool CursorSuperObject::clicked(Game* game, Action mouse) {
     if (!locked) {
         // try locking this object into position
         ivec3 locked_pos;
@@ -57,21 +63,21 @@ bool CursorSuperObject::clicked(Game* game, int mouse) {
             locked = true;
             pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
         }
+        return true;
     }
-    else {
-        // we have already been locked in, now try putting the block into position
-        if (set_blocks(game->player, game->world, game->game_template)) {
-            locked = false;
-        }
-    }
-    return true;
+    return false;
 }
 
 bool CursorSuperObject::confirmed(Game* game) {
-    if (set_blocks(game->player, game->world, game->game_template)) {
-        locked = false;
+    if (!locked) {
+        return false;
     }
-    return true;
+    else {
+        if (PlaceableObject::set_blocks(game)) {
+            locked = false;
+        }
+        return true;
+    }
 }
 
 bool CursorSuperObject::canceled(Game* game) {
@@ -87,7 +93,7 @@ bool CursorSuperObject::handle_movement(ivec3 dir) {
     if (!locked) {
         return false;
     }
-    pos = fvec3(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
+    move_template(dir);
     return true;
 }
 
@@ -117,6 +123,10 @@ void CursorSuperObject::render_item() {
     pos = fvec3(0, 0, 0);
     render(&mvp);
     pos = old_pos;
+}
+
+void CursorSuperObject::render_in_world(fmat4* transform) {
+    render_blocks(transform);
 }
 
 cursor_item_identifier CursorSuperObject::get_identifier() {

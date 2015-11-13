@@ -25,30 +25,30 @@
 #define __Bawk__cursorblock__
 
 #include <stdio.h>
+#include "placeableobject.h"
 #include "cursoritem.h"
+#include "block.h"
 
 // Represents a block that can be put down
 
-class CursorBlock: public CursorItem {
-    void render_block(fmat4* transform, float bx, float by, float bz);
+class CursorBlock: public PlaceableObject, public CursorItem {
+    void render_block(fmat4* transform);
 public:
     block_type block;
+    fvec3 pos;
     CursorBlock(block_type type);
-    // sets the blocks in this representation into the world, and if template is not null, into the
-    // template as well
-    bool set_blocks(Player* player, World* world, TemporaryTemplate* temp) override;
-    // for a single block, this will call set_blocks (above) directly.
-    // for a template block, this will lock the position of the current cursoritem template
-    // then a call to set_blocks will be made later
-    bool place_blocks(Player* player, World* world, TemporaryTemplate* temp) override;
-    // only needed for instances of template. the default does jack shit
-    void move_block(ivec3 dir) override;
-    void get_bounds(ivec3* upper) override;
-    void render_at_zero(fmat4* transform) override;
-    void render_and_position(fmat4* transform) override;
     
-    cursor_item_distinguisher get_distinguisher() override;
-    void delete_self() override;
+    // --- PlaceableObject
+    bool set_blocks(Player* player, World* world, SuperObject* object) override;
+    
+    // --- CursorItem ---
+    bool clicked(Game* game, Action mouse) override;
+    bool confirmed(Game* game) override;
+    void step() override;
+    void render_item() override;
+    void render_in_world(fmat4* transform) override;
+
+    cursor_item_identifier get_identifier() override;
 };
 
 #endif /* defined(__Bawk__cursorblock__) */
