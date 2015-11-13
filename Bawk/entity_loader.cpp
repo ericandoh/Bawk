@@ -74,6 +74,7 @@ void delete_entity_from_memory(Entity* entity) {
     }
     else if (entity_class == 4) {
         // delete superobject
+        printf("Deleting a superobject\n");
         delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
     }
     else if (entity_class == 5) {

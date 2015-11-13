@@ -77,17 +77,8 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
         fvec3 oac;
         transform_into_my_coordinates(&oac, x, y, z);
         // remove stats for current block
-        int current_weight = get_block_weight(current.type);
-        int new_weight = weight - current_weight;
-        if (new_weight == 0) {
-            center_pos = pos;
-        } else {
-            center_pos = fvec3((center_pos.x * weight - (oac.x + 0.5f) * current_weight) / new_weight,
-                               (center_pos.y * weight - (oac.y + 0.5f) * current_weight) / new_weight,
-                               (center_pos.z * weight - (oac.z + 0.5f) * current_weight) / new_weight
-                               );
-        }
-        weight = new_weight;
+        // center pos is set outside separately
+        weight -= get_block_weight(current.type);
         health -= current.life;
         block_counter--;
     }
@@ -96,15 +87,8 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
         fvec3 oac;
         transform_into_my_coordinates(&oac, x, y, z);
         // remove stats for current block
-        int current_weight = get_block_weight(type.type);
-        int new_weight = weight + current_weight;
-        if (new_weight != 0) {
-            center_pos = fvec3((center_pos.x * weight + (oac.x + 0.5f) * current_weight) / new_weight,
-                               (center_pos.y * weight + (oac.y + 0.5f) * current_weight) / new_weight,
-                               (center_pos.z * weight + (oac.z + 0.5f) * current_weight) / new_weight
-                               );
-        }
-        weight = new_weight;
+        // center pos is set outside separately
+        weight += get_block_weight(type.type);;
         health += current.life;
         block_counter++;
     }

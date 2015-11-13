@@ -56,12 +56,10 @@ bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk,
 bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
     if (action == Action::MOVE_UP) {
         // move up
-        printf("KEY 0 PRSSED\n");
         owner->move_up(5.0f);
     }
     else if (action == Action::MOVE_DOWN) {
         // move down
-        printf("KEY 1 PRSSED\n");
         owner->move_down(5.0f);
     }
     else if (action == Action::MOVE_LEFT) {

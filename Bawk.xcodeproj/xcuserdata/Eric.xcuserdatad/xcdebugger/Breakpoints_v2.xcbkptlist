@@ -10,27 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/blockaction.cpp"
-            timestampString = "467915784.008273"
+            timestampString = "469096732.337011"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
-            landmarkName = "engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Bawk/blockaction.cpp"
-            timestampString = "467915784.008273"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
             landmarkName = "vehicle_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action)"
             landmarkType = "7">
          </BreakpointContent>
@@ -176,6 +160,22 @@
             startingLineNumber = "805"
             endingLineNumber = "805"
             landmarkName = "get_recipe_block_offsets(uint16_t vid, std::vector&lt;ivec3&gt; &amp;offsets)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Bawk/entity_loader.cpp"
+            timestampString = "469096626.641912"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "delete_entity_from_memory(Entity* entity)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

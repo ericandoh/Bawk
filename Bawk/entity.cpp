@@ -49,7 +49,6 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
         fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
                                     roundf(angle.y * 2 / M_PI) * M_PI / 2);
         
-        
         reverse = glm::translate(fmat4(1), center_pos);
         reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
         reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));

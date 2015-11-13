@@ -34,6 +34,54 @@ PlaceableSuperObject::PlaceableSuperObject(uint32_t p, uint32_t s): SuperObject(
     can_rotate = true;
 }
 
+fvec3 PlaceableSuperObject::calculate_center_position() {
+    // calculate the center position of this object
+    
+    // first, find direction we're pointing in
+    // 0 - x, 1 - y, 2 - z
+    int pointing_in = 0;
+    fvec3 aligned_upper = fvec3(bounds.upper.x - bounds.lower.x,
+                                bounds.upper.y - bounds.lower.y,
+                                bounds.upper.z - bounds.lower.z);
+    bool align_to_half = false;
+    // next, find out if we round to nearest x.5 or to nearest x.0
+    if (pointing_in == 0) {
+        // use y
+        int rounded_val = roundf(aligned_upper.y * 2.0);
+        if (rounded_val % 2 == 1) {
+            align_to_half = true;
+        }
+    }
+    else if (pointing_in == 1) {
+        // use x
+        int rounded_val = roundf(aligned_upper.x * 2.0);
+        if (rounded_val % 2 == 1) {
+            align_to_half = true;
+        }
+    }
+    else {
+        // we're aligned in z-direction, wtf!!!
+        // use z
+        int rounded_val = roundf(aligned_upper.z * 2.0);
+        if (rounded_val % 2 == 1) {
+            align_to_half = true;
+        }
+    }
+    
+    if (align_to_half) {
+        fvec3 result(roundf(aligned_upper.x / 2.0 - 0.5) + 0.5,
+                     roundf(aligned_upper.y / 2.0 - 0.5) + 0.5,
+                     roundf(aligned_upper.z / 2.0 - 0.5) + 0.5);
+        return result;
+    }
+    else {
+        fvec3 result(roundf(aligned_upper.x / 2.0),
+                     roundf(aligned_upper.y / 2.0),
+                     roundf(aligned_upper.z / 2.0));
+        return result;
+    }
+}
+
 // --- SuperObject ---
 void PlaceableSuperObject::set_block(float x, float y, float z, block_type type) {
     if (get_block_independence(get_block(x, y, z).type)) {
@@ -60,6 +108,10 @@ bool PlaceableSuperObject::set_blocks(Game* game) {
     else {
         if (makes_vehicle) {
             SuperObject* obj = game->world->create_superobject(game->player);
+            obj->pos = fvec3(this->pos.x + this->bounds.lower.x,
+                             this->pos.y + this->bounds.lower.y,
+                             this->pos.z + this->bounds.lower.z);
+            obj->center_pos = calculate_center_position();
             if (set_blocks(game->player, game->world, obj)) {
                 return true;
             }

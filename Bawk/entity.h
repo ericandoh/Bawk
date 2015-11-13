@@ -59,7 +59,7 @@ public:
     // the bounding box over contents of all chunks, in OAC
     // public for convenience of access
     bounding_box bounds;
-    // the weighted center position of this entity
+    // the center position of this entity. usually set to the middle point of the bounding box
     fvec3 center_pos;
     
     // temp variable that tells me my speed at a certain point in time
