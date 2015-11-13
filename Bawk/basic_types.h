@@ -144,5 +144,7 @@ ivec3 get_ivec3_maximum(ivec3 a, ivec3 b);
 
 BlockOrientation get_translated_orientation(BlockOrientation base, BlockOrientation original);
 ivec3 get_translated_offset(BlockOrientation base, ivec3 original_offset);
+BlockOrientation transform_orientation_into_my_coordinates(BlockOrientation world, fvec2 angle);
+BlockOrientation transform_orientation_into_world_coordinates(BlockOrientation my, fvec2 angle);
 
 #endif

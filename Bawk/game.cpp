@@ -23,9 +23,10 @@
 // TODO FROG
 #include <glm/gtc/matrix_transform.hpp>
 
-int toggleable_keys[] = {GLFW_KEY_Q,
-                            GLFW_KEY_Z, GLFW_KEY_A, GLFW_KEY_D,
-                            GLFW_KEY_W, GLFW_KEY_S};
+int toggleable_keys[] = {GLFW_KEY_SPACE,
+                            GLFW_KEY_C, GLFW_KEY_A, GLFW_KEY_D,
+                            GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_TAB, GLFW_KEY_LEFT_SHIFT,
+                            GLFW_KEY_Q, GLFW_KEY_E};
 
 std::map<int, Action> key_to_action;
 std::map<int, Action> mouse_to_action;
@@ -62,18 +63,24 @@ int Game::init() {
     world->update_chunks(0, &(player->pos));
     
     // set key mappings
-    key_to_action[GLFW_KEY_Q] = MOVE_UP;
-    key_to_action[GLFW_KEY_Z] = MOVE_DOWN;
+    // movement key mappings
+    key_to_action[GLFW_KEY_SPACE] = MOVE_UP;
+    key_to_action[GLFW_KEY_C] = MOVE_DOWN;
     key_to_action[GLFW_KEY_A] = MOVE_LEFT;
     key_to_action[GLFW_KEY_D] = MOVE_RIGHT;
     key_to_action[GLFW_KEY_W] = MOVE_FORWARD;
     key_to_action[GLFW_KEY_S] = MOVE_BACKWARD;
     
+    key_to_action[GLFW_KEY_TAB] = ANGLE_UP;
+    key_to_action[GLFW_KEY_LEFT_SHIFT] = ANGLE_DOWN;
+    key_to_action[GLFW_KEY_Q] = ROLL_LEFT;
+    key_to_action[GLFW_KEY_E] = ROLL_RIGHT;
+    
     key_to_action[GLFW_KEY_ENTER] = CONFIRM;
     key_to_action[GLFW_KEY_ESCAPE] = CANCEL;
     
-    key_to_action[GLFW_KEY_O] = MOVE_BLOCK_UP;
-    key_to_action[GLFW_KEY_L] = MOVE_BLOCK_DOWN;
+    key_to_action[GLFW_KEY_PERIOD] = MOVE_BLOCK_UP;
+    key_to_action[GLFW_KEY_SLASH] = MOVE_BLOCK_DOWN;
     key_to_action[GLFW_KEY_LEFT] = MOVE_BLOCK_LEFT;
     key_to_action[GLFW_KEY_RIGHT] = MOVE_BLOCK_RIGHT;
     key_to_action[GLFW_KEY_UP] = MOVE_BLOCK_FORWARD;
@@ -82,7 +89,6 @@ int Game::init() {
     key_to_action[GLFW_KEY_I] = OPEN_INV;
     key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
     
-    // WHYYYYYYYY (the key Y LOL)
     key_to_action[GLFW_KEY_M] = DEBUG_ACTION;
     
     key_to_action[GLFW_KEY_Y] = MOUNTING;

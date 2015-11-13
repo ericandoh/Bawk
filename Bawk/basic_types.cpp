@@ -8,6 +8,7 @@
 
 #include "basic_types.h"
 #include <algorithm>
+#include <glm/gtc/matrix_transform.hpp>
 
 uint32_t spread_bits(uint32_t val)
 {
@@ -149,4 +150,77 @@ ivec3 get_translated_offset(BlockOrientation base, ivec3 original_offset) {
         return result;
     }
     return original_offset;
+}
+
+fvec3 get_vector_from_orientation(BlockOrientation orientation) {
+    if (orientation == BlockOrientation::FRONT) {
+        return fvec3(1,0,0);
+    }
+    else if (orientation == BlockOrientation::BACK) {
+        return fvec3(-1,0,0);
+    }
+    else if (orientation == BlockOrientation::RIGHT) {
+        return fvec3(0,0,1);
+    }
+    else if (orientation == BlockOrientation::LEFT) {
+        return fvec3(0,0,-1);
+    }
+    else if (orientation == BlockOrientation::TOP) {
+        return fvec3(0,1,0);
+    }
+    else if (orientation == BlockOrientation::BOTTOM) {
+        return fvec3(0,-1,0);
+    }
+    return fvec3(0,0,0);
+}
+
+BlockOrientation get_orientation_from_vector(fvec3 vec) {
+    if (vec == fvec3(1,0,0)) {
+        return BlockOrientation::FRONT;
+    }
+    else if (vec == fvec3(-1,0,0)) {
+        return BlockOrientation::BACK;
+    }
+    else if (vec == fvec3(0,0,1)) {
+        return BlockOrientation::RIGHT;
+    }
+    else if (vec == fvec3(0,0,-1)) {
+        return BlockOrientation::LEFT;
+    }
+    else if (vec == fvec3(0,1,0)) {
+        return BlockOrientation::TOP;
+    }
+    else if (vec == fvec3(0,-1,0)) {
+        return BlockOrientation::BOTTOM;
+    }
+    return BlockOrientation::FRONT;
+}
+
+BlockOrientation transform_orientation_into_my_coordinates(BlockOrientation world, fvec2 angle) {
+    // transform into my coordinates
+    fmat4 reverse(1);
+    // round angle to nearest angle
+    fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
+                                roundf(angle.y * 2 / M_PI) * M_PI / 2);
+    reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+    reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
+    fvec3 world_vector = get_vector_from_orientation(world);
+    fvec4 result(world_vector.x, world_vector.y, world_vector.z, 1.0f);
+    result = reverse * result;
+    fvec3 result3 = fvec3(result.x, result.y, result.z);
+    return get_orientation_from_vector(result3);
+}
+
+BlockOrientation transform_orientation_into_world_coordinates(BlockOrientation my, fvec2 angle) {
+    fmat4 forward(1);
+    // round angle to nearest angle
+    fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
+                                roundf(angle.y * 2 / M_PI) * M_PI / 2);
+    forward = glm::rotate(forward, rounded_angle.x, fvec3(0, 1, 0));
+    forward = glm::rotate(forward, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+    fvec3 my_vector = get_vector_from_orientation(my);
+    fvec4 result(my_vector.x, my_vector.y, my_vector.z, 1.0f);
+    result = forward * result;
+    fvec3 result3 = fvec3(result.x, result.y, result.z);
+    return get_orientation_from_vector(result3);
 }
