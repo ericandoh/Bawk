@@ -85,6 +85,8 @@ int Game::init() {
     // WHYYYYYYYY (the key Y LOL)
     key_to_action[GLFW_KEY_M] = DEBUG_ACTION;
     
+    key_to_action[GLFW_KEY_Y] = MOUNTING;
+    
     mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
     mouse_to_action[GLFW_MOUSE_BUTTON_RIGHT] = CLICK_CREATE;
     
@@ -222,16 +224,16 @@ void Game::frame() {
     bool need_update = false;
     for (auto& key : key_toggled) {
         if (key.second) {
+            Action do_this = key_to_action[key.first];
             // see if we're in any vehicle of any sort, then see if it'll accept the key i send
             SuperObject* mount = player->get_mount();
             if (mount) {
-                if (mount->block_keyboard_callback(this, key.first)) {
+                if (mount->block_keyboard_callback(this, do_this)) {
                     continue;
                 }
             }
             
             bool this_key_need_update = true;
-            Action do_this = key_to_action[key.first];
             switch (do_this) {
                 case MOVE_UP:
                     player->move_up(5.0f);
@@ -262,7 +264,6 @@ void Game::frame() {
     if (need_update)
         check_need_update();
     world->step();
-    bar->get_current()->step();
 }
 
 float get_dst(fvec3* a, fvec3* b) {
@@ -295,8 +296,10 @@ void Game::key_callback_default(int key) {
             // let's not free this l8 on, since we still need to render if its in inventory
             // then l8 we can have a separate memory scheme for if this is in memory or not
             bar->set_current(game_template->create_from_template(player, world));
-            game_template->publish(this);
-            delete game_template;
+            GameTemplate* reference = game_template;
+            game_template = 0;
+            reference->publish(this);
+            delete reference;
             game_template = 0;
         }
         else {
@@ -439,7 +442,8 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         // see if we're in any vehicle of any sort, then see if it'll accept the key i send
         SuperObject* mount = player->get_mount();
         if (mount) {
-            if (mount->block_keyboard_callback(this, key)) {
+            Action do_this = key_to_action[key];
+            if (mount->block_keyboard_callback(this, do_this)) {
                 return;
             }
         }

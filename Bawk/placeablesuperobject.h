@@ -14,6 +14,7 @@
 #include "superobject.h"
 
 class PlaceableSuperObject: public SuperObject, public PlaceableObject {
+protected:
     int makes_vehicle;
 public:
     // for game templates

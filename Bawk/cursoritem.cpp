@@ -32,5 +32,3 @@ bool CursorItem::canceled(Game* game) {
 bool CursorItem::handle_movement(ivec3 dir) {
     return false;
 }
-
-void CursorItem::step() { }

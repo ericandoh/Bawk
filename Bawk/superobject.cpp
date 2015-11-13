@@ -32,12 +32,12 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
 void SuperObject::set_block(float x, float y, float z, block_type type) {
     if (type.type) {
         // set key binding (to default one) if it has one
-        std::vector<int> bindings = get_block_default_keyboard_bindings(type);
+        std::vector<Action> bindings = get_block_default_keyboard_bindings(type);
         if (bindings.size() > 0) {
             fvec3 oac;
             transform_into_my_coordinates(&oac, x, y, z);
             ivec3 rounded_oac = get_floor_from_fvec3(oac);
-            reverse_key_mapping[rounded_oac] = std::vector<int>(bindings.size());
+            reverse_key_mapping[rounded_oac] = std::vector<Action>(bindings.size());
             for (int i = 0; i < bindings.size(); i++) {
                 if (!key_mapping.count(bindings[i])) {
                     key_mapping[bindings[i]] = std::vector<key_mapping_info>(1);
@@ -45,7 +45,7 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
                 key_mapping_info info;
                 info.position = rounded_oac;
                 info.blk = type;
-                info.action = i;
+                info.action = bindings[i];
                 key_mapping[bindings[i]].push_back(info);
                 reverse_key_mapping[rounded_oac].push_back(bindings[i]);
             }
@@ -59,7 +59,7 @@ void SuperObject::set_block(float x, float y, float z, block_type type) {
         if (reverse_key_mapping.count(rounded_oac)) {
             // we do have such a key binding, remove it
             for (int i = 0; i < reverse_key_mapping[rounded_oac].size(); i++) {
-                int keybinding = reverse_key_mapping[rounded_oac][i];
+                Action keybinding = reverse_key_mapping[rounded_oac][i];
                 for (int j = (int)key_mapping[keybinding].size() - 1; j >= 0; j--) {
                     if (key_mapping[keybinding][j].position == rounded_oac) {
                         // assume we only mapped one key to
@@ -163,7 +163,7 @@ void SuperObject::step() {
     }
 }
 
-bool SuperObject::block_keyboard_callback(Game* game, int key) {
+bool SuperObject::block_keyboard_callback(Game* game, Action key) {
     if (key_mapping.count(key)) {
         bool any = false;
         for (int i = 0; i < key_mapping[key].size(); i++) {
@@ -246,14 +246,14 @@ int SuperObject::load_self(IODataObject* obj) {
     // load key bindings!
     int keybinding_count = obj->read_value<int>();
     for (int i = 0; i < keybinding_count; i++) {
-        int key = obj->read_value<int>();
+        Action key = obj->read_value<Action>();
         int keybinded_count = obj->read_value<int>();
         key_mapping[key] = std::vector<key_mapping_info>(keybinded_count);
         for (int j = 0; j < keybinded_count; j++) {
             key_mapping[key].push_back(obj->read_value<key_mapping_info>());
             // construct the reverse_key_mapping as well
             if (!reverse_key_mapping.count(key_mapping[key][j].position)) {
-                reverse_key_mapping[key_mapping[key][j].position] = std::vector<int>();
+                reverse_key_mapping[key_mapping[key][j].position] = std::vector<Action>();
             }
             reverse_key_mapping[key_mapping[key][j].position].push_back(key);
         }

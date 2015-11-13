@@ -47,7 +47,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
 }
 
 void GameTemplate::publish(Game* game) {
-    if (PlaceableSuperObject::set_blocks(game)) {
+    if (set_blocks(game)) {
         game->world->remove_entity(this);
     }
 }

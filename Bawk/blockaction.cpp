@@ -47,38 +47,38 @@ bool vehicle_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fv
 // --- ALL KEYBOARD ACTIONS ---
 
 // this method is never called, but serves as a template
-bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int action) {
+bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
     return true;
 }
 
 // a universal 6 directional engine
 // drawbacks is it is very weak
-bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int action) {
-    if (action == 0) {
+bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
+    if (action == Action::MOVE_UP) {
         // move up
         printf("KEY 0 PRSSED\n");
         owner->move_up(5.0f);
     }
-    else if (action == 1) {
+    else if (action == Action::MOVE_DOWN) {
         // move down
         printf("KEY 1 PRSSED\n");
         owner->move_down(5.0f);
     }
-    else if (action == 2) {
+    else if (action == Action::MOVE_LEFT) {
         // turn left
         //owner->move_left(5.0f);
         owner->turn_left(5.0f);
     }
-    else if (action == 3) {
+    else if (action == Action::MOVE_RIGHT) {
         // turn right
         //owner->move_right(5.0f);
         owner->turn_right(5.0f);
     }
-    else if (action == 4) {
+    else if (action == Action::MOVE_FORWARD) {
         // move forward
         owner->move_forward(5.0f);
     }
-    else if (action == 5) {
+    else if (action == Action::MOVE_BACKWARD) {
         // move backwards
         owner->move_backward(5.0f);
     }
@@ -88,8 +88,8 @@ bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, 
     return true;
 }
 
-bool vehicle_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int action) {
-    if (action == 0) {
+bool vehicle_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
+    if (action == Action::MOUNTING) {
         game->player->unmount(game->world);
     }
     else {
@@ -110,21 +110,20 @@ block_mouse_callback_func get_block_mouse_callback_for(std::string name) {
     return 0;
 }
 
-block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<int> &default_keymap) {
+block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<Action> &default_keymap) {
     if (name.compare("engine") == 0) {
         // default keymaps for action 0, 1
-        default_keymap.push_back(GLFW_KEY_Q);
-        default_keymap.push_back(GLFW_KEY_Z);
-        default_keymap.push_back(GLFW_KEY_A);
-        default_keymap.push_back(GLFW_KEY_D);
-        default_keymap.push_back(GLFW_KEY_W);
-        default_keymap.push_back(GLFW_KEY_S);
-        default_keymap.push_back(GLFW_KEY_H);
+        default_keymap.push_back(Action::MOVE_UP);
+        default_keymap.push_back(Action::MOVE_DOWN);
+        default_keymap.push_back(Action::MOVE_LEFT);
+        default_keymap.push_back(Action::MOVE_RIGHT);
+        default_keymap.push_back(Action::MOVE_FORWARD);
+        default_keymap.push_back(Action::MOVE_BACKWARD);
         return engine_block_keyboard_callback;
     }
     else if (name.compare("vehicle") == 0) {
         // default keymaps for action 0, 1
-        default_keymap.push_back(GLFW_KEY_Y);
+        default_keymap.push_back(Action::MOUNTING);
         return vehicle_block_keyboard_callback;
     }
     return 0;

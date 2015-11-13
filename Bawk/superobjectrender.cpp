@@ -58,26 +58,32 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
 
     if (chunks.count(left)) {
         chunk->left = chunks[left];
+        chunks[left]->right = chunk;
         chunk->left->changed = true;
     }
     if (chunks.count(right)) {
         chunk->right = chunks[right];
+        chunks[right]->left = chunk;
         chunk->right->changed = true;
     }
     if (chunks.count(below)) {
         chunk->below = chunks[below];
+        chunks[below]->above = chunk;
         chunk->below->changed = true;
     }
     if (chunks.count(above)) {
         chunk->above = chunks[above];
+        chunks[above]->below = chunk;
         chunk->above->changed = true;
     }
     if (chunks.count(front)) {
         chunk->front = chunks[front];
+        chunks[front]->back = chunk;
         chunk->front->changed = true;
     }
     if (chunks.count(back)) {
         chunk->back = chunks[back];
+        chunks[back]->front = chunk;
         chunk->back->changed = true;
     }
     
@@ -161,26 +167,32 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         
         if (chunks.count(left)) {
             chunk->left = chunks[left];
+            chunks[left]->right = chunk;
             chunk->left->changed = true;
         }
         if (chunks.count(right)) {
             chunk->right = chunks[right];
+            chunks[right]->left = chunk;
             chunk->right->changed = true;
         }
         if (chunks.count(below)) {
             chunk->below = chunks[below];
+            chunks[below]->above = chunk;
             chunk->below->changed = true;
         }
         if (chunks.count(above)) {
             chunk->above = chunks[above];
+            chunks[above]->below = chunk;
             chunk->above->changed = true;
         }
         if (chunks.count(front)) {
             chunk->front = chunks[front];
+            chunks[front]->back = chunk;
             chunk->front->changed = true;
         }
         if (chunks.count(back)) {
             chunk->back = chunks[back];
+            chunks[back]->front = chunk;
             chunk->back->changed = true;
         }
         
@@ -416,7 +428,7 @@ bool RenderableSuperObject::collides_with(Entity* other, bounding_box* my_bounds
                         continue;
                     }
                     ivec3 lower_corner(0, 0, 0);
-                    ivec3 upper_corner(CX - 1, CY - 1, CZ - 1);
+                    ivec3 upper_corner(CX, CY, CZ);
                     if (x == lower_cac.x)
                         lower_corner.x = lower_crc.x;
                     if (x == upper_cac.x)
@@ -433,9 +445,9 @@ bool RenderableSuperObject::collides_with(Entity* other, bounding_box* my_bounds
                     if (intersects_chunk(lower_corner, upper_corner, chunk_pos)) {
                         if (!load_chunk(x, y, z)) {
                             RenderableChunk* chunk = chunks[chunk_pos];
-                            for (int xt = lower_corner.x; xt <= upper_corner.x; xt++) {
-                                for (int yt = lower_corner.y; yt <= upper_corner.y; yt++) {
-                                    for (int zt = lower_corner.z; zt <= upper_corner.z; zt++) {
+                            for (int xt = lower_corner.x; xt < upper_corner.x; xt++) {
+                                for (int yt = lower_corner.y; yt < upper_corner.y; yt++) {
+                                    for (int zt = lower_corner.z; zt < upper_corner.z; zt++) {
                                         if (chunk->blk[xt][yt][zt].type) {
                                             bounding_box subbox;
                                             subbox.lower = fvec3(x*CX + xt,

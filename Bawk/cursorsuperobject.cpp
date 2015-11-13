@@ -73,7 +73,7 @@ bool CursorSuperObject::confirmed(Game* game) {
         return false;
     }
     else {
-        if (PlaceableObject::set_blocks(game)) {
+        if (set_blocks(game)) {
             locked = false;
         }
         return true;
@@ -97,20 +97,6 @@ bool CursorSuperObject::handle_movement(ivec3 dir) {
     return true;
 }
 
-void CursorSuperObject::step() {
-    if (!locked) {
-        BlockOrientation orientation;
-        ivec3 upper;
-        ivec3 locked_pos;
-        upper.x = bounds.upper.x - bounds.lower.x;
-        upper.y = bounds.upper.y - bounds.lower.y;
-        upper.z = bounds.upper.z - bounds.lower.z;
-        if (get_pointing_position(&locked_pos, &orientation, upper)) {
-            pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
-        }
-    }
-}
-
 void CursorSuperObject::render_item() {
     if (!mvp_set) {
         ivec3 upper;
@@ -126,6 +112,21 @@ void CursorSuperObject::render_item() {
 }
 
 void CursorSuperObject::render_in_world(fmat4* transform) {
+    if (!locked) {
+        BlockOrientation orientation;
+        ivec3 upper;
+        ivec3 locked_pos;
+        upper.x = bounds.upper.x - bounds.lower.x;
+        upper.y = bounds.upper.y - bounds.lower.y;
+        upper.z = bounds.upper.z - bounds.lower.z;
+        if (get_pointing_position(&locked_pos, &orientation, upper)) {
+            pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+        }
+        else {
+            // out of bounds, do not render top kek
+            return;
+        }
+    }
     render_blocks(transform);
 }
 
@@ -159,13 +160,13 @@ std::string CursorSuperObject::get_chunk_save_path(ivec3* pos) {
 int CursorSuperObject::load_self(IODataObject* obj) {
     if (SuperObject::load_self(obj))
         return 1;
-    make_vehicle = obj->read_value<int>();
+    makes_vehicle = obj->read_value<int>();
     return 0;
 }
 
 void CursorSuperObject::remove_self(IODataObject* obj) {
     SuperObject::remove_self(obj);
-    obj->save_value(make_vehicle);
+    obj->save_value(makes_vehicle);
 }
 
 

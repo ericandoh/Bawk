@@ -65,7 +65,7 @@ struct recipe_game_info {
 struct ui_block_callback_info {
     block_mouse_callback_func mouse_callback;
     block_keyboard_callback_func keyboard_callback;
-    std::vector<int> key_bindings;
+    std::vector<Action> key_bindings;
 };
 
 class GameInfoDataObject {
@@ -759,11 +759,11 @@ block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_i
     return 0;
 }
 
-std::vector<int> get_block_default_keyboard_bindings(block_type block_id) {
+std::vector<Action> get_block_default_keyboard_bindings(block_type block_id) {
     if (game_data_object->block_callback_info.count(block_id.type)) {
         return game_data_object->block_callback_info[block_id.type].key_bindings;
     }
-    return std::vector<int>();
+    return std::vector<Action>();
 }
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
@@ -801,6 +801,8 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
 }
 
 void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets) {
+    if (vid < recipe_mask)
+        return;
     vid -= recipe_mask;
     if (game_data_object->recipe_info[vid].from_file) {
         // make a superobject loaded from file path

@@ -27,6 +27,7 @@
 #include <string>
 #include "basic_types.h"
 #include "block_loader.h"
+#include "game_actions.h"
 
 class Game;
 
@@ -105,7 +106,7 @@ public:
     // poke this object at RWC, true if this object says, "OUCH"
     virtual bool poke(float x, float y, float z);
     
-    virtual bool block_keyboard_callback(Game* game, int key);
+    virtual bool block_keyboard_callback(Game* game, Action key);
     virtual bool block_mouse_callback(Game* game, int button);
     
     virtual void step();

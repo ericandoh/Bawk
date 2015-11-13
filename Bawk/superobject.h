@@ -32,15 +32,15 @@
 struct key_mapping_info {
     ivec3 position;
     block_type blk;
-    int action;
+    Action action;
 };
 
 class SuperObject : public RenderableSuperObject {
 protected:
     // note that we might have >1 action per key press (ie. both engines X, Y fire on pressing W)
-    std::map<int, std::vector<key_mapping_info>> key_mapping;
+    std::map<Action, std::vector<key_mapping_info>> key_mapping;
     // the reverse mapping of the above, for convenience
-    std::unordered_map<ivec3, std::vector<int>> reverse_key_mapping;
+    std::unordered_map<ivec3, std::vector<Action>> reverse_key_mapping;
     int block_counter;
 public:
     SuperObject();
@@ -51,7 +51,7 @@ public:
     
     void step() override;
     
-    bool block_keyboard_callback(Game* game, int key) override;
+    bool block_keyboard_callback(Game* game, Action key) override;
     bool block_mouse_callback(Game* game, int button) override;
     
     virtual std::string get_save_path() override;

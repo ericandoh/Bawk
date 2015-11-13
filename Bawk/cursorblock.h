@@ -44,7 +44,6 @@ public:
     // --- CursorItem ---
     bool clicked(Game* game, Action mouse) override;
     bool confirmed(Game* game) override;
-    void step() override;
     void render_item() override;
     void render_in_world(fmat4* transform) override;
 

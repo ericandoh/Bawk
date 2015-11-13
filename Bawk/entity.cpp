@@ -216,7 +216,7 @@ bool Entity::poke(float x, float y, float z) {
     return bounds.hits(oac);
 }
 
-bool Entity::block_keyboard_callback(Game* game, int key) {
+bool Entity::block_keyboard_callback(Game* game, Action key) {
     return false;
 }
 

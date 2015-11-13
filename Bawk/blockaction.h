@@ -13,16 +13,17 @@
 #include <vector>
 #include "block.h"
 #include "world.h"
+#include "game_actions.h"
 
 class Game;
 
 typedef bool (*block_mouse_callback_func)(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int button);
-typedef bool (*block_keyboard_callback_func)(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int action);
+typedef bool (*block_keyboard_callback_func)(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action);
 
 // used by gameloader to get appropriate action functions
 block_mouse_callback_func get_block_mouse_callback_for(std::string name);
 
-block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<int> &default_keymap);
+block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<Action> &default_keymap);
 
 
 #endif /* defined(__Bawk__blockaction__) */

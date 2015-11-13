@@ -63,16 +63,6 @@ bool CursorBlock::confirmed(Game* game) {
     return false;
 }
 
-void CursorBlock::step() {
-    ivec3 locked_pos;
-    // TODO change this to another orientation class
-    BlockOrientation orientation;
-    ivec3 upper(1, 1, 1);
-    if (get_pointing_position(&locked_pos, &orientation, upper)) {
-        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
-    }
-}
-
 void CursorBlock::render_item() {
     if (!mvp_set) {
         ivec3 upper(1, 1, 1);
@@ -85,6 +75,16 @@ void CursorBlock::render_item() {
 }
 
 void CursorBlock::render_in_world(fmat4* transform) {
+    ivec3 locked_pos;
+    // TODO change this to another orientation class
+    BlockOrientation orientation;
+    ivec3 upper(1, 1, 1);
+    if (get_pointing_position(&locked_pos, &orientation, upper)) {
+        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+    }
+    else {
+        return;
+    }
     render_block(transform);
 }
 
