@@ -144,6 +144,14 @@ void SuperObject::step() {
                 off = 0.05f;
             angular_velocity.y += off;
         }
+        if ((int)(angle.z *2 / M_PI)*M_PI/2 != angle.z) {
+            float off = roundf(angle.z*2 / M_PI)*M_PI/2 - angle.z;
+            if (off < -0.05f)
+                off = -0.05f;
+            if (off > 0.05f)
+                off = 0.05f;
+            angular_velocity.z += off;
+        }
     }
 }
 

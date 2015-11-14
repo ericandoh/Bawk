@@ -286,7 +286,7 @@ void EntityHolder::step() {
     for (auto &i: entities) {
         i->stable = true;
         i->velocity = fvec3(0,0,0);
-        i->angular_velocity = fvec2(0,0);
+        i->angular_velocity = fvec3(0,0,0);
     }
 }
 

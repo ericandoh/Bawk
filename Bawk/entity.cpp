@@ -11,8 +11,8 @@
 
 Entity::Entity() {
     // these will be overwritten by a call to set angle
-    up = fvec3(0.0f, 1.0f, 0.0f);
-    dir = fvec3(1.0f, 0.0f, 0.0f);
+    up = fvec3(0, 1, 0);
+    dir = fvec3(1, 0, 0);
     // identifying info for the entity. this should be overwritten
     vid = 0;
     pid = 0;
@@ -23,16 +23,16 @@ Entity::Entity() {
     can_rotate = false;
     
     // set initial pos/angle to origin, overwrite for most objects
-    pos = fvec3(0.0f, 0.0f, 0.0f);
-    angle = fvec2(0.0f, 0.0f);
+    pos = fvec3(0,0,0);
+    angle = fvec3(0,0,0);
     
     // set initial bounds to be maxed out
     bounds = bounding_box();
-    center_pos = fvec3(0.0f, 0.0f, 0.0f);
+    center_pos = fvec3(0,0,0);
     
     // this object is (hopefully) not moving to start out with
     velocity = fvec3(0, 0, 0);
-    angular_velocity = fvec2(0, 0);
+    angular_velocity = fvec3(0, 0, 0);
     // do a stable check to begin with
     stable = false;
     
@@ -46,12 +46,19 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
     fmat4 reverse(1);
     if (can_rotate) {
         // round angle to nearest angle
-        fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
-                                    roundf(angle.y * 2 / M_PI) * M_PI / 2);
+        fvec3 rounded_angle = fvec3(roundf(angle.x * 2 / M_PI) * M_PI / 2,
+                                    roundf(angle.y * 2 / M_PI) * M_PI / 2,
+                                    roundf(angle.z * 2 / M_PI) * M_PI / 2);
         
         reverse = glm::translate(fmat4(1), center_pos);
-        reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
-        reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
+        
+        // pitch
+        reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(-1,0,0));
+        // roll
+        reverse = glm::rotate(reverse, -rounded_angle.z, fvec3(0,0,1));
+        // yaw
+        reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0,1,0));
+        
         reverse = glm::translate(reverse, -center_pos);
     }
     reverse = glm::translate(reverse, -pos);
@@ -68,8 +75,15 @@ void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, 
     if (can_rotate) {
         // round angle to nearest angle
         reverse = glm::translate(fmat4(1), center_pos);
-        reverse = glm::rotate(reverse, -angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
-        reverse = glm::rotate(reverse, -angle.x, fvec3(0, 1, 0));
+        
+        
+        // pitch
+        reverse = glm::rotate(reverse, -angle.y, fvec3(-1,0,0));
+        // roll
+        reverse = glm::rotate(reverse, -angle.z, fvec3(0,0,1));
+        // yaw
+        reverse = glm::rotate(reverse, -angle.x, fvec3(0,1,0));
+        
         reverse = glm::translate(reverse, -center_pos);
     }
     reverse = glm::translate(reverse, -pos);
@@ -85,11 +99,20 @@ void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, floa
     fmat4 view = glm::translate(fmat4(1), pos);
     if (can_rotate) {
         // round angle to nearest angle
-        fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
-                                    roundf(angle.y * 2 / M_PI) * M_PI / 2);
+        fvec3 rounded_angle = fvec3(roundf(angle.x * 2 / M_PI) * M_PI / 2,
+                                    roundf(angle.y * 2 / M_PI) * M_PI / 2,
+                                    roundf(angle.z * 2 / M_PI) * M_PI / 2);
         view = glm::translate(view, center_pos);
-        view = glm::rotate(view, rounded_angle.x, fvec3(0, 1, 0));
-        view = glm::rotate(view, rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+        
+        // yaw
+        view = glm::rotate(view, rounded_angle.x, fvec3(0,1,0));
+        // roll
+        view = glm::rotate(view, rounded_angle.z, fvec3(0,0,1));
+        // pitch
+        view = glm::rotate(view, rounded_angle.y, fvec3(-1,0,0));
+
+        
+        
         view = glm::translate(view, -center_pos);
     }
     fvec4 result(x, y, z, 1.0f);
@@ -104,8 +127,13 @@ void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float 
     fmat4 view = glm::translate(fmat4(1), pos);
     if (can_rotate) {
         view = glm::translate(view, center_pos);
-        view = glm::rotate(view, angle.x, fvec3(0, 1, 0));
-        view = glm::rotate(view, angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
+        // yaw
+        view = glm::rotate(view, angle.x, fvec3(0,1,0));
+        // roll
+        view = glm::rotate(view, angle.z, fvec3(0,0,1));
+        // pitch
+        view = glm::rotate(view, angle.y, fvec3(-1,0,0));
+        
         view = glm::translate(view, -center_pos);
     }
     fvec4 result(x, y, z, 1.0f);
@@ -127,28 +155,37 @@ float Entity::get_speed(float force) {
 // movement methods. Move these to class Entity
 void Entity::move_forward(float force) {
     // override this if flying/on land
-    fvec3 forward = fvec3(dir.x, 0, dir.z);
-    forward = glm::normalize(forward);
-    move_dist(forward * get_speed(force));
+    move_dist(dir * get_speed(force));
 }
 
 void Entity::move_backward(float force) {
-    fvec3 forward = -fvec3(dir.x, 0, dir.z);
-    forward = glm::normalize(forward);
+    move_dist(dir * (-get_speed(force)));
+}
+
+void Entity::move_forward_flat(float force) {
+    // override this if flying/on land
+    //fvec3 forward = fvec3(dir.x, 0, dir.z);
+    //forward = glm::normalize(forward);
     move_dist(forward * get_speed(force));
 }
 
+void Entity::move_backward_flat(float force) {
+    //fvec3 forward = -fvec3(dir.x, 0, dir.z);
+    //forward = glm::normalize(forward);
+    move_dist(forward * (-get_speed(force)));
+}
+
 void Entity::move_left(float force) {
-    fvec3 forward = fvec3(dir.x, 0, dir.z);
-    forward = glm::normalize(forward);
+    //fvec3 forward = fvec3(dir.x, 0, dir.z);
+    //forward = glm::normalize(forward);
     move_dist(fvec3(forward.z * get_speed(force),
                     0,
                     -forward.x * get_speed(force)));
 }
 
 void Entity::move_right(float force) {
-    fvec3 forward = fvec3(dir.x, 0, dir.z);
-    forward = glm::normalize(forward);
+    //fvec3 forward = fvec3(dir.x, 0, dir.z);
+    //forward = glm::normalize(forward);
     move_dist(fvec3(-forward.z * get_speed(force),
                     0,
                     forward.x * get_speed(force)));
@@ -166,15 +203,29 @@ void Entity::move_down(float force) {
                     0.0f));
 }
 
-void Entity::turn_left(float force) {
+void Entity::yaw_left(float force) {
     // 1 unit of force turns 1 weight by M_PI/2
-    turn_angle(fvec2(get_speed(force)*M_PI/2,
-                     0.0f));
+    turn_angle(fvec3(get_speed(force)*M_PI/2,0,0));
 }
 
-void Entity::turn_right(float force) {
-    turn_angle(fvec2(-get_speed(force)*M_PI/2,
-                     0.0f));
+void Entity::yaw_right(float force) {
+    turn_angle(fvec3(-get_speed(force)*M_PI/2,0,0));
+}
+
+void Entity::pitch_up(float force) {
+    turn_angle(fvec3(0,get_speed(force)*M_PI/2,0));
+}
+
+void Entity::pitch_down(float force) {
+    turn_angle(fvec3(0,-get_speed(force)*M_PI/2,0));
+}
+
+void Entity::roll_left(float force) {
+    turn_angle(fvec3(0,0,-get_speed(force)*M_PI/2));
+}
+
+void Entity::roll_right(float force) {
+    turn_angle(fvec3(0,0,get_speed(force)*M_PI/2));
 }
 
 void Entity::move_dist(fvec3 off) {
@@ -182,7 +233,7 @@ void Entity::move_dist(fvec3 off) {
     stable = false;
 }
 
-void Entity::turn_angle(fvec2 off) {
+void Entity::turn_angle(fvec3 off) {
     angular_velocity += off;
     stable = false;
 }
@@ -197,15 +248,20 @@ void Entity::recalculate_dir() {
     if(angle.y > M_PI / 2)
         angle.y = M_PI / 2;
     
-    //right.x = -cosf(angle.x);
-    //right.y = 0;
-    //right.z = sinf(angle.x);
+    fvec3 right;
+    right.x = -cosf(angle.x) * cosf(angle.z);
+    right.y = sinf(angle.z);
+    right.z = sinf(angle.x) * cosf(angle.z);
     
-    dir.x = sinf(angle.x) * cosf(angle.y);
+    forward.x = sinf(angle.x);
+    forward.y = 0;
+    forward.z = cosf(angle.x);
+    
+    dir.x = forward.x * cosf(angle.y);
     dir.y = sinf(angle.y);
-    dir.z = cosf(angle.x) * cosf(angle.y);
+    dir.z = forward.z * cosf(angle.y);
     
-    //up = glm::cross(right, lookat);
+    up = glm::cross(right, dir);
 }
 
 bool Entity::poke(float x, float y, float z) {
@@ -234,6 +290,25 @@ bool Entity::block_mouse_callback(Game* game, int button) {
 
 void Entity::step() {
     // do nothing
+}
+
+void Entity::get_mvp(fmat4 *dst) {
+    *dst = glm::translate(fmat4(1), fvec3(pos.x,
+                                          pos.y,
+                                          pos.z));
+    if (can_rotate) {
+        *dst = glm::translate(*dst, center_pos);
+        
+        // yaw
+        *dst = glm::rotate(*dst, angle.x, fvec3(0,1,0));
+        // roll
+        *dst = glm::rotate(*dst, angle.z, fvec3(0,0,1));
+        // pitch
+        *dst = glm::rotate(*dst, angle.y, fvec3(-1,0,0));
+        
+        
+        *dst = glm::translate(*dst, -center_pos);
+    }
 }
 
 void Entity::render(fmat4* transform) {
@@ -358,7 +433,7 @@ void Entity::remove_selfs() {
 int Entity::load_self(IODataObject* obj) {
     up = obj->read_value<fvec3>();
     pos = obj->read_value<fvec3>();
-    angle = obj->read_value<fvec2>();
+    angle = obj->read_value<fvec3>();
     
     bounds = obj->read_value<bounding_box>();
     center_pos = obj->read_value<fvec3>();

@@ -22,7 +22,7 @@ Player::Player(uint32_t p) {
     // initialize things
     up = fvec3(0.0f, 1.0f, 0.0f);
     pos = fvec3(0.0f, 8.0f, 0.0f);
-    angle = fvec2(0.0f, 0.0f);
+    angle = fvec3(0,0,0);
     
     //lower_bound = fvec3(-0.4f, -0.9f, 0.4f);
     //upper_bound = fvec3(0.4f, 0.9f, 0.4f);

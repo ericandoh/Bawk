@@ -54,7 +54,25 @@ bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk,
 // a universal 6 directional engine
 // drawbacks is it is very weak
 bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
-    if (action == Action::MOVE_UP) {
+    if (action == Action::MOVE_FORWARD) {
+        // move forward
+        owner->move_forward(5.0f);
+    }
+    else if (action == Action::MOVE_BACKWARD) {
+        // move backwards
+        owner->move_backward(5.0f);
+    }
+    else if (action == Action::MOVE_LEFT) {
+        // turn left
+        //owner->move_left(5.0f);
+        owner->yaw_left(5.0f);
+    }
+    else if (action == Action::MOVE_RIGHT) {
+        // turn right
+        //owner->move_right(5.0f);
+        owner->yaw_right(5.0f);
+    }
+    else if (action == Action::MOVE_UP) {
         // move up
         owner->move_up(5.0f);
     }
@@ -62,23 +80,21 @@ bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, 
         // move down
         owner->move_down(5.0f);
     }
-    else if (action == Action::MOVE_LEFT) {
-        // turn left
-        //owner->move_left(5.0f);
-        owner->turn_left(5.0f);
+    else if (action == Action::PITCH_UP) {
+        // pitch up
+        owner->pitch_up(2.0f);
     }
-    else if (action == Action::MOVE_RIGHT) {
-        // turn right
-        //owner->move_right(5.0f);
-        owner->turn_right(5.0f);
+    else if (action == Action::PITCH_DOWN) {
+        // pitch down
+        owner->pitch_down(2.0f);
     }
-    else if (action == Action::MOVE_FORWARD) {
-        // move forward
-        owner->move_forward(5.0f);
+    else if (action == Action::ROLL_LEFT) {
+        // pitch up
+        owner->roll_left(2.0f);
     }
-    else if (action == Action::MOVE_BACKWARD) {
-        // move backwards
-        owner->move_backward(5.0f);
+    else if (action == Action::ROLL_RIGHT) {
+        // pitch down
+        owner->roll_right(2.0f);
     }
     else {
         return false;
@@ -117,6 +133,10 @@ block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, s
         default_keymap.push_back(Action::MOVE_RIGHT);
         default_keymap.push_back(Action::MOVE_FORWARD);
         default_keymap.push_back(Action::MOVE_BACKWARD);
+        default_keymap.push_back(Action::PITCH_UP);
+        default_keymap.push_back(Action::PITCH_DOWN);
+        default_keymap.push_back(Action::ROLL_LEFT);
+        default_keymap.push_back(Action::ROLL_RIGHT);
         return engine_block_keyboard_callback;
     }
     else if (name.compare("vehicle") == 0) {

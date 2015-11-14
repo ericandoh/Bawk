@@ -204,19 +204,11 @@ void RenderableSuperObject::render(fmat4* transform) {
     for (auto iterator = chunks.begin(); iterator != chunks.end(); iterator++) {
         ivec3 sub_pos = iterator->first;
         
-        fmat4 view = glm::translate(fmat4(1), fvec3(pos.x,
-                                                    pos.y,
-                                                    pos.z));
-        if (angle.x != 0 || angle.y != 0) {
-            view = glm::translate(view, center_pos);
-            view = glm::rotate(view, angle.x, fvec3(0, 1, 0));
-            view = glm::rotate(view, angle.y, fvec3(cosf(angle.x), 0, -sinf(angle.x)));
-            view = glm::translate(view, -center_pos);
-        }
+        fmat4 view;
+        get_mvp(&view);
         view = glm::translate(view, fvec3(sub_pos.x * CX,
                                           sub_pos.y * CY,
                                           sub_pos.z * CZ));
-        
 
         fmat4 mvp = *transform * view;
         

@@ -71,8 +71,8 @@ int Game::init() {
     key_to_action[GLFW_KEY_W] = MOVE_FORWARD;
     key_to_action[GLFW_KEY_S] = MOVE_BACKWARD;
     
-    key_to_action[GLFW_KEY_TAB] = ANGLE_UP;
-    key_to_action[GLFW_KEY_LEFT_SHIFT] = ANGLE_DOWN;
+    key_to_action[GLFW_KEY_TAB] = PITCH_UP;
+    key_to_action[GLFW_KEY_LEFT_SHIFT] = PITCH_DOWN;
     key_to_action[GLFW_KEY_Q] = ROLL_LEFT;
     key_to_action[GLFW_KEY_E] = ROLL_RIGHT;
     
@@ -254,10 +254,10 @@ void Game::frame() {
                     player->move_right(5.0f);
                     break;
                 case MOVE_FORWARD:
-                    player->move_forward(5.0f);
+                    player->move_forward_flat(5.0f);
                     break;
                 case MOVE_BACKWARD:
-                    player->move_backward(5.0f);
+                    player->move_backward_flat(5.0f);
                     break;
                 default:
                     // do nothing

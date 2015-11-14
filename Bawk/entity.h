@@ -34,9 +34,11 @@ class Game;
 class Entity {
 protected:
     // up/dir vectors, derived from angle.x/angle.y
-    fvec3 up;
     fvec3 dir;
+    fvec3 up;
+    fvec3 forward;
     float get_speed(float force);
+    void get_mvp(fmat4* dst);
 public:
     // ----- IDENTIFYING INFO -----
     // identifying information for the entity
@@ -53,8 +55,8 @@ public:
     // ----- POSITIONING INFO -----
     // position of the superobject, in RWC
     fvec3 pos;
-    // the angle/tilt of the object
-    fvec2 angle;
+    // yaw/pitch/roll
+    fvec3 angle;
     
     // the bounding box over contents of all chunks, in OAC
     // public for convenience of access
@@ -65,7 +67,7 @@ public:
     // temp variable that tells me my speed at a certain point in time
     fvec3 velocity;
     // temp variable that tells me my angular speed at a certain point in time
-    fvec2 angular_velocity;
+    fvec3 angular_velocity;
     
     // if the object has velocity/angular velocity, mark this so collision detector picks it up
     bool stable;
@@ -91,15 +93,22 @@ public:
     // movement methods
     void move_forward(float force);
     void move_backward(float force);
+    void move_forward_flat(float force);
+    void move_backward_flat(float force);
     void move_left(float force);
     void move_right(float force);
     void move_up(float force);
     void move_down(float force);
-    void turn_left(float force);
-    void turn_right(float force);
+    
+    void yaw_left(float force);
+    void yaw_right(float force);
+    void pitch_up(float force);
+    void pitch_down(float force);
+    void roll_left(float force);
+    void roll_right(float force);
     
     void move_dist(fvec3 off);
-    void turn_angle(fvec2 off);
+    void turn_angle(fvec3 off);
     
     void recalculate_dir();
     
