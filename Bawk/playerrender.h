@@ -34,6 +34,7 @@ class RenderablePlayer: public Entity {
     fmat4 view, projection;
 public:
     RenderablePlayer();
+    //void recalculate_dir() override;
     fmat4* set_camera();
     void query_depth(World* world);
     // renders a box around the selection

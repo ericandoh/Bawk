@@ -101,57 +101,67 @@ void SuperObject::remove_block(float x, float y, float z) {
 
 void SuperObject::step() {
     if (stable) {
+        float max_movement = 0.05f;
+        float max_angle_movement = 0.05f;
         if (floorf(pos.x) != pos.x) {
             float off = roundf(pos.x) - pos.x;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
+            if (off < -max_movement)
+                off = -max_movement;
+            if (off > max_movement)
+                off = max_movement;
             velocity.x += off;
             stable = false;
         }
         if (floorf(pos.y) != pos.y) {
             float off = roundf(pos.y) - pos.y;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
+            if (off < -max_movement)
+                off = -max_movement;
+            if (off > max_movement)
+                off = max_movement;
             velocity.y += off;
             stable = false;
         }
         if (floorf(pos.z) != pos.z) {
             float off = roundf(pos.z) - pos.z;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
+            if (off < -max_movement)
+                off = -max_movement;
+            if (off > max_movement)
+                off = max_movement;
             velocity.z += off;
             stable = false;
         }
-        if ((int)(angle.x*2 / M_PI)*M_PI/2 != angle.x) {
-            float off = roundf(angle.x*2 / M_PI)*M_PI/2 - angle.x;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
+        angle.inch_toward_normalization();
+        /*
+        if ((int)(angle.angle.x/HALF_PI)*HALF_PI != angle.angle.x) {
+            float off = roundf(angle.angle.x/HALF_PI)*HALF_PI - angle.angle.x;
+            if (off < -max_angle_movement)
+                off = -max_angle_movement;
+            else if (off > max_angle_movement)
+                off = max_angle_movement;
+            else
+                off = 0;
             angular_velocity.x += off;
         }
-        if ((int)(angle.y *2 / M_PI)*M_PI/2 != angle.y) {
-            float off = roundf(angle.y*2 / M_PI)*M_PI/2 - angle.y;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
+        if ((int)(angle.angle.y/HALF_PI)*HALF_PI != angle.angle.y) {
+            float off = roundf(angle.angle.y/HALF_PI)*HALF_PI - angle.angle.y;
+            if (off < -max_angle_movement)
+                off = -max_angle_movement;
+            else if (off > max_angle_movement)
+                off = max_angle_movement;
+            else
+                off = 0;
             angular_velocity.y += off;
         }
-        if ((int)(angle.z *2 / M_PI)*M_PI/2 != angle.z) {
-            float off = roundf(angle.z*2 / M_PI)*M_PI/2 - angle.z;
-            if (off < -0.05f)
-                off = -0.05f;
-            if (off > 0.05f)
-                off = 0.05f;
+        if ((int)(angle.angle.z/HALF_PI)*HALF_PI != angle.angle.z) {
+            float off = roundf(angle.angle.z/HALF_PI)*HALF_PI - angle.angle.z;
+            if (off < -max_angle_movement)
+                off = -max_angle_movement;
+            else if (off > max_angle_movement)
+                off = max_angle_movement;
+            else
+                off = 0;
             angular_velocity.z += off;
-        }
+        }*/
     }
 }
 

@@ -42,7 +42,6 @@ void main(void) {
         color.xyz *= intensity * g_intensity;
         if(color.a < g_alphacutoff)
             discard;
-        color.xyz *= g_intensity;
         color_out = color.xyz;
     }
     else {

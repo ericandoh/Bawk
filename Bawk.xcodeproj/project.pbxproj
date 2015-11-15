@@ -17,6 +17,7 @@
 		071B46861BF3C1D8000CB782 /* cursoritem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B46841BF3C1D8000CB782 /* cursoritem.cpp */; };
 		071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B46871BF3C1F4000CB782 /* placeableobject.cpp */; };
 		071B468D1BF3C265000CB782 /* placeablesuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B468B1BF3C265000CB782 /* placeablesuperobject.cpp */; };
+		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
 		073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 073A507C1BD4893F002AA73F /* parent_widget.cpp */; };
 		074B6C9C1BB9D2380065192B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074B6C9B1BB9D2380065192B /* main.cpp */; };
 		074B6CA31BB9D2780065192B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA21BB9D2780065192B /* Cocoa.framework */; };
@@ -110,6 +111,8 @@
 		071B46881BF3C1F4000CB782 /* placeableobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = placeableobject.h; sourceTree = "<group>"; };
 		071B468B1BF3C265000CB782 /* placeablesuperobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = placeablesuperobject.cpp; sourceTree = "<group>"; };
 		071B468C1BF3C265000CB782 /* placeablesuperobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = placeablesuperobject.h; sourceTree = "<group>"; };
+		071C5C121BF7FE9C0087F398 /* rotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation.cpp; sourceTree = "<group>"; };
+		071C5C131BF7FE9C0087F398 /* rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation.h; sourceTree = "<group>"; };
 		073A507C1BD4893F002AA73F /* parent_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parent_widget.cpp; sourceTree = "<group>"; };
 		073A507D1BD4893F002AA73F /* parent_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parent_widget.h; sourceTree = "<group>"; };
 		074B6C981BB9D2380065192B /* Bawk */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bawk; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -430,6 +433,8 @@
 				076BEFE41BD1A09A00D68C8F /* entityholder.h */,
 				0715F1101BF2D3CC00242F86 /* rotation_math.cpp */,
 				0715F1111BF2D3CC00242F86 /* rotation_math.h */,
+				071C5C121BF7FE9C0087F398 /* rotation.cpp */,
+				071C5C131BF7FE9C0087F398 /* rotation.h */,
 			);
 			name = physics;
 			sourceTree = "<group>";
@@ -525,6 +530,7 @@
 				071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */,
 				0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */,
 				077098941BDBFDA5002F295D /* bresenham3d.cpp in Sources */,
+				071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,

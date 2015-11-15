@@ -119,8 +119,8 @@ void set_transform_matrix(fmat4 mvp, fmat4 view) {
 }
 
 void set_shader_intensity(float m) {
-    //glUniform1f(geometry_intensity, m);
-    glUniform1f(geometry_intensity, 1.0f);
+    glUniform1f(geometry_intensity, m);
+    //glUniform1f(geometry_intensity, 0.3f);
 }
 
 void set_alpha_cutoff(float a) {

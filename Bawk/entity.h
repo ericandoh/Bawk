@@ -28,15 +28,13 @@
 #include "basic_types.h"
 #include "block_loader.h"
 #include "game_actions.h"
+#include "rotation.h"
 
 class Game;
 
 class Entity {
 protected:
     // up/dir vectors, derived from angle.x/angle.y
-    fvec3 dir;
-    fvec3 up;
-    fvec3 forward;
     float get_speed(float force);
     void get_mvp(fmat4* dst);
 public:
@@ -55,8 +53,9 @@ public:
     // ----- POSITIONING INFO -----
     // position of the superobject, in RWC
     fvec3 pos;
-    // yaw/pitch/roll
-    fvec3 angle;
+    
+    // angle around dir
+    Rotation angle;
     
     // the bounding box over contents of all chunks, in OAC
     // public for convenience of access
@@ -110,7 +109,7 @@ public:
     void move_dist(fvec3 off);
     void turn_angle(fvec3 off);
     
-    void recalculate_dir();
+    //virtual void recalculate_dir();
     
     // poke this object at RWC, true if this object says, "OUCH"
     virtual bool poke(float x, float y, float z);

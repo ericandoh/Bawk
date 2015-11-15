@@ -56,7 +56,7 @@ bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk,
 bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
     if (action == Action::MOVE_FORWARD) {
         // move forward
-        owner->move_forward(5.0f);
+        owner->move_forward(50.0f);
     }
     else if (action == Action::MOVE_BACKWARD) {
         // move backwards
@@ -65,20 +65,20 @@ bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, 
     else if (action == Action::MOVE_LEFT) {
         // turn left
         //owner->move_left(5.0f);
-        owner->yaw_left(5.0f);
+        owner->yaw_left(2.0f);
     }
     else if (action == Action::MOVE_RIGHT) {
         // turn right
         //owner->move_right(5.0f);
-        owner->yaw_right(5.0f);
+        owner->yaw_right(2.0f);
     }
     else if (action == Action::MOVE_UP) {
         // move up
-        owner->move_up(5.0f);
+        owner->move_up(2.0f);
     }
     else if (action == Action::MOVE_DOWN) {
         // move down
-        owner->move_down(5.0f);
+        owner->move_down(2.0f);
     }
     else if (action == Action::PITCH_UP) {
         // pitch up

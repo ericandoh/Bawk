@@ -15,14 +15,23 @@
 
 RenderablePlayer::RenderablePlayer() {
     // TODO do we ever free this...
+    angle.free_y = false;
 }
+
+/*void RenderablePlayer::recalculate_dir() {
+    if(angle.y < -STRAIGHT_ANGLE)
+        angle.y = -STRAIGHT_ANGLE;
+    if(angle.y > STRAIGHT_ANGLE)
+        angle.y = STRAIGHT_ANGLE;
+    Entity::recalculate_dir();
+}*/
 
 fmat4* RenderablePlayer::set_camera() {
     int width, height;
     get_window_size(&width, &height);
     
     fvec3 offpos = fvec3(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f);
-    view = glm::lookAt(offpos, offpos + dir, up);
+    view = glm::lookAt(offpos, offpos + angle.dir, angle.up);
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;
     return &mvp;
@@ -48,7 +57,7 @@ void RenderablePlayer::query_depth(World* world) {
     
     // call to save mx, my, mz, and face here to a global var
     fvec3 offpos = fvec3(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f);
-    set_look_at(offpos, dir, world);
+    set_look_at(offpos, angle.dir, world);
 }
 
 void RenderablePlayer::render() {

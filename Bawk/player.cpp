@@ -20,9 +20,7 @@ Player::Player(uint32_t p) {
     can_rotate = false;
     
     // initialize things
-    up = fvec3(0.0f, 1.0f, 0.0f);
     pos = fvec3(0.0f, 8.0f, 0.0f);
-    angle = fvec3(0,0,0);
     
     //lower_bound = fvec3(-0.4f, -0.9f, 0.4f);
     //upper_bound = fvec3(0.4f, 0.9f, 0.4f);
@@ -55,20 +53,22 @@ uint32_t Player::assignID() {
 }
 
 void Player::update_direction(double xdiff, double ydiff) {
-    angle.x -= xdiff*M_PI;
-    angle.y -= ydiff*M_PI;
-    recalculate_dir();
+    float anglex = -xdiff*STRAIGHT_ANGLE;
+    float angley = -ydiff*STRAIGHT_ANGLE;
+    
+    angle.apply_angles(fvec3(anglex, angley, 0));
+    
 }
 
 ivec3 Player::get_rounded_left() {
-    if (fabsf(dir.x) > fabsf(dir.z)) {
-        if (dir.x < 0) {
+    if (fabsf(angle.dir.x) > fabsf(angle.dir.z)) {
+        if (angle.dir.x < 0) {
             return ivec3(0, 0, -1);
         }
         return ivec3(0, 0, 1);
     }
     else {
-        if (dir.z < 0) {
+        if (angle.dir.z < 0) {
             return ivec3(1, 0, 0);
         }
         return ivec3(-1, 0, 0);
@@ -76,14 +76,14 @@ ivec3 Player::get_rounded_left() {
 }
 
 ivec3 Player::get_rounded_forward() {
-    if (fabsf(dir.x) > fabsf(dir.z)) {
-        if (dir.x < 0) {
+    if (fabsf(angle.dir.x) > fabsf(angle.dir.z)) {
+        if (angle.dir.x < 0) {
             return ivec3(-1, 0, 0);
         }
         return ivec3(1, 0, 0);
     }
     else {
-        if (dir.z < 0) {
+        if (angle.dir.z < 0) {
             return ivec3(0, 0, -1);
         }
         return ivec3(0, 0, 1);
@@ -159,5 +159,5 @@ void Player::remove_self(IODataObject* obj) {
 void Player::debug() {
     printf("Player at %f,%f,%f pointing at %f,%f,%f\n",
             pos.x, pos.y, pos.z,
-            dir.x, dir.y, dir.z);
+            angle.dir.x, angle.dir.y, angle.dir.z);
 }

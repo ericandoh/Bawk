@@ -10,9 +10,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Entity::Entity() {
-    // these will be overwritten by a call to set angle
-    up = fvec3(0, 1, 0);
-    dir = fvec3(1, 0, 0);
     // identifying info for the entity. this should be overwritten
     vid = 0;
     pid = 0;
@@ -24,7 +21,7 @@ Entity::Entity() {
     
     // set initial pos/angle to origin, overwrite for most objects
     pos = fvec3(0,0,0);
-    angle = fvec3(0,0,0);
+    angle = Rotation();
     
     // set initial bounds to be maxed out
     bounds = bounding_box();
@@ -45,20 +42,8 @@ Entity::Entity() {
 void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
     fmat4 reverse(1);
     if (can_rotate) {
-        // round angle to nearest angle
-        fvec3 rounded_angle = fvec3(roundf(angle.x * 2 / M_PI) * M_PI / 2,
-                                    roundf(angle.y * 2 / M_PI) * M_PI / 2,
-                                    roundf(angle.z * 2 / M_PI) * M_PI / 2);
-        
         reverse = glm::translate(fmat4(1), center_pos);
-        
-        // pitch
-        reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(-1,0,0));
-        // roll
-        reverse = glm::rotate(reverse, -rounded_angle.z, fvec3(0,0,1));
-        // yaw
-        reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0,1,0));
-        
+        angle.add_my_rotation_rounded(&reverse);
         reverse = glm::translate(reverse, -center_pos);
     }
     reverse = glm::translate(reverse, -pos);
@@ -73,17 +58,8 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
 void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) {
     fmat4 reverse(1);
     if (can_rotate) {
-        // round angle to nearest angle
         reverse = glm::translate(fmat4(1), center_pos);
-        
-        
-        // pitch
-        reverse = glm::rotate(reverse, -angle.y, fvec3(-1,0,0));
-        // roll
-        reverse = glm::rotate(reverse, -angle.z, fvec3(0,0,1));
-        // yaw
-        reverse = glm::rotate(reverse, -angle.x, fvec3(0,1,0));
-        
+        angle.add_my_rotation(&reverse);
         reverse = glm::translate(reverse, -center_pos);
     }
     reverse = glm::translate(reverse, -pos);
@@ -99,20 +75,8 @@ void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, floa
     fmat4 view = glm::translate(fmat4(1), pos);
     if (can_rotate) {
         // round angle to nearest angle
-        fvec3 rounded_angle = fvec3(roundf(angle.x * 2 / M_PI) * M_PI / 2,
-                                    roundf(angle.y * 2 / M_PI) * M_PI / 2,
-                                    roundf(angle.z * 2 / M_PI) * M_PI / 2);
         view = glm::translate(view, center_pos);
-        
-        // yaw
-        view = glm::rotate(view, rounded_angle.x, fvec3(0,1,0));
-        // roll
-        view = glm::rotate(view, rounded_angle.z, fvec3(0,0,1));
-        // pitch
-        view = glm::rotate(view, rounded_angle.y, fvec3(-1,0,0));
-
-        
-        
+        angle.add_world_rotation_rounded(&view);
         view = glm::translate(view, -center_pos);
     }
     fvec4 result(x, y, z, 1.0f);
@@ -127,13 +91,7 @@ void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float 
     fmat4 view = glm::translate(fmat4(1), pos);
     if (can_rotate) {
         view = glm::translate(view, center_pos);
-        // yaw
-        view = glm::rotate(view, angle.x, fvec3(0,1,0));
-        // roll
-        view = glm::rotate(view, angle.z, fvec3(0,0,1));
-        // pitch
-        view = glm::rotate(view, angle.y, fvec3(-1,0,0));
-        
+        angle.add_world_rotation(&view);
         view = glm::translate(view, -center_pos);
     }
     fvec4 result(x, y, z, 1.0f);
@@ -155,77 +113,95 @@ float Entity::get_speed(float force) {
 // movement methods. Move these to class Entity
 void Entity::move_forward(float force) {
     // override this if flying/on land
-    move_dist(dir * get_speed(force));
+    move_dist(angle.dir * get_speed(force));
 }
 
 void Entity::move_backward(float force) {
-    move_dist(dir * (-get_speed(force)));
+    move_dist(angle.dir * (-get_speed(force)));
 }
 
 void Entity::move_forward_flat(float force) {
     // override this if flying/on land
     //fvec3 forward = fvec3(dir.x, 0, dir.z);
     //forward = glm::normalize(forward);
-    move_dist(forward * get_speed(force));
+    move_dist(angle.forward * get_speed(force));
 }
 
 void Entity::move_backward_flat(float force) {
     //fvec3 forward = -fvec3(dir.x, 0, dir.z);
     //forward = glm::normalize(forward);
-    move_dist(forward * (-get_speed(force)));
+    move_dist(angle.forward * (-get_speed(force)));
 }
 
 void Entity::move_left(float force) {
     //fvec3 forward = fvec3(dir.x, 0, dir.z);
     //forward = glm::normalize(forward);
-    move_dist(fvec3(forward.z * get_speed(force),
+    move_dist(fvec3(angle.forward.z * get_speed(force),
                     0,
-                    -forward.x * get_speed(force)));
+                    -angle.forward.x * get_speed(force)));
 }
 
 void Entity::move_right(float force) {
     //fvec3 forward = fvec3(dir.x, 0, dir.z);
     //forward = glm::normalize(forward);
-    move_dist(fvec3(-forward.z * get_speed(force),
+    move_dist(fvec3(-angle.forward.z * get_speed(force),
                     0,
-                    forward.x * get_speed(force)));
+                    angle.forward.x * get_speed(force)));
 }
 
 void Entity::move_up(float force) {
-    move_dist(fvec3(0.0f,
-                    get_speed(force),
-                    0.0f));
+    move_dist(get_speed(force)*fvec3(angle.up.x,
+                                     angle.up.y,
+                                     angle.up.z));
 }
 
 void Entity::move_down(float force) {
-    move_dist(fvec3(0.0f,
-                    -get_speed(force),
-                    0.0f));
+    move_dist(-get_speed(force)*fvec3(angle.up.x,
+                                      angle.up.y,
+                                      angle.up.z));
 }
 
 void Entity::yaw_left(float force) {
     // 1 unit of force turns 1 weight by M_PI/2
-    turn_angle(fvec3(get_speed(force)*M_PI/2,0,0));
+    float angular_force = get_speed(force)*RIGHT_ANGLE;
+    turn_angle(fvec3(angular_force,
+                     0,
+                     0));
 }
 
 void Entity::yaw_right(float force) {
-    turn_angle(fvec3(-get_speed(force)*M_PI/2,0,0));
+    float angular_force = -get_speed(force)*RIGHT_ANGLE;
+    turn_angle(fvec3(angular_force,
+                     0,
+                     0));
 }
 
 void Entity::pitch_up(float force) {
-    turn_angle(fvec3(0,get_speed(force)*M_PI/2,0));
+    float angular_force = get_speed(force)*RIGHT_ANGLE;
+    turn_angle(fvec3(0,
+                     angular_force,
+                     0));
 }
 
 void Entity::pitch_down(float force) {
-    turn_angle(fvec3(0,-get_speed(force)*M_PI/2,0));
+    float angular_force = -get_speed(force)*RIGHT_ANGLE;
+    turn_angle(fvec3(0,
+                     angular_force,
+                     0));
 }
 
 void Entity::roll_left(float force) {
-    turn_angle(fvec3(0,0,-get_speed(force)*M_PI/2));
+    float angular_force = -get_speed(force)*RIGHT_ANGLE;
+    turn_angle(fvec3(0,
+                     0,
+                     angular_force));
 }
 
 void Entity::roll_right(float force) {
-    turn_angle(fvec3(0,0,get_speed(force)*M_PI/2));
+    float angular_force = get_speed(force)*RIGHT_ANGLE;
+    turn_angle(fvec3(0,
+                     0,
+                     angular_force));
 }
 
 void Entity::move_dist(fvec3 off) {
@@ -238,16 +214,54 @@ void Entity::turn_angle(fvec3 off) {
     stable = false;
 }
 
-void Entity::recalculate_dir() {
-    if(angle.x < -M_PI)
-        angle.x += M_PI * 2;
-    if(angle.x > M_PI)
-        angle.x -= M_PI * 2;
-    if(angle.y < -M_PI / 2)
-        angle.y = -M_PI / 2;
-    if(angle.y > M_PI / 2)
-        angle.y = M_PI / 2;
+//void Entity::recalculate_dir() {
+    /*
+    // up should be a function of angle.y, angle.z
+    // right should be a function of angle.x, angle.z
+    // forward should be a function of x, y?
     
+    dir.x = sinf(angle.x*M_PI/180)*cosf(angle.y*M_PI/180);
+    dir.y = sinf(angle.y*M_PI/180);
+    dir.z = cosf(angle.x*M_PI/180)*cosf(angle.y*M_PI/180);
+    forward.x = dir.x;
+    forward.y = 0;
+    forward.z = dir.z;
+    forward = glm::normalize(forward);
+    
+    fvec3 right;
+    right.x = -cosf(angle.x*M_PI/180) * cosf(angle.z*M_PI/180);
+    right.y = sinf(angle.z*M_PI/180);
+    right.z = sinf(angle.x*M_PI/180) * cosf(angle.z*M_PI/180);
+    
+    up = glm::cross(right, dir);*/
+    
+    /*
+    fmat4 val(1);
+    // yaw
+    val = glm::rotate(val, angle.x, fvec3(0,1,0));
+    // roll
+    val = glm::rotate(val, angle.z, fvec3(0,0,1));
+    // pitch
+    val = glm::rotate(val, angle.y, fvec3(-1,0,0));
+    fvec4 qdir(0,0,1,1);
+    fvec4 qup(0,1,0,1);
+    
+    qdir = val * qdir;
+    qup = val * qup;
+    
+    dir.x = qdir.x;
+    dir.y = qdir.y;
+    dir.z = qdir.z;
+    up.x = qup.x;
+    up.y = qup.y;
+    up.z = qup.z;
+    
+    forward.x = dir.x;
+    forward.y = 0;
+    forward.z = dir.z;
+    forward = glm::normalize(forward);*/
+    
+    /*
     fvec3 right;
     right.x = -cosf(angle.x) * cosf(angle.z);
     right.y = sinf(angle.z);
@@ -261,8 +275,8 @@ void Entity::recalculate_dir() {
     dir.y = sinf(angle.y);
     dir.z = forward.z * cosf(angle.y);
     
-    up = glm::cross(right, dir);
-}
+    up = glm::cross(right, dir);*/
+//}
 
 bool Entity::poke(float x, float y, float z) {
     // transform into OAC
@@ -299,13 +313,7 @@ void Entity::get_mvp(fmat4 *dst) {
     if (can_rotate) {
         *dst = glm::translate(*dst, center_pos);
         
-        // yaw
-        *dst = glm::rotate(*dst, angle.x, fvec3(0,1,0));
-        // roll
-        *dst = glm::rotate(*dst, angle.z, fvec3(0,0,1));
-        // pitch
-        *dst = glm::rotate(*dst, angle.y, fvec3(-1,0,0));
-        
+        angle.add_world_rotation(dst);
         
         *dst = glm::translate(*dst, -center_pos);
     }
@@ -333,8 +341,7 @@ void Entity::calculate_moving_bounding_box() {
     
     pos += velocity;
     if (can_rotate) {
-        angle += angular_velocity;
-        recalculate_dir();
+        angle.apply_angles(angular_velocity);
     }
     
     transform_into_world_coordinates(&lower_rwc, bounds.lower.x, bounds.lower.y, bounds.lower.z);
@@ -431,9 +438,9 @@ void Entity::remove_selfs() {
 }
 
 int Entity::load_self(IODataObject* obj) {
-    up = obj->read_value<fvec3>();
+    //up = obj->read_value<fvec3>();
     pos = obj->read_value<fvec3>();
-    angle = obj->read_value<fvec3>();
+    //angle = obj->read_value<fvec3>();
     
     bounds = obj->read_value<bounding_box>();
     center_pos = obj->read_value<fvec3>();
@@ -441,14 +448,14 @@ int Entity::load_self(IODataObject* obj) {
     weight = obj->read_value<int>();
     health = obj->read_value<int>();
     
-    recalculate_dir();
+    //recalculate_dir();
     return 0;
 }
 
 void Entity::remove_self(IODataObject* obj) {
-    obj->save_value(up);
+    //obj->save_value(up);
     obj->save_value(pos);
-    obj->save_value(angle);
+    //obj->save_value(angle);
     
     obj->save_value(bounds);
     obj->save_value(center_pos);

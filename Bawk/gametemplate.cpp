@@ -57,7 +57,7 @@ void GameTemplate::unpublish(World* world) {
 }
 
 void GameTemplate::render(fmat4* transform) {
-    //set_shader_intensity(1.0f);
+    set_shader_intensity(1.0f);
     RenderableSuperObject::render(transform);
 }
 
