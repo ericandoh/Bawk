@@ -31,11 +31,11 @@ void main(void) {
         float intensity;
         if (mod(shaderflags, 0x2) > 0) {
             // we have a top or bottom face (texture_coord.z = 1)
-            imgcoord = vec2((fract(gv_coord.x) + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.z) + g_texcoord.y) / 16.0);
+            imgcoord = vec2((fract(gv_coord.x)/1.02+0.01 + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.z)/1.02+0.01 + g_texcoord.y) / 16.0);
             intensity = 1.0;
         } else {
             // we have a side face
-            imgcoord = vec2((fract(gv_coord.x + gv_coord.z) + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.y) + g_texcoord.y) / 16.0);
+            imgcoord = vec2((fract(gv_coord.x + gv_coord.z)/1.02+0.01 + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.y)/1.02+0.01 + g_texcoord.y) / 16.0);
             intensity = 0.85;
         }
         vec4 color = texture(tile_texture, imgcoord);
