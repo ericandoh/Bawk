@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "player.h"
+#include "block_orientation.h"
 
 struct block_type {
     // the physical type of the block

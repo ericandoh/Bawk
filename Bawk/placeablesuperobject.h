@@ -26,7 +26,8 @@ public:
     PlaceableSuperObject(uint32_t p, uint32_t s);
     
     // --- SuperObject ---
-    void set_block(float x, float y, float z, block_type type) override;
+    void handle_block_addition(float x, float y, float z, block_type type) override;
+    void handle_block_removal(float x, float y, float z, block_type type) override;
     void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
     
     // --- PlaceableObject ---

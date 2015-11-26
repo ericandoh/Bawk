@@ -126,12 +126,13 @@ block_type RenderableSuperObject::get_block(float x, float y, float z) {
 }
 
 void RenderableSuperObject::set_block(float x, float y, float z, block_type type) {
-    // first transform to OAC
+    // transform to OAC
     fvec3 oac;
     transform_into_my_coordinates(&oac, x, y, z);
+    
     // now transform into cac, crc
     ivec3 cac, crc;
-    transform_into_chunk_bounds(&cac, &crc, oac.x, oac.y, oac.z);
+    transform_into_chunk_bounds(&cac, &crc, x, y, z);
     
     if (type.type == 0 && !within_dimensions_chunk(cac.x, cac.y, cac.z)) {
         // no point setting a block to 0 outside chunk bounds
@@ -140,7 +141,14 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
     
     // try loading the chunk (if it doesn't exist) then set block
     if (!load_chunk(cac.x, cac.y, cac.z)) {
+        block_type current = chunks[cac]->get(crc.x, crc.y, crc.z);
+        if (current.type) {
+            handle_block_removal(crc.x, crc.y, crc.z, current);
+        }
         chunks[cac]->set(crc.x, crc.y, crc.z, type);
+        if (type.type) {
+            handle_block_addition(crc.x, crc.y, crc.z, type);
+        }
         // update the dimension vectors
         update_dimensions_from_chunk(cac);
     }
@@ -154,7 +162,15 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         get_empty_chunk(raw_chunk);
         RenderableChunk* chunk = new RenderableChunk(raw_chunk);
         chunks[cac] = chunk;
+        
+        block_type current = chunks[cac]->get(crc.x, crc.y, crc.z);
+        if (current.type) {
+            handle_block_removal(crc.x, crc.y, crc.z, current);
+        }
         chunks[cac]->set(crc.x, crc.y, crc.z, type);
+        if (type.type) {
+            handle_block_addition(crc.x, crc.y, crc.z, type);
+        }
         // we load data from disk so this should be consistent, but just to be safe do a check
         update_dimensions_from_chunk(ivec3(x, y, z));
         
@@ -195,9 +211,11 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
             chunks[back]->front = chunk;
             chunk->back->changed = true;
         }
-        
     }
-    
+}
+
+void RenderableSuperObject::kill_block(float x, float y, float z) {
+    set_block(x, y, z, block_type());
 }
 
 void RenderableSuperObject::render(fmat4* transform) {

@@ -13,6 +13,7 @@
 #include "worldrender.h"
 #include "blockrender.h"
 #include "game_info_loader.h"
+#include "block_orientation.h"
 
 // dimensions of a chunk
 #define CX 16
@@ -364,7 +365,7 @@ void RenderableChunk::update() {
                     continue;
                 }
                 block_type type = blk[x][y][z];
-                BlockOrientation flags = BlockOrientation::LEFT;
+                BlockOrientation flags = BlockOrientation::RIGHT;
                 
                 if(vis && y != 0 && blk[x][y][z].equals(blk[x][y - 1][z])) {
                     set_coord_and_texture(vertex, texture, i - 5, x, y + 1, z, type, flags);
@@ -394,7 +395,7 @@ void RenderableChunk::update() {
                     continue;
                 }
                 block_type type = blk[x][y][z];
-                BlockOrientation flags = BlockOrientation::RIGHT;
+                BlockOrientation flags = BlockOrientation::LEFT;
                 
                 if(vis && y != 0 && blk[x][y][z].equals(blk[x][y - 1][z])) {
                     set_coord_and_texture(vertex, texture, i - 4, x, y + 1, z + 1, type, flags);

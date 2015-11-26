@@ -353,18 +353,18 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
                                     info->orientations.push_back(BlockOrientation::BOTTOM);
                                 }
                                 else {
-                                    info->orientations.push_back(BlockOrientation::FRONT);
+                                    info->orientations.push_back(DEFAULT_BLOCK_ORIENTATION);
                                 }
                             }
                             else if (submember["orientation"].type() == Json::intValue) {
                                 info->orientations.push_back(static_cast<BlockOrientation>(submember["orientation"].asInt()));
                             }
                             else {
-                                info->orientations.push_back(BlockOrientation::FRONT);
+                                info->orientations.push_back(DEFAULT_BLOCK_ORIENTATION);
                             }
                         }
                         else {
-                            info->orientations.push_back(BlockOrientation::FRONT);
+                            info->orientations.push_back(DEFAULT_BLOCK_ORIENTATION);
                         }
                     }
                     
@@ -759,11 +759,15 @@ block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_i
     return 0;
 }
 
-std::vector<Action> get_block_default_keyboard_bindings(block_type block_id) {
+bool has_block_keyboard_bindings(block_type block_id) {
     if (game_data_object->block_callback_info.count(block_id.type)) {
-        return game_data_object->block_callback_info[block_id.type].key_bindings;
+        return true;
     }
-    return std::vector<Action>();
+    return false;
+}
+
+std::vector<Action> get_block_default_keyboard_bindings(block_type block_id) {
+    return game_data_object->block_callback_info[block_id.type].key_bindings;
 }
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
@@ -801,6 +805,9 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
 }
 
 void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets) {
+    printf("frog this\n");
+    // TODO deprecate this
+    throw 2;
     if (vid < recipe_mask)
         return;
     vid -= recipe_mask;

@@ -64,7 +64,13 @@ public:
     // gets the block at (RWC) xyz
     block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz
-    virtual void set_block(float x, float y, float z, block_type type);
+    void set_block(float x, float y, float z, block_type type);
+    // kill the block at (RWC) xyz, checking if it is a recipe
+    void kill_block(float x, float y, float z);
+    // helper function to do appropriate action when some block is added
+    virtual void handle_block_addition(float x, float y, float z, block_type type) = 0;
+    // helper function to do appropriate action when some block is removed
+    virtual void handle_block_removal(float x, float y, float z, block_type type) = 0;
     // renders the object, given a player viewpoint transform matrix
     virtual void render(fmat4* transform) override;
     // makes calls to load in/free chunks depending on the

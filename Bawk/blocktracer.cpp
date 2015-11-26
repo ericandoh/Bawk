@@ -14,7 +14,10 @@ const float PLACE_BLOCK_FRONT = 1.4f;
 const float PLACE_BLOCK_BACK = 10.0f;
 
 float mx, my, mz = 0;
+// used for placement relative to
 BlockOrientation face;
+// is the player's orientation, set as orientation of block when placed
+BlockOrientation player_face;
 bool in_range = false;
 Entity* selected = 0;
 bool world_selected = false;
@@ -68,49 +71,12 @@ void set_look_at(fvec3 pos, fvec3 dir, World* world) {
     selected = 0;
     in_range = false;
     
+    // do voxel block tracing
     WorldTracer tracer(world);
     tracer.bresenham3D(start.x, start.y, start.z, end.x, end.y, end.z);
-    /*
-    // old depth-buffer method, which doesn't work for model objects
-    mx = floorf(objcoord.x);
-    my = floorf(objcoord.y);
-    mz = floorf(objcoord.z);
     
-    float distance = sqrtf((mx-pos.x)*(mx-pos.x) + (my-pos.y)*(my-pos.y) + (mz-pos.z)*(mz-pos.z));
-    
-    if(dti(objcoord.x) < dti(objcoord.y)) {
-        if(dti(objcoord.x) < dti(objcoord.z)) {
-            // face is perpendicular to x-axis (most likely)
-            if(dir.x > 0) {
-                face = BlockOrientation::BACK;
-            } else {
-                face = BlockOrientation::FRONT;
-            }
-        } else {
-            // face is perpendicular to z-axis (most likely)
-            if(dir.z > 0) {
-                face = BlockOrientation::LEFT;
-            } else {
-                face = BlockOrientation::RIGHT;
-            }
-        }
-    } else {
-        if(dti(objcoord.y) < dti(objcoord.z)) {
-            // face is perpendicular to y-axis (most likely)
-            if(dir.y > 0) {
-                face = BlockOrientation::BOTTOM;
-            } else {
-                face = BlockOrientation::TOP;
-            }
-        } else {
-            // face is perpendicular to z-axis (most likely)
-            if(dir.z > 0) {
-                face = BlockOrientation::LEFT;
-            } else {
-                face = BlockOrientation::RIGHT;
-            }
-        }
-    }*/
+    // get direction player is facing
+    player_face = get_nearest_compass_direction(dir);
 }
 
 bool get_look_at(ivec4* src) {
@@ -152,9 +118,9 @@ bool get_pointing_position(ivec3* dst, BlockOrientation* orient, ivec3 bounds) {
         my++;
     if(face == BlockOrientation::BOTTOM)
         my-=bounds.y;
-    if(face == BlockOrientation::RIGHT)
-        mz++;
     if(face == BlockOrientation::LEFT)
+        mz++;
+    if(face == BlockOrientation::RIGHT)
         mz-=bounds.z;
     dst->x = mx;
     dst->y = my;

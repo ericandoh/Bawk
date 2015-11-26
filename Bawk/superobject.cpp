@@ -29,74 +29,56 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     block_counter = 0;
 }
 
-void SuperObject::set_block(float x, float y, float z, block_type type) {
-    if (type.type) {
-        // set key binding (to default one) if it has one
+void SuperObject::handle_block_addition(float x, float y, float z, block_type type) {
+    // set key bindings if it has one
+    if (has_block_keyboard_bindings(type)) {
         std::vector<Action> bindings = get_block_default_keyboard_bindings(type);
-        if (bindings.size() > 0) {
-            fvec3 oac;
-            transform_into_my_coordinates(&oac, x, y, z);
-            ivec3 rounded_oac = get_floor_from_fvec3(oac);
-            reverse_key_mapping[rounded_oac] = std::vector<Action>(bindings.size());
-            for (int i = 0; i < bindings.size(); i++) {
-                if (!key_mapping.count(bindings[i])) {
-                    key_mapping[bindings[i]] = std::vector<key_mapping_info>(1);
-                }
-                key_mapping_info info;
-                info.position = rounded_oac;
-                info.blk = type;
-                info.action = bindings[i];
-                key_mapping[bindings[i]].push_back(info);
-                reverse_key_mapping[rounded_oac].push_back(bindings[i]);
+        fvec3 oac;
+        transform_into_my_coordinates(&oac, x, y, z);
+        ivec3 rounded_oac = get_floor_from_fvec3(oac);
+        reverse_key_mapping[rounded_oac] = std::vector<Action>(bindings.size());
+        for (int i = 0; i < bindings.size(); i++) {
+            if (!key_mapping.count(bindings[i])) {
+                key_mapping[bindings[i]] = std::vector<key_mapping_info>(1);
             }
+            key_mapping_info info;
+            info.position = rounded_oac;
+            info.blk = type;
+            info.action = bindings[i];
+            key_mapping[bindings[i]].push_back(info);
+            reverse_key_mapping[rounded_oac].push_back(bindings[i]);
         }
     }
-    else {
-        fvec3 oac;
-        transform_into_my_coordinates(&oac, x, y, z);
-        ivec3 rounded_oac((int)floorf(oac.x), (int)floorf(y), (int)floorf(z));
-        // see if we're removing a block that has a key binding
-        if (reverse_key_mapping.count(rounded_oac)) {
-            // we do have such a key binding, remove it
-            for (int i = 0; i < reverse_key_mapping[rounded_oac].size(); i++) {
-                Action keybinding = reverse_key_mapping[rounded_oac][i];
-                for (int j = (int)key_mapping[keybinding].size() - 1; j >= 0; j--) {
-                    if (key_mapping[keybinding][j].position == rounded_oac) {
-                        // assume we only mapped one key to
-                        key_mapping[keybinding][j] = key_mapping[keybinding].back();
-                        key_mapping[keybinding].pop_back();
-                        break;
-                    }
-                }
-            }
-            reverse_key_mapping.erase(rounded_oac);
-        }
-    }
-    block_type current = get_block(x, y, z);
-    if (current.type) {
-        fvec3 oac;
-        transform_into_my_coordinates(&oac, x, y, z);
-        // remove stats for current block
-        // center pos is set outside separately
-        weight -= get_block_weight(current.type);
-        health -= current.life;
-        block_counter--;
-    }
-    if (type.type) {
-        // add stats for current block
-        fvec3 oac;
-        transform_into_my_coordinates(&oac, x, y, z);
-        // remove stats for current block
-        // center pos is set outside separately
-        weight += get_block_weight(type.type);;
-        health += current.life;
-        block_counter++;
-    }
-    RenderableSuperObject::set_block(x, y, z, type);
+    weight += get_block_weight(type.type);
+    health += type.life;
+    block_counter++;
 }
 
-void SuperObject::remove_block(float x, float y, float z) {
-    set_block(x, y, z, block_type());
+void SuperObject::handle_block_removal(float x, float y, float z, block_type type) {
+    fvec3 oac;
+    transform_into_my_coordinates(&oac, x, y, z);
+    ivec3 rounded_oac = get_floor_from_fvec3(oac);
+    // see if we're removing a block that has a key binding
+    if (reverse_key_mapping.count(rounded_oac)) {
+        // we do have such a key binding, remove it
+        for (int i = 0; i < reverse_key_mapping[rounded_oac].size(); i++) {
+            Action keybinding = reverse_key_mapping[rounded_oac][i];
+            for (int j = (int)key_mapping[keybinding].size() - 1; j >= 0; j--) {
+                if (key_mapping[keybinding][j].position == rounded_oac) {
+                    // assume we only mapped one key to
+                    key_mapping[keybinding][j] = key_mapping[keybinding].back();
+                    key_mapping[keybinding].pop_back();
+                    break;
+                }
+            }
+        }
+        reverse_key_mapping.erase(rounded_oac);
+    }
+    // remove stats for current block
+    // center pos is set outside separately
+    weight -= get_block_weight(type.type);
+    health -= type.life;
+    block_counter--;
 }
 
 void SuperObject::step() {
@@ -196,9 +178,10 @@ bool SuperObject::block_mouse_callback(Game* game, int button) {
         if (blk.is_recipe == 2) {
             // find offset
             printf("frog\n");
+            printf("ufkc off");
             // this does NOT account for the rotation of the entity and WILL give us a wrong result!!!
-            ivec3 rrel = get_translated_offset(blk.orientation, ivec3(blk.relx, blk.rely, blk.relz));
-            blk = get_block(lookingat.x + rrel.x, lookingat.y + rrel.y, lookingat.z + rrel.z);
+            //ivec3 rrel = get_translated_offset(blk.orientation, ivec3(blk.relx, blk.rely, blk.relz));
+            //blk = get_block(lookingat.x + rrel.x, lookingat.y + rrel.y, lookingat.z + rrel.z);
         }
         block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
         if (callback) {

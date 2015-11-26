@@ -10,7 +10,7 @@
 
 block_type::block_type() {
     type = 0;
-    orientation = BlockOrientation::TOP;
+    orientation = DEFAULT_BLOCK_ORIENTATION;
     life = 0;
     block_id = 0;
     owner = 0;
@@ -20,7 +20,7 @@ block_type::block_type() {
 
 block_type::block_type(uint16_t t) {
     type = t;
-    orientation = BlockOrientation::TOP;
+    orientation = DEFAULT_BLOCK_ORIENTATION;
     life = 0;
     block_id = 0;
     owner = 0;

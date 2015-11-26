@@ -66,16 +66,6 @@ struct ivec3 : glm::tvec3<int> {
     }
 };
 
-// orientation, from a viewer looking from the positive x-direction
-enum BlockOrientation: uint8_t {
-    FRONT = 0,
-    TOP = 1,
-    RIGHT = 2,
-    BACK = 3,
-    BOTTOM = 4,
-    LEFT = 5
-};
-
 struct player_and_id {
     uint32_t pid;
     uint32_t sid;
@@ -141,10 +131,5 @@ bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);
 ivec3 get_floor_from_fvec3(fvec3 src);
 ivec3 get_ivec3_minimum(ivec3 a, ivec3 b);
 ivec3 get_ivec3_maximum(ivec3 a, ivec3 b);
-
-BlockOrientation get_translated_orientation(BlockOrientation base, BlockOrientation original);
-ivec3 get_translated_offset(BlockOrientation base, ivec3 original_offset);
-BlockOrientation transform_orientation_into_my_coordinates(BlockOrientation world, fvec2 angle);
-BlockOrientation transform_orientation_into_world_coordinates(BlockOrientation my, fvec2 angle);
 
 #endif

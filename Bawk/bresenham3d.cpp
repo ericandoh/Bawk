@@ -64,7 +64,7 @@ fvec3 find_intersection_with_unit_cube(fvec3 point, fvec3 dir, BlockOrientation*
         time = (z + 1 - point.z) / dir.z;
         if (time < best_time) {
             best_time = time;
-            *orientation = BlockOrientation::LEFT;
+            *orientation = BlockOrientation::RIGHT;
         }
     }
     else if (dir.z < 0) {
@@ -72,7 +72,7 @@ fvec3 find_intersection_with_unit_cube(fvec3 point, fvec3 dir, BlockOrientation*
         time = (z - point.z) / dir.z;
         if (time < best_time) {
             best_time = time;
-            *orientation = BlockOrientation::RIGHT;
+            *orientation = BlockOrientation::LEFT;
         }
     }
     
@@ -91,8 +91,8 @@ void BresenhamTracer::bresenham3D(float x1, float y1, float z1, const float x2, 
     fvec3 point = fvec3(x1, y1, z1);
     fvec3 previous;
     fvec3 halfway = point;
-    BlockOrientation prev = BlockOrientation::FRONT;
-    BlockOrientation side = BlockOrientation::FRONT;
+    BlockOrientation prev = DEFAULT_BLOCK_ORIENTATION;
+    BlockOrientation side = DEFAULT_BLOCK_ORIENTATION;
     
     // keep finding intersection points along dir until we get to our destination, or look at 100 blocks
     int count = 0;

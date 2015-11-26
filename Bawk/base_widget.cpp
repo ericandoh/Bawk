@@ -47,7 +47,6 @@ void BaseWidget::set_dimensions(int x, int y, int width, int height) {
 }
 
 void BaseWidget::render() {
-    // TODO this is buggy/incorrect on the monitor screen. Check why
     glViewport(x, y, width, height);
     render_elements();
 }

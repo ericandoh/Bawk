@@ -140,21 +140,21 @@ void CursorBlock::render_block(fmat4* transform) {
     set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::TOP);
     
     // z
-    set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::RIGHT);
     
-    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::LEFT);
-    set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::RIGHT);
     
-    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::LEFT);
     
-    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, 1, 1, 1, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 1, 1, 1, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::LEFT);
     
     fmat4 view = glm::translate(fmat4(1), pos);
     fmat4 mvp2 = *transform * view;

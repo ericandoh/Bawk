@@ -101,21 +101,8 @@ bool World::kill_block(ivec3* src) {
     if (!blk.type)
         return false;
     
-    if (blk.is_recipe) {
-        // remove all recipe blocks as well
-        std::vector<ivec3> offsets;
-        get_recipe_block_offsets(blk.type, offsets);
-        printf("frog\n");
-        // this doesnt account for the entity's rotation. this is WRONG behaviour and WILL delete the
-        // wrong blocks!!!
-        for (auto &i: offsets) {
-            ivec3 roffset = get_translated_offset(blk.orientation, i);
-            base_world->set_block(mx + roffset.x, my + roffset.y, mz + roffset.z, block_type());
-        }
-    }
-    else {
-        base_world->set_block(mx, my, mz, block_type());
-    }
+    base_world->set_block(mx, my, mz, block_type());
+    
     printf("Removing at (%d, %d, %d)   (face %d)\n",
            mx, my, mz, face);
     src->x = mx;

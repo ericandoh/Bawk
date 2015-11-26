@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "includeglfw.h"
 #include "block.h"
+#include "block_orientation.h"
 
 void set_coord_and_texture(GLbyte coord[][3],
                            GLbyte texture[][3],

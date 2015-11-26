@@ -10,7 +10,8 @@
 #define Bawk_bresenham3d_h
 
 #include <stdio.h>
-#include "basic_types.h"    //for BlockOrientation
+#include "basic_types.h"
+#include "block_orientation.h"
 
 // exposed for testing
 fvec3 find_intersection_with_unit_cube(fvec3 point, fvec3 dir, BlockOrientation* orientation);

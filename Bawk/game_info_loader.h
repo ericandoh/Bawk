@@ -43,6 +43,7 @@ int get_block_independence(uint16_t block_id);
 
 block_mouse_callback_func get_block_mouse_callback_from(block_type block_id);
 block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_id);
+bool has_block_keyboard_bindings(block_type block_id);
 std::vector<Action> get_block_default_keyboard_bindings(block_type block_id);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);

@@ -46,8 +46,8 @@ public:
     SuperObject();
     SuperObject(uint32_t p, uint32_t v);
     
-    virtual void set_block(float x, float y, float z, block_type type) override;
-    void remove_block(float x, float y, float z);
+    virtual void handle_block_addition(float x, float y, float z, block_type type) override;
+    virtual void handle_block_removal(float x, float y, float z, block_type type) override;
     
     void step() override;
     

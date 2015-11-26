@@ -83,14 +83,17 @@ fvec3 PlaceableSuperObject::calculate_center_position() {
 }
 
 // --- SuperObject ---
-void PlaceableSuperObject::set_block(float x, float y, float z, block_type type) {
-    if (get_block_independence(get_block(x, y, z).type)) {
-        makes_vehicle--;
-    }
-    SuperObject::set_block(x, y, z, type);
-    // see if this block is a vehicle block
+void PlaceableSuperObject::handle_block_addition(float x, float y, float z, block_type type) {
+    SuperObject::handle_block_addition(x, y, z, type);
     if (get_block_independence(type.type)) {
         makes_vehicle++;
+    }
+}
+
+void PlaceableSuperObject::handle_block_removal(float x, float y, float z, block_type type) {
+    SuperObject::handle_block_removal(x, y, z, type);
+    if (get_block_independence(get_block(x, y, z).type)) {
+        makes_vehicle--;
     }
 }
 
