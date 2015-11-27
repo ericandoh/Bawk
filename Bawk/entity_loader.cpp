@@ -8,9 +8,10 @@
 
 #include "entity_loader.h"
 #include "superobject.h"
-//#include "player.h"
+#include "player.h"
 #include "base_world.h"
-//#include "cursorsuperobject.h"
+#include "supersuperobject.h"
+#include "cursorsuperobject.h"
 
 Entity* get_entity_from(uint32_t pid, uint32_t vid, int entity_class) {
     Entity* val;
@@ -21,28 +22,25 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, int entity_class) {
         printf("Warning: Initializing a generic Entity object (%d,%d) of class %d\n", pid, vid, entity_class);
     }
     else if (entity_class == 1) {
-        // we need a world name...
-        // val = new BaseWorld("unknown");
-        // the base world should NOT be loaded from this pathway
-        printf("Warning: Attempted to load a base world from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
-        return 0;
+        val = new BaseWorld();
     }
     else if (entity_class == 2) {
-        // val = new Player(pid);
-        printf("Warning: Attempted to load a player from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
-        return 0;
+        val = new Player(pid);
     }
     else if (entity_class == 3) {
-        // val = new CursorSuperObject(pid, vid);
-        printf("Warning: Attempted to load a cursorsuperobject from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
-        return 0;
-    }
-    else if (entity_class == 4) {
         val = new SuperObject(pid, vid);
     }
+    else if (entity_class == 4) {
+        // TODO change these in the constructors as well
+        val = new SuperSuperObject(pid, vid);
+    }
     else if (entity_class == 5) {
-        // TODO handle game template being like, ottally not made
-        // TODO change entity_class to an enum
+        val = new CursorSuperObject(pid, vid);
+        printf("Warning: Attempted to load a cursorsuperobject from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
+    }
+    else if (entity_class == 6) {
+        val = new GameTemplate();
+        printf("Warning: Attempted to load a gameTemplate from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
     }
     else {
         printf("Unknown entity class %d for (%d,%d)\n", entity_class, pid, vid);
@@ -61,23 +59,40 @@ void delete_entity_from_memory(Entity* entity) {
     int entity_class = entity->entity_class;
     // we should not erase entity class 0 => undefined
     if (entity_class == 1) {
+        // delete world
         printf("Deleting a baseworld entity object, are you sure you want to do this?\n");
-        delete_at_path(get_path_to_world_folder(((BaseWorld*)entity)->world_name));
+        delete_at_path(get_path_to_world_folder());
     }
     else if (entity_class == 2) {
+        // delete player
         printf("Deleting a player, are you sure you want to do this?\n");
         delete_at_path(get_path_to_player_folder(entity->pid));
     }
     else if (entity_class == 3) {
-        printf("Deleting a cursorsuperobject...\n");
-        delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
-    }
-    else if (entity_class == 4) {
         // delete superobject
         printf("Deleting a superobject\n");
         delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
     }
+    else if (entity_class == 4) {
+        // delete supersuperobject
+        printf("Deleting a supersupersuperobject\n");
+        // TODO delete all associated superobjects
+        delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
+    }
     else if (entity_class == 5) {
+        printf("Deleting a cursorsuperobject...\n");
+        delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
+    }
+    else if (entity_class == 6) {
         // do not delete game templates, there is nothing to delete
     }
 }
+
+/*
+bool is_entity_superobject(Entity* entity) {
+    return entity->entity_class == 3 || entity->entity_class == 5;
+}
+
+bool is_entity_supersuperobject(Entity* entity) {
+    return entity->entity_class == 4 || entity->entity_class == 6;
+}*/

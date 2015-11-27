@@ -15,6 +15,7 @@ RenderableSuperObject::RenderableSuperObject(): Entity() {
     // nothing special needed here
 }
 
+// --- RenderableSuperObject
 void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
                                                         ivec3* crc,
                                                         float x, float y, float z) {
@@ -218,106 +219,11 @@ void RenderableSuperObject::kill_block(float x, float y, float z) {
     set_block(x, y, z, block_type());
 }
 
-void RenderableSuperObject::render(fmat4* transform) {
-    for (auto iterator = chunks.begin(); iterator != chunks.end(); iterator++) {
-        ivec3 sub_pos = iterator->first;
-        
-        fmat4 view;
-        get_mvp(&view);
-        view = glm::translate(view, fvec3(sub_pos.x * CX,
-                                          sub_pos.y * CY,
-                                          sub_pos.z * CZ));
-
-        fmat4 mvp = *transform * view;
-        
-        // Is this chunk on the screen?
-        glm::vec4 center = mvp * glm::vec4(CX / 2, CY / 2, CZ / 2, 1);
-        
-        //float d = glm::length(center);
-        center.x /= center.w;
-        center.y /= center.w;
-        
-        // If it is behind the camera, don't bother drawing it
-        // was 0.5f before, but rounding errors forced me to bump this value up
-        if(center.z < -CY * 0.75f)
-            continue;
-        
-        // If it is outside the screen, don't bother drawing it
-        if(fabsf(center.x) > 1 + fabsf(CY * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CY * 2 / center.w))
-            continue;
-        
-        set_transform_matrix(mvp, view);
-        iterator->second->render();
-    }
-}
-
 // helper function, sees if the absolute distance is less than the chunk render distance
 bool is_within_range(ivec3* chunk_pos, int x, int y, int z) {
     return abs(chunk_pos->x - x) <= CHUNK_RENDER_DIST &&
             abs(chunk_pos->y - y) <= CHUNK_RENDER_DIST &&
             abs(chunk_pos->z - z) <= CHUNK_RENDER_DIST;
-}
-
-void RenderableSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
-    // get player position in this object's axis
-    fvec3 new_oac;
-    ivec3 old_cac, new_cac;
-    transform_into_my_coordinates(&new_oac, new_pos->x, new_pos->y, new_pos->z);
-    // now transform into cac, crc. we will only need the CAC coordinates
-    ivec3 crc;
-    transform_into_chunk_bounds(&new_cac, &crc, new_oac.x, new_oac.y, new_oac.z);
-    
-    int xmin, xmax, ymin, ymax, zmin, zmax;
-    bool check_old = true;
-    if (old_pos) {
-        // the old position tells us where we have already loaded the chunks
-        // by doing this check we can stop us from loading chunks we already have!
-        fvec3 old_oac;
-        transform_into_my_coordinates(&old_oac, old_pos->x, old_pos->y, old_pos->z);
-        // now transform into cac, crc. we will only need the CAC coordinates
-        ivec3 crc;
-        transform_into_chunk_bounds(&old_cac, &crc, old_oac.x, old_oac.y, old_oac.z);
-        
-        if (new_cac == old_cac) {
-            return;
-        }
-        
-        xmin = imin(old_cac.x, new_cac.x) - CHUNK_RENDER_DIST;
-        xmax = imax(old_cac.x, new_cac.x) + CHUNK_RENDER_DIST + 1;
-        ymin = imin(old_cac.y, new_cac.y) - CHUNK_RENDER_DIST;
-        ymax = imax(old_cac.y, new_cac.y) + CHUNK_RENDER_DIST + 1;
-        zmin = imin(old_cac.z, new_cac.z) - CHUNK_RENDER_DIST;
-        zmax = imax(old_cac.z, new_cac.z) + CHUNK_RENDER_DIST + 1;
-    }
-    else {
-        // if this chunk has never been updated before, all chunks must be new
-        xmin = new_cac.x - CHUNK_RENDER_DIST;
-        xmax = new_cac.x + CHUNK_RENDER_DIST + 1;
-        ymin = new_cac.y - CHUNK_RENDER_DIST;
-        ymax = new_cac.y + CHUNK_RENDER_DIST + 1;
-        zmin = new_cac.z - CHUNK_RENDER_DIST;
-        zmax = new_cac.z + CHUNK_RENDER_DIST + 1;
-        check_old = false;
-    }
-
-    bool within_old, within_new;
-    for (int x = xmin; x < xmax; x++) {
-        for (int y = ymin; y < ymax; y++) {
-            for (int z = zmin; z < zmax; z++) {
-                if (!within_dimensions_chunk(x, y, z)) {
-                    continue;
-                }
-                within_old = check_old && is_within_range(&old_cac, x, y, z);
-                within_new = is_within_range(&new_cac, x, y, z);
-                if (within_old && !within_new) {
-                    delete_chunk(x, y, z);
-                }
-                else if (!within_old && within_new) {
-                    load_chunk(x, y, z);
-                }
-            }
-        }
-    }
 }
 
 // check if a chunk coordinate (CAC) xyz is a chunk held by this object
@@ -385,13 +291,99 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
     //                        upper_bound.x, upper_bound.y, upper_bound.z);
 }
 
-bool RenderableSuperObject::poke(float x, float y, float z) {
+void RenderableSuperObject::save_all_chunks() {
+    // save chunks not in memory
+    int counter = 0;
+    for (auto kv : chunks) {
+        counter++;
+        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
+        kv.second->cleanup();
+    }
+    printf("Saved %d chunks\n", counter);
+}
+
+// --- Entity ---
+Entity* RenderableSuperObject::poke(float x, float y, float z) {
     if (Entity::poke(x, y, z)) {
         if (get_block(x, y, z).type){
-            return true;
+            return this;
         }
     }
-    return false;
+    return 0;
+}
+
+bool RenderableSuperObject::break_block(float x, float y, float z) {
+    set_block(x, y, z, block_type());
+    return true;
+}
+
+void RenderableSuperObject::render(fmat4* transform) {
+    for (auto iterator = chunks.begin(); iterator != chunks.end(); iterator++) {
+        ivec3 sub_pos = iterator->first;
+        
+        fmat4 view;
+        get_mvp(&view);
+        view = glm::translate(view, fvec3(sub_pos.x * CX,
+                                          sub_pos.y * CY,
+                                          sub_pos.z * CZ));
+        
+        fmat4 mvp = *transform * view;
+        
+        // Is this chunk on the screen?
+        glm::vec4 center = mvp * glm::vec4(CX / 2, CY / 2, CZ / 2, 1);
+        
+        //float d = glm::length(center);
+        center.x /= center.w;
+        center.y /= center.w;
+        
+        // If it is behind the camera, don't bother drawing it
+        // was 0.5f before, but rounding errors forced me to bump this value up
+        if(center.z < -CY * 0.75f)
+            continue;
+        
+        // If it is outside the screen, don't bother drawing it
+        if(fabsf(center.x) > 1 + fabsf(CY * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CY * 2 / center.w))
+            continue;
+        
+        set_transform_matrix(mvp, view);
+        iterator->second->render();
+    }
+}
+
+void RenderableSuperObject::update_chunks(fvec3* player_pos) {
+    // get player position in this object's axis
+    fvec3 oac;
+    transform_into_my_coordinates(&oac, player_pos->x, player_pos->y, player_pos->z);
+    // now transform into cac, crc. we will only need the CAC coordinates
+    ivec3 cac, crc;
+    transform_into_chunk_bounds(&cac, &crc, oac.x, oac.y, oac.z);
+    
+    int xmin, xmax, ymin, ymax, zmin, zmax;
+    xmin = cac.x - CHUNK_RENDER_DIST;
+    xmax = cac.x + CHUNK_RENDER_DIST + 1;
+    ymin = cac.y - CHUNK_RENDER_DIST;
+    ymax = cac.y + CHUNK_RENDER_DIST + 1;
+    zmin = cac.z - CHUNK_RENDER_DIST;
+    zmax = cac.z + CHUNK_RENDER_DIST + 1;
+    
+    // make bounding box here and check
+    for (auto &i: chunks) {
+        if (i.first.x < xmin || i.first.x >= xmax
+            || i.first.y < ymin || i.first.y >= ymax
+            || i.first.z < zmin || i.first.z >= zmax) {
+            delete_chunk(i.first.x, i.first.y, i.first.z);
+        }
+    }
+    for (int x = xmin; x < xmax; x++) {
+        for (int y = ymin; y < ymax; y++) {
+            for (int z = zmin; z < zmax; z++) {
+                if (!within_dimensions_chunk(x, y, z)) {
+                    continue;
+                }
+                load_chunk(x, y, z);
+            }
+        }
+    }
 }
 
 int RenderableSuperObject::get_collision_level() {
@@ -491,18 +483,6 @@ bool RenderableSuperObject::collides_with(Entity* other, bounding_box* my_bounds
     }
     return false;
 }
-
-void RenderableSuperObject::save_all_chunks() {
-    // save chunks not in memory
-    int counter = 0;
-    for (auto kv : chunks) {
-        counter++;
-        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
-        kv.second->cleanup();
-    }
-    printf("Saved %d chunks\n", counter);
-}
-
 
 int RenderableSuperObject::load_self(IODataObject* obj) {
     if (Entity::load_self(obj))

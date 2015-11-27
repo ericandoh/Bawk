@@ -9,20 +9,11 @@
 #include "gametemplate.h"
 #include "game.h"
 #include "cursorsuperobject.h"
+#include "world.h"
 
 GameTemplate::GameTemplate() {
     pos = fvec3(0, 0, 0);   // unlike any other objects, this is alwas 0-aligned then
     entity_class = 5;
-}
-
-int GameTemplate::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
-    get_empty_chunk(to_arr);
-    return 0;
-}
-
-int GameTemplate::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
-    // do nothing, but this should not be called
-    return 0;
 }
 
 CursorSuperObject* GameTemplate::create_from_template(Player* player, World* world) {
@@ -47,7 +38,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
 }
 
 void GameTemplate::publish(Game* game) {
-    if (set_blocks(game)) {
+    if (PlaceableObject::set_blocks(game)) {
         game->world->remove_entity(this);
     }
 }
@@ -57,7 +48,8 @@ void GameTemplate::unpublish(World* world) {
 }
 
 void GameTemplate::render(fmat4* transform) {
-    set_shader_intensity(1.0f);
-    RenderableSuperObject::render(transform);
+    //set_shader_intensity(1.0f);
+    // do any special rendering you'd like if you want to make this shine
+    PlaceableSuperObject::render(transform);
 }
 

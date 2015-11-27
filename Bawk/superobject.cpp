@@ -11,6 +11,7 @@
 #include "game_info_loader.h"
 #include "game.h"
 #include "blocktracer.h"
+#include "entity_loader.h"
 
 SuperObject::SuperObject() {
     // this constructor should be only called to construct a world
@@ -29,6 +30,34 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     block_counter = 0;
 }
 
+// --- SuperObject ---
+void SuperObject::add_entity(Entity* entity) {
+    // transform entity rotation/pos into this object's frame
+    fvec3 oac;
+    transform_into_my_coordinates(&oac, entity->pos.x, entity->pos.y, entity->pos.z);
+    entity->pos = oac;
+    // transform rotation into into my frame
+    angle.transform_into_my_rotation(entity->angle);
+    
+    
+    entities.push_back(entity);
+}
+
+void SuperObject::remove_entity(Entity* entity) {
+    for (unsigned int i = 0; i < entities.size(); i++) {
+        if (entities.at(i) == entity) {
+            entities.erase(entities.begin() + i);
+            break;
+        }
+    }
+    delete_entity_from_memory(entity);
+}
+
+std::string SuperObject::get_chunk_save_path(ivec3* pos) {
+    return get_path_to_superobj_chunk(pid, vid, pos);
+}
+
+// --- RenderableSuperObject
 void SuperObject::handle_block_addition(float x, float y, float z, block_type type) {
     // set key bindings if it has one
     if (has_block_keyboard_bindings(type)) {
@@ -81,10 +110,106 @@ void SuperObject::handle_block_removal(float x, float y, float z, block_type typ
     block_counter--;
 }
 
+int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
+    ivec3 pos = ivec3(x, y, z);
+    IODataObject reader(get_chunk_save_path(&pos));
+    if (reader.read(false))
+        return 1;
+    reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
+    reader.close();
+    return 0;
+}
+
+int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
+    ivec3 pos = ivec3(x, y, z);
+    IODataObject writer(get_chunk_save_path(&pos));
+    if (writer.save(false))
+        return 1;
+    writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
+    writer.close();
+    return 0;
+}
+
+// --- Entity ---
+Entity* SuperObject::poke(float x, float y, float z) {
+    if (RenderableSuperObject::poke(x, y, z))
+        return this;
+    for (unsigned int i = 0; i < entities.size(); i++) {
+        if (entities[i]->poke(x, y, z)) {
+            return entities[i];
+        }
+    }
+    return 0;
+}
+
+bool SuperObject::break_block(float x, float y, float z) {
+    Entity* at = poke(x, y, z);
+    if (at == this) {
+        // remove block from this
+        kill_block(x, y, z);
+    }
+    else if (at) {
+        // break away the entity at from this object
+        remove_entity(at);
+        return true;
+    }
+    return false;
+}
+
+bool SuperObject::block_keyboard_callback(Game* game, Action key) {
+    for (Entity* ent: entities) {
+        ent->block_keyboard_callback(game, key);
+    }
+    if (key_mapping.count(key)) {
+        bool any = false;
+        for (int i = 0; i < key_mapping[key].size(); i++) {
+            ivec3 position = key_mapping[key][i].position;
+            fvec3 rwc;
+            transform_into_world_coordinates(&rwc, position.x, position.y, position.z);
+            block_keyboard_callback_func callback = get_block_keyboard_callback_from(key_mapping[key][i].blk.type);
+            if (callback) {
+                any = any || (*callback)(game,
+                                         this,
+                                         &(key_mapping[key][i].blk),
+                                         rwc,
+                                         key_mapping[key][i].action);
+            }
+        }
+        return any;
+    }
+    return false;
+}
+
+bool SuperObject::block_mouse_callback(Game* game, Action button) {
+    fvec4 lookingat;
+    if (get_look_at_vehicle(&lookingat)) {
+        Entity* at_cursor = poke(lookingat.x, lookingat.y, lookingat.z);
+        if (at_cursor == this) {
+            block_type blk = get_block(lookingat.x, lookingat.y, lookingat.z);
+            block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
+            if (callback) {
+                (*callback)(game,
+                            this,
+                            &blk,
+                            fvec3(lookingat.x, lookingat.y, lookingat.z),
+                            button);
+                return true;
+            }
+
+        }
+        else {
+            return at_cursor->block_mouse_callback(game, button);
+        }
+    }
+    return false;
+}
+
 void SuperObject::step() {
+    for (int i = 0; i < entities.size(); i++) {
+        entities[i]->step();
+    }
     if (stable) {
         float max_movement = 0.05f;
-        float max_angle_movement = 0.05f;
         if (floorf(pos.x) != pos.x) {
             float off = roundf(pos.x) - pos.x;
             if (off < -max_movement)
@@ -113,84 +238,56 @@ void SuperObject::step() {
             stable = false;
         }
         angle.inch_toward_normalization();
-        /*
-        if ((int)(angle.angle.x/HALF_PI)*HALF_PI != angle.angle.x) {
-            float off = roundf(angle.angle.x/HALF_PI)*HALF_PI - angle.angle.x;
-            if (off < -max_angle_movement)
-                off = -max_angle_movement;
-            else if (off > max_angle_movement)
-                off = max_angle_movement;
-            else
-                off = 0;
-            angular_velocity.x += off;
-        }
-        if ((int)(angle.angle.y/HALF_PI)*HALF_PI != angle.angle.y) {
-            float off = roundf(angle.angle.y/HALF_PI)*HALF_PI - angle.angle.y;
-            if (off < -max_angle_movement)
-                off = -max_angle_movement;
-            else if (off > max_angle_movement)
-                off = max_angle_movement;
-            else
-                off = 0;
-            angular_velocity.y += off;
-        }
-        if ((int)(angle.angle.z/HALF_PI)*HALF_PI != angle.angle.z) {
-            float off = roundf(angle.angle.z/HALF_PI)*HALF_PI - angle.angle.z;
-            if (off < -max_angle_movement)
-                off = -max_angle_movement;
-            else if (off > max_angle_movement)
-                off = max_angle_movement;
-            else
-                off = 0;
-            angular_velocity.z += off;
-        }*/
     }
 }
 
-bool SuperObject::block_keyboard_callback(Game* game, Action key) {
-    if (key_mapping.count(key)) {
-        bool any = false;
-        for (int i = 0; i < key_mapping[key].size(); i++) {
-            ivec3 position = key_mapping[key][i].position;
-            fvec3 rwc;
-            transform_into_world_coordinates(&rwc, position.x, position.y, position.z);
-            block_keyboard_callback_func callback = get_block_keyboard_callback_from(key_mapping[key][i].blk.type);
-            if (callback) {
-                any = any || (*callback)(game,
-                                         this,
-                                         &(key_mapping[key][i].blk),
-                                         rwc,
-                                         key_mapping[key][i].action);
-            }
-        }
-        // assume if its in our key mapping, even if the presentable action does NOT exist (due to bug)
-        // that we consume the key
-        return any;
+void SuperObject::render(fmat4* transform) {
+    RenderableSuperObject::render(transform);
+    for (int i = 0; i < entities.size(); i++) {
+        entities[i]->render(transform);
     }
-    return false;
 }
 
-bool SuperObject::block_mouse_callback(Game* game, int button) {
-    fvec4 lookingat;
-    if (get_look_at_vehicle(&lookingat)) {
-        block_type blk = get_block(lookingat.x, lookingat.y, lookingat.z);
-        // see if blk is an indirect block - that is, it's part of a recipe block
-        if (blk.is_recipe == 2) {
-            // find offset
-            printf("frog\n");
-            printf("ufkc off");
-            // this does NOT account for the rotation of the entity and WILL give us a wrong result!!!
-            //ivec3 rrel = get_translated_offset(blk.orientation, ivec3(blk.relx, blk.rely, blk.relz));
-            //blk = get_block(lookingat.x + rrel.x, lookingat.y + rrel.y, lookingat.z + rrel.z);
-        }
-        block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
-        if (callback) {
-            (*callback)(game,
-                        this,
-                        &blk,
-                        fvec3(lookingat.x, lookingat.y, lookingat.z),
-                        button);
+void SuperObject::update_chunks(fvec3* player_pos) {
+    // TODO check if the bounds of this superobject even intersect our vision
+    RenderableSuperObject::update_chunks(player_pos);
+    for (int i = 0; i < entities.size(); i++) {
+        entities[i]->update_chunks(player_pos);
+    }
+}
+
+void SuperObject::calculate_moving_bounding_box() {
+    RenderableSuperObject::calculate_moving_bounding_box();
+    for (Entity* ent: entities) {
+        ent->calculate_moving_bounding_box();
+        moving_bounds.combine_with(ent->moving_bounds);
+    }
+}
+
+int SuperObject::get_collision_level() {
+    return 2;
+}
+
+// method for collision detection against base class entities ONLY
+bool SuperObject::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) {
+    if (my_collision_lvl == 0) {
+        Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
+    }
+    else if (my_collision_lvl == 1) {
+        Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
+    }
+    else {
+        // first check if other collides with this superobject itself
+        if (Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl - 1, other_collision_level)) {
             return true;
+        }
+        else {
+            // check if other collides with any other entities i am holding
+            for (Entity* ent: entities) {
+                if (ent->collides_with(other)) {
+                    return true;
+                }
+            }
         }
     }
     return false;
@@ -200,33 +297,21 @@ std::string SuperObject::get_save_path() {
     return get_path_to_superobj(pid, vid);
 }
 
-std::string SuperObject::get_chunk_save_path(ivec3* pos) {
-    return get_path_to_superobj_chunk(pid, vid, pos);
-}
-
-int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
-    ivec3 pos = ivec3(x, y, z);
-    IODataObject reader(get_chunk_save_path(&pos));
-    if (reader.read(false))
-        return 1;
-    reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
-    reader.close();
-    return 0;
-}
-
-int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
-    ivec3 pos = ivec3(x, y, z);
-    IODataObject writer(get_chunk_save_path(&pos));
-    if (writer.save(false))
-        return 1;
-    writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
-    writer.close();
-    return 0;
-}
-
 int SuperObject::load_self(IODataObject* obj) {
     if (RenderableSuperObject::load_self(obj))
         return 1;
+    
+    // load other entities here
+    int entities_count = obj->read_value<int>();
+    for (int i = 0; i < entities_count; i++) {
+        // load in pid, vid, entity_class in that order
+        uint32_t pid = obj->read_value<uint32_t>();
+        uint32_t vid = obj->read_value<uint32_t>();
+        int entity_class = obj->read_value<int>();
+        Entity* entity = get_entity_from(pid, vid, entity_class);
+        if (entity)
+            entities.push_back(entity);
+    }
     
     // load key bindings!
     int keybinding_count = obj->read_value<int>();
@@ -244,12 +329,23 @@ int SuperObject::load_self(IODataObject* obj) {
         }
     }
     block_counter = obj->read_value<int>();
-    
     return 0;
 }
 
 void SuperObject::remove_self(IODataObject* obj) {
     RenderableSuperObject::remove_self(obj);
+    
+    for (int i = 0; i < entities.size(); i++) {
+        entities[i]->remove_selfs();
+    }
+    int entities_count = (int)entities.size();
+    // TODO handle that player/baseworld? is removed/saved here
+    obj->save_value(entities_count);
+    for (int i = 0; i < (int)entities.size(); i++) {
+        obj->save_value(entities[i]->pid);
+        obj->save_value(entities[i]->vid);
+        obj->save_value(entities[i]->entity_class);
+    }
     
     // save key bindings!
     // TOFU later make a SAVE_MAP and SAVE_VECTOR method in the block_loader, so we don't have to keep doing this hack

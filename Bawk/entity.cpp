@@ -214,82 +214,27 @@ void Entity::turn_angle(fvec3 off) {
     stable = false;
 }
 
-//void Entity::recalculate_dir() {
-    /*
-    // up should be a function of angle.y, angle.z
-    // right should be a function of angle.x, angle.z
-    // forward should be a function of x, y?
-    
-    dir.x = sinf(angle.x*M_PI/180)*cosf(angle.y*M_PI/180);
-    dir.y = sinf(angle.y*M_PI/180);
-    dir.z = cosf(angle.x*M_PI/180)*cosf(angle.y*M_PI/180);
-    forward.x = dir.x;
-    forward.y = 0;
-    forward.z = dir.z;
-    forward = glm::normalize(forward);
-    
-    fvec3 right;
-    right.x = -cosf(angle.x*M_PI/180) * cosf(angle.z*M_PI/180);
-    right.y = sinf(angle.z*M_PI/180);
-    right.z = sinf(angle.x*M_PI/180) * cosf(angle.z*M_PI/180);
-    
-    up = glm::cross(right, dir);*/
-    
-    /*
-    fmat4 val(1);
-    // yaw
-    val = glm::rotate(val, angle.x, fvec3(0,1,0));
-    // roll
-    val = glm::rotate(val, angle.z, fvec3(0,0,1));
-    // pitch
-    val = glm::rotate(val, angle.y, fvec3(-1,0,0));
-    fvec4 qdir(0,0,1,1);
-    fvec4 qup(0,1,0,1);
-    
-    qdir = val * qdir;
-    qup = val * qup;
-    
-    dir.x = qdir.x;
-    dir.y = qdir.y;
-    dir.z = qdir.z;
-    up.x = qup.x;
-    up.y = qup.y;
-    up.z = qup.z;
-    
-    forward.x = dir.x;
-    forward.y = 0;
-    forward.z = dir.z;
-    forward = glm::normalize(forward);*/
-    
-    /*
-    fvec3 right;
-    right.x = -cosf(angle.x) * cosf(angle.z);
-    right.y = sinf(angle.z);
-    right.z = sinf(angle.x) * cosf(angle.z);
-    
-    forward.x = sinf(angle.x);
-    forward.y = 0;
-    forward.z = cosf(angle.x);
-    
-    dir.x = forward.x * cosf(angle.y);
-    dir.y = sinf(angle.y);
-    dir.z = forward.z * cosf(angle.y);
-    
-    up = glm::cross(right, dir);*/
-//}
-
-bool Entity::poke(float x, float y, float z) {
+Entity* Entity::poke(float x, float y, float z) {
     // transform into OAC
     fvec3 oac;
     transform_into_my_coordinates(&oac, x, y, z);
-    return bounds.hits(oac);
+    if (bounds.hits(oac)){
+        return this;
+    }
+    return 0;
+}
+
+bool break_block(float x, float y, float z) {
+    // behaviour for destroying a block on a regular entity is undefined
+    // to remove an entity entirely use other pathways
+    return false;
 }
 
 bool Entity::block_keyboard_callback(Game* game, Action key) {
     return false;
 }
 
-bool Entity::block_mouse_callback(Game* game, int button) {
+bool Entity::block_mouse_callback(Game* game, Action button) {
     /*block_mouse_callback_func callback = get_block_mouse_callback_from(something);
     if (callback) {
         (*callback)(game,
@@ -323,7 +268,7 @@ void Entity::render(fmat4* transform) {
     // do nothing
 }
 
-void Entity::update_chunks(fvec3* old_pos, fvec3* new_pos) {
+void Entity::update_chunks(fvec3* start_pos) {
     // do nothing
 }
 
@@ -353,12 +298,12 @@ void Entity::calculate_moving_bounding_box() {
                              std::max(lower_rwc.y, upper_rwc.y),
                              std::max(lower_rwc.z, upper_rwc.z));
     
-    moving_lower = fvec3(std::min(before_lower_corner.x, after_lower_corner.x),
-                         std::min(before_lower_corner.y, after_lower_corner.y),
-                         std::min(before_lower_corner.z, after_lower_corner.z));
-    moving_upper = fvec3(std::max(before_upper_corner.x, after_upper_corner.x),
-                         std::max(before_upper_corner.y, after_upper_corner.y),
-                         std::max(before_upper_corner.z, after_upper_corner.z));
+    moving_bounds.lower = fvec3(std::min(before_lower_corner.x, after_lower_corner.x),
+                                std::min(before_lower_corner.y, after_lower_corner.y),
+                                std::min(before_lower_corner.z, after_lower_corner.z));
+    moving_bounds.upper = fvec3(std::max(before_upper_corner.x, after_upper_corner.x),
+                                std::max(before_upper_corner.y, after_upper_corner.y),
+                                std::max(before_upper_corner.z, after_upper_corner.z));
     
 }
 

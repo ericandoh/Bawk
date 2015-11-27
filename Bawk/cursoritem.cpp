@@ -7,6 +7,7 @@
 //
 
 #include "cursoritem.h"
+#include "entity.h"
 
 // methods to initialize/cleanup this entity
 void CursorItem::init() { }
@@ -16,7 +17,7 @@ void CursorItem::cleanup() { }
 void CursorItem::reset() { }
 
 // behaviour when this cursor item is clicked
-bool CursorItem::clicked(Game* game, Action mouse) {
+bool CursorItem::clicked(Game* game, Action mouse, Entity* on) {
     return false;
 }
 

@@ -61,6 +61,8 @@ protected:
 public:
     // makes a renderable super object that is presumed to be empty initially
     RenderableSuperObject();
+    
+    // --- RenderableSuperObject ---
     // gets the block at (RWC) xyz
     block_type get_block(float x, float y, float z);
     // sets the block at (RWC) xyz
@@ -71,11 +73,7 @@ public:
     virtual void handle_block_addition(float x, float y, float z, block_type type) = 0;
     // helper function to do appropriate action when some block is removed
     virtual void handle_block_removal(float x, float y, float z, block_type type) = 0;
-    // renders the object, given a player viewpoint transform matrix
-    virtual void render(fmat4* transform) override;
-    // makes calls to load in/free chunks depending on the
-    // former and new (RWC) coordinates of the player
-    virtual void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
+    
     // this should be overriden to provide chunk data at (CAC) xyz
     virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) = 0;
     // this should be overriden to save chunk data at (CAC) xyz
@@ -87,15 +85,22 @@ public:
     // updates the dimensions of my object, given a chunk at chunk_pos (CAC) is updated
     // call when initializing from scratch with a lot of blocks, or when removing a block at a periphery
     virtual void update_dimensions_from_chunk(ivec3 chunk_pos);
+
+    // --- Entity ---
+    virtual Entity* poke(float x, float y, float z) override;
+    virtual bool break_block(float x, float y, float z) override;
     
-    virtual bool poke(float x, float y, float z) override;
+    virtual void render(fmat4* transform) override;
+    virtual void update_chunks(fvec3* player_pos) override;
     
-    int get_collision_level() override;
-    bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) override;
+    virtual int get_collision_level() override;
+    virtual bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) override;
     
-    void save_all_chunks();
     virtual int load_self(IODataObject* obj) override;
     virtual void remove_self(IODataObject* obj) override;
+    
+    
+    void save_all_chunks();
 };
 
 #endif /* defined(__Bawk__superobjectrender__) */

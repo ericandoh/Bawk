@@ -32,33 +32,29 @@
 class Game;
 
 class World {
-    EntityHolder holder;
-    
     std::vector<WorldEvent*> events;
 public:
     std::string name;
     // how many cycles the world has lived through
     unsigned long age;
-    // the base world
-    SuperObject* base_world;
+    BaseWorld* base_world;
     World(std::string id);
     int load_self();
     void remove_self();
-    void render(fmat4* transform, float shade_intensity);
-    void update_chunks(fvec3* old_pos, fvec3* new_pos);
-    // called by cursor item, places block into baseworld
-    void place_block(ivec3 position, block_type block);
-    block_type get_block(float x, float y, float z);
-    void get_at(float x, float y, float z, bool* world_selected, Entity** selected);
+    void render(fmat4* transform);
+    void update_chunks(fvec3* player_pos);
     
-    bool block_mouse_callback(Game* game, int button);
+    void get_entity_at(float x, float y, float z, Entity** selected);
     
     // called by game to kill a block directly. then effects are propogated to the appropriate entities
-    bool kill_block(ivec3* src);
+    bool break_block();
+    
     void add_player(Player* player);
     void add_entity(Entity* entity);
     void add_event(WorldEvent* event);
+    
     void step();
+    
     bool will_collide_with_anything(Entity* superobject);
     SuperObject* create_superobject(Player* player);
     void remove_entity(Entity* entity);

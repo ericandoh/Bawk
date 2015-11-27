@@ -77,8 +77,8 @@ public:
     // height of the entity. 0 is full health (alive!)
     int health;
     
-    // --- TEMP ---
-    fvec3 moving_lower, moving_upper;
+    // --- COLLISION DETECTION MOVING BB ---
+    bounding_box moving_bounds;
     
     Entity();
     // internal function to transform RWC xyz to OAC src
@@ -109,20 +109,22 @@ public:
     void move_dist(fvec3 off);
     void turn_angle(fvec3 off);
     
-    //virtual void recalculate_dir();
-    
     // poke this object at RWC, true if this object says, "OUCH"
-    virtual bool poke(float x, float y, float z);
+    virtual Entity* poke(float x, float y, float z);
+    // break whatever is at RWC coords in this object
+    virtual bool break_block(float x, float y, float z);
     
+    // callback methods for when actions are called on this item
     virtual bool block_keyboard_callback(Game* game, Action key);
-    virtual bool block_mouse_callback(Game* game, int button);
+    virtual bool block_mouse_callback(Game* game, Action button);
     
     virtual void step();
     virtual void render(fmat4* transform);
-    virtual void update_chunks(fvec3* old_pos, fvec3* new_pos);
+    // update how this is rendered depending on player position
+    virtual void update_chunks(fvec3* player_pos);
 
     // this is in RWC!!!!!!!!!!
-    void calculate_moving_bounding_box();
+    virtual void calculate_moving_bounding_box();
     
     // for more exact collision detection
     virtual bool collides_with(Entity* other);

@@ -31,21 +31,16 @@ class BaseWorld: public SuperObject {
     block_type air[CX][CY][CZ];
     block_type ground[CX][CY][CZ];
 public:
-    std::string world_name;
-    BaseWorld(std::string wid);
-    std::string get_save_path() override;
-    std::string get_chunk_save_path(ivec3* pos) override;
+    BaseWorld();
+    // --- SuperObject ---
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
-    //int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     bool within_dimensions_chunk(int x, int y, int z) override;
     bool intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos) override;
     void update_dimensions_from_chunk(ivec3 chunk_pos) override;
     
-    bool poke(float x, float y, float z) override;
-    
+    // --- Entity ---
+    void step() override;
     bool collides_with(Entity* other) override;
-    
-    void remove_selfs() override;
 };
 
 #endif /* defined(__Bawk__base_world__) */

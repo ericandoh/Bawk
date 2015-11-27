@@ -20,7 +20,6 @@ BlockOrientation face;
 BlockOrientation player_face;
 bool in_range = false;
 Entity* selected = 0;
-bool world_selected = false;
 
 class WorldTracer: public BresenhamTracer {
     World* world;
@@ -38,8 +37,8 @@ WorldTracer::WorldTracer(World* w) {
 }
 
 bool WorldTracer::check_at_coord(float x, float y, float z, BlockOrientation side) {
-    world->get_at(x, y, z, &world_selected, &selected);
-    if (world_selected || selected) {
+    world->get_entity_at(x, y, z, &selected);
+    if (selected) {
         mx = x;
         my = y;
         mz = z;
@@ -47,16 +46,6 @@ bool WorldTracer::check_at_coord(float x, float y, float z, BlockOrientation sid
         in_range = true;
         return true;
     }
-    /*if (world->get_block(x, y, z).type) {
-        mx = floorf(x);
-        my = floorf(y);
-        mz = floorf(z);
-        world_selected = true;
-        selected = 0;
-        face = side;
-        in_range = true;
-        return true;
-    }*/
     return false;
 }
 
@@ -67,7 +56,6 @@ void set_look_at(fvec3 pos, fvec3 dir, World* world) {
     fvec3 start(pos.x + dir.x*PLACE_BLOCK_FRONT, pos.y + dir.y*PLACE_BLOCK_FRONT, pos.z + dir.z*PLACE_BLOCK_FRONT);
     fvec3 end(pos.x + dir.x*PLACE_BLOCK_BACK, pos.y + dir.y*PLACE_BLOCK_BACK, pos.z + dir.z*PLACE_BLOCK_BACK);
     
-    world_selected = false;
     selected = 0;
     in_range = false;
     
@@ -127,6 +115,10 @@ bool get_pointing_position(ivec3* dst, BlockOrientation* orient, ivec3 bounds) {
     dst->z = mz;
     *orient = face;
     return true;
+}
+
+BlockOrientation get_player_direction() {
+    return player_face;
 }
 
 Entity* get_look_at() {

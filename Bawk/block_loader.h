@@ -30,21 +30,28 @@
 #include <fstream>
 #include "basic_types.h"
 
-std::string get_path_to_world_folder(std::string world_name);
-std::string get_path_to_world(std::string world_name);
-std::string get_path_to_world_chunk(std::string world_name, ivec3* chunk_pos);
+// set these to toggle under which name things get saved
+void set_current_world_name(std::string world_name);
 
+// where the world will be stored
+std::string get_path_to_world_folder();
+std::string get_path_to_world();
+
+// stored under player who owns, or if owned by world, under world's player folder
 std::string get_path_to_superobj_folder(uint32_t pid, uint32_t vid);
 std::string get_path_to_superobj(uint32_t pid, uint32_t vid);
 std::string get_path_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
 
+// stored under player
 std::string get_path_to_template_folder(uint32_t pid, uint32_t vid);
 std::string get_path_to_template(uint32_t pid, uint32_t vid);
 std::string get_path_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_pos);
 
+// stores the player
 std::string get_path_to_player_folder(uint32_t pid);
 std::string get_path_to_player(uint32_t pid);
 
+// all the game data
 std::string get_path_to_game_folder();
 std::string get_path_to_game();
 std::string get_path_to_game_json();

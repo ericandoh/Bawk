@@ -11,6 +11,7 @@
 		0704CF741BC997550050EE52 /* item_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF721BC997550050EE52 /* item_bar.cpp */; };
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
+		0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */; };
 		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
@@ -51,7 +52,6 @@
 		0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EB101BC0BE9800477144 /* block_loader.cpp */; };
 		076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFD91BD184DF00D68C8F /* blockrender.cpp */; };
 		076BEFE21BD19E9F00D68C8F /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE01BD19E9F00D68C8F /* entity.cpp */; };
-		076BEFE51BD1A09A00D68C8F /* entityholder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE31BD1A09A00D68C8F /* entityholder.cpp */; };
 		076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE61BD1FE0E00D68C8F /* inventory.cpp */; };
 		076BEFEE1BD204D200D68C8F /* inventory_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFEC1BD204D200D68C8F /* inventory_widget.cpp */; };
 		076BEFF41BD213B900D68C8F /* scrolling_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFF21BD213B900D68C8F /* scrolling_widget.cpp */; };
@@ -100,6 +100,8 @@
 		0705F3FA1BED27860088744F /* light_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = light_vertex_shader.glsl; path = Bawk/light_vertex_shader.glsl; sourceTree = "<group>"; };
 		0712E1251C06EB8E008AF269 /* block_orientation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_orientation.cpp; sourceTree = "<group>"; };
 		0712E1261C06EB8E008AF269 /* block_orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_orientation.h; sourceTree = "<group>"; };
+		0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkresourcemanager.cpp; sourceTree = "<group>"; };
+		0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkresourcemanager.h; sourceTree = "<group>"; };
 		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
 		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
 		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
@@ -180,8 +182,6 @@
 		076BEFDA1BD184DF00D68C8F /* blockrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blockrender.h; sourceTree = "<group>"; };
 		076BEFE01BD19E9F00D68C8F /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity.cpp; sourceTree = "<group>"; };
 		076BEFE11BD19E9F00D68C8F /* entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity.h; sourceTree = "<group>"; };
-		076BEFE31BD1A09A00D68C8F /* entityholder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entityholder.cpp; sourceTree = "<group>"; };
-		076BEFE41BD1A09A00D68C8F /* entityholder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entityholder.h; sourceTree = "<group>"; };
 		076BEFE61BD1FE0E00D68C8F /* inventory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inventory.cpp; sourceTree = "<group>"; };
 		076BEFE71BD1FE0E00D68C8F /* inventory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inventory.h; sourceTree = "<group>"; };
 		076BEFEC1BD204D200D68C8F /* inventory_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inventory_widget.cpp; sourceTree = "<group>"; };
@@ -393,6 +393,8 @@
 				077098951BDBFE5E002F295D /* bresenham3d.h */,
 				077098961BDC0640002F295D /* blocktracer.cpp */,
 				077098971BDC0640002F295D /* blocktracer.h */,
+				0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */,
+				0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -432,8 +434,6 @@
 			children = (
 				076BEFE01BD19E9F00D68C8F /* entity.cpp */,
 				076BEFE11BD19E9F00D68C8F /* entity.h */,
-				076BEFE31BD1A09A00D68C8F /* entityholder.cpp */,
-				076BEFE41BD1A09A00D68C8F /* entityholder.h */,
 				0715F1101BF2D3CC00242F86 /* rotation_math.cpp */,
 				0715F1111BF2D3CC00242F86 /* rotation_math.h */,
 				071C5C121BF7FE9C0087F398 /* rotation.cpp */,
@@ -540,7 +540,6 @@
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,
-				076BEFE51BD1A09A00D68C8F /* entityholder.cpp in Sources */,
 				07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */,
 				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
 				0766EAF81BBF7D1300477144 /* texture_loader.cpp in Sources */,
@@ -550,6 +549,7 @@
 				075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */,
 				073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */,
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
+				0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */,
 				07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

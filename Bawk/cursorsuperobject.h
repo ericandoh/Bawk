@@ -41,7 +41,7 @@ public:
     void init() override;
     void cleanup() override;
     void reset() override;
-    bool clicked(Game* game, Action mouse) override;
+    bool clicked(Game* game, Action mouse, Entity* on) override;
     bool confirmed(Game* game) override;
     bool canceled(Game* game) override;
     bool handle_movement(ivec3 dir) override;

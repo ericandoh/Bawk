@@ -28,7 +28,6 @@ CursorBlock::CursorBlock(block_type type) {
 // --- PlaceableObject
 bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) {
     ivec3 locked_pos;
-    // TODO change this to another orientation class
     BlockOrientation orientation;
     ivec3 upper(1, 1, 1);
     if (get_pointing_position(&locked_pos, &orientation, upper)) {
@@ -37,6 +36,13 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
             // there's already a block here!
             return false;
         }
+        if (orientation == BlockOrientation::TOP || orientation == BlockOrientation::BOTTOM) {
+            BlockOrientation player_direction = get_player_direction();
+            block.orientation = player_direction;
+        }
+        else {
+            block.orientation = orientation;
+        }
         object->set_block(pos.x, pos.y, pos.z, block);
         return true;
     }
@@ -44,17 +50,9 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
 }
 
 // --- CursorItem ---
-bool CursorBlock::clicked(Game* game, Action mouse) {
-    if (mouse == CLICK_DESTROY) {
-        // attempt to remove a block...
-        ivec4 looking_at;
-        if (get_look_at(&looking_at)) {
-            ivec3 at_pos(looking_at.x,looking_at.y,looking_at.z);
-            game->world->kill_block(&at_pos);
-        }
-    }
-    else if (mouse == CLICK_CREATE) {
-        PlaceableObject::set_blocks(game);
+bool CursorBlock::clicked(Game* game, Action mouse, Entity* on) {
+    if (mouse == CLICK_CREATE) {
+        return PlaceableObject::set_blocks(game);
     }
     return true;
 }

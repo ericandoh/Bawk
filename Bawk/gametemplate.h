@@ -24,14 +24,11 @@
 
 #include <stdio.h>
 #include "basic_types.h"
-#include "world.h"
-#include "superobjectrender.h"
-
-
 #include "placeablesuperobject.h"
 
-
 class CursorSuperObject;
+class World;
+class Game;
 
 // represents a template in the making
 class GameTemplate: public PlaceableSuperObject {
@@ -39,8 +36,6 @@ public:
     GameTemplate();
     
     // --- SuperObject ---
-    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
-    int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     void render(fmat4* transform) override;
     
     // --- GameTemplate ---

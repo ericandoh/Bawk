@@ -10,30 +10,43 @@
 #include "block_loader.h"
 
 
-const std::string BLOCK_DATA_PATH = "/Users/Eric/w_data";
-const std::string WORLD_SUBDIRECTORY_PATH = "world";
+const std::string BLOCK_DATA_PATH = "/Users/Eric/Bawk";
+const std::string GAME_JSON_DATA_PATH = "./gameinfo.json";
+
+// what world we're in right now
+std::string save_to_world_name;
+
+void set_current_world_name(std::string world_name) {
+    // make sure world name is like, not shit
+    save_to_world_name = world_name;
+}
 
 // ----- ROOT SAVE PATH -----
 std::string get_root_save_path() {
     // if windows, return something different
-    return "/Users/Eric/Bawk";
+    // TOFU make this more flexible for different OS and whatnot
+    return BLOCK_DATA_PATH;
 }
 
 // ----- MAIN SUBDIRECTORY SAVE PATHS -----
 std::string get_world_save_path() {
-    return get_root_save_path() + "/worlds";
+    return get_root_save_path() + "/" + save_to_world_name;
 }
 
-std::string get_superobject_save_path() {
-    return get_root_save_path() + "/superobjects";
+std::string get_player_save_path(uint32_t pid) {
+    return get_root_save_path() + "/players/p" + std::to_string(pid);
 }
 
-std::string get_player_save_path() {
-    return get_root_save_path() + "/players";
+std::string get_superobject_save_path(uint32_t pid) {
+    if (pid == 0) {
+        // save to world
+        return get_world_save_path() + "/superobjects";
+    }
+    return get_player_save_path(pid) + "/superobjects";
 }
 
-std::string get_template_save_path() {
-    return get_root_save_path() + "/templates";
+std::string get_template_save_path(uint32_t pid) {
+    return get_player_save_path(pid) + "/templates";
 }
 
 std::string get_game_save_path() {
@@ -96,51 +109,6 @@ long get_file_length_c(std::string file_name) {
     return t.tellg();
 }
 
-
-
-/*
-// ----- GENERIC WRITE METHOD -----
-// the below is UNSAFE and should be only called INTERNALLY!!!
-int save_data_to_file(std::string path, char* data, int length) {
-    std::ofstream out;
-    out.open(path,
-             std::ios::out | std::ios::trunc | std::ios::binary);
-    
-    if (!out.is_open()) {
-        return 1;
-    }
-    
-    // TOFU use any encoding function here
-    out.write(data, sizeof(char)*length);
-    // TOFU check for errors (by looking at error flags)
-    out.close();
-    return 0;
-}
-
-// ----- GENERIC READ METHOD -----
-// the below is UNSAFE and should be only called INTERNALLY!!!
-int read_data_from_file(std::string path, char** data, int length) {
-    std::ifstream in;
-    in.open(path,
-            std::ios::in | std::ios::binary);
-    if (!in.is_open()) {
-        return -1;
-    }
-    
-    // TOFU use any decoding function here
-    //in.seekg(0, std::ios::beg);
-    long file_length = get_file_length_c(path);
-    if (*data == 0 || file_length > length) {
-        printf("Data longer than expected. (%ld vs %d) Bit memory inefficient but w/e\n", file_length, length);
-        if (*data)
-            delete *data;
-        *data = new char[file_length];
-    }
-    in.read(*data, file_length);
-    in.close();
-    return 0;
-}*/
-
 // ----- DIRECTORY PATH CHECK METHOD -----
 // forces creation of a directory. this fails if dir already exists
 // TOFU make this less hacky cmon man
@@ -183,24 +151,17 @@ void delete_at_path(std::string path) {
     return;
 }
 
-std::string get_path_to_world_folder(std::string world_name) {
-    return get_named_object_path(get_world_save_path(), world_name);
+std::string get_path_to_world_folder() {
+    return get_world_save_path();
 }
 
 // read/write methods
-std::string get_path_to_world(std::string world_name) {
-    return get_metadata_path(get_path_to_world_folder(world_name));
-}
-
-std::string get_path_to_world_chunk(std::string world_name, ivec3* chunk_pos) {
-    return get_chunk_path(
-                               get_path_to_world_folder(world_name),
-                               chunk_pos
-                          );
+std::string get_path_to_world() {
+    return get_metadata_path(get_path_to_world_folder());
 }
 
 std::string get_path_to_superobj_folder(uint32_t pid, uint32_t vid) {
-    return get_idid_path(get_superobject_save_path(), pid, vid);
+    return get_idid_path(get_superobject_save_path(pid), pid, vid);
 }
 
 std::string get_path_to_superobj(uint32_t pid, uint32_t vid) {
@@ -215,7 +176,7 @@ std::string get_path_to_superobj_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_
 }
 
 std::string get_path_to_template_folder(uint32_t pid, uint32_t vid) {
-    return get_idid_path(get_template_save_path(), pid, vid);
+    return get_idid_path(get_template_save_path(pid), pid, vid);
 }
 
 std::string get_path_to_template(uint32_t pid, uint32_t vid) {
@@ -230,7 +191,7 @@ std::string get_path_to_template_chunk(uint32_t pid, uint32_t vid, ivec3* chunk_
 }
 
 std::string get_path_to_player_folder(uint32_t pid) {
-    return get_id_path(get_player_save_path(), pid);
+    return get_player_save_path(pid);
 }
 
 std::string get_path_to_player(uint32_t pid) {
@@ -247,11 +208,8 @@ std::string get_path_to_game() {
 
 std::string get_path_to_game_json() {
     // the game info json should be located inside where the game is running
-    return "./gameinfo.json";
+    return GAME_JSON_DATA_PATH;
 }
-
-
-
 
 IODataObject::IODataObject(std::string p) {
     i = 0;

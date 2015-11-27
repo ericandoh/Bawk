@@ -193,6 +193,7 @@ void Rotation::reset_rotation() {
 }
 
 void Rotation::inch_toward_normalization() {
+    // TODO make this save state sort of, and not happen fully automatically
     if (rounded_angle0 < 0.001f && rounded_angle1 < 0.001f) {
         // close enough
         return;
@@ -217,4 +218,22 @@ void Rotation::inch_toward_normalization() {
     glm::quat temp0 = glm::angleAxis(move_angle0, rounded_rotation_axis0);
     glm::quat temp1 = glm::angleAxis(move_angle1, rounded_rotation_axis1);
     quaternion = glm::cross(temp1, glm::cross(temp0, quaternion));
+}
+
+void Rotation::transform_into_my_rotation(Rotation other) {
+    glm::quat inverse;
+    inverse.w = -rounded_quaternion.w;
+    inverse.x = rounded_quaternion.x;
+    inverse.y = rounded_quaternion.y;
+    inverse.z = rounded_quaternion.z;
+
+    glm::quat result = glm::cross(inverse, other.quaternion);
+    other.quaternion = result;
+    other.apply_angles(fvec3(0,0,0));
+}
+
+void Rotation::transform_into_world_rotation(Rotation other) {
+    glm::quat result = glm::cross(quaternion, other.quaternion);
+    other.quaternion = result;
+    other.apply_angles(fvec3(0,0,0));
 }

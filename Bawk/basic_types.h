@@ -124,6 +124,14 @@ struct bounding_box {
         upper.y = uppery;
         upper.z = upperz;
     }
+    void combine_with(bounding_box other) {
+        lower.x = std::min(lower.x, other.lower.x);
+        lower.y = std::min(lower.y, other.lower.y);
+        lower.z = std::min(lower.z, other.lower.z);
+        upper.x = std::max(upper.x, other.upper.x);
+        upper.y = std::max(upper.y, other.upper.y);
+        upper.z = std::max(upper.z, other.upper.z);
+    }
 };
 
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);

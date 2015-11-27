@@ -47,8 +47,6 @@ bool has_block_keyboard_bindings(block_type block_id);
 std::vector<Action> get_block_default_keyboard_bindings(block_type block_id);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);
-void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets);
-ivec3 get_recipe_block_bounds(uint16_t vid);
 
 // some world generation methods below
 

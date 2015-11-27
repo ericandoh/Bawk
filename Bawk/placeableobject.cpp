@@ -44,6 +44,6 @@ bool PlaceableObject::set_blocks(Game* game) {
         return set_blocks(game->player, game->world, game->game_template);
     }
     else {
-        return set_blocks(game->player, game->world, game->world->base_world);
+        return set_blocks(game->player, game->world, game->world->holder);
     }
 }

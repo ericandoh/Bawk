@@ -25,7 +25,7 @@ protected:
 public:
     PlaceableObject();
     // sets blocks into another superobject
-    virtual bool set_blocks(Game* game);
+    bool set_blocks(Game* game);
     virtual bool set_blocks(Player* player, World* world, SuperObject* object) = 0;
 };
 

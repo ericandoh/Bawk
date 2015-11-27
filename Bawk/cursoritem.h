@@ -36,6 +36,7 @@ struct cursor_item_identifier {
 };
 
 class Game;
+class Entity;
 
 // represents an item (either a single block or a template, pretty much)
 class CursorItem {
@@ -47,7 +48,7 @@ public:
     virtual void reset();
     
     // behaviour when this cursor item is clicked
-    virtual bool clicked(Game* game, Action mouse);
+    virtual bool clicked(Game* game, Action mouse, Entity* on);
     
     // behaviour when this cursor item is entered
     virtual bool confirmed(Game* game);

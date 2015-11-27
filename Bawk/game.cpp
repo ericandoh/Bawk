@@ -44,6 +44,8 @@ void Game::set_parameters(std::string wn, uint32_t p) {
 int Game::init() {
     in_game = true;
     
+    set_current_world_name(world_name);
+    
     // load resources for the world
     if (world_load_resources()) {
         return 1;
@@ -60,7 +62,7 @@ int Game::init() {
     last_player_pos = player->pos;
     
     world->add_player(player);
-    world->update_chunks(0, &(player->pos));
+    world->update_chunks(&(player->pos));
     
     // set key mappings
     // movement key mappings
@@ -123,12 +125,8 @@ void Game::render() {
     glEnable(GL_CULL_FACE);
     // get transform from player's perspective
     fmat4* transform = player->set_camera();
-    float shader_intensity = 1.0f;
-    if (game_template) {
-        shader_intensity = 0.5f;
-    }
     // render world in player's perspective
-    world->render(transform, shader_intensity);
+    world->render(transform);
     // get depth coordinates
     player->query_depth(world);
     // render current item based on those depth coordinates
@@ -138,7 +136,6 @@ void Game::render() {
     }
     
     glDisable(GL_POLYGON_OFFSET_FILL);
-    //glDisable(GL_CULL_FACE);
     
     glDisable(GL_DEPTH_TEST);
     // render the cursor
@@ -226,7 +223,6 @@ void Game::render_lights() {
 
 // runs one frame of the game
 void Game::frame() {
-    bool need_update = false;
     for (auto& key : key_toggled) {
         if (key.second) {
             Action do_this = key_to_action[key.first];
@@ -237,8 +233,6 @@ void Game::frame() {
                     continue;
                 }
             }
-            
-            bool this_key_need_update = true;
             switch (do_this) {
                 case MOVE_UP:
                     player->move_up(5.0f);
@@ -260,14 +254,11 @@ void Game::frame() {
                     break;
                 default:
                     // do nothing
-                    this_key_need_update = false;
                     ;
             }
-            need_update = need_update | this_key_need_update;
         }
     }
-    if (need_update)
-        check_need_update();
+    check_need_update();
     world->step();
 }
 
@@ -278,7 +269,7 @@ float get_dst(fvec3* a, fvec3* b) {
 void Game::check_need_update() {
     fvec3 player_pos = player->pos;
     if (get_dst(&last_player_pos, &player_pos) >= CHUNK_UPDATE_TRIGGER_DISTANCE) {
-        world->update_chunks(&last_player_pos, &player_pos);
+        world->update_chunks(&player_pos);
         last_player_pos = player_pos;
     }
 }
@@ -407,19 +398,13 @@ void Game::key_callback_default(int key) {
     }
 }
 
-void Game::mouse_button_callback_default(int button) {
-    Action do_this = mouse_to_action[button];
-    if (bar->get_current()) {
-        bar->get_current()->clicked(this, do_this);
+void Game::mouse_callback_default(Action key, Entity* on) {
+    if (key == CLICK_DESTROY) {
+        // destroy blocks, for all click destroy commands
+        world->break_block();
     }
-    else {
-        if (do_this == CLICK_DESTROY) {
-            ivec4 looking_at;
-            if (get_look_at(&looking_at)) {
-                ivec3 at_pos(looking_at.x,looking_at.y,looking_at.z);
-                world->kill_block(&at_pos);
-            }
-        }
+    else if (bar->get_current()) {
+        bar->get_current()->clicked(this, key, on);
     }
 }
 
@@ -464,18 +449,22 @@ void Game::mouse_move_callback(double xdiff, double ydiff) {
 void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         if (in_game) {
-            Entity* src = get_look_at();
-            if (src) {
-                // if we're looking at a source, should ALWAYS either do nothing or do special function
-                if (!src->block_mouse_callback(this, button)) {
-                    mouse_button_callback_default(button);
+            // see if we're in any vehicle of any sort, then see if it'll accept the mouse button i send
+            SuperObject* mount = player->get_mount();
+            Action do_this = mouse_to_action[button];
+            if (mount) {
+                if (mount->block_keyboard_callback(this, do_this)) {
+                    return;
                 }
             }
-            else {
-                if (!world->block_mouse_callback(this, button)) {
-                    // mouse click at (base)world failed to elicit a response
-                    // (just like me with women)
-                    mouse_button_callback_default(button);
+            Entity* src = get_look_at();
+            if (src) {
+                if (src->block_mouse_callback(this, do_this)) {
+                    return;
+                }
+                else {
+                    // using cursor to click
+                    mouse_callback_default(do_this, src);
                 }
             }
         }

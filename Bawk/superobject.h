@@ -42,24 +42,39 @@ protected:
     // the reverse mapping of the above, for convenience
     std::unordered_map<ivec3, std::vector<Action>> reverse_key_mapping;
     int block_counter;
+    // supersuperobject things
+    std::vector<Entity*> entities;
 public:
     SuperObject();
     SuperObject(uint32_t p, uint32_t v);
     
-    virtual void handle_block_addition(float x, float y, float z, block_type type) override;
-    virtual void handle_block_removal(float x, float y, float z, block_type type) override;
-    
-    void step() override;
-    
-    bool block_keyboard_callback(Game* game, Action key) override;
-    bool block_mouse_callback(Game* game, int button) override;
-    
-    virtual std::string get_save_path() override;
+    // --- SuperObject ---
+    void add_entity(Entity* entity);
+    void remove_entity(Entity* entity);
     virtual std::string get_chunk_save_path(ivec3* pos);
     
+    // --- RenderableSuperObject ---
+    virtual void handle_block_addition(float x, float y, float z, block_type type) override;
+    virtual void handle_block_removal(float x, float y, float z, block_type type) override;
     virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     
+    // --- Entity ---
+    Entity* poke(float x, float y, float z) override;
+    bool break_block(float x, float y, float z) override;
+    bool block_keyboard_callback(Game* game, Action key) override;
+    bool block_mouse_callback(Game* game, Action button) override;
+    virtual void step() override;
+    virtual void render(fmat4* transform) override;
+    void update_chunks(fvec3* player_pos) override;
+    
+    void calculate_moving_bounding_box() override;
+    int get_collision_level() override;
+    // method for collision detection against base class entities ONLY
+    bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) override;
+
+    virtual std::string get_save_path() override;
+
     int load_self(IODataObject* obj) override;
     void remove_self(IODataObject* obj) override;
 };

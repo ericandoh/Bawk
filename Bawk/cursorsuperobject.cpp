@@ -49,7 +49,7 @@ void CursorSuperObject::reset() {
     locked = false;
 }
 
-bool CursorSuperObject::clicked(Game* game, Action mouse) {
+bool CursorSuperObject::clicked(Game* game, Action mouse, Entity* on) {
     if (!locked) {
         // try locking this object into position
         ivec3 locked_pos;
@@ -73,7 +73,7 @@ bool CursorSuperObject::confirmed(Game* game) {
         return false;
     }
     else {
-        if (set_blocks(game)) {
+        if (PlaceableObject::set_blocks(game)) {
             locked = false;
         }
         return true;

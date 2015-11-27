@@ -25,19 +25,20 @@ public:
     // for custom cursorsuperobjects
     PlaceableSuperObject(uint32_t p, uint32_t s);
     
-    // --- SuperObject ---
-    void handle_block_addition(float x, float y, float z, block_type type) override;
-    void handle_block_removal(float x, float y, float z, block_type type) override;
-    void update_chunks(fvec3* old_pos, fvec3* new_pos) override;
-    
-    // --- PlaceableObject ---
-    bool set_blocks(Game* game) override;
-    bool set_blocks(Player* player, World* world, SuperObject* object) override;
-    
     // --- PlaceableSuperObject ---
     void move_template(ivec3 dir);
     void rotate_template();
     void render_blocks(fmat4* transform);
+    
+    // --- SuperObject ---
+    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
+    int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
+    void handle_block_addition(float x, float y, float z, block_type type) override;
+    void handle_block_removal(float x, float y, float z, block_type type) override;
+    void update_chunks(fvec3* start_pos) override;
+    
+    // --- PlaceableObject ---
+    bool set_blocks(Player* player, World* world, SuperObject* object) override;
 };
 
 #endif /* defined(__Bawk__placeablesuperobject__) */

@@ -780,65 +780,15 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
     else {
         // construct a CursorSuperObject holding recipe contents
         CursorSuperObject* object = new CursorSuperObject(vid);
-        ivec3 first_pos;
         for (int i = 0; i < game_data_object->recipe_info[vid].blks.size(); i++) {
             ivec3 pos = game_data_object->recipe_info[vid].positions[i];
             uint16_t blk = game_data_object->recipe_info[vid].blks[i];
             BlockOrientation orientation = game_data_object->recipe_info[vid].orientations[i];
             block_type block(blk, orientation, 0);
-            if (i == 0) {
-                block.relx = block.rely = block.relz = 0;
-                first_pos = pos;
-                block.is_recipe = 1;
-            }
-            else {
-                // calculate block relx/rely/relz from above
-                block.relx = pos.x - first_pos.x;
-                block.rely = pos.y - first_pos.y;
-                block.relz = pos.z - first_pos.z;
-                block.is_recipe = 2;
-            }
             object->set_block(pos.x, pos.y, pos.z, block);
         }
         return object;
     }
-}
-
-void get_recipe_block_offsets(uint16_t vid, std::vector<ivec3> &offsets) {
-    printf("frog this\n");
-    // TODO deprecate this
-    throw 2;
-    if (vid < recipe_mask)
-        return;
-    vid -= recipe_mask;
-    if (game_data_object->recipe_info[vid].from_file) {
-        // make a superobject loaded from file path
-        // game_data_object->recipe_info[vid].file_path;
-        // TODO
-        return;
-    }
-    else {
-        // construct a CursorSuperObject holding recipe contents
-        ivec3 first_pos;
-        for (int i = 0; i < game_data_object->recipe_info[vid].blks.size(); i++) {
-            ivec3 pos = game_data_object->recipe_info[vid].positions[i];
-            uint16_t blk = game_data_object->recipe_info[vid].blks[i];
-            if (i == 0) {
-                first_pos = pos;
-            }
-            if (blk == recipe_mask + vid) {
-                ivec3 offpos(pos.x - first_pos.x,
-                             pos.y - first_pos.y,
-                             pos.z - first_pos.z);
-                offsets.push_back(offpos);
-            }
-        }
-    }
-}
-
-ivec3 get_recipe_block_bounds(uint16_t vid) {
-    vid -= recipe_mask;
-    return game_data_object->recipe_info[vid].upper;
 }
 
 void fill_game_models(std::vector<fvec3> &model_vertices,

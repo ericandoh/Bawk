@@ -43,6 +43,9 @@ public:
     void apply_angles(fvec3 angular_velocity);
     void reset_rotation();
     void inch_toward_normalization();
+    
+    void transform_into_my_rotation(Rotation other);
+    void transform_into_world_rotation(Rotation other);
 };
 
 #endif /* defined(__Bawk__rotation__) */

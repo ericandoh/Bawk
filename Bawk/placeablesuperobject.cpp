@@ -34,6 +34,52 @@ PlaceableSuperObject::PlaceableSuperObject(uint32_t p, uint32_t s): SuperObject(
     can_rotate = true;
 }
 
+// --- PlaceableSuperObject ---
+void PlaceableSuperObject::move_template(ivec3 dir) {
+    pos.x += dir.x;
+    pos.y += dir.y;
+    pos.z += dir.z;
+}
+
+void PlaceableSuperObject::rotate_template() {
+    this->turn_angle(fvec3(90, 0, 0));
+}
+
+void PlaceableSuperObject::render_blocks(fmat4* transform) {
+    render(transform);
+}
+
+// --- SuperObject ---
+int PlaceableSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
+    get_empty_chunk(to_arr);
+    return 0;
+}
+
+int PlaceableSuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
+    // do nothing, but this should not be called
+    return 0;
+}
+
+void PlaceableSuperObject::handle_block_addition(float x, float y, float z, block_type type) {
+    SuperObject::handle_block_addition(x, y, z, type);
+    if (get_block_independence(type.type)) {
+        makes_vehicle++;
+    }
+}
+
+void PlaceableSuperObject::handle_block_removal(float x, float y, float z, block_type type) {
+    SuperObject::handle_block_removal(x, y, z, type);
+    if (get_block_independence(get_block(x, y, z).type)) {
+        makes_vehicle--;
+    }
+}
+
+void PlaceableSuperObject::update_chunks(fvec3* start_pos) {
+    // always render all objects in PlaceableSuperObject
+    // do nothing
+}
+
+// --- PlaceableObject ---
 fvec3 PlaceableSuperObject::calculate_center_position() {
     // calculate the center position of this object
     
@@ -82,59 +128,30 @@ fvec3 PlaceableSuperObject::calculate_center_position() {
     }
 }
 
-// --- SuperObject ---
-void PlaceableSuperObject::handle_block_addition(float x, float y, float z, block_type type) {
-    SuperObject::handle_block_addition(x, y, z, type);
-    if (get_block_independence(type.type)) {
-        makes_vehicle++;
-    }
-}
-
-void PlaceableSuperObject::handle_block_removal(float x, float y, float z, block_type type) {
-    SuperObject::handle_block_removal(x, y, z, type);
-    if (get_block_independence(get_block(x, y, z).type)) {
-        makes_vehicle--;
-    }
-}
-
-void PlaceableSuperObject::update_chunks(fvec3* old_pos, fvec3* new_pos) {
-    // always render all objects in PlaceableSuperObject
-    // do nothing
-}
-
-// --- PlaceableObject ---
-bool PlaceableSuperObject::set_blocks(Game* game) {
-    if (game->game_template) {
-        // we're still setting our blocks into a game template
-        return set_blocks(game->player, game->world, game->game_template);
-    }
-    else {
-        if (makes_vehicle) {
-            SuperObject* obj = game->world->create_superobject(game->player);
-            obj->pos = fvec3(this->pos.x + this->bounds.lower.x,
-                             this->pos.y + this->bounds.lower.y,
-                             this->pos.z + this->bounds.lower.z);
-            obj->center_pos = calculate_center_position();
-            if (set_blocks(game->player, game->world, obj)) {
-                return true;
-            }
-            else {
-                game->world->remove_entity(obj);
-                delete obj;
-                return false;
-            }
-        }
-        else {
-            return set_blocks(game->player, game->world, game->world->base_world);
-        }
-    }
-}
-
 bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject* object) {
-    // TODO if we rotated this object, update individual block orientations
     if (world->will_collide_with_anything(this)) {
         return false;
     }
+    
+    SuperObject* target = object;
+    if (makes_vehicle) {
+        // set my blocks into supersuperobject's entity list
+        target = world->create_superobject(player);
+        target->pos = fvec3(this->pos.x + this->bounds.lower.x,
+                         this->pos.y + this->bounds.lower.y,
+                         this->pos.z + this->bounds.lower.z);
+        target->center_pos = calculate_center_position();
+        // TODO set rotation depending on whatever's making it a vehicle
+        target->angle = Rotation();
+    }
+    
+    // copy entities over
+    int entity_counter = 0;
+    for (Entity* ent: entities) {
+        entity_counter++;
+        target->add_entity(ent);
+    }
+    
     printf("Publishing blocks!\n");
     int counter = 0;
     for (auto &i: chunk_bounds) {
@@ -165,27 +182,12 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
                                                 int(world_coord.y),
                                                 int(world_coord.z));
                         block.owner = player->getID();
-                        object->set_block(block_pos.x, block_pos.y, block_pos.z, block);
+                        target->set_block(block_pos.x, block_pos.y, block_pos.z, block);
                     }
                 }
             }
         }
     }
-    printf("Set %d blocks\n", counter);
+    printf("Set %d blocks and %d entities\n", counter, entity_counter);
     return true;
-}
-
-// --- PlaceableSuperObject ---
-void PlaceableSuperObject::move_template(ivec3 dir) {
-    pos.x += dir.x;
-    pos.y += dir.y;
-    pos.z += dir.z;
-}
-
-void PlaceableSuperObject::rotate_template() {
-    printf("frog\n");
-}
-
-void PlaceableSuperObject::render_blocks(fmat4* transform) {
-    render(transform);
 }

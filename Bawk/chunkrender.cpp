@@ -21,7 +21,7 @@
 #define CZ 16
 
 // number of chunks to have loaded at any one time
-#define CHUNKSLOTS 3000
+#define CHUNKSLOTS 1600
 
 struct vboholder {
     RenderableChunk* owner;
