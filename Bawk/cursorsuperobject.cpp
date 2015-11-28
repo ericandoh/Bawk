@@ -160,12 +160,15 @@ int CursorSuperObject::load_self(IODataObject* obj) {
     if (SuperObject::load_self(obj))
         return 1;
     makes_vehicle = obj->read_value<int>();
+    independent = obj->read_value<bool>();
     return 0;
 }
 
 void CursorSuperObject::remove_self(IODataObject* obj) {
     SuperObject::remove_self(obj);
     obj->save_value(makes_vehicle);
+    obj->save_value(independent);
+    save_all_chunks();
 }
 
 

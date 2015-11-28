@@ -55,9 +55,11 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, int entity_class) {
 Entity* copy_entity(Player* player, Entity* src) {
     int entity_class = src->entity_class;
     if (entity_class == 1) {
-        // delete world
-        // TODO implement this?
+        // copy world
         printf("Copying world not yet supported");
+        BaseWorld* world = new BaseWorld();
+        ((SuperObject*)src)->copy_into(player, world);
+        return world;
     }
     else if (entity_class == 2) {
         // copy player and player inventory
@@ -106,7 +108,6 @@ void delete_entity_from_memory(Entity* entity) {
     else if (entity_class == 3) {
         // delete superobject
         printf("Deleting a superobject\n");
-        // TODO delete all sub-superobjects as well
         for (Entity* ent: ((SuperObject*)entity)->entities) {
             delete_entity_from_memory(ent);
         }

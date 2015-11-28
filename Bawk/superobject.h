@@ -67,7 +67,7 @@ public:
     bool block_mouse_callback(Game* game, Action button) override;
     virtual void step() override;
     virtual void render(fmat4* transform) override;
-    void update_chunks(fvec3* player_pos) override;
+    virtual void update_chunks(fvec3* player_pos) override;
     
     void calculate_moving_bounding_box() override;
     int get_collision_level() override;
