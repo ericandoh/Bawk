@@ -27,6 +27,7 @@ BaseWorld::BaseWorld() {
             }
         }
     }
+    bounds = bounding_box(fvec3(-FLT_MAX, -FLT_MAX, -FLT_MAX), fvec3(FLT_MAX, FLT_MAX, FLT_MAX));
 }
 
 // --- SuperObject ---
@@ -328,6 +329,6 @@ bool BaseWorld::collides_with(Entity* other) {
     other->transform_into_world_coordinates(&other_rwc_bounds.upper, other->bounds.upper.x, other->bounds.upper.y, other->bounds.upper.z);
     other_rwc_bounds.refit_for_rotation();
     
-    return SuperObject::collides_with(other, &other_rwc_bounds, &other_rwc_bounds, get_collision_level(), other->get_collision_level());
+    return SuperObject::collides_with(other, &other_rwc_bounds, &other_rwc_bounds, get_collision_level() - 1, other->get_collision_level());
 }
 

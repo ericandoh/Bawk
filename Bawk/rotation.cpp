@@ -145,6 +145,10 @@ void Rotation::apply_angles(fvec3 angular_velocity) {
     up = glm::cross(right, dir);
     up = glm::normalize(up);
     
+    recalculate_rounded();
+}
+
+void Rotation::recalculate_rounded() {
     forward.x = dir.x;
     forward.y = 0;
     forward.z = dir.z;
@@ -164,7 +168,7 @@ void Rotation::apply_angles(fvec3 angular_velocity) {
     rounded_quaternion = glm::cross(temp, quaternion);
     
     fvec3 temp_right;
-    rightq = glm::mat4_cast(rounded_quaternion) * fvec4(0,0,1,0);
+    fvec4 rightq = glm::mat4_cast(rounded_quaternion) * fvec4(0,0,1,0);
     temp_right.x = rightq.x;
     temp_right.y = rightq.y;
     temp_right.z = rightq.z;
@@ -185,11 +189,34 @@ void Rotation::apply_angles(fvec3 angular_velocity) {
     rounded_quaternion = glm::normalize(rounded_quaternion);
 }
 
+void Rotation::set_angle(glm::quat angle) {
+    quaternion = angle;
+    
+    // recalculate right
+    fvec4 rightq = glm::mat4_cast(quaternion) * fvec4(0,0,1,0);
+    right.x = rightq.x;
+    right.y = rightq.y;
+    right.z = rightq.z;
+    right = glm::normalize(right);
+    // recalculate dir
+    fvec4 dirq = glm::mat4_cast(quaternion) * fvec4(1,0,0,0);
+    dir.x = dirq.x;
+    dir.y = dirq.y;
+    dir.z = dirq.z;
+    dir = glm::normalize(dir);
+    
+    up = glm::cross(right, dir);
+    up = glm::normalize(up);
+
+    recalculate_rounded();
+}
+
 void Rotation::reset_rotation() {
     quaternion.x = rotation_state.x;
     quaternion.y = rotation_state.y;
     quaternion.z = rotation_state.z;
     quaternion.w = rotation_state.w;
+    set_angle(quaternion);
 }
 
 void Rotation::inch_toward_normalization() {
@@ -220,7 +247,7 @@ void Rotation::inch_toward_normalization() {
     quaternion = glm::cross(temp1, glm::cross(temp0, quaternion));
 }
 
-void Rotation::transform_into_my_rotation(Rotation other) {
+void Rotation::transform_into_my_rotation(Rotation dst, Rotation other) {
     glm::quat inverse;
     inverse.w = -rounded_quaternion.w;
     inverse.x = rounded_quaternion.x;
@@ -228,12 +255,10 @@ void Rotation::transform_into_my_rotation(Rotation other) {
     inverse.z = rounded_quaternion.z;
 
     glm::quat result = glm::cross(inverse, other.quaternion);
-    other.quaternion = result;
-    other.apply_angles(fvec3(0,0,0));
+    dst.set_angle(result);
 }
 
-void Rotation::transform_into_world_rotation(Rotation other) {
+void Rotation::transform_into_world_rotation(Rotation dst, Rotation other) {
     glm::quat result = glm::cross(quaternion, other.quaternion);
-    other.quaternion = result;
-    other.apply_angles(fvec3(0,0,0));
+    dst.set_angle(result);
 }

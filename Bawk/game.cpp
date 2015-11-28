@@ -44,8 +44,6 @@ void Game::set_parameters(std::string wn, uint32_t p) {
 int Game::init() {
     in_game = true;
     
-    set_current_world_name(world_name);
-    
     // load resources for the world
     if (world_load_resources()) {
         return 1;
@@ -126,6 +124,15 @@ void Game::render() {
     // get transform from player's perspective
     fmat4* transform = player->set_camera();
     // render world in player's perspective
+    
+    // TODO fix this hack
+    if (game_template) {
+        set_shader_intensity(0.3f);
+    }
+    else {
+        set_shader_intensity(0.6f);
+    }
+    
     world->render(transform);
     // get depth coordinates
     player->query_depth(world);

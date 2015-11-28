@@ -74,11 +74,11 @@ void CursorBlock::render_item() {
 
 void CursorBlock::render_in_world(fmat4* transform) {
     ivec3 locked_pos;
-    // TODO change this to another orientation class
     BlockOrientation orientation;
     ivec3 upper(1, 1, 1);
     if (get_pointing_position(&locked_pos, &orientation, upper)) {
         pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+        block.orientation = orientation;
     }
     else {
         return;

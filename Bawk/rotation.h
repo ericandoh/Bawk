@@ -25,6 +25,7 @@ class Rotation {
     //fvec3 former_angle;
     float rounded_angle0, rounded_angle1;
     fvec3 rounded_rotation_axis0, rounded_rotation_axis1;
+    void recalculate_rounded();
 public:
     bool free_y;
     fvec3 angle;
@@ -41,11 +42,12 @@ public:
     
     void apply_angle(float angle, fvec3 axis);
     void apply_angles(fvec3 angular_velocity);
+    void set_angle(glm::quat angle);
     void reset_rotation();
     void inch_toward_normalization();
     
-    void transform_into_my_rotation(Rotation other);
-    void transform_into_world_rotation(Rotation other);
+    void transform_into_my_rotation(Rotation dst, Rotation other);
+    void transform_into_world_rotation(Rotation dst, Rotation other);
 };
 
 #endif /* defined(__Bawk__rotation__) */

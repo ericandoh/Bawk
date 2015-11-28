@@ -48,8 +48,9 @@ void GameTemplate::unpublish(World* world) {
 }
 
 void GameTemplate::render(fmat4* transform) {
-    //set_shader_intensity(1.0f);
+    set_shader_intensity(0.6f);
     // do any special rendering you'd like if you want to make this shine
     PlaceableSuperObject::render(transform);
+    set_shader_intensity(0.3f);
 }
 

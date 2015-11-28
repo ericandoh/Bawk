@@ -134,60 +134,21 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
     }
     
     SuperObject* target = object;
-    if (makes_vehicle) {
+    bool create_entity = (makes_vehicle && target->entity_class == 1) || this->independent;
+    if (create_entity) {
         // set my blocks into supersuperobject's entity list
-        target = world->create_superobject(player);
+        target = new SuperObject(player->getID(), player->assignID());
         target->pos = fvec3(this->pos.x + this->bounds.lower.x,
-                         this->pos.y + this->bounds.lower.y,
-                         this->pos.z + this->bounds.lower.z);
+                            this->pos.y + this->bounds.lower.y,
+                            this->pos.z + this->bounds.lower.z);
         target->center_pos = calculate_center_position();
         // TODO set rotation depending on whatever's making it a vehicle
-        target->angle = Rotation();
+        target->angle = angle;
     }
-    
-    // copy entities over
-    int entity_counter = 0;
-    for (Entity* ent: entities) {
-        entity_counter++;
-        target->add_entity(ent);
+    this->copy_into(player, target);
+    if (create_entity) {
+        // now place target into object's entity list
+        object->add_entity(target);
     }
-    
-    printf("Publishing blocks!\n");
-    int counter = 0;
-    for (auto &i: chunk_bounds) {
-        RenderableChunk* chunk = 0;
-        if (chunks.count(i.first)) {
-            chunk = chunks[i.first];
-        }
-        else {
-            if (load_chunk(i.first.x, i.first.y, i.first.z)) {
-                // chunk could not be loaded
-                continue;
-            }
-            chunk = chunks[i.first];
-        }
-        for (int x = 0; x < CX; x++) {
-            for (int y = 0; y < CY; y++) {
-                for (int z = 0; z < CZ; z++) {
-                    block_type block = chunk->blk[x][y][z];
-                    if (block.type) {
-                        counter++;
-                        fvec3 world_coord;
-                        ivec3 chunk_pos = i.first;
-                        transform_into_world_coordinates(&world_coord,
-                                                         chunk_pos.x*CX+x,
-                                                         chunk_pos.y*CY+y,
-                                                         chunk_pos.z*CZ+z);
-                        ivec3 block_pos = ivec3(int(world_coord.x),
-                                                int(world_coord.y),
-                                                int(world_coord.z));
-                        block.owner = player->getID();
-                        target->set_block(block_pos.x, block_pos.y, block_pos.z, block);
-                    }
-                }
-            }
-        }
-    }
-    printf("Set %d blocks and %d entities\n", counter, entity_counter);
     return true;
 }

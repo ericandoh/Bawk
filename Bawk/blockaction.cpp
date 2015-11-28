@@ -14,33 +14,27 @@
 // --- ALL MOUSE ACTIONS ---
 
 // this method is never called, but serves as a template
-bool default_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int button) {
+bool default_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action key) {
     return true;
 }
 
-bool engine_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int button) {
+bool engine_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action key) {
     return false;
 }
 
-bool vehicle_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, int button) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        if (!owner) {
-            // remove this block from the world
-            ivec3 irwc = get_floor_from_fvec3(rwc);
-            game->world->kill_block(&irwc);
-        }
+bool vehicle_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action key) {
+    if (key == Action::CLICK_DESTROY) {
+        return false;
     }
-    else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-        if (owner && owner->entity_class == 4) {
+    else if (key == CLICK_CREATE) {
+        if (owner && owner->entity_class == 3) {
             // there must be an owner!!!!!!!!!!!
             ivec3 irwc = get_floor_from_fvec3(rwc);
             game->player->set_mount((SuperObject*)owner, fvec3(irwc.x + 0.5f, irwc.y + 1.0f, irwc.z + 0.5f));
+            return true;
         }
     }
-    else {
-        return false;
-    }
-    return true;
+    return false;
 }
 
 

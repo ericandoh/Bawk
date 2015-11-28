@@ -12,4 +12,5 @@
 
 void debug_action(Game* game) {
     save_tile();
+    printf("debuggin\n");
 }

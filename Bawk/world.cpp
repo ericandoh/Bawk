@@ -17,10 +17,15 @@ World::World(std::string id) {
     printf("Adding World\n");
     age = 0;
     name = id;
+    id_assign = 0;
     set_current_world_name(id);
     // try loading itself
-    load_self();
     base_world = new BaseWorld();
+    load_self();
+}
+
+uint32_t World::assignID() {
+    return (uint32_t)(id_assign++);
 }
 
 int World::load_self() {
@@ -29,7 +34,8 @@ int World::load_self() {
         return 1;
     }
     age = reader.read_value<unsigned long>();
-    base_world.load_self(&reader);
+    id_assign = reader.read_value<unsigned long>();
+    base_world->load_selfs();
     reader.close();
     return 0;
 }
@@ -40,7 +46,8 @@ void World::remove_self() {
         return;
     }
     writer.save_value(age);
-    base_world.remove_self(&writer);
+    writer.save_value(id_assign);
+    base_world->remove_selfs();
     writer.close();
 }
 
@@ -50,15 +57,15 @@ void World::render(fmat4* transform) {
     //if (shade_intensity < 0.2f)
     //    shade_intensity = 0.2f;
     //set_shader_intensity(shade_intensity);
-    base_world.render(transform);
+    base_world->render(transform);
 }
 
 void World::update_chunks(fvec3* player_pos) {
-    base_world.update_chunks(player_pos);
+    base_world->update_chunks(player_pos);
 }
 
 void World::get_entity_at(float x, float y, float z, Entity** selected) {
-    *selected = base_world.poke(x, y, z);
+    *selected = base_world->poke(x, y, z);
 }
 
 bool World::break_block() {
@@ -66,10 +73,17 @@ bool World::break_block() {
     if (!src)
         return false;
     
+    if (src->entity_class != 1 && src->entity_class != 5) {
+        // only permit block removal from
+        // TOFU this COULD be changed - that would actually be pretty cool - but I'd have to think about it
+        return false;
+    }
+    
     ivec4 looking_at;
     if (!get_look_at(&looking_at)) {
         return false;
     }
+    
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
@@ -110,11 +124,11 @@ bool World::kill_block(ivec3* src) {
 }*/
 
 void World::add_player(Player* player) {
-    base_world.add_entity(player);
+    base_world->add_entity(player);
 }
 
 void World::add_entity(Entity* entity) {
-    base_world.add_entity(entity);
+    base_world->add_entity(entity);
 }
 
 void World::add_event(WorldEvent *event) {
@@ -130,7 +144,7 @@ void World::add_event(WorldEvent *event) {
 
 // cycles one timestep for the world
 void World::step() {
-    base_world.step();
+    base_world->step();
     
     int counter = 0;
     while (counter < events.size()) {
@@ -150,7 +164,7 @@ void World::step() {
 }
 
 bool World::will_collide_with_anything(Entity* other) {
-    return base_world.collides_with(other);
+    return base_world->collides_with(other);
 }
 
 SuperObject* World::create_superobject(Player* player) {
@@ -159,10 +173,10 @@ SuperObject* World::create_superobject(Player* player) {
         obj = new SuperObject(player->getID(), player->assignID());
     else
         obj = new SuperObject(0, player->assignID());
-    everything.add_entity(obj);
+    base_world->add_entity(obj);
     return obj;
 }
 
 void World::remove_entity(Entity* entity) {
-    everything.remove_entity(entity);
+    base_world->remove_entity(entity);
 }

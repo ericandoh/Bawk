@@ -34,7 +34,7 @@ class SuperObject;
 class World;
 
 class Player : public RenderablePlayer {
-    long id_assign;
+    unsigned long id_assign;
     SuperObject* mount;
     fvec3 offset_to_mount;
 public:

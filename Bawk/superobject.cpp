@@ -17,7 +17,7 @@ SuperObject::SuperObject() {
     // this constructor should be only called to construct a world
     vid = 0;
     pid = 0;
-    entity_class = 4;
+    entity_class = 3;
     block_counter = 0;
 }
 
@@ -25,7 +25,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     // this constructor should be called for world-less, cursor objects
     vid = v;
     pid = p;
-    entity_class = 4;
+    entity_class = 3;
     can_rotate = true;
     block_counter = 0;
 }
@@ -33,13 +33,11 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
 // --- SuperObject ---
 void SuperObject::add_entity(Entity* entity) {
     // transform entity rotation/pos into this object's frame
-    fvec3 oac;
-    transform_into_my_coordinates(&oac, entity->pos.x, entity->pos.y, entity->pos.z);
-    entity->pos = oac;
-    // transform rotation into into my frame
-    angle.transform_into_my_rotation(entity->angle);
-    
-    
+    //fvec3 oac;
+    //transform_into_my_coordinates(&oac, entity->pos.x, entity->pos.y, entity->pos.z);
+    //entity->pos = oac;
+    // transform rotation into my frame
+    //angle.transform_into_my_rotation(entity->angle, entity->angle);
     entities.push_back(entity);
 }
 
@@ -57,6 +55,57 @@ std::string SuperObject::get_chunk_save_path(ivec3* pos) {
     return get_path_to_superobj_chunk(pid, vid, pos);
 }
 
+void SuperObject::copy_into(Player* player, SuperObject* target) {
+    // copy entities over
+    int entity_counter = 0;
+    for (Entity* ent: entities) {
+        // copy entity over, but if the entity is not a player
+        Entity* copy = copy_entity(player, ent);
+        if (copy) {
+            target->add_entity(copy);
+            entity_counter++;
+        }
+    }
+    
+    // copy blocks over
+    int counter = 0;
+    for (auto &i: chunk_bounds) {
+        RenderableChunk* chunk = 0;
+        if (chunks.count(i.first)) {
+            chunk = chunks[i.first];
+        }
+        else {
+            if (load_chunk(i.first.x, i.first.y, i.first.z)) {
+                // chunk could not be loaded
+                continue;
+            }
+            chunk = chunks[i.first];
+        }
+        for (int x = i.second.lower_bound.x; x <= i.second.upper_bound.x; x++) {
+            for (int y = i.second.lower_bound.y; y <= i.second.upper_bound.y; y++) {
+                for (int z = i.second.lower_bound.z; z <= i.second.upper_bound.z; z++) {
+                    block_type block = chunk->blk[x][y][z];
+                    if (block.type) {
+                        counter++;
+                        fvec3 world_coord;
+                        ivec3 chunk_pos = i.first;
+                        transform_into_world_coordinates(&world_coord,
+                                                         chunk_pos.x*CX+x,
+                                                         chunk_pos.y*CY+y,
+                                                         chunk_pos.z*CZ+z);
+                        ivec3 block_pos = ivec3(int(world_coord.x),
+                                                int(world_coord.y),
+                                                int(world_coord.z));
+                        block.owner = player->getID();
+                        target->set_block(block_pos.x, block_pos.y, block_pos.z, block);
+                    }
+                }
+            }
+        }
+    }
+    printf("Copied %d blocks and %d entities\n", counter, entity_counter);
+}
+
 // --- RenderableSuperObject
 void SuperObject::handle_block_addition(float x, float y, float z, block_type type) {
     // set key bindings if it has one
@@ -65,10 +114,12 @@ void SuperObject::handle_block_addition(float x, float y, float z, block_type ty
         fvec3 oac;
         transform_into_my_coordinates(&oac, x, y, z);
         ivec3 rounded_oac = get_floor_from_fvec3(oac);
-        reverse_key_mapping[rounded_oac] = std::vector<Action>(bindings.size());
+        reverse_key_mapping[rounded_oac] = std::vector<Action>();
+        reverse_key_mapping[rounded_oac].reserve(bindings.size());
         for (int i = 0; i < bindings.size(); i++) {
             if (!key_mapping.count(bindings[i])) {
-                key_mapping[bindings[i]] = std::vector<key_mapping_info>(1);
+                key_mapping[bindings[i]] = std::vector<key_mapping_info>();
+                key_mapping[bindings[i]].reserve(1);
             }
             key_mapping_info info;
             info.position = rounded_oac;
@@ -188,12 +239,11 @@ bool SuperObject::block_mouse_callback(Game* game, Action button) {
             block_type blk = get_block(lookingat.x, lookingat.y, lookingat.z);
             block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
             if (callback) {
-                (*callback)(game,
-                            this,
-                            &blk,
-                            fvec3(lookingat.x, lookingat.y, lookingat.z),
-                            button);
-                return true;
+                return (*callback)(game,
+                                   this,
+                                   &blk,
+                                   fvec3(lookingat.x, lookingat.y, lookingat.z),
+                                   button);
             }
 
         }
@@ -271,14 +321,14 @@ int SuperObject::get_collision_level() {
 // method for collision detection against base class entities ONLY
 bool SuperObject::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) {
     if (my_collision_lvl == 0) {
-        Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
+        return Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
     }
     else if (my_collision_lvl == 1) {
-        Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
+        return RenderableSuperObject::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
     }
     else {
         // first check if other collides with this superobject itself
-        if (Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl - 1, other_collision_level)) {
+        if (RenderableSuperObject::collides_with(other, my_bounds, other_bounds, my_collision_lvl - 1, other_collision_level)) {
             return true;
         }
         else {
@@ -342,6 +392,8 @@ void SuperObject::remove_self(IODataObject* obj) {
     // TODO handle that player/baseworld? is removed/saved here
     obj->save_value(entities_count);
     for (int i = 0; i < (int)entities.size(); i++) {
+        if (entities[i]->entity_class == 2)
+            continue;
         obj->save_value(entities[i]->pid);
         obj->save_value(entities[i]->vid);
         obj->save_value(entities[i]->entity_class);

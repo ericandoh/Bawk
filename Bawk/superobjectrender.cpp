@@ -133,7 +133,7 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
     
     // now transform into cac, crc
     ivec3 cac, crc;
-    transform_into_chunk_bounds(&cac, &crc, x, y, z);
+    transform_into_chunk_bounds(&cac, &crc, oac.x, oac.y, oac.z);
     
     if (type.type == 0 && !within_dimensions_chunk(cac.x, cac.y, cac.z)) {
         // no point setting a block to 0 outside chunk bounds
@@ -367,12 +367,17 @@ void RenderableSuperObject::update_chunks(fvec3* player_pos) {
     zmax = cac.z + CHUNK_RENDER_DIST + 1;
     
     // make bounding box here and check
+    
+    std::vector<ivec3> chunks_to_delete;
     for (auto &i: chunks) {
         if (i.first.x < xmin || i.first.x >= xmax
             || i.first.y < ymin || i.first.y >= ymax
             || i.first.z < zmin || i.first.z >= zmax) {
-            delete_chunk(i.first.x, i.first.y, i.first.z);
+            chunks_to_delete.push_back(i.first);
         }
+    }
+    for (auto &i: chunks_to_delete) {
+        delete_chunk(i.x, i.y, i.z);
     }
     for (int x = xmin; x < xmax; x++) {
         for (int y = ymin; y < ymax; y++) {

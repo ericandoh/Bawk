@@ -26,8 +26,8 @@
 #include <string>
 #include "basic_types.h"
 #include "worldrender.h"
-#include "entityholder.h"
 #include "worldevent.h"
+#include "base_world.h"
 
 class Game;
 
@@ -37,8 +37,12 @@ public:
     std::string name;
     // how many cycles the world has lived through
     unsigned long age;
+    unsigned long id_assign;
     BaseWorld* base_world;
     World(std::string id);
+    
+    uint32_t assignID();
+    
     int load_self();
     void remove_self();
     void render(fmat4* transform);

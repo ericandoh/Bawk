@@ -143,7 +143,7 @@ int Player::load_self(IODataObject* obj) {
     if (RenderablePlayer::load_self(obj))
         return 1;
     // load player stuff here
-    id_assign = obj->read_value<long>();
+    id_assign = obj->read_value<unsigned long>();
     inventory->load_self(obj);
     return 0;
 }

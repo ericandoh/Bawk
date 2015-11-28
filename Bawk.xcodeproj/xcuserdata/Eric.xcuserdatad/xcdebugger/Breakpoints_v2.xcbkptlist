@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/blockaction.cpp"
-            timestampString = "469149311.903869"
+            timestampString = "470364011.362258"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
             landmarkName = "vehicle_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action)"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/entity_loader.cpp"
-            timestampString = "468900996.375131"
+            timestampString = "470368868.607869"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "delete_entity_from_memory(Entity* entity)"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,12 +122,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/entity_loader.cpp"
-            timestampString = "469096626.641912"
+            timestampString = "470368868.607869"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
             landmarkName = "delete_entity_from_memory(Entity* entity)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Bawk/debug_action.cpp"
+            timestampString = "470364179.352563"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
+            landmarkName = "debug_action(Game* game)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

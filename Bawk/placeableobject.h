@@ -23,6 +23,8 @@ protected:
     fmat4 mvp;
     void set_mvp(ivec3 bounds);
 public:
+    // if independent, creates a new entity whenever placed into another object
+    bool independent;
     PlaceableObject();
     // sets blocks into another superobject
     bool set_blocks(Game* game);

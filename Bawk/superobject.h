@@ -42,9 +42,9 @@ protected:
     // the reverse mapping of the above, for convenience
     std::unordered_map<ivec3, std::vector<Action>> reverse_key_mapping;
     int block_counter;
+public:
     // supersuperobject things
     std::vector<Entity*> entities;
-public:
     SuperObject();
     SuperObject(uint32_t p, uint32_t v);
     
@@ -52,6 +52,7 @@ public:
     void add_entity(Entity* entity);
     void remove_entity(Entity* entity);
     virtual std::string get_chunk_save_path(ivec3* pos);
+    void copy_into(Player* player, SuperObject* target);
     
     // --- RenderableSuperObject ---
     virtual void handle_block_addition(float x, float y, float z, block_type type) override;

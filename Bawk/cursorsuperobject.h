@@ -37,6 +37,8 @@ public:
     // for custom cursorsuperobjects
     CursorSuperObject(uint32_t p, uint32_t s);
     
+    // --- CursorSuperObject ---
+    
     // --- CursorItem ---
     void init() override;
     void cleanup() override;
@@ -51,8 +53,6 @@ public:
     cursor_item_identifier get_identifier() override;
     
     // --- PlaceableSuperObject ---
-    
-    // --- CursorSuperObject ---
     
     // --- SuperObject ---
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;

@@ -224,7 +224,7 @@ Entity* Entity::poke(float x, float y, float z) {
     return 0;
 }
 
-bool break_block(float x, float y, float z) {
+bool Entity::break_block(float x, float y, float z) {
     // behaviour for destroying a block on a regular entity is undefined
     // to remove an entity entirely use other pathways
     return false;
@@ -385,7 +385,7 @@ void Entity::remove_selfs() {
 int Entity::load_self(IODataObject* obj) {
     //up = obj->read_value<fvec3>();
     pos = obj->read_value<fvec3>();
-    //angle = obj->read_value<fvec3>();
+    angle = obj->read_value<Rotation>();
     
     bounds = obj->read_value<bounding_box>();
     center_pos = obj->read_value<fvec3>();
@@ -400,7 +400,7 @@ int Entity::load_self(IODataObject* obj) {
 void Entity::remove_self(IODataObject* obj) {
     //obj->save_value(up);
     obj->save_value(pos);
-    //obj->save_value(angle);
+    obj->save_value(angle);
     
     obj->save_value(bounds);
     obj->save_value(center_pos);

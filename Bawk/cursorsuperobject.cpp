@@ -14,7 +14,7 @@
 
 CursorSuperObject::CursorSuperObject(uint32_t s): PlaceableSuperObject(s) {
     locked = false;
-    entity_class = 3;
+    entity_class = 4;
     is_recipe = true;
 }
 
@@ -27,7 +27,7 @@ CursorSuperObject::CursorSuperObject(uint32_t s): PlaceableSuperObject(s) {
 // 5. we'll handle rotation later (fuck that shit mate)
 CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): PlaceableSuperObject(p, s) {
     locked = false;
-    entity_class = 3;
+    entity_class = 4;
     is_recipe = false;
 }
 
@@ -53,7 +53,6 @@ bool CursorSuperObject::clicked(Game* game, Action mouse, Entity* on) {
     if (!locked) {
         // try locking this object into position
         ivec3 locked_pos;
-        // TODO change this to another orientation class
         BlockOrientation orientation;
         ivec3 upper;
         upper.x = bounds.upper.x - bounds.lower.x;
