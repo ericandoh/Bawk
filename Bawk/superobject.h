@@ -55,8 +55,8 @@ public:
     void copy_into(Player* player, SuperObject* target);
     
     // --- RenderableSuperObject ---
-    virtual void handle_block_addition(float x, float y, float z, block_type type) override;
-    virtual void handle_block_removal(float x, float y, float z, block_type type) override;
+    virtual void handle_block_addition(int x, int y, int z, block_type type) override;
+    virtual void handle_block_removal(int x, int y, int z, block_type type) override;
     virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     

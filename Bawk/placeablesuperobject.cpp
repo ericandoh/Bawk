@@ -55,16 +55,16 @@ int PlaceableSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y,
     return 0;
 }
 
-void PlaceableSuperObject::handle_block_addition(float x, float y, float z, block_type type) {
+void PlaceableSuperObject::handle_block_addition(int x, int y, int z, block_type type) {
     SuperObject::handle_block_addition(x, y, z, type);
     if (get_block_independence(type.type)) {
         makes_vehicle++;
     }
 }
 
-void PlaceableSuperObject::handle_block_removal(float x, float y, float z, block_type type) {
+void PlaceableSuperObject::handle_block_removal(int x, int y, int z, block_type type) {
     SuperObject::handle_block_removal(x, y, z, type);
-    if (get_block_independence(get_block(x, y, z).type)) {
+    if (get_block_independence(type.type)) {
         makes_vehicle--;
     }
 }

@@ -27,6 +27,8 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
     object->pos = bounds.lower;
+    object->center_pos = calculate_center_position();
+    
     if (set_blocks(player, world, object)) {
         // save the object to disk
         // this doesn't actually delete the object from memory

@@ -55,6 +55,14 @@ void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z
     src->z = result.z;
 }
 
+void Entity::transform_into_my_integer_coordinates(ivec3* src, int x, int y, int z) {
+    fvec3 result;
+    transform_into_my_coordinates(&result, x + 0.5f, y + 0.5f, z + 0.5f);
+    src->x = floorf(result.x);
+    src->y = floorf(result.y);
+    src->z = floorf(result.z);
+}
+
 void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) {
     fmat4 reverse(1);
     if (can_rotate) {
@@ -85,6 +93,14 @@ void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, floa
     src->x = result.x;
     src->y = result.y;
     src->z = result.z;
+}
+
+void Entity::transform_into_world_integer_coordinates(ivec3* src, int x, int y, int z) {
+    fvec3 result;
+    transform_into_world_coordinates(&result, x + 0.5f, y + 0.5f, z + 0.5f);
+    src->x = floorf(result.x);
+    src->y = floorf(result.y);
+    src->z = floorf(result.z);
 }
 
 void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z) {

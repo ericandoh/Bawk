@@ -18,7 +18,7 @@
 class Game;
 
 typedef bool (*block_mouse_callback_func)(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action button);
-typedef bool (*block_keyboard_callback_func)(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action);
+typedef bool (*block_keyboard_callback_func)(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action);
 
 // used by gameloader to get appropriate action functions
 block_mouse_callback_func get_block_mouse_callback_for(std::string name);

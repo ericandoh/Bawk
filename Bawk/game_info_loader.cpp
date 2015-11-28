@@ -785,7 +785,7 @@ CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
             uint16_t blk = game_data_object->recipe_info[vid].blks[i];
             BlockOrientation orientation = game_data_object->recipe_info[vid].orientations[i];
             block_type block(blk, orientation, 0);
-            object->set_block(pos.x, pos.y, pos.z, block);
+            object->set_block_integral(pos.x, pos.y, pos.z, block);
         }
         return object;
     }

@@ -65,14 +65,16 @@ public:
     // --- RenderableSuperObject ---
     // gets the block at (RWC) xyz
     block_type get_block(float x, float y, float z);
+    block_type get_block_integral(int x, int y, int z);
     // sets the block at (RWC) xyz
     void set_block(float x, float y, float z, block_type type);
+    void set_block_integral(int x, int y, int z, block_type type);
     // kill the block at (RWC) xyz, checking if it is a recipe
     void kill_block(float x, float y, float z);
     // helper function to do appropriate action when some block is added
-    virtual void handle_block_addition(float x, float y, float z, block_type type) = 0;
+    virtual void handle_block_addition(int x, int y, int z, block_type type) = 0;
     // helper function to do appropriate action when some block is removed
-    virtual void handle_block_removal(float x, float y, float z, block_type type) = 0;
+    virtual void handle_block_removal(int x, int y, int z, block_type type) = 0;
     
     // this should be overriden to provide chunk data at (CAC) xyz
     virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) = 0;

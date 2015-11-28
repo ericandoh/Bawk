@@ -126,10 +126,15 @@ block_type RenderableSuperObject::get_block(float x, float y, float z) {
     return block_type();
 }
 
+block_type RenderableSuperObject::get_block_integral(int x, int y, int z) {
+    return get_block(x + 0.5f, y + 0.5f, z + 0.5f);
+}
+
 void RenderableSuperObject::set_block(float x, float y, float z, block_type type) {
     // transform to OAC
     fvec3 oac;
     transform_into_my_coordinates(&oac, x, y, z);
+    ivec3 rounded_oac = get_floor_from_fvec3(oac);
     
     // now transform into cac, crc
     ivec3 cac, crc;
@@ -144,11 +149,11 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
     if (!load_chunk(cac.x, cac.y, cac.z)) {
         block_type current = chunks[cac]->get(crc.x, crc.y, crc.z);
         if (current.type) {
-            handle_block_removal(crc.x, crc.y, crc.z, current);
+            handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, current);
         }
         chunks[cac]->set(crc.x, crc.y, crc.z, type);
         if (type.type) {
-            handle_block_addition(crc.x, crc.y, crc.z, type);
+            handle_block_addition(rounded_oac.x, rounded_oac.y, rounded_oac.z, type);
         }
         // update the dimension vectors
         update_dimensions_from_chunk(cac);
@@ -166,11 +171,11 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         
         block_type current = chunks[cac]->get(crc.x, crc.y, crc.z);
         if (current.type) {
-            handle_block_removal(crc.x, crc.y, crc.z, current);
+            handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, current);
         }
         chunks[cac]->set(crc.x, crc.y, crc.z, type);
         if (type.type) {
-            handle_block_addition(crc.x, crc.y, crc.z, type);
+            handle_block_addition(rounded_oac.x, rounded_oac.y, rounded_oac.z, type);
         }
         // we load data from disk so this should be consistent, but just to be safe do a check
         update_dimensions_from_chunk(ivec3(x, y, z));
@@ -213,6 +218,10 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
             chunk->back->changed = true;
         }
     }
+}
+
+void RenderableSuperObject::set_block_integral(int x, int y, int z, block_type type) {
+    set_block(x + 0.5f, y + 0.5f, z + 0.5f, type);
 }
 
 void RenderableSuperObject::kill_block(float x, float y, float z) {

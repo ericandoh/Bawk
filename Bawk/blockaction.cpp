@@ -41,13 +41,13 @@ bool vehicle_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fv
 // --- ALL KEYBOARD ACTIONS ---
 
 // this method is never called, but serves as a template
-bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
+bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action) {
     return true;
 }
 
 // a universal 6 directional engine
 // drawbacks is it is very weak
-bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
+bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action) {
     if (action == Action::MOVE_FORWARD) {
         // move forward
         owner->move_forward(50.0f);
@@ -96,7 +96,7 @@ bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, 
     return true;
 }
 
-bool vehicle_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action action) {
+bool vehicle_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action) {
     if (action == Action::MOUNTING) {
         game->player->unmount(game->world);
     }

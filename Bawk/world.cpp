@@ -95,34 +95,6 @@ bool World::break_block() {
     return true;
 }
 
-/*
-bool World::kill_block(ivec3* src) {
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
-        return false;
-    }
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    int face = looking_at.w;
-    
-    Entity* selected;
-    get_entity_at(mx, my, mz, &selected);
-    
-    block_type blk = get_block(mx, my, mz);
-    if (!blk.type)
-        return false;
-    
-    base_world->set_block(mx, my, mz, block_type());
-    
-    printf("Removing at (%d, %d, %d)   (face %d)\n",
-           mx, my, mz, face);
-    src->x = mx;
-    src->y = my;
-    src->z = mz;
-    return true;
-}*/
-
 void World::add_player(Player* player) {
     base_world->add_entity(player);
 }

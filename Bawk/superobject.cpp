@@ -87,17 +87,16 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
                     block_type block = chunk->blk[x][y][z];
                     if (block.type) {
                         counter++;
-                        fvec3 world_coord;
+                        ivec3 world_coord;
                         ivec3 chunk_pos = i.first;
-                        transform_into_world_coordinates(&world_coord,
-                                                         chunk_pos.x*CX+x,
-                                                         chunk_pos.y*CY+y,
-                                                         chunk_pos.z*CZ+z);
-                        ivec3 block_pos = ivec3(int(world_coord.x),
-                                                int(world_coord.y),
-                                                int(world_coord.z));
+                        transform_into_world_integer_coordinates(&world_coord,
+                                                                 (int)(chunk_pos.x*CX+x),
+                                                                 (int)(chunk_pos.y*CY+y),
+                                                                 (int)(chunk_pos.z*CZ+z));
+                        
+                        printf("Setting %d %d %d\n", world_coord.x, world_coord.y, world_coord.z);
                         block.owner = player->getID();
-                        target->set_block(block_pos.x, block_pos.y, block_pos.z, block);
+                        target->set_block_integral(world_coord.x, world_coord.y, world_coord.z, block);
                     }
                 }
             }
@@ -107,13 +106,11 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
 }
 
 // --- RenderableSuperObject
-void SuperObject::handle_block_addition(float x, float y, float z, block_type type) {
+void SuperObject::handle_block_addition(int x, int y, int z, block_type type) {
     // set key bindings if it has one
     if (has_block_keyboard_bindings(type)) {
         std::vector<Action> bindings = get_block_default_keyboard_bindings(type);
-        fvec3 oac;
-        transform_into_my_coordinates(&oac, x, y, z);
-        ivec3 rounded_oac = get_floor_from_fvec3(oac);
+        ivec3 rounded_oac(x, y, z);
         reverse_key_mapping[rounded_oac] = std::vector<Action>();
         reverse_key_mapping[rounded_oac].reserve(bindings.size());
         for (int i = 0; i < bindings.size(); i++) {
@@ -134,10 +131,8 @@ void SuperObject::handle_block_addition(float x, float y, float z, block_type ty
     block_counter++;
 }
 
-void SuperObject::handle_block_removal(float x, float y, float z, block_type type) {
-    fvec3 oac;
-    transform_into_my_coordinates(&oac, x, y, z);
-    ivec3 rounded_oac = get_floor_from_fvec3(oac);
+void SuperObject::handle_block_removal(int x, int y, int z, block_type type) {
+    ivec3 rounded_oac(x, y, z);
     // see if we're removing a block that has a key binding
     if (reverse_key_mapping.count(rounded_oac)) {
         // we do have such a key binding, remove it
@@ -215,8 +210,8 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key) {
         bool any = false;
         for (int i = 0; i < key_mapping[key].size(); i++) {
             ivec3 position = key_mapping[key][i].position;
-            fvec3 rwc;
-            transform_into_world_coordinates(&rwc, position.x, position.y, position.z);
+            ivec3 rwc;
+            transform_into_world_integer_coordinates(&rwc, position.x, position.y, position.z);
             block_keyboard_callback_func callback = get_block_keyboard_callback_from(key_mapping[key][i].blk.type);
             if (callback) {
                 any = any || (*callback)(game,
