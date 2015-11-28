@@ -96,6 +96,11 @@ bool CursorSuperObject::handle_movement(ivec3 dir) {
     return true;
 }
 
+bool CursorSuperObject::handle_rotation() {
+    rotate_template();
+    return true;
+}
+
 void CursorSuperObject::render_item() {
     if (!mvp_set) {
         ivec3 upper;

@@ -33,3 +33,7 @@ bool CursorItem::canceled(Game* game) {
 bool CursorItem::handle_movement(ivec3 dir) {
     return false;
 }
+
+bool CursorItem::handle_rotation() {
+    return false;
+}

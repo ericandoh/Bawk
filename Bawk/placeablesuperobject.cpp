@@ -42,7 +42,7 @@ void PlaceableSuperObject::move_template(ivec3 dir) {
 }
 
 void PlaceableSuperObject::rotate_template() {
-    this->turn_angle(fvec3(90, 0, 0));
+    angle.apply_angles(fvec3(RIGHT_ANGLE, 0, 0));
 }
 
 void PlaceableSuperObject::render_blocks(fmat4* transform) {

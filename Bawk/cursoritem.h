@@ -54,6 +54,7 @@ public:
     virtual bool confirmed(Game* game);
     virtual bool canceled(Game* game);
     virtual bool handle_movement(ivec3 dir);
+    virtual bool handle_rotation();
     
     // render the item with transform in a small box or whatnot
     virtual void render_item() = 0;

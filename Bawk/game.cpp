@@ -85,6 +85,7 @@ int Game::init() {
     key_to_action[GLFW_KEY_RIGHT] = MOVE_BLOCK_RIGHT;
     key_to_action[GLFW_KEY_UP] = MOVE_BLOCK_FORWARD;
     key_to_action[GLFW_KEY_DOWN] = MOVE_BLOCK_BACKWARD;
+    key_to_action[GLFW_KEY_SEMICOLON] = MOVE_BLOCK_ROTATE;
     
     key_to_action[GLFW_KEY_I] = OPEN_INV;
     key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
@@ -371,6 +372,11 @@ void Game::key_callback_default(int key) {
             printf("Moving placed template\n");
             ivec3 forward = player->get_rounded_forward();
             bar->get_current()->handle_movement(ivec3(-forward.x, 0, -forward.z));
+        }
+    }
+    else if (do_this == MOVE_BLOCK_ROTATE) {
+        if (bar->get_current()) {
+            bar->get_current()->handle_rotation();
         }
     }
     else if (do_this == SAVE_TEMPLATE) {

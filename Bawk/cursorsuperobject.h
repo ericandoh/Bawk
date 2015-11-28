@@ -47,6 +47,7 @@ public:
     bool confirmed(Game* game) override;
     bool canceled(Game* game) override;
     bool handle_movement(ivec3 dir) override;
+    bool handle_rotation() override;
     void render_item() override;
     void render_in_world(fmat4* transform) override;
     
