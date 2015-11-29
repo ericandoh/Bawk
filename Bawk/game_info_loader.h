@@ -30,16 +30,21 @@
 #include "game_actions.h"
 
 class CursorItem;
+class RenderableModel;
 
 int load_game_info();
 void free_game_info();
 
 uint16_t get_block_texture(block_type blk, BlockOrientation face);
+// deprecate below
 bool get_block_is_model(block_type blk);
 int get_block_resistance(uint16_t block_id);
 int get_block_transparency(uint16_t block_id);
 int get_block_weight(uint16_t block_id);
 int get_block_independence(uint16_t block_id);
+
+// TODO make model resistance/weight be fetched
+RenderableModel* get_game_model(uint16_t model_id);
 
 block_mouse_callback_func get_block_mouse_callback_from(block_type block_id);
 block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_id);

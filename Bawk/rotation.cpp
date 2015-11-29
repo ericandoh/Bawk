@@ -102,6 +102,7 @@ void Rotation::apply_angle(float angle, fvec3 axis) {
     quaternion = glm::cross(temp, quaternion);
     //quaternion = glm::rotate(quaternion, angle, axis);
     quaternion = glm::normalize(quaternion);
+    set_angle(quaternion);
 }
 
 void Rotation::apply_angles(fvec3 angular_velocity) {
@@ -209,6 +210,37 @@ void Rotation::set_angle(glm::quat angle) {
     up = glm::normalize(up);
 
     recalculate_rounded();
+}
+
+void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
+    // align dir to to_dir
+    float to_angle0 = acosf(glm::dot(to_dir, dir));
+    glm::quat to_quat = quaternion;
+    glm::quat temp;
+    if (to_angle0 != 0) {
+        fvec3 to_rotation_axis0 = glm::cross(dir, to_dir);
+        to_rotation_axis0 = glm::normalize(to_rotation_axis0);
+        temp = glm::angleAxis(to_angle0, to_rotation_axis0);
+        to_quat = glm::cross(temp, to_quat);
+    }
+    
+    fvec3 temp_up;
+    fvec4 upq = glm::mat4_cast(to_quat) * fvec4(0,1,0,0);
+    temp_up.x = upq.x;
+    temp_up.y = upq.y;
+    temp_up.z = upq.z;
+    temp_up = glm::normalize(temp_up);
+    
+    // now align up to an axis
+    float to_angle1 = acosf(glm::dot(to_up, temp_up));
+    if (to_angle1 != 0) {
+        fvec3 to_rotation_axis1 = glm::cross(temp_up, to_up);
+        to_rotation_axis1 = glm::normalize(to_rotation_axis1);
+        temp = glm::angleAxis(to_angle1, to_rotation_axis1);
+        to_quat = glm::cross(temp, to_quat);
+    }
+    to_quat = glm::normalize(to_quat);
+    set_angle(to_quat);
 }
 
 void Rotation::reset_rotation() {

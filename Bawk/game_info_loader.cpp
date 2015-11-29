@@ -17,11 +17,13 @@
 #include "cursorsuperobject.h"
 #include "world_generator.h"
 #include "world_generator_structures.h"
+#include "modelrender.h"
 
 // add this to every recipe ID
 // +1, so 0 doesn't map to 0 in the actual block
 const uint16_t recipe_mask = 0x1 << 15;
 
+// TODO deprecate this
 // none of these structs have a uint16_t type
 // because those are the indices into our vectors
 struct block_game_info {
@@ -44,6 +46,7 @@ struct block_game_info {
     }
 };
 
+// TODO deprecate this
 struct model_game_info {
     // we will use this to bind to texture which is loaded in by SOIL
     std::string texture;
@@ -70,14 +73,17 @@ struct ui_block_callback_info {
 
 class GameInfoDataObject {
     int read_blocks(Json::Value root);
+    int read_models(Json::Value root);
     int read_recipes(Json::Value root);
     int read_world_gen(Json::Value root);
 public:
     int version;
     std::vector<block_game_info> block_info;
+    std::vector<RenderableModel> model_info;
     std::vector<block_game_info> recipe_block_info;
     std::map<uint16_t, model_game_info> block_model_info;
     std::map<uint16_t, ui_block_callback_info> block_callback_info;
+    std::map<uint16_t, ui_block_callback_info> model_callback_info;
     std::vector<recipe_game_info> recipe_info;
     std::vector<biome_game_info> biome_info;
     std::vector<world_gen_mode_info> world_gen_modes;
@@ -102,6 +108,98 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
     return elems;
 }
 
+void read_obj_file(RenderableModel* dst, std::string obj_filename) {
+    // taken shamelessly from http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
+    
+    //obj_filename = "/Users/Eric/Documents/dev/BawkAssets/simplebox.obj";
+    
+    std::vector<fvec3> temp_vertices;
+    std::vector<fvec3> temp_uvs;
+    std::vector<fvec3> temp_normals;
+    
+    std::ifstream file(get_path_to_game_folder() + "/" + obj_filename);
+    //std::ifstream file(obj_filename);
+    
+    if (!file.is_open()) {
+        printf("File could not be found %s\n", (get_path_to_game_folder() + "/" + obj_filename).c_str());
+    }
+    
+    std::string line;
+    while (std::getline(file, line)) {
+        
+        std::istringstream iss(line);
+        std::string identifier;
+        if (!(iss >> identifier)) { break; }
+        if (identifier.compare("v") == 0) {
+            fvec3 vertex;
+            if (!(iss >> vertex.x >> vertex.y >> vertex.z)) { break; }
+            temp_vertices.push_back(vertex);
+        }
+        else if (identifier.compare("vt") == 0) {
+            fvec3 uv;
+            uv.z = 0;
+            if (!(iss >> uv.x >> uv.y)) { break; }
+            temp_uvs.push_back(uv);
+        }
+        else if (identifier.compare("vn") == 0) {
+            fvec3 normal;
+            if (!(iss >> normal.x >> normal.y >> normal.z)) { break; }
+            temp_normals.push_back(normal);
+        }
+        else if (identifier.compare("f") == 0) {
+            // dude did you seriously 1-index
+            std::string v1, v2, v3;
+            if (!(iss >> v1 >> v2 >> v3)) { break; }
+            
+            unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+            std::vector<std::string> elems;
+            
+            split(v1, '/', elems);
+            if (elems.size() < 3) {
+                printf("Obj file incorrectly formatted; aborting\n");
+                return;
+            }
+            vertexIndex[0] = std::stoi(elems[0]);
+            uvIndex[0] = std::stoi(elems[1]);
+            normalIndex[0] = std::stoi(elems[2]);
+            
+            elems.clear();
+            split(v2, '/', elems);
+            if (elems.size() < 3) {
+                printf("Obj file incorrectly formatted; aborting\n");
+                return;
+            }
+            vertexIndex[1] = std::stoi(elems[0]);
+            uvIndex[1] = std::stoi(elems[1]);
+            normalIndex[1] = std::stoi(elems[2]);
+            
+            elems.clear();
+            split(v3, '/', elems);
+            if (elems.size() < 3) {
+                printf("Obj file incorrectly formatted; aborting\n");
+                return;
+            }
+            vertexIndex[2] = std::stoi(elems[0]);
+            uvIndex[2] = std::stoi(elems[1]);
+            normalIndex[2] = std::stoi(elems[2]);
+            
+            dst->model_vertices.push_back(temp_vertices[vertexIndex[0] - 1]);
+            dst->model_vertices.push_back(temp_vertices[vertexIndex[1] - 1]);
+            dst->model_vertices.push_back(temp_vertices[vertexIndex[2] - 1]);
+            
+            dst->model_uvs.push_back(temp_uvs[uvIndex[0] - 1]);
+            dst->model_uvs.push_back(temp_uvs[uvIndex[1] - 1]);
+            dst->model_uvs.push_back(temp_uvs[uvIndex[2] - 1]);
+            
+            dst->model_normals.push_back(temp_normals[normalIndex[0] - 1]);
+            dst->model_normals.push_back(temp_normals[normalIndex[1] - 1]);
+            dst->model_normals.push_back(temp_normals[normalIndex[2] - 1]);
+        }
+    }
+    file.close();
+}
+
+// TODO DERPECATE BELOW
 void read_obj_file(model_game_info* dst, std::string obj_filename) {
     // taken shamelessly from http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
     
@@ -259,6 +357,50 @@ int GameInfoDataObject::read_blocks(Json::Value root) {
             callback_info.mouse_callback = get_block_mouse_callback_for(block["action"].asString());
             callback_info.keyboard_callback = get_block_keyboard_callback_for(block["action"].asString(), callback_info.key_bindings);
             block_callback_info[block_id] = callback_info;
+        }
+    }
+    return 0;
+}
+
+int GameInfoDataObject::read_models(Json::Value root) {
+    if (root.type() != Json::objectValue)
+        return 1;
+    
+    Json::Value model;
+
+    RenderableModel* info;
+    
+    Json::Value::Members members(root.getMemberNames());
+    for (Json::Value::Members::iterator it = members.end() - 1;
+         it >= members.begin();
+         --it) {
+        const std::string& name = *it;
+        uint16_t model_id = std::stoi(name);
+        if (model_id >= model_info.size()) {
+            model_info.resize(model_id + 1);
+        }
+        info = &(model_info[model_id]);
+        model = root[name];
+        if (model.isMember("name") && model["name"].type() == Json::stringValue) {
+            info->name.assign(model["name"].asString().c_str());
+        }
+        if (model.isMember("resistance") && model["resistance"].type() == Json::intValue) {
+            info->resistance = model["resistance"].asInt();
+        }
+        if (model.isMember("texture")) {
+            read_obj_file(info, model["texture"].asString());
+        }
+        if (model.isMember("weight") && model["weight"].type() == Json::intValue) {
+            info->weight = model["weight"].asInt();
+        }
+        if (model.isMember("vehicle") && model["vehicle"].type() == Json::intValue) {
+            info->vehicle = model["vehicle"].asInt();
+        }
+        if (model.isMember("action") and model["action"].type() == Json::stringValue) {
+            ui_block_callback_info callback_info;
+            callback_info.mouse_callback = get_block_mouse_callback_for(model["action"].asString());
+            callback_info.keyboard_callback = get_block_keyboard_callback_for(model["action"].asString(), callback_info.key_bindings);
+            model_callback_info[model_id] = callback_info;
         }
     }
     return 0;
@@ -641,6 +783,8 @@ int GameInfoDataObject::read_values() {
     
     if (root.isMember("blocks"))
         read_blocks(root["blocks"]);
+    if (root.isMember("models"))
+        read_models(root["models"]);
     if (root.isMember("recipes"))
         read_recipes(root["recipes"]);
     if (root.isMember("world_gen"))
@@ -743,6 +887,10 @@ int get_block_independence(uint16_t block_id) {
     else {
         return game_data_object->block_info[block_id].vehicle;
     }
+}
+
+RenderableModel* get_game_model(uint16_t model_id) {
+    return &(game_data_object->model_info[model_id]);
 }
 
 block_mouse_callback_func get_block_mouse_callback_from(block_type block_id) {

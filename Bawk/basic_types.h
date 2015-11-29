@@ -140,4 +140,7 @@ ivec3 get_floor_from_fvec3(fvec3 src);
 ivec3 get_ivec3_minimum(ivec3 a, ivec3 b);
 ivec3 get_ivec3_maximum(ivec3 a, ivec3 b);
 
+void printf_fvec3(fvec3 a);
+void printf_fvec4(fvec4 a);
+
 #endif

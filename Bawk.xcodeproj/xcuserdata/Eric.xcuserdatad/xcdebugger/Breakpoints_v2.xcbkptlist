@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/debug_action.cpp"
-            timestampString = "470364179.352563"
+            timestampString = "470523735.68932"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "15"
-            endingLineNumber = "15"
+            startingLineNumber = "19"
+            endingLineNumber = "19"
             landmarkName = "debug_action(Game* game)"
             landmarkType = "7">
          </BreakpointContent>

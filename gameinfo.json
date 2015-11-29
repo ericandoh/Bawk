@@ -65,7 +65,7 @@
         "11": {
             "name": "saddle",
             "resistance": 2,
-            "texture": "vehicle.obj",
+            "texture": "mount.obj",
             "weight": 30,
             "vehicle": 1,
             "action": "vehicle"
@@ -133,6 +133,32 @@
             "resistance": 100,
             "texture": "test.obj",
             "transparency": 2,
+            "weight": 100,
+            "vehicle": 100,
+            "action": "sample"
+        }
+    },
+    "models":
+    {
+        "0": {
+            "name": "engine",
+            "resistance": 2,
+            "texture": "simplebox.obj",
+            "weight": 30,
+            "action": "engine"
+        },
+        "1": {
+            "name": "saddle",
+            "resistance": 2,
+            "texture": "mount.obj",
+            "weight": 30,
+            "vehicle": 1,
+            "action": "vehicle"
+        },
+        "2": {
+            "name": "allsupportedfeatures",
+            "resistance": 100,
+            "texture": "test.obj",
             "weight": 100,
             "vehicle": 100,
             "action": "sample"

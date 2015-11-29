@@ -8,6 +8,7 @@
 
 #include "basic_types.h"
 #include <algorithm>
+#include <string>
 
 uint32_t spread_bits(uint32_t val)
 {
@@ -58,4 +59,13 @@ bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b) {
     result.upper.z = std::min(a.upper.z, b.upper.z);
     
     return result;
+}
+
+
+void printf_fvec3(fvec3 a) {
+    printf("%f %f %f", a.x, a.y, a.z);
+}
+
+void printf_fvec4(fvec4 a) {
+    printf("%f %f %f %f", a.x, a.y, a.z, a.w);
 }

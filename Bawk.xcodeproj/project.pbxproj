@@ -20,6 +20,8 @@
 		071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B46871BF3C1F4000CB782 /* placeableobject.cpp */; };
 		071B468D1BF3C265000CB782 /* placeablesuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B468B1BF3C265000CB782 /* placeablesuperobject.cpp */; };
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
+		072A0A231C0B8ED4009304E5 /* modelentityrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */; };
+		072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A241C0B90C9009304E5 /* modelrender.cpp */; };
 		073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 073A507C1BD4893F002AA73F /* parent_widget.cpp */; };
 		074B6C9C1BB9D2380065192B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074B6C9B1BB9D2380065192B /* main.cpp */; };
 		074B6CA31BB9D2780065192B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA21BB9D2780065192B /* Cocoa.framework */; };
@@ -118,6 +120,10 @@
 		071B468C1BF3C265000CB782 /* placeablesuperobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = placeablesuperobject.h; sourceTree = "<group>"; };
 		071C5C121BF7FE9C0087F398 /* rotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation.cpp; sourceTree = "<group>"; };
 		071C5C131BF7FE9C0087F398 /* rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation.h; sourceTree = "<group>"; };
+		072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelentityrender.cpp; sourceTree = "<group>"; };
+		072A0A221C0B8ED4009304E5 /* modelentityrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelentityrender.h; sourceTree = "<group>"; };
+		072A0A241C0B90C9009304E5 /* modelrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelrender.cpp; sourceTree = "<group>"; };
+		072A0A251C0B90C9009304E5 /* modelrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelrender.h; sourceTree = "<group>"; };
 		073A507C1BD4893F002AA73F /* parent_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parent_widget.cpp; sourceTree = "<group>"; };
 		073A507D1BD4893F002AA73F /* parent_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parent_widget.h; sourceTree = "<group>"; };
 		074B6C981BB9D2380065192B /* Bawk */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bawk; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -354,6 +360,8 @@
 		075C673D1BBA3ED700CB87DE /* entities */ = {
 			isa = PBXGroup;
 			children = (
+				072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */,
+				072A0A221C0B8ED4009304E5 /* modelentityrender.h */,
 				075C673E1BBA3EE800CB87DE /* world.cpp */,
 				075C673F1BBA3EE800CB87DE /* world.h */,
 				075C67411BBA41F000CB87DE /* player.cpp */,
@@ -395,6 +403,8 @@
 				077098971BDC0640002F295D /* blocktracer.h */,
 				0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */,
 				0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */,
+				072A0A241C0B90C9009304E5 /* modelrender.cpp */,
+				072A0A251C0B90C9009304E5 /* modelrender.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -516,6 +526,7 @@
 				0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */,
 				0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */,
 				076BEFE21BD19E9F00D68C8F /* entity.cpp in Sources */,
+				072A0A231C0B8ED4009304E5 /* modelentityrender.cpp in Sources */,
 				077098981BDC0640002F295D /* blocktracer.cpp in Sources */,
 				0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */,
 				0766EB091BBF9CC900477144 /* base_world.cpp in Sources */,
@@ -529,6 +540,7 @@
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
+				072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
 				071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */,
 				071B46861BF3C1D8000CB782 /* cursoritem.cpp in Sources */,

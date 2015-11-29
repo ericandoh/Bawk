@@ -37,6 +37,7 @@ void delete_all_buffers();
 class RenderableChunk {
     GLuint coord_vbo;           // VBO (vertex buffer object) for coordinates
     GLuint texture_vbo;         // VBO (vertex buffer object) for textures/flags
+    // TODO DEPRECATE THIS
     std::vector<fvec3> model_vertices;
     std::vector<fvec3> model_normals;
     std::vector<fvec3> model_uvs;

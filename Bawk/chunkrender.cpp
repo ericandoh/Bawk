@@ -485,6 +485,7 @@ void RenderableChunk::render() {
     
     if (model_vertices.size() > 0) {
         // draw the model elements
+        // TODO DEPRECATE THIS
         set_block_draw_mode(0);
         int num_triangles = (int)model_vertices.size();
         

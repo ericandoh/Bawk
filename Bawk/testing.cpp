@@ -11,6 +11,7 @@
 #include "entity.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "basic_types.h"
+#include "rotation.h"
 
 void do_shit();
 
@@ -28,25 +29,40 @@ void do_shit() {
 }
 */
 
-void do_shit() {
-    // transform into my coordinates
-    fmat4 reverse(1);
-    fvec2 angle(-3.14/2.0, 0);
-    // round angle to nearest angle
-    fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
-                                roundf(angle.y * 2 / M_PI) * M_PI / 2);
-    
-    reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
-    reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
-    fvec4 result(1, 0, 0, 1.0f);
-    result = reverse * result;
-    printf("%f,%f,%f", result.x, result.y, result.z);
-}
-
 // COPY DUMP CONTENTS VVV
+
+void do_shit() {
+    // copy me
+    Rotation blah;
+    blah = Rotation();
+    fvec3 to_dir =fvec3(0.3f,0.0f,0.7f);
+    to_dir = glm::normalize(to_dir);
+    blah.set_to_point(to_dir, fvec3(0.0f,1.0f,0.0f));
+    
+    fmat4 matr(1);
+    blah.add_world_rotation(&matr);
+    fvec4 point(0.7,0.7,0,1);
+    point = matr * point;
+    printf("%f %f %f\n", point.x, point.y, point.z);
+}
 
 /*
 Dumps
+ 
+ void do_shit() {
+ // transform into my coordinates
+ fmat4 reverse(1);
+ fvec2 angle(-3.14/2.0, 0);
+ // round angle to nearest angle
+ fvec2 rounded_angle = fvec2(roundf(angle.x * 2 / M_PI) * M_PI / 2,
+ roundf(angle.y * 2 / M_PI) * M_PI / 2);
+ 
+ reverse = glm::rotate(reverse, -rounded_angle.y, fvec3(cosf(rounded_angle.x), 0, -sinf(rounded_angle.x)));
+ reverse = glm::rotate(reverse, -rounded_angle.x, fvec3(0, 1, 0));
+ fvec4 result(1, 0, 0, 1.0f);
+ result = reverse * result;
+ printf("%f,%f,%f", result.x, result.y, result.z);
+ }
  
  void do_shit() {
  test_entity_coordinate_system();

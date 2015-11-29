@@ -338,6 +338,8 @@ void RenderableSuperObject::render(fmat4* transform) {
         
         fmat4 mvp = *transform * view;
         
+        // TOFU this still fucks up sometimes, investigate
+        
         // Is this chunk on the screen?
         glm::vec4 center = mvp * glm::vec4(CX / 2, CY / 2, CZ / 2, 1);
         

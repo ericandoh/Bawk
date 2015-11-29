@@ -34,7 +34,6 @@ public:
     fvec3 dir, up, right;
     fvec3 forward;
     Rotation();
-    
     void add_my_rotation(fmat4* mat);
     void add_world_rotation(fmat4* mat);
     void add_my_rotation_rounded(fmat4* mat);
@@ -43,6 +42,7 @@ public:
     void apply_angle(float angle, fvec3 axis);
     void apply_angles(fvec3 angular_velocity);
     void set_angle(glm::quat angle);
+    void set_to_point(fvec3 to_dir, fvec3 to_up);
     void reset_rotation();
     void inch_toward_normalization();
     
