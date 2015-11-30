@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/worldrender.cpp"
-            timestampString = "468893542.403125"
+            timestampString = "470556658.601751"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "check_for_error_w()"
             landmarkType = "7">
          </BreakpointContent>
@@ -160,22 +160,6 @@
             startingLineNumber = "235"
             endingLineNumber = "235"
             landmarkName = "IODataObject::close()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Bawk/gametemplate.cpp"
-            timestampString = "470550523.281949"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
-            landmarkName = "GameTemplate::create_from_template(Player* player, World* world)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

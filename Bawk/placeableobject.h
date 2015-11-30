@@ -21,7 +21,8 @@ class PlaceableObject {
 protected:
     bool mvp_set;
     fmat4 mvp;
-    void set_mvp(ivec3 bounds);
+    void calculate_mvp(ivec3 bounds);
+    void set_mvp();
 public:
     // if independent, creates a new entity whenever placed into another object
     bool independent;

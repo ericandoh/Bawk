@@ -57,12 +57,12 @@ void ModelEntity::set_model(uint16_t m) {
 // --- Entity ---
 // Entity* ModelEntity::poke(float x, float y, float z) {}
 
-bool ModelEntity::block_keyboard_callback(Game* game, Action key) {
-    return model->model_keyboard_callback(game, this, ivec3(pos.x, pos.y, pos.z), key);
+bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
+    return model->model_keyboard_callback(game, ent, ivec3(pos.x, pos.y, pos.z), key);
 }
 
-bool ModelEntity::block_mouse_callback(Game* game, Action button) {
-    return model->model_mouse_callback(game, this, button);
+bool ModelEntity::block_mouse_callback(Game* game, Action button, Entity* ent) {
+    return model->model_mouse_callback(game, ent, button);
 }
 
 void ModelEntity::render(fmat4* transform) {
@@ -70,11 +70,11 @@ void ModelEntity::render(fmat4* transform) {
         return;
     fmat4 view;
     get_mvp(&view);
-    fmat4 mvp = *transform * view;
+    view = *transform * view;
     
     // TODO don't render if out of bounds of screen (see code in chunkrender)
     
-    set_transform_matrix(mvp, view);
+    set_transform_matrix(&view);
     
     model->render();
 }

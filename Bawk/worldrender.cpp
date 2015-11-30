@@ -44,6 +44,8 @@ GLuint lighting_draw_mode;
 
 GLuint tile_texture;
 
+fmat4 camera_transform;
+
 int CHUNK_RENDER_DIST = 3;
 
 GLuint common_vertex_vbo;
@@ -107,15 +109,25 @@ void set_block_draw_mode(int v) {
     glUniform1i(geometry_draw_mode, v);
 }
 
+void set_camera_transform_matrix(fmat4* camera) {
+    camera_transform = *camera;
+}
+
 void set_unitary_transform_matrix() {
     glm::mat4 one(1);
     glUniformMatrix4fv(geometry_mvp, 1, GL_FALSE, glm::value_ptr(one));
     glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(one));
 }
 
-void set_transform_matrix(fmat4 mvp, fmat4 view) {
+void set_transform_matrix(fmat4* view) {
+    fmat4 mvp = camera_transform * (*view);
     glUniformMatrix4fv(geometry_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-    glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(*view));
+}
+
+fvec4 apply_mvp_matrix(fmat4* view, fvec4 a) {
+    fmat4 mvp = camera_transform * (*view);
+    return mvp * a;
 }
 
 void set_shader_intensity(float m) {
@@ -135,8 +147,14 @@ void set_lighting_val(fvec3 val) {
     glUniform3f(lighting_val, val.x, val.y, val.z);
 }
 
-void set_lighting_transform_matrix(fmat4 mvp) {
+void set_lighting_transform_matrix(fmat4* view) {
+    fmat4 mvp = camera_transform * (*view);
     glUniformMatrix4fv(lighting_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+}
+
+void set_unitary_lighting_transform_matrix() {
+    fmat4 one(1);
+    glUniformMatrix4fv(lighting_mvp, 1, GL_FALSE, glm::value_ptr(one));
 }
 
 void set_lighting_screen_size(float width, float height) {

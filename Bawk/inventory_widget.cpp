@@ -67,7 +67,6 @@ void SwitchInventoryButton::render_elements() {
         texture[p][2] = zfill;
     }
     
-    glm::mat4 one(1);
     set_unitary_transform_matrix();
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());

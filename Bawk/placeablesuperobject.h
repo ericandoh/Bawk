@@ -31,6 +31,8 @@ public:
     void render_blocks(fmat4* transform);
     
     // --- SuperObject ---
+    void add_entity(Entity* entity) override;
+    void remove_entity(Entity* entity) override;
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     void handle_block_addition(int x, int y, int z, block_type type) override;
     void handle_block_removal(int x, int y, int z, block_type type) override;

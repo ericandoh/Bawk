@@ -129,7 +129,7 @@ void Game::render() {
     glEnable(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_CULL_FACE);
     // get transform from player's perspective
-    fmat4* transform = player->set_camera();
+    player->set_camera();
     // render world in player's perspective
     
     // TODO fix this hack
@@ -140,13 +140,14 @@ void Game::render() {
         set_shader_intensity(0.6f);
     }
     
-    world->render(transform);
+    fmat4 transform(1);
+    world->render(&transform);
     // get depth coordinates
     player->query_depth(world);
     // render current item based on those depth coordinates
     glDisable(GL_CULL_FACE);
     if (bar->get_current()) {
-        bar->get_current()->render_in_world(transform);
+        bar->get_current()->render_in_world(&transform);
     }
     
     glDisable(GL_POLYGON_OFFSET_FILL);
@@ -163,8 +164,7 @@ void Game::render() {
 
 void Game::render_lights() {
     // render a light around the player for now
-    
-    fmat4* transform = player->set_camera();
+    player->set_camera();
     
     // Render a box around the block we are pointing at
     GLbyte box[36][3] = {
@@ -223,8 +223,7 @@ void Game::render_lights() {
     }
     
     fmat4 view = glm::translate(fmat4(1), player->pos);
-    fmat4 mvp = *transform * view;
-    set_lighting_transform_matrix(mvp);
+    set_lighting_transform_matrix(&view);
     set_lighting_block_draw_mode(1);
     set_lighting_val(player->pos);
     
@@ -243,7 +242,7 @@ void Game::frame() {
             // see if we're in any vehicle of any sort, then see if it'll accept the key i send
             SuperObject* mount = player->get_mount();
             if (mount) {
-                if (mount->block_keyboard_callback(this, do_this)) {
+                if (mount->block_keyboard_callback(this, do_this, mount)) {
                     continue;
                 }
             }
@@ -452,7 +451,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         SuperObject* mount = player->get_mount();
         if (mount) {
             Action do_this = key_to_action[key];
-            if (mount->block_keyboard_callback(this, do_this)) {
+            if (mount->block_keyboard_callback(this, do_this, mount)) {
                 return;
             }
         }
@@ -472,13 +471,13 @@ void Game::mouse_button_callback(int button, int action, int mods) {
             SuperObject* mount = player->get_mount();
             Action do_this = mouse_to_action[button];
             if (mount) {
-                if (mount->block_keyboard_callback(this, do_this)) {
+                if (mount->block_keyboard_callback(this, do_this, mount)) {
                     return;
                 }
             }
             Entity* src = get_look_at();
             if (src) {
-                if (src->block_mouse_callback(this, do_this)) {
+                if (src->block_mouse_callback(this, do_this, src)) {
                     return;
                 }
                 else {

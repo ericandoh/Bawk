@@ -62,7 +62,8 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
         // copy entity over, but if the entity is not a player
         Entity* copy = copy_entity(player, ent);
         if (copy) {
-            // move entity out of my rotation frame
+            // TODO move entity out of my rotation frame
+            // TODO move entity into world frame first?
             target->add_entity(copy);
             entity_counter++;
         }
@@ -206,9 +207,9 @@ bool SuperObject::break_block(float x, float y, float z) {
     return false;
 }
 
-bool SuperObject::block_keyboard_callback(Game* game, Action key) {
+bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
     for (Entity* ent: entities) {
-        ent->block_keyboard_callback(game, key);
+        ent->block_keyboard_callback(game, key, ent);
     }
     if (key_mapping.count(key)) {
         bool any = false;
@@ -219,7 +220,7 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key) {
             block_keyboard_callback_func callback = get_block_keyboard_callback_from(key_mapping[key][i].blk.type);
             if (callback) {
                 any = any || (*callback)(game,
-                                         this,
+                                         ent,
                                          &(key_mapping[key][i].blk),
                                          rwc,
                                          key_mapping[key][i].action);
@@ -230,7 +231,7 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key) {
     return false;
 }
 
-bool SuperObject::block_mouse_callback(Game* game, Action button) {
+bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
     fvec4 lookingat;
     if (get_look_at_vehicle(&lookingat)) {
         Entity* at_cursor = poke(lookingat.x, lookingat.y, lookingat.z);
@@ -239,7 +240,7 @@ bool SuperObject::block_mouse_callback(Game* game, Action button) {
             block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
             if (callback) {
                 return (*callback)(game,
-                                   this,
+                                   ent,
                                    &blk,
                                    fvec3(lookingat.x, lookingat.y, lookingat.z),
                                    button);
@@ -247,7 +248,7 @@ bool SuperObject::block_mouse_callback(Game* game, Action button) {
 
         }
         else {
-            return at_cursor->block_mouse_callback(game, button);
+            return at_cursor->block_mouse_callback(game, button, ent);
         }
     }
     return false;
@@ -292,16 +293,21 @@ void SuperObject::step() {
 
 void SuperObject::render(fmat4* transform) {
     RenderableSuperObject::render(transform);
+    fmat4 view;
+    get_mvp(&view);
+    view = *transform * view;
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->render(transform);
+        entities[i]->render(&view);
     }
 }
 
 void SuperObject::update_chunks(fvec3* player_pos) {
     // TODO check if the bounds of this superobject even intersect our vision
     RenderableSuperObject::update_chunks(player_pos);
+    fvec3 oac;
+    transform_into_my_coordinates(&oac, player_pos->x, player_pos->y, player_pos->z);
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->update_chunks(player_pos);
+        entities[i]->update_chunks(&oac);
     }
 }
 
@@ -309,7 +315,11 @@ void SuperObject::calculate_moving_bounding_box() {
     RenderableSuperObject::calculate_moving_bounding_box();
     for (Entity* ent: entities) {
         ent->calculate_moving_bounding_box();
-        moving_bounds.combine_with(ent->moving_bounds);
+        bounding_box ent_box = ent->moving_bounds;
+        transform_into_world_coordinates(&ent_box.lower, ent_box.lower.x, ent_box.lower.y, ent_box.lower.z);
+        transform_into_world_coordinates(&ent_box.upper, ent_box.upper.x, ent_box.upper.y, ent_box.upper.z);
+        ent_box.refit_for_rotation();
+        moving_bounds.combine_with(ent_box);
     }
 }
 
@@ -319,6 +329,7 @@ int SuperObject::get_collision_level() {
 
 // method for collision detection against base class entities ONLY
 bool SuperObject::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) {
+    // TODO this needs work, like major work, since bounding boxes wont be world coordinate boxes anymore...
     if (my_collision_lvl == 0) {
         return Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
     }

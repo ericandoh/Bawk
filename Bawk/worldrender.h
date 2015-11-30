@@ -62,14 +62,17 @@ void world_free_resources();
 GLuint get_vertex_attribute_vbo();
 GLuint get_texture_attribute_vbo();
 void set_block_draw_mode(int v);
+void set_camera_transform_matrix(fmat4* camera);
 void set_unitary_transform_matrix();
-void set_transform_matrix(fmat4 mvp, fmat4 view);
+void set_transform_matrix(fmat4* view);
+fvec4 apply_mvp_matrix(fmat4* view, fvec4 a);
 void set_shader_intensity(float m);
 void set_alpha_cutoff(float a);
 
 void set_lighting_block_draw_mode(int v);
 void set_lighting_val(fvec3 val);
-void set_lighting_transform_matrix(fmat4 mvp);
+void set_lighting_transform_matrix(fmat4* view);
+void set_unitary_lighting_transform_matrix();
 void set_lighting_screen_size(float width, float height);
 
 #endif /* defined(__Bawk__worldrender__) */

@@ -15,9 +15,9 @@
 
 class ModelEntity: public Entity {
     bool in_range;
-    RenderableModel* model;
 public:
     uint16_t model_id;
+    RenderableModel* model;
     ModelEntity(uint16_t mid);
     ModelEntity(uint32_t p, uint32_t v);
     ModelEntity(uint32_t p, uint32_t v, uint16_t mid);
@@ -27,8 +27,8 @@ public:
     
     // --- Entity ---
     // Entity* poke(float x, float y, float z) override;
-    bool block_keyboard_callback(Game* game, Action key) override;
-    bool block_mouse_callback(Game* game, Action button) override;
+    bool block_keyboard_callback(Game* game, Action key, Entity* ent) override;
+    bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     void render(fmat4* transform) override;
     void update_chunks(fvec3* player_pos) override;
     // void calculate_moving_bounding_box() override;

@@ -117,8 +117,8 @@ public:
     virtual bool break_block(float x, float y, float z);
     
     // callback methods for when actions are called on this item
-    virtual bool block_keyboard_callback(Game* game, Action key);
-    virtual bool block_mouse_callback(Game* game, Action button);
+    virtual bool block_keyboard_callback(Game* game, Action key, Entity* ent);
+    virtual bool block_mouse_callback(Game* game, Action button, Entity* ent);
     
     virtual void step();
     virtual void render(fmat4* transform);

@@ -107,11 +107,13 @@ void CursorSuperObject::render_item() {
         upper.x = bounds.upper.x - bounds.lower.x;
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
-        set_mvp(upper);
+        calculate_mvp(upper);
     }
+    set_mvp();
     fvec3 old_pos = pos;
     pos = fvec3(0, 0, 0);
-    render(&mvp);
+    fmat4 one(1);
+    render(&one);
     pos = old_pos;
 }
 

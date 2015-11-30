@@ -336,12 +336,12 @@ void RenderableSuperObject::render(fmat4* transform) {
                                           sub_pos.y * CY,
                                           sub_pos.z * CZ));
         
-        fmat4 mvp = *transform * view;
+        view = *transform * view;
         
         // TOFU this still fucks up sometimes, investigate
         
         // Is this chunk on the screen?
-        glm::vec4 center = mvp * glm::vec4(CX / 2, CY / 2, CZ / 2, 1);
+        fvec4 center = apply_mvp_matrix(&view, fvec4(CX / 2, CY / 2, CZ / 2, 1));
         
         //float d = glm::length(center);
         center.x /= center.w;
@@ -356,7 +356,7 @@ void RenderableSuperObject::render(fmat4* transform) {
         if(fabsf(center.x) > 1 + fabsf(CY * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CY * 2 / center.w))
             continue;
         
-        set_transform_matrix(mvp, view);
+        set_transform_matrix(&view);
         iterator->second->render();
     }
 }

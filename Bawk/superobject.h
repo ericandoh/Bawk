@@ -49,8 +49,8 @@ public:
     SuperObject(uint32_t p, uint32_t v);
     
     // --- SuperObject ---
-    void add_entity(Entity* entity);
-    void remove_entity(Entity* entity);
+    virtual void add_entity(Entity* entity);
+    virtual void remove_entity(Entity* entity);
     virtual std::string get_chunk_save_path(ivec3* pos);
     void copy_into(Player* player, SuperObject* target);
     
@@ -63,8 +63,8 @@ public:
     // --- Entity ---
     Entity* poke(float x, float y, float z) override;
     bool break_block(float x, float y, float z) override;
-    bool block_keyboard_callback(Game* game, Action key) override;
-    bool block_mouse_callback(Game* game, Action button) override;
+    bool block_keyboard_callback(Game* game, Action key, Entity* ent) override;
+    bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     virtual void step() override;
     virtual void render(fmat4* transform) override;
     virtual void update_chunks(fvec3* player_pos) override;

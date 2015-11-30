@@ -50,7 +50,7 @@ bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk,
 bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action) {
     if (action == Action::MOVE_FORWARD) {
         // move forward
-        owner->move_forward(50.0f);
+        owner->move_forward(20.0f);
     }
     else if (action == Action::MOVE_BACKWARD) {
         // move backwards

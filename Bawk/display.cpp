@@ -241,7 +241,6 @@ void show_depth_peeler() {
         {1, 1, 0},
     };
     
-    glm::mat4 one(1);
     set_unitary_transform_matrix();
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
@@ -396,8 +395,7 @@ void render_lights() {
         {1, 1, 0},
     };
     
-    glm::mat4 one(1);
-    set_lighting_transform_matrix(one);
+    set_unitary_lighting_transform_matrix();
     
     check_for_error();
     

@@ -11,6 +11,7 @@
 #include "world.h"
 #include "gametemplate.h"
 #include "game.h"
+#include "modelentityrender.h"
 
 // for game templates
 PlaceableSuperObject::PlaceableSuperObject(): SuperObject() {
@@ -50,6 +51,26 @@ void PlaceableSuperObject::render_blocks(fmat4* transform) {
 }
 
 // --- SuperObject ---
+void PlaceableSuperObject::add_entity(Entity* entity) {
+    SuperObject::add_entity(entity);
+    if (entity->entity_class == EntityType::MODELENTITY) {
+        ModelEntity* ent = (ModelEntity*)entity;
+        if (ent->model->vehicle) {
+            makes_vehicle++;
+        }
+    }
+}
+
+void PlaceableSuperObject::remove_entity(Entity* entity) {
+    SuperObject::remove_entity(entity);
+    if (entity->entity_class == EntityType::MODELENTITY) {
+        ModelEntity* ent = (ModelEntity*)entity;
+        if (ent->model->vehicle) {
+            makes_vehicle--;
+        }
+    }
+}
+
 int PlaceableSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     get_empty_chunk(to_arr);
     return 0;

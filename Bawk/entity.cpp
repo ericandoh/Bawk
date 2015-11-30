@@ -246,20 +246,11 @@ bool Entity::break_block(float x, float y, float z) {
     return false;
 }
 
-bool Entity::block_keyboard_callback(Game* game, Action key) {
+bool Entity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
     return false;
 }
 
-bool Entity::block_mouse_callback(Game* game, Action button) {
-    /*block_mouse_callback_func callback = get_block_mouse_callback_from(something);
-    if (callback) {
-        (*callback)(game,
-                    this,
-                    0,
-                    fvec3(0, 0, 0),
-                    button);
-        return true;
-    }*/
+bool Entity::block_mouse_callback(Game* game, Action button, Entity* ent) {
     return false;
 }
 

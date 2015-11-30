@@ -17,12 +17,12 @@ void debug_action(Game* game) {
     save_tile();
     printf("debuggin\n");
     
-    ModelEntity* entity = new ModelEntity(game->player->pid, game->player->assignID(), 1);
+    /*ModelEntity* entity = new ModelEntity(game->player->pid, game->player->assignID(), 1);
     fvec4 src;
     get_look_at_vehicle(&src);
     entity->pos.x = src.x;
     entity->pos.y = src.y + 3.0f;
     entity->pos.z = src.z;
 
-    game->world->add_entity(entity);
+    game->world->add_entity(entity);*/
 }

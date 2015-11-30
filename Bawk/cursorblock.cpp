@@ -63,11 +63,13 @@ bool CursorBlock::confirmed(Game* game) {
 void CursorBlock::render_item() {
     if (!mvp_set) {
         ivec3 upper(1, 1, 1);
-        set_mvp(upper);
+        calculate_mvp(upper);
     }
     fvec3 old_pos = pos;
     pos = fvec3(0, 0, 0);
-    render_block(&mvp);
+    set_mvp();
+    fmat4 one(1);
+    render_block(&one);
     pos = old_pos;
 }
 
@@ -154,9 +156,9 @@ void CursorBlock::render_block(fmat4* transform) {
     set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::LEFT);
     
     fmat4 view = glm::translate(fmat4(1), pos);
-    fmat4 mvp2 = *transform * view;
+    view = *transform * view;
     
-    set_transform_matrix(mvp2, view);
+    set_transform_matrix(&view);
     set_block_draw_mode(1);
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());

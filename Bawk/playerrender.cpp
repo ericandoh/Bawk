@@ -26,7 +26,7 @@ RenderablePlayer::RenderablePlayer() {
     Entity::recalculate_dir();
 }*/
 
-fmat4* RenderablePlayer::set_camera() {
+void RenderablePlayer::set_camera() {
     int width, height;
     get_window_size(&width, &height);
     
@@ -34,7 +34,7 @@ fmat4* RenderablePlayer::set_camera() {
     view = glm::lookAt(offpos, offpos + angle.dir, angle.up);
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;
-    return &mvp;
+    set_camera_transform_matrix(&mvp);
 }
 
 void RenderablePlayer::query_depth(World* world) {

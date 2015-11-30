@@ -9,6 +9,7 @@
 #include "placeableobject.h"
 #include "game.h"
 #include "gametemplate.h"
+#include "worldrender.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 PlaceableObject::PlaceableObject() {
@@ -16,7 +17,7 @@ PlaceableObject::PlaceableObject() {
     independent = false;
 }
 
-void PlaceableObject::set_mvp(ivec3 bounds) {
+void PlaceableObject::calculate_mvp(ivec3 bounds) {
     float length = sqrtf(bounds.x*bounds.x + bounds.y*bounds.y + bounds.z*bounds.z) / 1.4f;
     
     fvec3 v1 = fvec3(-bounds.x, 0, bounds.z);
@@ -38,6 +39,10 @@ void PlaceableObject::set_mvp(ivec3 bounds) {
     fmat4 projection = glm::ortho(-length, length, -length, length, 0.01f, 100.0f);
     mvp = projection * view;
     mvp_set = true;
+}
+
+void PlaceableObject::set_mvp() {
+    set_camera_transform_matrix(&mvp);
 }
 
 bool PlaceableObject::set_blocks(Game* game) {
