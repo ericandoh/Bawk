@@ -12,7 +12,11 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <map>
 #include "basic_types.h"
+#include "blockaction.h"
+
+class Game;
 
 class RenderableModel {
 public:
@@ -27,11 +31,18 @@ public:
     std::vector<fvec3> model_normals;
     std::vector<fvec3> model_uvs;
     
+    block_mouse_callback_func mouse_callback;
+    block_keyboard_callback_func keyboard_callback;
+    std::map<Action, int> key_bindings;
+    
     RenderableModel();
     
     // --- RenderableModel ---
     void render();
     void refresh();
+    
+    bool model_keyboard_callback(Game* game, Entity* ent, ivec3 rwc, Action key);
+    bool model_mouse_callback(Game* game, Entity* ent, Action key);
 };
 
 #endif /* defined(__Bawk__modelrender__) */

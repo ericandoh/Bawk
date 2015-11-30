@@ -93,6 +93,21 @@ Entity* copy_entity(Player* player, Entity* src) {
         // implement later?
         printf("Copying game templates not supported");
     }
+    else if (entity_class == EntityType::MODELENTITY) {
+        ModelEntity* copy_from = (ModelEntity*)src;
+        ModelEntity* result;
+        if (player)
+            result = new ModelEntity(player->getID(), player->assignID(), copy_from->model_id);
+        else
+            result = new ModelEntity(0, player->assignID(), copy_from->model_id);
+        result->pos = src->pos;
+        result->angle = src->angle;
+        return result;
+    }
+    else if (entity_class == EntityType::CURSORMODELENTITY) {
+        // do NOT implement - no need to copy cursormodelobject
+        printf("Copying cursormodelobject not supported\n");
+    }
     else {
         printf("Couldn't copy entity (%d,%d) of class %d\n", src->pid, src->vid, entity_class);
     }
@@ -120,12 +135,19 @@ void delete_entity_from_memory(Entity* entity) {
         }
         delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
     }
-    else if (entity_class == EntityType::SUPEROBJECT) {
+    else if (entity_class == EntityType::CURSORSUPEROBJECT) {
         printf("Deleting a cursorsuperobject...\n");
         delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
     }
     else if (entity_class == EntityType::GAMETEMPLATE) {
         // do not delete game templates, there is nothing to delete
+    }
+    else if (entity_class == EntityType::MODELENTITY) {
+        printf("Deleting a modelentity...\n");
+        delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
+    }
+    else if (entity_class == EntityType::CURSORMODELENTITY) {
+        delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
     }
     else {
         printf("Couldn't delete entity (%d,%d) of class %d\n", entity->pid, entity->vid, entity_class);

@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <map>
 #include "block.h"
 #include "world.h"
 #include "game_actions.h"
@@ -24,6 +25,6 @@ typedef bool (*block_keyboard_callback_func)(Game* game, Entity* owner, block_ty
 block_mouse_callback_func get_block_mouse_callback_for(std::string name);
 
 block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<Action> &default_keymap);
-
+block_keyboard_callback_func get_model_keyboard_callback_for(std::string name, std::map<Action, int> &default_keymap);
 
 #endif /* defined(__Bawk__blockaction__) */

@@ -33,11 +33,11 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
 // --- SuperObject ---
 void SuperObject::add_entity(Entity* entity) {
     // transform entity rotation/pos into this object's frame
-    //fvec3 oac;
-    //transform_into_my_coordinates(&oac, entity->pos.x, entity->pos.y, entity->pos.z);
-    //entity->pos = oac;
+    fvec3 oac;
+    transform_into_my_coordinates(&oac, entity->pos.x, entity->pos.y, entity->pos.z);
+    entity->pos = oac;
     // transform rotation into my frame
-    //angle.transform_into_my_rotation(entity->angle, entity->angle);
+    angle.transform_into_my_rotation(entity->angle, entity->angle);
     entities.push_back(entity);
 }
 
@@ -62,6 +62,7 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
         // copy entity over, but if the entity is not a player
         Entity* copy = copy_entity(player, ent);
         if (copy) {
+            // move entity out of my rotation frame
             target->add_entity(copy);
             entity_counter++;
         }
@@ -180,8 +181,11 @@ int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z
 Entity* SuperObject::poke(float x, float y, float z) {
     if (RenderableSuperObject::poke(x, y, z))
         return this;
+    
+    fvec3 oac;
+    transform_into_my_coordinates(&oac, x, y, z);
     for (unsigned int i = 0; i < entities.size(); i++) {
-        if (entities[i]->poke(x, y, z)) {
+        if (entities[i]->poke(oac.x, oac.y, oac.z)) {
             return entities[i];
         }
     }

@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/entity_loader.cpp"
-            timestampString = "470535432.004569"
+            timestampString = "470550883.839198"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "delete_entity_from_memory(Entity* entity)"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/entity_loader.cpp"
-            timestampString = "470535432.004569"
+            timestampString = "470550883.839198"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
             landmarkName = "delete_entity_from_memory(Entity* entity)"
             landmarkType = "7">
          </BreakpointContent>
@@ -160,6 +160,22 @@
             startingLineNumber = "235"
             endingLineNumber = "235"
             landmarkName = "IODataObject::close()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Bawk/gametemplate.cpp"
+            timestampString = "470550523.281949"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "GameTemplate::create_from_template(Player* player, World* world)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

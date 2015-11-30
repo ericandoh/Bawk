@@ -57,6 +57,14 @@ void ModelEntity::set_model(uint16_t m) {
 // --- Entity ---
 // Entity* ModelEntity::poke(float x, float y, float z) {}
 
+bool ModelEntity::block_keyboard_callback(Game* game, Action key) {
+    return model->model_keyboard_callback(game, this, ivec3(pos.x, pos.y, pos.z), key);
+}
+
+bool ModelEntity::block_mouse_callback(Game* game, Action button) {
+    return model->model_mouse_callback(game, this, button);
+}
+
 void ModelEntity::render(fmat4* transform) {
     if (!in_range)
         return;

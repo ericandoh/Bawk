@@ -140,3 +140,26 @@ block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, s
     }
     return 0;
 }
+
+block_keyboard_callback_func get_model_keyboard_callback_for(std::string name, std::map<Action, int> &default_keymap) {
+    if (name.compare("engine") == 0) {
+        // default keymaps for action 0, 1
+        default_keymap[Action::MOVE_UP] = 1;
+        default_keymap[Action::MOVE_DOWN] = 1;
+        default_keymap[Action::MOVE_LEFT] = 1;
+        default_keymap[Action::MOVE_RIGHT] = 1;
+        default_keymap[Action::MOVE_FORWARD] = 1;
+        default_keymap[Action::MOVE_BACKWARD] = 1;
+        default_keymap[Action::PITCH_UP] = 1;
+        default_keymap[Action::PITCH_DOWN] = 1;
+        default_keymap[Action::ROLL_LEFT] = 1;
+        default_keymap[Action::ROLL_RIGHT] = 1;
+        return engine_block_keyboard_callback;
+    }
+    else if (name.compare("vehicle") == 0) {
+        // default keymaps for action 0, 1
+        default_keymap[Action::MOUNTING] = 1;
+        return vehicle_block_keyboard_callback;
+    }
+    return 0;
+}

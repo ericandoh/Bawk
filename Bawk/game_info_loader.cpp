@@ -83,7 +83,6 @@ public:
     std::vector<block_game_info> recipe_block_info;
     std::map<uint16_t, model_game_info> block_model_info;
     std::map<uint16_t, ui_block_callback_info> block_callback_info;
-    std::map<uint16_t, ui_block_callback_info> model_callback_info;
     std::vector<recipe_game_info> recipe_info;
     std::vector<biome_game_info> biome_info;
     std::vector<world_gen_mode_info> world_gen_modes;
@@ -398,9 +397,8 @@ int GameInfoDataObject::read_models(Json::Value root) {
         }
         if (model.isMember("action") and model["action"].type() == Json::stringValue) {
             ui_block_callback_info callback_info;
-            callback_info.mouse_callback = get_block_mouse_callback_for(model["action"].asString());
-            callback_info.keyboard_callback = get_block_keyboard_callback_for(model["action"].asString(), callback_info.key_bindings);
-            model_callback_info[model_id] = callback_info;
+            info->mouse_callback = get_block_mouse_callback_for(model["action"].asString());
+            info->keyboard_callback = get_model_keyboard_callback_for(model["action"].asString(), info->key_bindings);
         }
     }
     // calculate auxiliary data

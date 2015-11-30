@@ -8,6 +8,7 @@
 
 #include "modelrender.h"
 #include "worldrender.h"
+#include "blocktracer.h"
 
 RenderableModel::RenderableModel() {
     name = "";
@@ -57,4 +58,27 @@ void RenderableModel::refresh() {
     bounds.lower = get_round_from_fvec3(bounds.lower);
     bounds.upper = get_round_from_fvec3(bounds.upper);
     center_pos = bounds.get_center_pos();
+}
+
+bool RenderableModel::model_keyboard_callback(Game* game, Entity* ent, ivec3 rwc, Action key) {
+    if (key_bindings.count(key)) {
+        return (*keyboard_callback)(game,
+                                    ent,
+                                    0,
+                                    rwc,
+                                    key);
+    }
+    return false;
+}
+
+bool RenderableModel::model_mouse_callback(Game* game, Entity* ent, Action key) {
+    fvec4 lookingat;
+    if (get_look_at_vehicle(&lookingat)) {
+        return (*mouse_callback)(game,
+                                 ent,
+                                 0,
+                                 fvec3(lookingat.x, lookingat.y, lookingat.z),
+                                 key);
+    }
+    return false;
 }
