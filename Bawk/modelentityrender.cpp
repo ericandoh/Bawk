@@ -12,7 +12,7 @@
 ModelEntity::ModelEntity(uint32_t p, uint32_t v) {
     vid = v;
     pid = p;
-    entity_class = 6;
+    entity_class = EntityType::MODELENTITY;
     in_range = true;
     
     // some permissions/flags
@@ -25,7 +25,7 @@ ModelEntity::ModelEntity(uint32_t p, uint32_t v, uint16_t m) {
     vid = v;
     pid = p;
     model_id = m;
-    entity_class = 6;
+    entity_class = EntityType::MODELENTITY;
     in_range = true;
     
     // some permissions/flags

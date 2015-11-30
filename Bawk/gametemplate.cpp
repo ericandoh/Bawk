@@ -13,7 +13,7 @@
 
 GameTemplate::GameTemplate() {
     pos = fvec3(0, 0, 0);   // unlike any other objects, this is alwas 0-aligned then
-    entity_class = 5;
+    entity_class = EntityType::GAMETEMPLATE;
 }
 
 CursorSuperObject* GameTemplate::create_from_template(Player* player, World* world) {

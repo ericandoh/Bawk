@@ -124,6 +124,7 @@
 		072A0A221C0B8ED4009304E5 /* modelentityrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelentityrender.h; sourceTree = "<group>"; };
 		072A0A241C0B90C9009304E5 /* modelrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelrender.cpp; sourceTree = "<group>"; };
 		072A0A251C0B90C9009304E5 /* modelrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelrender.h; sourceTree = "<group>"; };
+		072A0A281C0BCA3B009304E5 /* entity_type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_type.h; sourceTree = "<group>"; };
 		073A507C1BD4893F002AA73F /* parent_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parent_widget.cpp; sourceTree = "<group>"; };
 		073A507D1BD4893F002AA73F /* parent_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parent_widget.h; sourceTree = "<group>"; };
 		074B6C981BB9D2380065192B /* Bawk */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bawk; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -423,6 +424,7 @@
 				0774A9741BDEC85A0069489D /* entity_loader.cpp */,
 				0774A9751BDEC85A0069489D /* entity_loader.h */,
 				07FA18371BE598CA00C7319C /* world_generator_structures.h */,
+				072A0A281C0BCA3B009304E5 /* entity_type.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";

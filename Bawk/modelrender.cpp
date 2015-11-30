@@ -34,7 +34,9 @@ void RenderableModel::render() {
 }
 
 void RenderableModel::refresh() {
-    // TODO calculate the below
-    //bounding_box bounds;
-    //fvec3 center_pos;
+    bounds = bounding_box();
+    for (auto &i: model_vertices) {
+        bounds.expand(i);
+    }
+    center_pos = bounds.get_center_pos();
 }

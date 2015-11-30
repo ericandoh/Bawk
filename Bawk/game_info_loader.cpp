@@ -403,6 +403,10 @@ int GameInfoDataObject::read_models(Json::Value root) {
             model_callback_info[model_id] = callback_info;
         }
     }
+    // calculate auxiliary data
+    for (auto&i: model_info) {
+        i.refresh();
+    }
     return 0;
 }
 

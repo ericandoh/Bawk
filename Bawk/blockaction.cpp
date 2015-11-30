@@ -27,7 +27,7 @@ bool vehicle_block_mouse_callback(Game* game, Entity* owner, block_type* blk, fv
         return false;
     }
     else if (key == CLICK_CREATE) {
-        if (owner && owner->entity_class == 3) {
+        if (owner && owner->entity_class == EntityType::SUPEROBJECT) {
             // there must be an owner!!!!!!!!!!!
             ivec3 irwc = get_floor_from_fvec3(rwc);
             game->player->set_mount((SuperObject*)owner, fvec3(irwc.x + 0.5f, irwc.y + 1.0f, irwc.z + 0.5f));

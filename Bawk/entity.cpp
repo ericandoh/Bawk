@@ -13,7 +13,7 @@ Entity::Entity() {
     // identifying info for the entity. this should be overwritten
     vid = 0;
     pid = 0;
-    entity_class = 0;
+    entity_class = EntityType::ENTITY;
     
     // this should be overridden as needed
     can_collide = true;

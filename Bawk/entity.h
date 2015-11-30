@@ -29,6 +29,7 @@
 #include "block_loader.h"
 #include "game_actions.h"
 #include "rotation.h"
+#include "entity_type.h"
 
 class Game;
 
@@ -44,7 +45,7 @@ public:
     uint32_t pid;
     
     // used by loader to see how to construct the entity...
-    int entity_class;
+    EntityType entity_class;
     
     // some permissions/flags
     bool can_collide;

@@ -110,6 +110,14 @@ struct bounding_box {
           || lower.y >= other.upper.y || other.lower.y >= upper.y
           || lower.z >= other.upper.z || other.lower.z >= upper.z);
     }
+    void expand(fvec3 a) {
+        lower.x = std::min(lower.x, a.x);
+        lower.y = std::min(lower.y, a.y);
+        lower.z = std::min(lower.z, a.z);
+        upper.x = std::max(upper.x, a.x);
+        upper.y = std::max(upper.y, a.y);
+        upper.z = std::max(upper.z, a.z);
+    }
     void refit_for_rotation() {
         float lowerx = std::min(lower.x, upper.x);
         float lowery = std::min(lower.y, upper.y);
@@ -131,6 +139,13 @@ struct bounding_box {
         upper.x = std::max(upper.x, other.upper.x);
         upper.y = std::max(upper.y, other.upper.y);
         upper.z = std::max(upper.z, other.upper.z);
+    }
+    fvec3 get_center_pos() {
+        fvec3 center_pos;
+        center_pos.x = (lower.x + upper.x) / 2.0f;
+        center_pos.y = (lower.y + upper.y) / 2.0f;
+        center_pos.z = (lower.z + upper.z) / 2.0f;
+        return center_pos;
     }
 };
 

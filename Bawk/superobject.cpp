@@ -17,7 +17,7 @@ SuperObject::SuperObject() {
     // this constructor should be only called to construct a world
     vid = 0;
     pid = 0;
-    entity_class = 3;
+    entity_class = EntityType::SUPEROBJECT;
     block_counter = 0;
 }
 
@@ -25,7 +25,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     // this constructor should be called for world-less, cursor objects
     vid = v;
     pid = p;
-    entity_class = 3;
+    entity_class = EntityType::SUPEROBJECT;
     can_rotate = true;
     block_counter = 0;
 }
@@ -352,7 +352,7 @@ int SuperObject::load_self(IODataObject* obj) {
         // load in pid, vid, entity_class in that order
         uint32_t pid = obj->read_value<uint32_t>();
         uint32_t vid = obj->read_value<uint32_t>();
-        int entity_class = obj->read_value<int>();
+        EntityType entity_class = obj->read_value<EntityType>();
         Entity* entity = get_entity_from(pid, vid, entity_class);
         if (entity)
             entities.push_back(entity);
@@ -387,7 +387,7 @@ void SuperObject::remove_self(IODataObject* obj) {
     // TODO handle that player/baseworld? is removed/saved here
     obj->save_value(entities_count);
     for (int i = 0; i < (int)entities.size(); i++) {
-        if (entities[i]->entity_class == 2)
+        if (entities[i]->entity_class == EntityType::PLAYER)
             continue;
         obj->save_value(entities[i]->pid);
         obj->save_value(entities[i]->vid);

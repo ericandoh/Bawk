@@ -129,7 +129,7 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
     }
     
     SuperObject* target = object;
-    bool create_entity = (makes_vehicle && target->entity_class == 1) || this->independent;
+    bool create_entity = (makes_vehicle && target->entity_class == EntityType::BASEWORLD) || this->independent;
     if (create_entity) {
         // set my blocks into supersuperobject's entity list
         target = new SuperObject(player->getID(), player->assignID());

@@ -14,7 +14,7 @@
 
 CursorSuperObject::CursorSuperObject(uint32_t s): PlaceableSuperObject(s) {
     locked = false;
-    entity_class = 4;
+    entity_class = EntityType::CURSORSUPEROBJECT;
     is_recipe = true;
 }
 
@@ -27,7 +27,7 @@ CursorSuperObject::CursorSuperObject(uint32_t s): PlaceableSuperObject(s) {
 // 5. we'll handle rotation later (fuck that shit mate)
 CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): PlaceableSuperObject(p, s) {
     locked = false;
-    entity_class = 4;
+    entity_class = EntityType::CURSORSUPEROBJECT;
     is_recipe = false;
 }
 

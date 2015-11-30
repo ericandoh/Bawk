@@ -15,7 +15,7 @@
 Player::Player(uint32_t p) {
     vid = 0;
     pid = p;
-    entity_class = 2;
+    entity_class = EntityType::PLAYER;
     can_collide = true;
     can_rotate = false;
     

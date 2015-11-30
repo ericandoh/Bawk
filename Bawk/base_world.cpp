@@ -17,7 +17,7 @@
 BaseWorld::BaseWorld() {
     pid = 0;
     vid = 0;
-    entity_class = 1;
+    entity_class = EntityType::BASEWORLD;
     get_empty_chunk(air);
     get_empty_chunk(ground);
     for (int x = 0; x < CX; x++) {

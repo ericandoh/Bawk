@@ -73,7 +73,7 @@ bool World::break_block() {
     if (!src)
         return false;
     
-    if (src->entity_class != 1 && src->entity_class != 5) {
+    if (src->entity_class != EntityType::BASEWORLD && src->entity_class != EntityType::GAMETEMPLATE) {
         // only permit block removal from
         // TOFU this COULD be changed - that would actually be pretty cool - but I'd have to think about it
         return false;
