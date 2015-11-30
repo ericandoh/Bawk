@@ -32,6 +32,10 @@ ivec3 get_floor_from_fvec3(fvec3 src) {
     return result;
 }
 
+fvec3 get_round_from_fvec3(fvec3 src) {
+    return fvec3(roundf(src.x), roundf(src.y), roundf(src.z));
+}
+
 ivec3 get_ivec3_minimum(ivec3 a, ivec3 b) {
     ivec3 result;
     result.x = std::min(a.x, b.x);
@@ -68,4 +72,34 @@ void printf_fvec3(fvec3 a) {
 
 void printf_fvec4(fvec4 a) {
     printf("%f %f %f %f", a.x, a.y, a.z, a.w);
+}
+
+int is_closer_to_half(float a) {
+    if ((int)roundf(a * 2.0f) % 2 == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+fvec3 get_nearest_half_or_whole(fvec3 a) {
+    int to_half = 0;
+    to_half += is_closer_to_half(a.x);
+    to_half += is_closer_to_half(a.y);
+    to_half += is_closer_to_half(a.z);
+    
+    if (to_half > 1) {
+        // 2 or 3 closer to half
+        // round to nearest 0.5
+        fvec3 result(roundf(a.x - 0.5f)+0.5f,
+                     roundf(a.y - 0.5f)+0.5f,
+                     roundf(a.z - 0.5f)+0.5f);
+        return result;
+    }
+    else {
+        // round to nearest 1.0
+        fvec3 result(roundf(a.x),
+                     roundf(a.y),
+                     roundf(a.z));
+        return result;
+    }
 }

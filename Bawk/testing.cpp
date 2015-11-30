@@ -32,22 +32,32 @@ void do_shit() {
 // COPY DUMP CONTENTS VVV
 
 void do_shit() {
-    // copy me
-    Rotation blah;
-    blah = Rotation();
-    fvec3 to_dir =fvec3(0.3f,0.0f,0.7f);
-    to_dir = glm::normalize(to_dir);
-    blah.set_to_point(to_dir, fvec3(0.0f,1.0f,0.0f));
+    fvec3 a(0.99, 1.02, 3.19);
+    fvec3 b(0.57, 0.63, 0.99);
     
-    fmat4 matr(1);
-    blah.add_world_rotation(&matr);
-    fvec4 point(0.7,0.7,0,1);
-    point = matr * point;
-    printf("%f %f %f\n", point.x, point.y, point.z);
+    printf_fvec3(get_nearest_half_or_whole(a));
+    printf("\n");
+    printf_fvec3(get_nearest_half_or_whole(b));
+    printf("\n");
 }
 
 /*
 Dumps
+ 
+ void do_shit() {
+ // copy me
+ Rotation blah;
+ blah = Rotation();
+ fvec3 to_dir =fvec3(0.3f,0.0f,0.7f);
+ to_dir = glm::normalize(to_dir);
+ blah.set_to_point(to_dir, fvec3(0.0f,1.0f,0.0f));
+ 
+ fmat4 matr(1);
+ blah.add_world_rotation(&matr);
+ fvec4 point(0.7,0.7,0,1);
+ point = matr * point;
+ printf("%f %f %f\n", point.x, point.y, point.z);
+ }
  
  void do_shit() {
  // transform into my coordinates

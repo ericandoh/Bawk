@@ -38,5 +38,23 @@ void RenderableModel::refresh() {
     for (auto &i: model_vertices) {
         bounds.expand(i);
     }
+    // now set it so that our lower is at 0,0,0
+    fvec3 lower_bound = bounds.lower;
+    bounds.upper -= lower_bound;
+    bounds.lower = fvec3(0,0,0);
+    center_pos = bounds.get_center_pos();
+    
+    fvec3 aligned_center_pos = get_nearest_half_or_whole(center_pos);
+    fvec3 center_offset = aligned_center_pos - center_pos;
+    bounds.lower += center_offset;
+    bounds.upper += center_offset;
+    fvec3 offset = center_offset - lower_bound;
+    
+    for (unsigned int i = 0; i < model_vertices.size(); i++) {
+        model_vertices[i] += offset;
+    }
+    
+    bounds.lower = get_round_from_fvec3(bounds.lower);
+    bounds.upper = get_round_from_fvec3(bounds.upper);
     center_pos = bounds.get_center_pos();
 }

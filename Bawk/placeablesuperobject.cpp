@@ -88,14 +88,14 @@ fvec3 PlaceableSuperObject::calculate_center_position() {
     // next, find out if we round to nearest x.5 or to nearest x.0
     if (pointing_in == 0) {
         // use y
-        int rounded_val = roundf(aligned_upper.y * 2.0);
+        int rounded_val = roundf(aligned_upper.y * 2.0f);
         if (rounded_val % 2 == 1) {
             align_to_half = true;
         }
     }
     else if (pointing_in == 1) {
         // use x
-        int rounded_val = roundf(aligned_upper.x * 2.0);
+        int rounded_val = roundf(aligned_upper.x * 2.0f);
         if (rounded_val % 2 == 1) {
             align_to_half = true;
         }
@@ -103,22 +103,22 @@ fvec3 PlaceableSuperObject::calculate_center_position() {
     else {
         // we're aligned in z-direction, wtf!!!
         // use z
-        int rounded_val = roundf(aligned_upper.z * 2.0);
+        int rounded_val = roundf(aligned_upper.z * 2.0f);
         if (rounded_val % 2 == 1) {
             align_to_half = true;
         }
     }
     
     if (align_to_half) {
-        fvec3 result(roundf(aligned_upper.x / 2.0 - 0.5) + 0.5,
-                     roundf(aligned_upper.y / 2.0 - 0.5) + 0.5,
-                     roundf(aligned_upper.z / 2.0 - 0.5) + 0.5);
+        fvec3 result(roundf(aligned_upper.x / 2.0f - 0.5f) + 0.5f,
+                     roundf(aligned_upper.y / 2.0f - 0.5f) + 0.5f,
+                     roundf(aligned_upper.z / 2.0f - 0.5f) + 0.5f);
         return result;
     }
     else {
-        fvec3 result(roundf(aligned_upper.x / 2.0),
-                     roundf(aligned_upper.y / 2.0),
-                     roundf(aligned_upper.z / 2.0));
+        fvec3 result(roundf(aligned_upper.x / 2.0f),
+                     roundf(aligned_upper.y / 2.0f),
+                     roundf(aligned_upper.z / 2.0f));
         return result;
     }
 }

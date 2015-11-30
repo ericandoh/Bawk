@@ -22,6 +22,7 @@
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
 		072A0A231C0B8ED4009304E5 /* modelentityrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */; };
 		072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A241C0B90C9009304E5 /* modelrender.cpp */; };
+		072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A2A1C0BCE86009304E5 /* cursormodelobject.cpp */; };
 		073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 073A507C1BD4893F002AA73F /* parent_widget.cpp */; };
 		074B6C9C1BB9D2380065192B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074B6C9B1BB9D2380065192B /* main.cpp */; };
 		074B6CA31BB9D2780065192B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA21BB9D2780065192B /* Cocoa.framework */; };
@@ -125,6 +126,8 @@
 		072A0A241C0B90C9009304E5 /* modelrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelrender.cpp; sourceTree = "<group>"; };
 		072A0A251C0B90C9009304E5 /* modelrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelrender.h; sourceTree = "<group>"; };
 		072A0A281C0BCA3B009304E5 /* entity_type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entity_type.h; sourceTree = "<group>"; };
+		072A0A2A1C0BCE86009304E5 /* cursormodelobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursormodelobject.cpp; sourceTree = "<group>"; };
+		072A0A2B1C0BCE86009304E5 /* cursormodelobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursormodelobject.h; sourceTree = "<group>"; };
 		073A507C1BD4893F002AA73F /* parent_widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parent_widget.cpp; sourceTree = "<group>"; };
 		073A507D1BD4893F002AA73F /* parent_widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parent_widget.h; sourceTree = "<group>"; };
 		074B6C981BB9D2380065192B /* Bawk */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bawk; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -274,6 +277,8 @@
 				071B46881BF3C1F4000CB782 /* placeableobject.h */,
 				071B468B1BF3C265000CB782 /* placeablesuperobject.cpp */,
 				071B468C1BF3C265000CB782 /* placeablesuperobject.h */,
+				072A0A2A1C0BCE86009304E5 /* cursormodelobject.cpp */,
+				072A0A2B1C0BCE86009304E5 /* cursormodelobject.h */,
 			);
 			name = building;
 			sourceTree = "<group>";
@@ -540,6 +545,7 @@
 				0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
+				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
 				072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */,

@@ -20,7 +20,8 @@ enum EntityType {
     SUPEROBJECT,
     CURSORSUPEROBJECT,
     GAMETEMPLATE,
-    MODELENTITY
+    MODELENTITY,
+    CURSORMODELENTITY
 };
 
 #endif /* defined(__Bawk__entity_type__) */

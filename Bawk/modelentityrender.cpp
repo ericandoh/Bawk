@@ -9,6 +9,17 @@
 #include "modelentityrender.h"
 #include "game_info_loader.h"
 
+ModelEntity::ModelEntity(uint16_t mid) {
+    entity_class = EntityType::MODELENTITY;
+    in_range = true;
+    
+    // some permissions/flags
+    can_collide = true;
+    can_rotate = true;
+    
+    set_model(mid);
+}
+
 ModelEntity::ModelEntity(uint32_t p, uint32_t v) {
     vid = v;
     pid = p;
@@ -21,10 +32,10 @@ ModelEntity::ModelEntity(uint32_t p, uint32_t v) {
     load_selfs();
 }
 
-ModelEntity::ModelEntity(uint32_t p, uint32_t v, uint16_t m) {
+ModelEntity::ModelEntity(uint32_t p, uint32_t v, uint16_t mid) {
     vid = v;
     pid = p;
-    model_id = m;
+    model_id = mid;
     entity_class = EntityType::MODELENTITY;
     in_range = true;
     
@@ -32,7 +43,7 @@ ModelEntity::ModelEntity(uint32_t p, uint32_t v, uint16_t m) {
     can_collide = true;
     can_rotate = true;
     
-    set_model(m);
+    set_model(mid);
 }
 
 // --- ModelEntity ---

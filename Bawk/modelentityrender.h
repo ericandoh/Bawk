@@ -16,10 +16,12 @@
 class ModelEntity: public Entity {
     bool in_range;
     RenderableModel* model;
+protected:
     uint16_t model_id;
 public:
+    ModelEntity(uint16_t mid);
     ModelEntity(uint32_t p, uint32_t v);
-    ModelEntity(uint32_t p, uint32_t v, uint16_t model_id);
+    ModelEntity(uint32_t p, uint32_t v, uint16_t mid);
     
     // --- ModelEntity ---
     void set_model(uint16_t m);
@@ -34,7 +36,7 @@ public:
     // int get_collision_level() override;
     // bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
     
-    std::string get_save_path() override;
+    virtual std::string get_save_path() override;
     int load_self(IODataObject* obj) override;
     void remove_self(IODataObject* obj) override;
 };

@@ -152,10 +152,13 @@ struct bounding_box {
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);
 
 ivec3 get_floor_from_fvec3(fvec3 src);
+fvec3 get_round_from_fvec3(fvec3 src);
 ivec3 get_ivec3_minimum(ivec3 a, ivec3 b);
 ivec3 get_ivec3_maximum(ivec3 a, ivec3 b);
 
 void printf_fvec3(fvec3 a);
 void printf_fvec4(fvec4 a);
+
+fvec3 get_nearest_half_or_whole(fvec3 a);
 
 #endif

@@ -19,6 +19,9 @@
 #include "debug_action.h"
 #include "game_actions.h"
 
+// deleteme
+#include "cursormodelobject.h"
+
 // THIS IS USEDF OR LIGHTING< MOVE TO A CUSTOM LIGHT RENDERING METHOD
 // TODO FROG
 #include <glm/gtc/matrix_transform.hpp>
@@ -113,6 +116,9 @@ int Game::init() {
     inventory_ui = new MainInventoryWidget(bar, player->inventory, width / 2, height / 2);
     
     bar->set_index(0);
+    
+    // for testing, TODO delete
+    bar->set_current(new CursorModelObject(1));
         
     return 0;
 }
