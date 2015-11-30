@@ -62,6 +62,11 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
         // copy entity over, but if the entity is not a player
         Entity* copy = copy_entity(player, ent);
         if (copy) {
+            // transform entity rotation/pos into this object's frame
+            fvec3 rwc;
+            transform_into_world_coordinates(&rwc, copy->pos.x, copy->pos.y, copy->pos.z);
+            copy->pos = rwc;
+            angle.transform_into_world_rotation(copy->angle, copy->angle);
             // TODO move entity out of my rotation frame
             // TODO move entity into world frame first?
             target->add_entity(copy);
