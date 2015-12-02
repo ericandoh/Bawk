@@ -72,11 +72,17 @@ public:
     // if the object has velocity/angular velocity, mark this so collision detector picks it up
     bool stable;
     
+    fmat4 into_world_mat;
+    fmat4 into_world_mat_smooth;
+    fmat4 into_my_mat;
+    
     // ----- MISC INFO -----
     // weight of the entity
     int weight;
     // height of the entity. 0 is full health (alive!)
     int health;
+    // parent entity, if any
+    Entity* parent;
     
     // --- COLLISION DETECTION MOVING BB ---
     bounding_box moving_bounds;
@@ -94,7 +100,7 @@ public:
     // movement methods
     void set_pos(fvec3 p);
     void set_angle(Rotation a);
-    void recalculate_for_angle();
+    virtual void recalculate_transform();
     void move_forward(float force);
     void move_backward(float force);
     void move_forward_flat(float force);

@@ -36,10 +36,11 @@ void SuperObject::add_entity(Entity* entity) {
     fvec3 true_center = entity->pos + entity->center_pos;
     fvec3 oac;
     transform_into_my_coordinates(&oac, true_center.x, true_center.y, true_center.z);
-    entity->set_pos(oac - entity->center_pos);
+    entity->pos = oac - entity->center_pos;
     // transform rotation into my frame
     angle.transform_into_my_rotation(&(entity->angle), entity->angle);
-    entity->recalculate_for_angle();
+    entity->recalculate_transform();
+    entity->parent = this;
     entities.push_back(entity);
 }
 
@@ -50,6 +51,7 @@ void SuperObject::remove_entity(Entity* entity) {
             break;
         }
     }
+    entity->parent = 0;
     delete_entity_from_memory(entity);
 }
 
@@ -68,9 +70,9 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
             fvec3 true_center = copy->pos + copy->center_pos;
             fvec3 rwc;
             transform_into_world_coordinates(&rwc, true_center.x, true_center.y, true_center.z);
-            copy->set_pos(rwc - copy->center_pos);
+            copy->pos = rwc - copy->center_pos;
             angle.transform_into_world_rotation(&(copy->angle), copy->angle);
-            copy->recalculate_for_angle();
+            copy->recalculate_transform();
             target->add_entity(copy);
             entity_counter++;
         }
@@ -186,6 +188,13 @@ int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z
 }
 
 // --- Entity ---
+void SuperObject::recalculate_transform() {
+    RenderableSuperObject::recalculate_transform();
+    for (Entity* ent: entities) {
+        ent->recalculate_transform();
+    }
+}
+
 Entity* SuperObject::poke(float x, float y, float z) {
     if (RenderableSuperObject::poke(x, y, z))
         return this;

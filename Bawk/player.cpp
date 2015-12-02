@@ -29,6 +29,8 @@ Player::Player(uint32_t p) {
     bounds = bounding_box(lower_bound, upper_bound);
     center_pos = fvec3(0.45f, 0.45f, 0.45f);
     
+    recalculate_transform();
+    
     weight = 20;
     
     
@@ -106,7 +108,7 @@ void Player::set_mount(SuperObject* m, fvec3 pos) {
         return;
     mount = m;
     m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
-    this->pos = pos - this->center_pos;
+    set_pos(pos - this->center_pos);
     can_collide = false;
 }
 

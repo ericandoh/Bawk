@@ -52,6 +52,7 @@ void ModelEntity::set_model(uint16_t m) {
     model = get_game_model(model_id);
     bounds = model->bounds;
     center_pos = model->center_pos;
+    recalculate_transform();
 }
 
 // --- Entity ---

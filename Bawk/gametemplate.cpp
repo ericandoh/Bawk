@@ -12,7 +12,6 @@
 #include "world.h"
 
 GameTemplate::GameTemplate() {
-    pos = fvec3(0, 0, 0);   // unlike any other objects, this is alwas 0-aligned then
     entity_class = EntityType::GAMETEMPLATE;
 }
 
@@ -26,8 +25,10 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     // TODO do not call this if we have no blocks here
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
-    object->set_pos(bounds.lower);
+    object->pos = bounds.lower;
     object->center_pos = calculate_center_position();
+    // TODO set angle needed?
+    object->recalculate_transform();
     
     if (set_blocks(player, world, object)) {
         // save the object to disk

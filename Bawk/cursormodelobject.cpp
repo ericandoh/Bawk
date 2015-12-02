@@ -23,8 +23,9 @@ bool CursorModelObject::set_blocks(Player* player, World* world, SuperObject* ob
     ModelEntity* model = new ModelEntity(player->pid, player->assignID(), model_id);
     // TODO set orientation of this model object to match
     //BlockOrientation player_direction = get_player_direction();
-    model->set_pos(pos);
-    model->set_angle(angle);
+    model->pos = pos;
+    model->angle = angle;
+    model->recalculate_transform();
     
     // TODO collision detection HERE - check if we collide against the object here
     // TODO set rotation to orientation
@@ -49,7 +50,7 @@ bool CursorModelObject::clicked(Game* game, Action mouse, Entity* on) {
         upper.z = bounds.upper.z - bounds.lower.z;
         if (get_pointing_position(&locked_pos, &orientation, upper)) {
             locked = true;
-            pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
         }
         return true;
     }
@@ -101,10 +102,11 @@ void CursorModelObject::render_item() {
     }
     set_mvp();
     fvec3 old_pos = pos;
-    pos = fvec3(0, 0, 0);
+    // TODO can we do something better than this?
+    set_pos(fvec3(0, 0, 0));
     fmat4 one(1);
     render(&one);
-    pos = old_pos;
+    set_pos(old_pos);
 }
 
 void CursorModelObject::render_in_world(fmat4* transform) {
@@ -116,7 +118,7 @@ void CursorModelObject::render_in_world(fmat4* transform) {
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
         if (get_pointing_position(&locked_pos, &orientation, upper)) {
-            pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
         }
         else {
             // out of bounds, do not render top kek

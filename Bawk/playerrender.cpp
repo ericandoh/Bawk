@@ -30,7 +30,7 @@ void RenderablePlayer::set_camera() {
     int width, height;
     get_window_size(&width, &height);
     
-    fvec3 offpos = fvec3(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f);
+    fvec3 offpos = fvec3(pos.x + center_pos.x, pos.y + center_pos.y, pos.z + center_pos.z);
     view = glm::lookAt(offpos, offpos + angle.dir, angle.up);
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;

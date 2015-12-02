@@ -61,6 +61,7 @@ public:
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     
     // --- Entity ---
+    void recalculate_transform() override;
     Entity* poke(float x, float y, float z) override;
     bool break_block(float x, float y, float z) override;
     bool block_keyboard_callback(Game* game, Action key, Entity* ent) override;

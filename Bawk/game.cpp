@@ -221,7 +221,7 @@ void Game::render_lights() {
             box[i][j] *= 10;
         }
     }
-    
+    // TODO this box is positioned in all sorts of wrong...
     fmat4 view = glm::translate(fmat4(1), player->pos);
     set_lighting_transform_matrix(&view);
     set_lighting_block_draw_mode(1);

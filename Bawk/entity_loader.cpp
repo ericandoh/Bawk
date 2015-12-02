@@ -79,9 +79,10 @@ Entity* copy_entity(Player* player, Entity* src) {
             result = new SuperObject(player->getID(), player->assignID());
         else
             result = new SuperObject(0, player->assignID());
-        result->set_pos(src->pos);
-        result->set_angle(src->angle);
+        result->pos = src->pos;
+        result->angle = src->angle;
         result->center_pos = src->center_pos;
+        result->recalculate_transform();
         ((SuperObject*)src)->copy_into(player, result);
         return result;
     }
@@ -100,8 +101,9 @@ Entity* copy_entity(Player* player, Entity* src) {
             result = new ModelEntity(player->getID(), player->assignID(), copy_from->model_id);
         else
             result = new ModelEntity(0, player->assignID(), copy_from->model_id);
-        result->set_pos(src->pos);
-        result->set_angle(src->angle);
+        result->pos = src->pos;
+        result->angle = src->angle;
+        result->recalculate_transform();
         return result;
     }
     else if (entity_class == EntityType::CURSORMODELENTITY) {

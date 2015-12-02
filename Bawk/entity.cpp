@@ -15,6 +15,10 @@ Entity::Entity() {
     pid = 0;
     entity_class = EntityType::ENTITY;
     
+    // start out with no parent
+    // damn that's depresssing
+    parent = 0;
+    
     // this should be overridden as needed
     can_collide = true;
     can_rotate = false;
@@ -26,6 +30,8 @@ Entity::Entity() {
     // set initial bounds to be maxed out
     bounds = bounding_box();
     center_pos = fvec3(0,0,0);
+    
+    recalculate_transform();
     
     // this object is (hopefully) not moving to start out with
     velocity = fvec3(0, 0, 0);
@@ -40,15 +46,16 @@ Entity::Entity() {
 }
 
 void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
-    fmat4 reverse(1);
+    // TODO deprecate this code, and all the ones below as well
+    /*fmat4 reverse(1);
     if (can_rotate) {
         reverse = glm::translate(fmat4(1), center_pos);
         angle.add_my_rotation_rounded(&reverse);
         reverse = glm::translate(reverse, -center_pos);
     }
-    reverse = glm::translate(reverse, -pos);
+    reverse = glm::translate(reverse, -pos);*/
     fvec4 result(x, y, z, 1.0f);
-    result = reverse * result;
+    result = into_my_mat * result;
     
     src->x = result.x;
     src->y = result.y;
@@ -80,15 +87,15 @@ void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, 
 }
 
 void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
-    fmat4 view = glm::translate(fmat4(1), pos);
+    /*fmat4 view = glm::translate(fmat4(1), pos);
     if (can_rotate) {
         // round angle to nearest angle
         view = glm::translate(view, center_pos);
         angle.add_world_rotation_rounded(&view);
         view = glm::translate(view, -center_pos);
-    }
+    }*/
     fvec4 result(x, y, z, 1.0f);
-    result = view * result;
+    result = into_world_mat * result;
     
     src->x = result.x;
     src->y = result.y;
@@ -104,14 +111,14 @@ void Entity::transform_into_world_integer_coordinates(ivec3* src, int x, int y, 
 }
 
 void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z) {
-    fmat4 view = glm::translate(fmat4(1), pos);
+    /*fmat4 view = glm::translate(fmat4(1), pos);
     if (can_rotate) {
         view = glm::translate(view, center_pos);
         angle.add_world_rotation(&view);
         view = glm::translate(view, -center_pos);
-    }
+    }*/
     fvec4 result(x, y, z, 1.0f);
-    result = view * result;
+    result = into_world_mat_smooth * result;
     
     src->x = result.x;
     src->y = result.y;
@@ -120,16 +127,47 @@ void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float 
 
 void Entity::set_pos(fvec3 p) {
     pos = p;
-    // TODO calculate forward/backward transformation matrices as well as global transfomration
+    recalculate_transform();
 }
 
 void Entity::set_angle(Rotation a) {
     angle = a;
-    recalculate_for_angle();
+    recalculate_transform();
 }
 
-void Entity::recalculate_for_angle() {
-    // TODO calculate forward/backward transformation matrices as well as global transfomration
+void Entity::recalculate_transform() {
+    // into my coordinates
+    into_my_mat = fmat4(1);
+    if (can_rotate) {
+        into_my_mat = glm::translate(into_my_mat, center_pos);
+        angle.add_my_rotation(&into_my_mat);
+        into_my_mat = glm::translate(into_my_mat, -center_pos);
+    }
+    into_my_mat = glm::translate(into_my_mat, -pos);
+
+    // into world coordinates
+    into_world_mat = glm::translate(fmat4(1), pos);
+    if (can_rotate) {
+        // round angle to nearest angle
+        into_world_mat = glm::translate(into_world_mat, center_pos);
+        angle.add_world_rotation_rounded(&into_world_mat);
+        into_world_mat = glm::translate(into_world_mat, -center_pos);
+    }
+    
+    // into world coordinates, smoothly (without rounded angles)
+    into_world_mat_smooth = glm::translate(fmat4(1), pos);
+    if (can_rotate) {
+        into_world_mat_smooth = glm::translate(into_world_mat_smooth, center_pos);
+        angle.add_world_rotation(&into_world_mat_smooth);
+        into_world_mat_smooth = glm::translate(into_world_mat_smooth, -center_pos);
+    }
+    
+    if (parent) {
+        // apply parent matrices
+        into_my_mat = into_my_mat * parent->into_my_mat;
+        into_world_mat = parent->into_world_mat * into_world_mat;
+        into_world_mat_smooth = parent->into_world_mat_smooth * into_world_mat_smooth;
+    }
 }
 
 float Entity::get_speed(float force) {
@@ -273,6 +311,8 @@ void Entity::step() {
 }
 
 void Entity::get_mvp(fmat4 *dst) {
+    // TODO deprecate this
+    /*
     *dst = glm::translate(fmat4(1), fvec3(pos.x,
                                           pos.y,
                                           pos.z));
@@ -282,7 +322,8 @@ void Entity::get_mvp(fmat4 *dst) {
         angle.add_world_rotation(dst);
         
         *dst = glm::translate(*dst, -center_pos);
-    }
+    }*/
+    *dst = into_world_mat_smooth;
 }
 
 void Entity::render(fmat4* transform) {
@@ -414,7 +455,7 @@ int Entity::load_self(IODataObject* obj) {
     weight = obj->read_value<int>();
     health = obj->read_value<int>();
     
-    //recalculate_dir();
+    recalculate_transform();
     return 0;
 }
 

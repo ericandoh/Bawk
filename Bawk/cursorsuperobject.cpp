@@ -60,7 +60,7 @@ bool CursorSuperObject::clicked(Game* game, Action mouse, Entity* on) {
         upper.z = bounds.upper.z - bounds.lower.z;
         if (get_pointing_position(&locked_pos, &orientation, upper)) {
             locked = true;
-            pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
         }
         return true;
     }
@@ -111,10 +111,10 @@ void CursorSuperObject::render_item() {
     }
     set_mvp();
     fvec3 old_pos = pos;
-    pos = fvec3(0, 0, 0);
+    set_pos(fvec3(0, 0, 0));
     fmat4 one(1);
     render(&one);
-    pos = old_pos;
+    set_pos(old_pos);
 }
 
 void CursorSuperObject::render_in_world(fmat4* transform) {
@@ -126,7 +126,7 @@ void CursorSuperObject::render_in_world(fmat4* transform) {
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
         if (get_pointing_position(&locked_pos, &orientation, upper)) {
-            pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
         }
         else {
             // out of bounds, do not render top kek

@@ -152,14 +152,16 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
     SuperObject* target = object;
     bool create_entity = (makes_vehicle && target->entity_class == EntityType::BASEWORLD) || this->independent;
     if (create_entity) {
+        // TODO this might have issues with non aligned rotated shit...
         // set my blocks into supersuperobject's entity list
         target = new SuperObject(player->getID(), player->assignID());
-        target->set_pos(fvec3(this->pos.x + this->bounds.lower.x,
-                              this->pos.y + this->bounds.lower.y,
-                              this->pos.z + this->bounds.lower.z));
+        target->pos = fvec3(this->pos.x + this->bounds.lower.x,
+                            this->pos.y + this->bounds.lower.y,
+                            this->pos.z + this->bounds.lower.z);
         target->center_pos = calculate_center_position();
         // TODO set rotation depending on whatever's making it a vehicle
-        target->set_angle(angle);
+        target->angle = angle;
+        target->recalculate_transform();
     }
     this->copy_into(player, target);
     if (create_entity) {
