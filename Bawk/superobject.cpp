@@ -325,6 +325,19 @@ void SuperObject::update_chunks(fvec3* player_pos) {
     }
 }
 
+bool SuperObject::collides_with(Entity* other) {
+    if (Entity::collides_with(other)) {
+        return true;
+    }
+    // else, go through each of my entities
+    for (Entity* ent: entities) {
+        if (ent->collides_with(other)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void SuperObject::calculate_moving_bounding_box() {
     RenderableSuperObject::calculate_moving_bounding_box();
     for (Entity* ent: entities) {

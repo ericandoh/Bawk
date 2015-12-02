@@ -75,6 +75,7 @@ public:
     fmat4 into_world_mat;
     fmat4 into_world_mat_smooth;
     fmat4 into_my_mat;
+    fmat4 into_my_mat_smooth;
     
     // ----- MISC INFO -----
     // weight of the entity

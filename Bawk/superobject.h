@@ -70,6 +70,7 @@ public:
     virtual void render(fmat4* transform) override;
     virtual void update_chunks(fvec3* player_pos) override;
     
+    bool collides_with(Entity* other) override;
     void calculate_moving_bounding_box() override;
     int get_collision_level() override;
     // method for collision detection against base class entities ONLY

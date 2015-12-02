@@ -259,6 +259,7 @@ void BaseWorld::step() {
                 moved_entity->angle.reset_rotation();
                 //moved_entity->angle -= moved_entity->angular_velocity;
                 //moved_entity->recalculate_dir();
+                moved_entity->recalculate_transform();
             }
         }
         if (moved_entity->velocity.x != 0 || moved_entity->velocity.y != 0 || moved_entity->velocity.z != 0) {

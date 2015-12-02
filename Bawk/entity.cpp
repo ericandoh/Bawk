@@ -71,15 +71,15 @@ void Entity::transform_into_my_integer_coordinates(ivec3* src, int x, int y, int
 }
 
 void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) {
-    fmat4 reverse(1);
+    /*fmat4 reverse(1);
     if (can_rotate) {
         reverse = glm::translate(fmat4(1), center_pos);
         angle.add_my_rotation(&reverse);
         reverse = glm::translate(reverse, -center_pos);
     }
-    reverse = glm::translate(reverse, -pos);
+    reverse = glm::translate(reverse, -pos);*/
     fvec4 result(x, y, z, 1.0f);
-    result = reverse * result;
+    result = into_my_mat_smooth * result;
     
     src->x = result.x;
     src->y = result.y;
@@ -140,10 +140,18 @@ void Entity::recalculate_transform() {
     into_my_mat = fmat4(1);
     if (can_rotate) {
         into_my_mat = glm::translate(into_my_mat, center_pos);
-        angle.add_my_rotation(&into_my_mat);
+        angle.add_my_rotation_rounded(&into_my_mat);
         into_my_mat = glm::translate(into_my_mat, -center_pos);
     }
     into_my_mat = glm::translate(into_my_mat, -pos);
+    
+    into_my_mat_smooth = fmat4(1);
+    if (can_rotate) {
+        into_my_mat_smooth = glm::translate(into_my_mat_smooth, center_pos);
+        angle.add_my_rotation(&into_my_mat_smooth);
+        into_my_mat_smooth = glm::translate(into_my_mat_smooth, -center_pos);
+    }
+    into_my_mat_smooth = glm::translate(into_my_mat_smooth, -pos);
 
     // into world coordinates
     into_world_mat = glm::translate(fmat4(1), pos);
@@ -350,6 +358,7 @@ void Entity::calculate_moving_bounding_box() {
     if (can_rotate) {
         angle.apply_angles(angular_velocity);
     }
+    recalculate_transform();
     
     transform_into_world_coordinates(&lower_rwc, bounds.lower.x, bounds.lower.y, bounds.lower.z);
     transform_into_world_coordinates(&upper_rwc, bounds.upper.x, bounds.upper.y, bounds.upper.z);
