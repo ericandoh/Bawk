@@ -84,6 +84,7 @@ bool CursorModelObject::handle_movement(ivec3 dir) {
     pos.x += dir.x;
     pos.y += dir.y;
     pos.z += dir.z;
+    recalculate_transform();
     return true;
 }
 

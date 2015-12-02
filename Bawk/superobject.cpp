@@ -199,10 +199,8 @@ Entity* SuperObject::poke(float x, float y, float z) {
     if (RenderableSuperObject::poke(x, y, z))
         return this;
     
-    fvec3 oac;
-    transform_into_my_coordinates(&oac, x, y, z);
     for (unsigned int i = 0; i < entities.size(); i++) {
-        if (entities[i]->poke(oac.x, oac.y, oac.z)) {
+        if (entities[i]->poke(x, y, z)) {
             return entities[i];
         }
     }
@@ -309,21 +307,21 @@ void SuperObject::step() {
 
 void SuperObject::render(fmat4* transform) {
     RenderableSuperObject::render(transform);
-    fmat4 view;
-    get_mvp(&view);
-    view = *transform * view;
+    //fmat4 view;
+    //get_mvp(&view);
+    //view = *transform * view;
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->render(&view);
+        entities[i]->render(transform);
     }
 }
 
 void SuperObject::update_chunks(fvec3* player_pos) {
     // TODO check if the bounds of this superobject even intersect our vision
     RenderableSuperObject::update_chunks(player_pos);
-    fvec3 oac;
-    transform_into_my_coordinates(&oac, player_pos->x, player_pos->y, player_pos->z);
+    //fvec3 oac;
+    //transform_into_my_coordinates(&oac, player_pos->x, player_pos->y, player_pos->z);
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->update_chunks(&oac);
+        entities[i]->update_chunks(player_pos);
     }
 }
 
@@ -332,9 +330,9 @@ void SuperObject::calculate_moving_bounding_box() {
     for (Entity* ent: entities) {
         ent->calculate_moving_bounding_box();
         bounding_box ent_box = ent->moving_bounds;
-        transform_into_world_coordinates(&ent_box.lower, ent_box.lower.x, ent_box.lower.y, ent_box.lower.z);
-        transform_into_world_coordinates(&ent_box.upper, ent_box.upper.x, ent_box.upper.y, ent_box.upper.z);
-        ent_box.refit_for_rotation();
+        //transform_into_world_coordinates(&ent_box.lower, ent_box.lower.x, ent_box.lower.y, ent_box.lower.z);
+        //transform_into_world_coordinates(&ent_box.upper, ent_box.upper.x, ent_box.upper.y, ent_box.upper.z);
+        //ent_box.refit_for_rotation();
         moving_bounds.combine_with(ent_box);
     }
 }
@@ -385,8 +383,11 @@ int SuperObject::load_self(IODataObject* obj) {
         uint32_t vid = obj->read_value<uint32_t>();
         EntityType entity_class = obj->read_value<EntityType>();
         Entity* entity = get_entity_from(pid, vid, entity_class);
-        if (entity)
+        if (entity) {
+            entity->parent = this;
+            entity->recalculate_transform();
             entities.push_back(entity);
+        }
     }
     
     // load key bindings!

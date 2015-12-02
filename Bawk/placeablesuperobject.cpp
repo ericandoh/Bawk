@@ -40,6 +40,7 @@ void PlaceableSuperObject::move_template(ivec3 dir) {
     pos.x += dir.x;
     pos.y += dir.y;
     pos.z += dir.z;
+    recalculate_transform();
 }
 
 void PlaceableSuperObject::rotate_template() {
