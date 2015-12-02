@@ -294,3 +294,12 @@ void Rotation::transform_into_world_rotation(Rotation* dst, Rotation other) {
     glm::quat result = glm::cross(quaternion, other.quaternion);
     dst->set_angle(result);
 }
+
+fvec3 Rotation::transform_into_my_coordinates(fvec3 rwc) {
+    fvec4 result(rwc.x, rwc.y, rwc.z, 1.0f);
+    fmat4 mat(1);
+    add_my_rotation_rounded(&mat);
+    result = mat * result;
+    fvec3 src(result.x,result.y,result.z);
+    return src;
+}

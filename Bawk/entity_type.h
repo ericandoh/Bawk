@@ -11,8 +11,6 @@
 
 #include <stdio.h>
 
-// TODO implement this everywhere
-
 enum EntityType {
     ENTITY,
     BASEWORLD,

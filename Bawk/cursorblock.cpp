@@ -79,7 +79,7 @@ void CursorBlock::render_in_world(fmat4* transform) {
     ivec3 upper(1, 1, 1);
     if (get_pointing_position(&locked_pos, &orientation, upper)) {
         pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
-        block.orientation = orientation;
+        block.orientation = get_player_direction();
     }
     else {
         return;

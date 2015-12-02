@@ -23,7 +23,7 @@
 // +1, so 0 doesn't map to 0 in the actual block
 const uint16_t recipe_mask = 0x1 << 15;
 
-// TODO deprecate this
+// TODO deprecate parts of this
 // none of these structs have a uint16_t type
 // because those are the indices into our vectors
 struct block_game_info {

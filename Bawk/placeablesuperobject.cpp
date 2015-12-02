@@ -78,6 +78,8 @@ int PlaceableSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y,
 }
 
 void PlaceableSuperObject::handle_block_addition(int x, int y, int z, block_type type) {
+    // TODO deprecate this - all vehicle mounts SHOULD be entities
+    // (you cant really ride a block!)
     SuperObject::handle_block_addition(x, y, z, type);
     if (get_block_independence(type.type)) {
         makes_vehicle++;
@@ -85,6 +87,8 @@ void PlaceableSuperObject::handle_block_addition(int x, int y, int z, block_type
 }
 
 void PlaceableSuperObject::handle_block_removal(int x, int y, int z, block_type type) {
+    // TODO deprecate this - all vehicle mounts SHOULD be entities
+    // (you cant really ride a block!)
     SuperObject::handle_block_removal(x, y, z, type);
     if (get_block_independence(type.type)) {
         makes_vehicle--;
@@ -160,7 +164,6 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
                             this->pos.y + this->bounds.lower.y,
                             this->pos.z + this->bounds.lower.z);
         target->center_pos = calculate_center_position();
-        // TODO set rotation depending on whatever's making it a vehicle
         target->angle = angle;
         target->recalculate_transform();
     }

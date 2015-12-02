@@ -43,7 +43,6 @@ int get_block_transparency(uint16_t block_id);
 int get_block_weight(uint16_t block_id);
 int get_block_independence(uint16_t block_id);
 
-// TODO make model resistance/weight be fetched
 RenderableModel* get_game_model(uint16_t model_id);
 
 block_mouse_callback_func get_block_mouse_callback_from(block_type block_id);

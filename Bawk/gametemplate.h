@@ -32,6 +32,7 @@ class Game;
 
 // represents a template in the making
 class GameTemplate: public PlaceableSuperObject {
+    Rotation get_vehicle_orientation();
 public:
     GameTemplate();
     

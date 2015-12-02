@@ -21,15 +21,16 @@ bool CursorModelObject::set_blocks(Player* player, World* world, SuperObject* ob
     
     // make a new ModelObject and see if it fits
     ModelEntity* model = new ModelEntity(player->pid, player->assignID(), model_id);
-    // TODO set orientation of this model object to match
+    // TOFU for unitary models, set orientation of this model object to match
     //BlockOrientation player_direction = get_player_direction();
     model->pos = pos;
     model->angle = angle;
     model->recalculate_transform();
     
-    // TODO collision detection HERE - check if we collide against the object here
-    // TODO set rotation to orientation
-    // TODO set position to be relative to object
+    // assume cursorobject is in the world - that is, there is no need to
+    // transform pos/angle into RWC (world coordinates) because they already are
+    if (object->collides_with(model))
+        return false;
     object->add_entity(model);
     return true;
 }
@@ -103,7 +104,7 @@ void CursorModelObject::render_item() {
     }
     set_mvp();
     fvec3 old_pos = pos;
-    // TODO can we do something better than this?
+    // TOFU can we do something better than this?
     set_pos(fvec3(0, 0, 0));
     fmat4 one(1);
     render(&one);

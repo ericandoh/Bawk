@@ -46,14 +46,6 @@ Entity::Entity() {
 }
 
 void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
-    // TODO deprecate this code, and all the ones below as well
-    /*fmat4 reverse(1);
-    if (can_rotate) {
-        reverse = glm::translate(fmat4(1), center_pos);
-        angle.add_my_rotation_rounded(&reverse);
-        reverse = glm::translate(reverse, -center_pos);
-    }
-    reverse = glm::translate(reverse, -pos);*/
     fvec4 result(x, y, z, 1.0f);
     result = into_my_mat * result;
     
@@ -71,13 +63,6 @@ void Entity::transform_into_my_integer_coordinates(ivec3* src, int x, int y, int
 }
 
 void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) {
-    /*fmat4 reverse(1);
-    if (can_rotate) {
-        reverse = glm::translate(fmat4(1), center_pos);
-        angle.add_my_rotation(&reverse);
-        reverse = glm::translate(reverse, -center_pos);
-    }
-    reverse = glm::translate(reverse, -pos);*/
     fvec4 result(x, y, z, 1.0f);
     result = into_my_mat_smooth * result;
     
@@ -87,13 +72,6 @@ void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, 
 }
 
 void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
-    /*fmat4 view = glm::translate(fmat4(1), pos);
-    if (can_rotate) {
-        // round angle to nearest angle
-        view = glm::translate(view, center_pos);
-        angle.add_world_rotation_rounded(&view);
-        view = glm::translate(view, -center_pos);
-    }*/
     fvec4 result(x, y, z, 1.0f);
     result = into_world_mat * result;
     
@@ -111,12 +89,6 @@ void Entity::transform_into_world_integer_coordinates(ivec3* src, int x, int y, 
 }
 
 void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z) {
-    /*fmat4 view = glm::translate(fmat4(1), pos);
-    if (can_rotate) {
-        view = glm::translate(view, center_pos);
-        angle.add_world_rotation(&view);
-        view = glm::translate(view, -center_pos);
-    }*/
     fvec4 result(x, y, z, 1.0f);
     result = into_world_mat_smooth * result;
     
@@ -319,18 +291,6 @@ void Entity::step() {
 }
 
 void Entity::get_mvp(fmat4 *dst) {
-    // TODO deprecate this
-    /*
-    *dst = glm::translate(fmat4(1), fvec3(pos.x,
-                                          pos.y,
-                                          pos.z));
-    if (can_rotate) {
-        *dst = glm::translate(*dst, center_pos);
-        
-        angle.add_world_rotation(dst);
-        
-        *dst = glm::translate(*dst, -center_pos);
-    }*/
     *dst = into_world_mat_smooth;
 }
 

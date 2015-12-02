@@ -142,6 +142,7 @@ bool World::will_collide_with_anything(Entity* other) {
 }
 
 SuperObject* World::create_superobject(Player* player) {
+    // TODO deprecate this...
     SuperObject* obj;
     if (player)
         obj = new SuperObject(player->getID(), player->assignID());
