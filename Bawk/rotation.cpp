@@ -279,7 +279,7 @@ void Rotation::inch_toward_normalization() {
     quaternion = glm::cross(temp1, glm::cross(temp0, quaternion));
 }
 
-void Rotation::transform_into_my_rotation(Rotation dst, Rotation other) {
+void Rotation::transform_into_my_rotation(Rotation* dst, Rotation other) {
     glm::quat inverse;
     inverse.w = -rounded_quaternion.w;
     inverse.x = rounded_quaternion.x;
@@ -287,10 +287,10 @@ void Rotation::transform_into_my_rotation(Rotation dst, Rotation other) {
     inverse.z = rounded_quaternion.z;
 
     glm::quat result = glm::cross(inverse, other.quaternion);
-    dst.set_angle(result);
+    dst->set_angle(result);
 }
 
-void Rotation::transform_into_world_rotation(Rotation dst, Rotation other) {
+void Rotation::transform_into_world_rotation(Rotation* dst, Rotation other) {
     glm::quat result = glm::cross(quaternion, other.quaternion);
-    dst.set_angle(result);
+    dst->set_angle(result);
 }

@@ -293,7 +293,7 @@ void BaseWorld::step() {
             while (counter < steps && (!collided)) {
                 prev_pos = current_pos;
                 current_pos = current_pos + step_velocity;
-                moved_entity->pos = current_pos;
+                moved_entity->set_pos(current_pos);
                 for (auto &i: checking_against) {
                     if (i->collides_with(moved_entity)) {
                         collided = true;
@@ -305,10 +305,10 @@ void BaseWorld::step() {
                 counter++;
             }
             if (!collided) {
-                moved_entity->pos = start_pos + moved_entity->velocity;
+                moved_entity->set_pos(start_pos + moved_entity->velocity);
             }
             else {
-                moved_entity->pos = prev_pos;
+                moved_entity->set_pos(prev_pos);
             }
         }
     }

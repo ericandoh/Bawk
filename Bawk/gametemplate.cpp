@@ -18,15 +18,15 @@ GameTemplate::GameTemplate() {
 
 CursorSuperObject* GameTemplate::create_from_template(Player* player, World* world) {
     printf("Publishing template!\n");
-    if (!block_counter) {
-        printf("no blocks to publish...\n");
+    if (!block_counter && entities.size() <= 1) {
+        printf("no blocks/entities to publish...\n");
         return 0;
     }
     // package our blocks into a cursorsuperobject
     // TODO do not call this if we have no blocks here
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
-    object->pos = bounds.lower;
+    object->set_pos(bounds.lower);
     object->center_pos = calculate_center_position();
     
     if (set_blocks(player, world, object)) {

@@ -35,9 +35,10 @@ void SuperObject::add_entity(Entity* entity) {
     // transform entity rotation/pos into this object's frame
     fvec3 oac;
     transform_into_my_coordinates(&oac, entity->pos.x, entity->pos.y, entity->pos.z);
-    entity->pos = oac;
+    entity->set_pos(oac);
     // transform rotation into my frame
-    angle.transform_into_my_rotation(entity->angle, entity->angle);
+    angle.transform_into_my_rotation(&(entity->angle), entity->angle);
+    entity->recalculate_for_angle();
     entities.push_back(entity);
 }
 
@@ -65,10 +66,9 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
             // transform entity rotation/pos into this object's frame
             fvec3 rwc;
             transform_into_world_coordinates(&rwc, copy->pos.x, copy->pos.y, copy->pos.z);
-            copy->pos = rwc;
-            angle.transform_into_world_rotation(copy->angle, copy->angle);
-            // TODO move entity out of my rotation frame
-            // TODO move entity into world frame first?
+            copy->set_pos(rwc);
+            angle.transform_into_world_rotation(&(copy->angle), copy->angle);
+            copy->recalculate_for_angle();
             target->add_entity(copy);
             entity_counter++;
         }

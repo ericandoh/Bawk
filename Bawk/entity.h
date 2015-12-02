@@ -92,6 +92,9 @@ public:
     void transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z);
     
     // movement methods
+    void set_pos(fvec3 p);
+    void set_angle(Rotation a);
+    void recalculate_for_angle();
     void move_forward(float force);
     void move_backward(float force);
     void move_forward_flat(float force);

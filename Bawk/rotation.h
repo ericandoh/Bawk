@@ -46,8 +46,8 @@ public:
     void reset_rotation();
     void inch_toward_normalization();
     
-    void transform_into_my_rotation(Rotation dst, Rotation other);
-    void transform_into_world_rotation(Rotation dst, Rotation other);
+    void transform_into_my_rotation(Rotation* dst, Rotation other);
+    void transform_into_world_rotation(Rotation* dst, Rotation other);
 };
 
 #endif /* defined(__Bawk__rotation__) */

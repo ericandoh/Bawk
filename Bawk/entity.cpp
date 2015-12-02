@@ -118,6 +118,20 @@ void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float 
     src->z = result.z;
 }
 
+void Entity::set_pos(fvec3 p) {
+    pos = p;
+    // TODO calculate forward/backward transformation matrices as well as global transfomration
+}
+
+void Entity::set_angle(Rotation a) {
+    angle = a;
+    recalculate_for_angle();
+}
+
+void Entity::recalculate_for_angle() {
+    // TODO calculate forward/backward transformation matrices as well as global transfomration
+}
+
 float Entity::get_speed(float force) {
     // if we have negative/zero weight, treat as us having 1 weight
     if (weight <= 0) {
