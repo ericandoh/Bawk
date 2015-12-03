@@ -51,7 +51,10 @@ uint32_t Player::getID() {
 }
 
 uint32_t Player::assignID() {
-    return (uint32_t)(id_assign++);
+    uint32_t id_to_assign = (uint32_t)(id_assign++);
+    // save the player
+    remove_selfs();
+    return id_to_assign;
 }
 
 void Player::update_direction(double xdiff, double ydiff) {

@@ -219,6 +219,8 @@ void PlayerInventory::set_cursoritem_at(CursorItem* to, int index) {
         // see if this cursor item is in our inventory
         if (!has_custom(cursor_items[index].pid, cursor_items[index].vid)) {
             // if not in inventory, we're removing this object altogether from life and the universe
+            // TODO the delete path below is wrong
+            // TODO what if this item exists in another place in the itembar??? HUH??? you think bout that bitch?
             delete_at_path(get_path_to_template_folder(cursor_items[index].pid, cursor_items[index].vid));
         }
     }

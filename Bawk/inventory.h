@@ -16,6 +16,9 @@
 #include "block_loader.h"
 #include "cursoritem.h"
 
+// TOFU consider making a cursorobject manager, so that we don't keep making new objects (even if we have them loaded in already)
+// TODO some of the delete_path in this file are wrong - cursorobjects might refer to other internal objects that are saved elsewhere,
+// so those must be deleted as well...in addition, 
 class PlayerInventory {
     // some basics
     int energy_production;
