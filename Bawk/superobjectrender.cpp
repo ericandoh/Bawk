@@ -478,6 +478,8 @@ bool RenderableSuperObject::collides_with(Entity* other, bounding_box* my_bounds
                                             transform_into_world_coordinates(&subbox.lower, subbox.lower.x, subbox.lower.y, subbox.lower.z);
                                             transform_into_world_coordinates(&subbox.upper, subbox.upper.x, subbox.upper.y, subbox.upper.z);
                                             subbox.refit_for_rotation();
+                                            subbox.lower = get_round_from_fvec3(subbox.lower);
+                                            subbox.upper = get_round_from_fvec3(subbox.upper);
                                             if (other_collision_level > my_collision_lvl - 1) {
                                                 if (other->collides_with(this, other_bounds, &subbox, other_collision_level, my_collision_lvl - 1)) {
                                                     return true;

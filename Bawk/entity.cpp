@@ -398,7 +398,11 @@ bool Entity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box*
     if (my_collision_lvl > 0 || other_collision_level > 0) {
         printf("Error: We skipped a collision level somewhere: %d,%d\n", my_collision_lvl, other_collision_level);
     }
-    return true;
+    if (my_bounds->hits(*other_bounds)) {
+        // printf("collision detected\n");
+        return true;
+    }
+    return false;
 }
 
 std::string Entity::get_save_path() {
