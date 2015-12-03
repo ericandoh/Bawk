@@ -47,6 +47,9 @@ void Game::set_parameters(std::string wn, uint32_t p) {
 int Game::init() {
     in_game = true;
     
+    // initialize some rotation pre-calculations
+    init_orientation_rotation_calculations();
+    
     // load resources for the world
     if (world_load_resources()) {
         return 1;

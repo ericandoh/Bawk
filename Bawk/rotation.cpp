@@ -219,7 +219,13 @@ void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
     glm::quat temp;
     if (to_angle0 != 0) {
         fvec3 to_rotation_axis0 = glm::cross(dir, to_dir);
-        to_rotation_axis0 = glm::normalize(to_rotation_axis0);
+        if (to_rotation_axis0 == fvec3(0,0,0)) {
+            // can rotate around any axis
+            to_rotation_axis0 = up;
+        }
+        else {
+            to_rotation_axis0 = glm::normalize(to_rotation_axis0);
+        }
         temp = glm::angleAxis(to_angle0, to_rotation_axis0);
         to_quat = glm::cross(temp, to_quat);
     }
@@ -235,6 +241,11 @@ void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
     float to_angle1 = acosf(glm::dot(to_up, temp_up));
     if (to_angle1 != 0) {
         fvec3 to_rotation_axis1 = glm::cross(temp_up, to_up);
+        if (to_rotation_axis1 == fvec3(0,0,0)) {
+            // can rotate around any axis
+            to_rotation_axis1 = to_dir;
+        }
+        to_rotation_axis1 = glm::normalize(to_rotation_axis1);
         to_rotation_axis1 = glm::normalize(to_rotation_axis1);
         temp = glm::angleAxis(to_angle1, to_rotation_axis1);
         to_quat = glm::cross(temp, to_quat);

@@ -11,7 +11,7 @@
 #include "entity.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "basic_types.h"
-#include "rotation.h"
+#include "block_orientation.h"
 
 void do_shit();
 
@@ -30,19 +30,23 @@ void do_shit() {
 */
 
 // COPY DUMP CONTENTS VVV
-
 void do_shit() {
-    fvec3 a(0.99, 1.02, 3.19);
-    fvec3 b(0.57, 0.63, 0.99);
-    
-    printf_fvec3(get_nearest_half_or_whole(a));
-    printf("\n");
-    printf_fvec3(get_nearest_half_or_whole(b));
-    printf("\n");
+    init_orientation_rotation_calculations();
+    //test_orientation_math();
 }
 
 /*
 Dumps
+ 
+ void do_shit() {
+ fvec3 a(0.99, 1.02, 3.19);
+ fvec3 b(0.57, 0.63, 0.99);
+ 
+ printf_fvec3(get_nearest_half_or_whole(a));
+ printf("\n");
+ printf_fvec3(get_nearest_half_or_whole(b));
+ printf("\n");
+ }
  
  void do_shit() {
  // copy me
