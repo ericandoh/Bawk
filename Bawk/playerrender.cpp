@@ -14,7 +14,8 @@
 #include "block.h"
 
 RenderablePlayer::RenderablePlayer() {
-    // TODO do we ever free this...
+    // TODO investigate if we set this when we set angle...
+    // TODO make angle constricted to 90/-90 for y (no turning backwards on head)
     angle.free_y = false;
 }
 

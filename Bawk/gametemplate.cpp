@@ -42,7 +42,6 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     // package our blocks into a cursorsuperobject
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
-    // TODO set angle needed?
     if (makes_vehicle) {
         fvec3 rwc_center_pos = calculate_center_position() + bounds.lower;
         // set angle depending on where we've been pointing, and set pos differently
@@ -76,13 +75,10 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
 }
 
 void GameTemplate::publish(Game* game) {
-    // TODO clean code
-    //if (PlaceableObject::set_blocks(game)) {
     game->world->remove_entity(this);
     for (Entity* ent: entities) {
         delete_entity_from_memory(ent);
     }
-    //}
 }
 
 void GameTemplate::unpublish(World* world) {

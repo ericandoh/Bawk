@@ -78,7 +78,7 @@ int PlaceableSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y,
 }
 
 void PlaceableSuperObject::handle_block_addition(int x, int y, int z, block_type type) {
-    // TODO deprecate this - all vehicle mounts SHOULD be entities
+    // TODO deprecate this - all vehicle mounts SHOULD be models
     // (you cant really ride a block!)
     SuperObject::handle_block_addition(x, y, z, type);
     if (get_block_independence(type.type)) {
@@ -87,7 +87,7 @@ void PlaceableSuperObject::handle_block_addition(int x, int y, int z, block_type
 }
 
 void PlaceableSuperObject::handle_block_removal(int x, int y, int z, block_type type) {
-    // TODO deprecate this - all vehicle mounts SHOULD be entities
+    // TODO deprecate this - all vehicle mounts SHOULD be models
     // (you cant really ride a block!)
     SuperObject::handle_block_removal(x, y, z, type);
     if (get_block_independence(type.type)) {
@@ -157,8 +157,7 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
     SuperObject* target = object;
     bool create_entity = (makes_vehicle && target->entity_class == EntityType::BASEWORLD) || this->independent;
     if (create_entity) {
-        // TODO this might have issues with non aligned rotated shit...
-        // set my blocks into supersuperobject's entity list
+        // all placeables will be positioned at 0 so we can simply transpose as so
         target = new SuperObject(player->getID(), player->assignID());
         target->pos = fvec3(this->pos.x + this->bounds.lower.x,
                             this->pos.y + this->bounds.lower.y,

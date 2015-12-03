@@ -333,6 +333,7 @@ void SuperObject::render(fmat4* transform) {
 void SuperObject::update_chunks(fvec3* player_pos) {
     // TODO check if the bounds of this superobject even intersect our vision
     RenderableSuperObject::update_chunks(player_pos);
+    // TODO clean trash like here
     //fvec3 oac;
     //transform_into_my_coordinates(&oac, player_pos->x, player_pos->y, player_pos->z);
     for (int i = 0; i < entities.size(); i++) {
@@ -371,7 +372,6 @@ int SuperObject::get_collision_level() {
 
 // method for collision detection against base class entities ONLY
 bool SuperObject::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) {
-    // TODO this needs work, like major work, since bounding boxes wont be world coordinate boxes anymore...
     if (my_collision_lvl == 0) {
         return Entity::collides_with(other, my_bounds, other_bounds, my_collision_lvl, other_collision_level);
     }
