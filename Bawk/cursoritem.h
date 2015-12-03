@@ -29,6 +29,7 @@
 
 struct cursor_item_identifier {
     bool is_blk;
+    // TODO deprecate is_recipe
     bool is_recipe;
     uint16_t bid;
     uint32_t pid;

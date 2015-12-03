@@ -334,7 +334,7 @@ bool BaseWorld::collides_with(Entity* other) {
     int my_collision_level = get_collision_level() - 1;
     int other_collision_level = other->get_collision_level();
     
-    // TODO this is a hack, find a better way to deal
+    // TOFU this is a hack, find a better way to deal
     if (other->entity_class == EntityType::SUPEROBJECT ||
         other->entity_class == EntityType::CURSORSUPEROBJECT ||
         other->entity_class == EntityType::GAMETEMPLATE) {
