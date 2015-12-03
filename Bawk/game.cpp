@@ -168,7 +168,13 @@ void Game::render() {
 void Game::render_lights() {
     // render a light around the player for now
     player->set_camera();
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     
+    fmat4 transform(1);
+    world->render_lights(&transform, player->get_rwc_pos());
+    
+    /*
     // Render a box around the block we are pointing at
     GLbyte box[36][3] = {
         {0,0,0},
@@ -234,7 +240,7 @@ void Game::render_lights() {
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
     glVertexAttribPointer(lighting_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_TRIANGLES, 0, 36);*/
 }
 
 // runs one frame of the game

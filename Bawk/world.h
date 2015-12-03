@@ -46,6 +46,7 @@ public:
     int load_self();
     void remove_self();
     void render(fmat4* transform);
+    void render_lights(fmat4* transform, fvec3 player_pos);
     void update_chunks(fvec3* player_pos);
     
     void get_entity_at(float x, float y, float z, Entity** selected);

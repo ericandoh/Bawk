@@ -30,6 +30,7 @@ public:
     bool block_keyboard_callback(Game* game, Action key, Entity* ent) override;
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     void render(fmat4* transform) override;
+    void render_lights(fmat4* transform, fvec3 player_pos) override;
     void update_chunks(fvec3* player_pos) override;
     // void calculate_moving_bounding_box() override;
     

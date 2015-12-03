@@ -155,7 +155,8 @@
             "texture": "mount.obj",
             "weight": 30,
             "vehicle": 1,
-            "action": "vehicle"
+            "action": "vehicle",
+            "light": [3, 5]
         },
         "2": {
             "name": "allsupportedfeatures",
@@ -164,7 +165,7 @@
             "weight": 100,
             "vehicle": 100,
             "action": "sample",
-            "light": [10, 5]
+            "light": [3, 5]
         }
     },
     "recipes":

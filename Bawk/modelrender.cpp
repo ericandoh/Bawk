@@ -17,6 +17,7 @@ RenderableModel::RenderableModel() {
     vehicle = 0;
     bounds = bounding_box();
     center_pos = fvec3(0,0,0);
+    light = RenderableLight();
 }
 
 void RenderableModel::render() {

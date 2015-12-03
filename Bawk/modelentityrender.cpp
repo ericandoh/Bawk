@@ -72,12 +72,22 @@ void ModelEntity::render(fmat4* transform) {
     fmat4 view;
     get_mvp(&view);
     view = *transform * view;
-    
     // TODO don't render if out of bounds of screen (see code in chunkrender)
-    
     set_transform_matrix(&view);
     
     model->render();
+}
+
+void ModelEntity::render_lights(fmat4* transform, fvec3 player_pos) {
+    if (!in_range)
+        return;
+    if (model->light.should_render()) {
+        fmat4 view;
+        get_mvp(&view);
+        view = *transform * view;
+        // TODO don't render if out of bounds of screen (see code in chunkrender)
+        model->light.render_light(&view, center_pos, player_pos);
+    }
 }
 
 void ModelEntity::update_chunks(fvec3* player_pos) {

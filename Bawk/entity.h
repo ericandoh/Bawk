@@ -134,6 +134,7 @@ public:
     
     virtual void step();
     virtual void render(fmat4* transform);
+    virtual void render_lights(fmat4* transform, fvec3 player_pos);
     // update how this is rendered depending on player position
     virtual void update_chunks(fvec3* player_pos);
 

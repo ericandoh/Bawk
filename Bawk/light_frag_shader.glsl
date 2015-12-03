@@ -19,11 +19,12 @@ vec2 get_tex_coord() {
 }
 
 float get_point_light(vec3 worldpos) {
-    float peak = 20;
+    float peak = 3;
     vec3 lightdir = worldpos - l_val;
     float distance = length(lightdir);
     if (distance > peak) {
-        return 0;
+        discard;
+        //return 0;
     }
     // fraction will be greater the closer you are
     float fraction = 1.0 - distance / peak;
@@ -49,19 +50,19 @@ void main(void) {
     //vec3 normal = texture(gNormalMap, texcoord).xyz;
     //normal = normalize(normal);
     
+    out_color.xyz = (color_o.xyz + color_t) / 2.0;
     if (l_draw_mode == 0) {
         // ambient lighting
         out_color.xyz = color_o;
     }
     else if (l_draw_mode == 1) {
         // point light
-        out_color.xyz = color_o * get_point_light(worldpos);
+        out_color.xyz = out_color.xyz * get_point_light(worldpos);
         // out_color = color;
     }
     else {
         // directional light or whatnot
         out_color.xyz = color_o;
     }
-    out_color.xyz = (out_color.xyz + color_t) / 2.0;
     out_color.w = 1.0;
 }

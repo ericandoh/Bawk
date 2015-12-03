@@ -316,6 +316,10 @@ void Entity::render(fmat4* transform) {
     // do nothing
 }
 
+void Entity::render_lights(fmat4* transform, fvec3 player_pos) {
+    // do nothing
+}
+
 void Entity::update_chunks(fvec3* start_pos) {
     // do nothing
 }

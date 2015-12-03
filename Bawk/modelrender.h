@@ -15,6 +15,7 @@
 #include <map>
 #include "basic_types.h"
 #include "blockaction.h"
+#include "lightrender.h"
 
 class Game;
 
@@ -24,6 +25,7 @@ public:
     int resistance;
     int weight;
     int vehicle;
+    RenderableLight light;
     
     bounding_box bounds;
     fvec3 center_pos;

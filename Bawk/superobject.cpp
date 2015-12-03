@@ -322,11 +322,15 @@ void SuperObject::step() {
 
 void SuperObject::render(fmat4* transform) {
     RenderableSuperObject::render(transform);
-    //fmat4 view;
-    //get_mvp(&view);
-    //view = *transform * view;
     for (int i = 0; i < entities.size(); i++) {
         entities[i]->render(transform);
+    }
+}
+
+void SuperObject::render_lights(fmat4* transform, fvec3 player_pos) {
+    RenderableSuperObject::render_lights(transform, player_pos);
+    for (int i = 0; i < entities.size(); i++) {
+        entities[i]->render_lights(transform, player_pos);
     }
 }
 

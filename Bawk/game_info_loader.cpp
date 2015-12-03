@@ -18,6 +18,7 @@
 #include "world_generator.h"
 #include "world_generator_structures.h"
 #include "modelrender.h"
+#include "lightrender.h"
 
 // add this to every recipe ID
 // +1, so 0 doesn't map to 0 in the actual block
@@ -35,6 +36,7 @@ struct block_game_info {
     int transparency;
     int weight;
     int vehicle;
+    RenderableLight light;
     block_game_info() {
         name = "";
         is_model = false;
@@ -43,6 +45,7 @@ struct block_game_info {
         transparency = 0;
         weight = 1;
         vehicle = 0;
+        light = RenderableLight();
     }
 };
 
@@ -357,6 +360,13 @@ int GameInfoDataObject::read_blocks(Json::Value root) {
             callback_info.keyboard_callback = get_block_keyboard_callback_for(block["action"].asString(), callback_info.key_bindings);
             block_callback_info[block_id] = callback_info;
         }
+        if (block.isMember("light") && block["light"].type() == Json::arrayValue) {
+            int size = block["light"].size();
+            if (size >= 2) {
+                info->light.light_radius = block["light"][0].asFloat();
+                info->light.light_intensity = block["light"][1].asFloat();
+            }
+        }
     }
     return 0;
 }
@@ -399,6 +409,13 @@ int GameInfoDataObject::read_models(Json::Value root) {
             ui_block_callback_info callback_info;
             info->mouse_callback = get_block_mouse_callback_for(model["action"].asString());
             info->keyboard_callback = get_model_keyboard_callback_for(model["action"].asString(), info->key_bindings);
+        }
+        if (model.isMember("light") && model["light"].type() == Json::arrayValue) {
+            int size = model["light"].size();
+            if (size >= 2) {
+                info->light.light_radius = model["light"][0].asFloat();
+                info->light.light_intensity = model["light"][1].asFloat();
+            }
         }
     }
     // calculate auxiliary data
@@ -847,6 +864,18 @@ bool get_block_is_model(block_type blk) {
     }
     else {
         return game_data_object->block_info[block_id].is_model;
+    }
+    return false;
+}
+
+bool get_block_is_light(block_type blk) {
+    uint16_t block_id = blk.type;
+    if (block_id >= recipe_mask) {
+        block_id -= recipe_mask;
+        return game_data_object->recipe_block_info[block_id].light.should_render();
+    }
+    else {
+        return game_data_object->block_info[block_id].light.should_render();
     }
     return false;
 }

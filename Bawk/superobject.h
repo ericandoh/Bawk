@@ -68,6 +68,7 @@ public:
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     virtual void step() override;
     virtual void render(fmat4* transform) override;
+    void render_lights(fmat4* transform, fvec3 player_pos) override;
     virtual void update_chunks(fvec3* player_pos) override;
     
     bool collides_with(Entity* other) override;

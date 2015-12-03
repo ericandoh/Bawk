@@ -38,6 +38,7 @@ void free_game_info();
 uint16_t get_block_texture(block_type blk, BlockOrientation face);
 // deprecate below
 bool get_block_is_model(block_type blk);
+bool get_block_is_light(block_type blk);
 int get_block_resistance(uint16_t block_id);
 int get_block_transparency(uint16_t block_id);
 int get_block_weight(uint16_t block_id);

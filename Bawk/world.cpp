@@ -61,6 +61,10 @@ void World::render(fmat4* transform) {
     base_world->render(transform);
 }
 
+void World::render_lights(fmat4* transform, fvec3 player_pos) {
+    base_world->render_lights(transform, player_pos);
+}
+
 void World::update_chunks(fvec3* player_pos) {
     base_world->update_chunks(player_pos);
 }
