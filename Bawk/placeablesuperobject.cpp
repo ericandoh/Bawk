@@ -172,5 +172,8 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
         // now place target into object's entity list
         object->add_entity(target);
     }
+    printf("PlaceableSuperObject debug\n");
+    this->print_debug();
+    target->print_debug();
     return true;
 }

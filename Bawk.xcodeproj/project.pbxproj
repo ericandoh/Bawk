@@ -12,6 +12,7 @@
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
 		0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */; };
+		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
 		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
@@ -106,6 +107,7 @@
 		0712E1261C06EB8E008AF269 /* block_orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_orientation.h; sourceTree = "<group>"; };
 		0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkresourcemanager.cpp; sourceTree = "<group>"; };
 		0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkresourcemanager.h; sourceTree = "<group>"; };
+		0713FF521C0FD88B0069FDAF /* entity_type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity_type.cpp; sourceTree = "<group>"; };
 		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
 		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
 		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
@@ -433,6 +435,7 @@
 				0774A9751BDEC85A0069489D /* entity_loader.h */,
 				07FA18371BE598CA00C7319C /* world_generator_structures.h */,
 				072A0A281C0BCA3B009304E5 /* entity_type.h */,
+				0713FF521C0FD88B0069FDAF /* entity_type.cpp */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";
@@ -576,6 +579,7 @@
 				073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */,
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
 				0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */,
+				0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */,
 				07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

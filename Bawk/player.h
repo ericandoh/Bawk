@@ -41,18 +41,20 @@ public:
     PlayerInventory* inventory;
     Player(uint32_t p);
     ~Player();
+    
+    // --- Player ---
     uint32_t getID();
     uint32_t assignID();
     void update_direction(double xdiff, double ydiff);
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();
     
-    void step() override;
-    
     void set_mount(SuperObject* m, fvec3 pos);
     SuperObject* get_mount();
     bool unmount(World* world);
     
+    // --- Entity ---
+    void step() override;
     std::string get_save_path() override;
     int load_selfs() override;
     int load_self(IODataObject* obj) override;

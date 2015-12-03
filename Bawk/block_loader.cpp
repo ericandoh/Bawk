@@ -148,6 +148,7 @@ int validate_read_write_path(std::string path) {
 void delete_at_path(std::string path) {
     std::string command = "rm -rf " + path;
     std::system(command.c_str());   // this might fail...TOFU handle
+    printf("deleting at path %s\n", path.c_str());
     return;
 }
 

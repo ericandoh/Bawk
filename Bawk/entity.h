@@ -121,6 +121,8 @@ public:
     void move_dist(fvec3 off);
     void turn_angle(fvec3 off);
     
+    void print_debug();
+    
     // poke this object at RWC, true if this object says, "OUCH"
     virtual Entity* poke(float x, float y, float z);
     // break whatever is at RWC coords in this object

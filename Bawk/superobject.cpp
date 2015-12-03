@@ -32,6 +32,9 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
 
 // --- SuperObject ---
 void SuperObject::add_entity(Entity* entity) {
+    if (entity->parent) {
+        ((SuperObject*)entity->parent)->remove_entity(entity);
+    }
     // transform entity rotation/pos into this object's frame
     fvec3 true_center = entity->pos + entity->center_pos;
     fvec3 oac;
@@ -39,20 +42,31 @@ void SuperObject::add_entity(Entity* entity) {
     entity->pos = oac - entity->center_pos;
     // transform rotation into my frame
     angle.transform_into_my_rotation(&(entity->angle), entity->angle);
-    entity->recalculate_transform();
     entity->parent = this;
+    entity->recalculate_transform();
     entities.push_back(entity);
 }
 
 void SuperObject::remove_entity(Entity* entity) {
+    bool removed = false;
     for (unsigned int i = 0; i < entities.size(); i++) {
         if (entities.at(i) == entity) {
             entities.erase(entities.begin() + i);
+            removed = true;
             break;
         }
     }
+    if (!removed) {
+        return;
+    }
     entity->parent = 0;
-    delete_entity_from_memory(entity);
+    // transform entity back into RWC
+    fvec3 oac_center = entity->pos + entity->center_pos;
+    fvec3 rwc;
+    transform_into_world_coordinates(&rwc, oac_center.x, oac_center.y, oac_center.z);
+    entity->pos = rwc - entity->center_pos;
+    angle.transform_into_world_rotation(&(entity->angle), entity->angle);
+    entity->recalculate_transform();
 }
 
 std::string SuperObject::get_chunk_save_path(ivec3* pos) {
@@ -216,6 +230,7 @@ bool SuperObject::break_block(float x, float y, float z) {
     else if (at) {
         // break away the entity at from this object
         remove_entity(at);
+        delete_entity_from_memory(at);
         return true;
     }
     return false;

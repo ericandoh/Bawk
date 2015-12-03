@@ -22,4 +22,5 @@ enum EntityType {
     CURSORMODELENTITY
 };
 
+void print_entity_type(EntityType type);
 #endif /* defined(__Bawk__entity_type__) */

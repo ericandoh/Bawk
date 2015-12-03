@@ -11,6 +11,7 @@
 #include "cursorsuperobject.h"
 #include "world.h"
 #include "modelentityrender.h"
+#include "entity_loader.h"
 
 GameTemplate::GameTemplate() {
     entity_class = EntityType::GAMETEMPLATE;
@@ -37,6 +38,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
         printf("no blocks/entities to publish...\n");
         return 0;
     }
+    this->print_debug();
     // package our blocks into a cursorsuperobject
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
@@ -66,6 +68,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
         object->remove_selfs();
         // tell object to publish to the world, the position/orientation should already be good
         object->set_blocks(player, world, world->base_world);
+        object->print_debug();
         return object;
     }
     delete object;
@@ -76,6 +79,9 @@ void GameTemplate::publish(Game* game) {
     // TODO clean code
     //if (PlaceableObject::set_blocks(game)) {
     game->world->remove_entity(this);
+    for (Entity* ent: entities) {
+        delete_entity_from_memory(ent);
+    }
     //}
 }
 

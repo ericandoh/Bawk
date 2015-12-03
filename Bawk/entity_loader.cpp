@@ -139,10 +139,16 @@ void delete_entity_from_memory(Entity* entity) {
     }
     else if (entity_class == EntityType::CURSORSUPEROBJECT) {
         printf("Deleting a cursorsuperobject...\n");
+        for (Entity* ent: ((SuperObject*)entity)->entities) {
+            delete_entity_from_memory(ent);
+        }
         delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
     }
     else if (entity_class == EntityType::GAMETEMPLATE) {
-        // do not delete game templates, there is nothing to delete
+        // delete subentities only
+        for (Entity* ent: ((SuperObject*)entity)->entities) {
+            delete_entity_from_memory(ent);
+        }
     }
     else if (entity_class == EntityType::MODELENTITY) {
         printf("Deleting a modelentity...\n");

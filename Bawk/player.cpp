@@ -95,8 +95,8 @@ ivec3 Player::get_rounded_forward() {
 void Player::step() {
     if (mount) {
         // track mount
-        mount->transform_into_world_coordinates_smooth(&pos, offset_to_mount.x, offset_to_mount.y, offset_to_mount.z);
-        pos -= center_pos;
+        //mount->transform_into_world_coordinates_smooth(&pos, offset_to_mount.x, offset_to_mount.y, offset_to_mount.z);
+        //pos -= center_pos;
     }
     else {
         RenderablePlayer::step();
@@ -106,22 +106,40 @@ void Player::step() {
 void Player::set_mount(SuperObject* m, fvec3 pos) {
     if (!m)
         return;
+    if (mount) {
+        // unmount first
+        mount->remove_entity(this);
+    }
+    printf_fvec3(get_rwc_pos());
+    printf("\n");
     mount = m;
-    m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
-    set_pos(pos - this->center_pos);
+    this->set_pos(pos);
+    mount->add_entity(this);
+    //m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
+    //set_pos(pos - this->center_pos);
     can_collide = false;
+    printf_fvec3(get_rwc_pos());
 }
 
 bool Player::unmount(World* world) {
+    if (!mount) {
+        return true;
+    }
+    printf_fvec3(get_rwc_pos());
+    printf("\n");
+    mount->remove_entity(this);
     // try setting pos to about 2 blocks above current position
     pos.y += 2.0f;
     if (world->will_collide_with_anything(this)) {
         // return false if we can't unmount...because not room for player
         pos.y -= 2.0f;
+        mount->add_entity(this);
         return false;
     }
     mount = 0;
     can_collide = true;
+    printf_fvec3(get_rwc_pos());
+    world->add_entity(this);
     return true;
 }
 

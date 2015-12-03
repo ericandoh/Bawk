@@ -247,6 +247,7 @@ void BaseWorld::step() {
         std::vector<Entity*> checking_against = i.second;
         // first, try rotating moved_entity and see if it can rotate
         moved_entity->pos -= moved_entity->velocity;
+        moved_entity->recalculate_transform();
         if (moved_entity->angular_velocity.x != 0 || moved_entity->angular_velocity.y != 0) {
             bool collides = false;
             for (auto &j : checking_against) {
@@ -295,8 +296,8 @@ void BaseWorld::step() {
                 prev_pos = current_pos;
                 current_pos = current_pos + step_velocity;
                 moved_entity->set_pos(current_pos);
-                for (auto &i: checking_against) {
-                    if (i->collides_with(moved_entity)) {
+                for (auto &j: checking_against) {
+                    if (j->collides_with(moved_entity)) {
                         collided = true;
                         break;
                     }
@@ -330,6 +331,27 @@ bool BaseWorld::collides_with(Entity* other) {
     other->transform_into_world_coordinates(&other_rwc_bounds.upper, other->bounds.upper.x, other->bounds.upper.y, other->bounds.upper.z);
     other_rwc_bounds.refit_for_rotation();
     
-    return SuperObject::collides_with(other, &other_rwc_bounds, &other_rwc_bounds, get_collision_level() - 1, other->get_collision_level());
+    int my_collision_level = get_collision_level() - 1;
+    int other_collision_level = other->get_collision_level();
+    
+    // TODO this is a hack, find a better way to deal
+    if (other->entity_class == EntityType::SUPEROBJECT ||
+        other->entity_class == EntityType::CURSORSUPEROBJECT ||
+        other->entity_class == EntityType::GAMETEMPLATE) {
+        if (SuperObject::collides_with(other, &other_rwc_bounds, &other_rwc_bounds, my_collision_level, other_collision_level - 1)) {
+            return true;
+        }
+        else {
+            for (Entity* ent: ((SuperObject*)other)->entities) {
+                if (this->collides_with(ent)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    else {
+        return SuperObject::collides_with(other, &other_rwc_bounds, &other_rwc_bounds, my_collision_level, other_collision_level);
+    }
 }
 

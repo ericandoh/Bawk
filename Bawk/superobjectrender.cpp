@@ -43,6 +43,7 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     block_type raw_chunk[CX][CY][CZ];
     if (get_chunk(raw_chunk, x, y, z)) {
         // failed to load chunk
+        printf("failed to get chunk\n");
         return 1;
     }
     RenderableChunk* chunk = new RenderableChunk(raw_chunk);

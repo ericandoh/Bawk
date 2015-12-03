@@ -11,6 +11,7 @@
 #include "superobject.h"
 #include "blocktracer.h"
 #include "game_info_loader.h"
+#include "entity_loader.h"
 
 // constructor
 World::World(std::string id) {
@@ -76,6 +77,7 @@ bool World::break_block() {
     if (src->entity_class != EntityType::BASEWORLD && src->entity_class != EntityType::GAMETEMPLATE) {
         // if we're not breaking a block or from the gametemplate, kill the entity
         base_world->remove_entity(src);
+        delete_entity_from_memory(src);
         // only permit block removal from
         // TOFU this COULD be changed - that would actually be pretty cool - but I'd have to think about it
         return false;

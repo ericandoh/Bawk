@@ -60,10 +60,10 @@ int Game::init() {
     // later separate loading the player and the world - this might get complicated!
     player = new Player(pid);
     player->load_selfs();
-    last_player_pos = player->pos;
+    last_player_pos = player->get_rwc_pos();
     
     world->add_player(player);
-    world->update_chunks(&(player->pos));
+    world->update_chunks(&(last_player_pos));
     
     // set key mappings
     // movement key mappings
@@ -222,10 +222,10 @@ void Game::render_lights() {
         }
     }
     // TODO this box is positioned in all sorts of wrong...
-    fmat4 view = glm::translate(fmat4(1), player->pos);
+    fmat4 view = glm::translate(fmat4(1), player->get_rwc_pos() - fvec3(0.5f,0.5f,0.5f));
     set_lighting_transform_matrix(&view);
     set_lighting_block_draw_mode(1);
-    set_lighting_val(player->pos);
+    set_lighting_val(player->get_rwc_pos());
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
@@ -280,7 +280,7 @@ float get_dst(fvec3* a, fvec3* b) {
 }
 
 void Game::check_need_update() {
-    fvec3 player_pos = player->pos;
+    fvec3 player_pos = player->get_rwc_pos();
     if (get_dst(&last_player_pos, &player_pos) >= CHUNK_UPDATE_TRIGGER_DISTANCE) {
         world->update_chunks(&player_pos);
         last_player_pos = player_pos;

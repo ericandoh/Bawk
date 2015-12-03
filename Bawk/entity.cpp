@@ -145,6 +145,7 @@ void Entity::recalculate_transform() {
     if (parent) {
         // apply parent matrices
         into_my_mat = into_my_mat * parent->into_my_mat;
+        into_my_mat_smooth = into_my_mat_smooth * parent->into_my_mat_smooth;
         into_world_mat = parent->into_world_mat * into_world_mat;
         into_world_mat_smooth = parent->into_world_mat_smooth * into_world_mat_smooth;
     }
@@ -260,6 +261,23 @@ void Entity::move_dist(fvec3 off) {
 void Entity::turn_angle(fvec3 off) {
     angular_velocity += off;
     stable = false;
+}
+
+void Entity::print_debug() {
+    printf("\n");
+    print_entity_type(entity_class);
+    printf(" (%d,%d) of class %d", pid, vid, entity_class);
+    printf("\nPos: ");
+    printf_fvec3(pos);
+    printf("\nDir: ");
+    printf_fvec3(angle.dir);
+    printf("\nCenter: ");
+    printf_fvec3(center_pos);
+    printf("\nBounds:\n");
+    printf_fvec3(bounds.lower);
+    printf("\n");
+    printf_fvec3(bounds.upper);
+    printf("\n\n");
 }
 
 Entity* Entity::poke(float x, float y, float z) {
