@@ -96,14 +96,7 @@ ivec3 Player::get_rounded_forward() {
 }
 
 void Player::step() {
-    if (mount) {
-        // track mount
-        //mount->transform_into_world_coordinates_smooth(&pos, offset_to_mount.x, offset_to_mount.y, offset_to_mount.z);
-        //pos -= center_pos;
-    }
-    else {
-        RenderablePlayer::step();
-    }
+    RenderablePlayer::step();
 }
 
 void Player::set_mount(SuperObject* m, fvec3 pos) {
@@ -116,7 +109,10 @@ void Player::set_mount(SuperObject* m, fvec3 pos) {
     printf_fvec3(get_rwc_pos());
     printf("\n");
     mount = m;
-    this->set_pos(pos);
+    // no moving around while mounted!
+    velocity = fvec3(0, 0, 0);
+    // TODO this is hack fix
+    this->set_pos(pos + fvec3(0.5f,0.5f,0.5f));
     mount->add_entity(this);
     //m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
     //set_pos(pos - this->center_pos);
@@ -139,8 +135,11 @@ bool Player::unmount(World* world) {
         mount->add_entity(this);
         return false;
     }
+    velocity = mount->velocity;
     mount = 0;
     can_collide = true;
+    angle.set_to_point(angle.forward, fvec3(0,1,0));
+    recalculate_transform();
     printf_fvec3(get_rwc_pos());
     world->add_entity(this);
     return true;

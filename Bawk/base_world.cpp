@@ -315,9 +315,24 @@ void BaseWorld::step() {
         }
     }
     for (auto &i: entities) {
-        i->stable = true;
-        i->velocity = fvec3(0,0,0);
-        i->angular_velocity = fvec3(0,0,0);
+        if (!i->stable) {
+            //i->velocity = fvec3(0,0,0);
+            // TODO set a decay constant here
+            i->velocity = i->velocity * 0.85f;
+            if (fabsf(i->velocity.x) < 0.02f) {
+                i->velocity.x = 0.0f;
+            }
+            if (fabsf(i->velocity.y) < 0.02f) {
+                i->velocity.y = 0.0f;
+            }
+            if (fabsf(i->velocity.z) < 0.02f) {
+                i->velocity.z = 0.0f;
+            }
+            if (i->velocity.x == 0 && i->velocity.y == 0 && i->velocity.z == 0) {
+                i->stable = true;
+            }
+            i->angular_velocity = fvec3(0,0,0);
+        }
     }
 }
 

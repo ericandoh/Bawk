@@ -284,6 +284,7 @@ bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
 }
 
 void SuperObject::step() {
+    RenderableSuperObject::step();
     for (int i = 0; i < entities.size(); i++) {
         entities[i]->step();
     }

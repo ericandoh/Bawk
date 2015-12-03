@@ -59,36 +59,36 @@ bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, 
     else if (action == Action::MOVE_LEFT) {
         // turn left
         //owner->move_left(5.0f);
-        owner->yaw_left(2.0f);
+        owner->yaw_left(4.0f);
     }
     else if (action == Action::MOVE_RIGHT) {
         // turn right
         //owner->move_right(5.0f);
-        owner->yaw_right(2.0f);
+        owner->yaw_right(4.0f);
     }
     else if (action == Action::MOVE_UP) {
         // move up
-        owner->move_up(2.0f);
+        owner->move_up(5.0f);
     }
     else if (action == Action::MOVE_DOWN) {
         // move down
-        owner->move_down(2.0f);
+        owner->move_down(5.0f);
     }
     else if (action == Action::PITCH_UP) {
         // pitch up
-        owner->pitch_up(2.0f);
+        owner->pitch_up(3.0f);
     }
     else if (action == Action::PITCH_DOWN) {
         // pitch down
-        owner->pitch_down(2.0f);
+        owner->pitch_down(3.0f);
     }
     else if (action == Action::ROLL_LEFT) {
         // pitch up
-        owner->roll_left(2.0f);
+        owner->roll_left(3.0f);
     }
     else if (action == Action::ROLL_RIGHT) {
         // pitch down
-        owner->roll_right(2.0f);
+        owner->roll_right(3.0f);
     }
     else {
         return false;
