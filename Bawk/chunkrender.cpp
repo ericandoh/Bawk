@@ -41,6 +41,7 @@ RenderableChunk::RenderableChunk(block_type from[CX][CY][CZ]) {
     changed = true;
     left = right = below = above = front = back = 0;
     memcpy(&blk[0][0][0], &from[0][0][0], sizeof(block_type)*CX*CY*CZ);
+    has_lights = false;
     update_dimensions();
 }
 
@@ -213,6 +214,8 @@ bool RenderableChunk::intersects_my_bounds(ivec3 lower_corner, ivec3 upper_corne
 
 void RenderableChunk::update() {
     changed = false;
+    lights.clear();
+    has_lights = false;
     
     // 6 faces per cube, plus 3+3 vertices on each triangle of quad
     // but half will not be visible for some reason...don't render?
@@ -235,6 +238,15 @@ void RenderableChunk::update() {
                 if (get_block_is_model(blk[x][y][z])) {
                     // add to
                     fill_game_models(model_vertices, model_normals, model_uvs, blk[x][y][z], x, y, z);
+                }
+                RenderableLight* light = get_block_light(blk[x][y][z]);
+                if (light->should_render()) {
+                    LightAndPosition light_and_pos;
+                    light_and_pos.light = light;
+                    // want to render the light at the center of our block
+                    light_and_pos.pos = fvec3(x + 0.5f, y + 0.5f, z + 0.5f);
+                    lights.push_back(light_and_pos);
+                    has_lights = true;
                 }
                 // Line of sight blocked?
                 if(isblocked(x, y, z, x - 1, y, z)) {
@@ -497,6 +509,12 @@ void RenderableChunk::render() {
         glBufferData(GL_ARRAY_BUFFER, model_uvs.size() * sizeof(fvec3), &(model_uvs[0]), GL_DYNAMIC_DRAW);
         glVertexAttribPointer(geometry_texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glDrawArrays(GL_TRIANGLES, 0, num_triangles);
+    }
+}
+
+void RenderableChunk::render_lights(fmat4* transform, fvec3 player_pos) {
+    for (auto &i: lights) {
+        i.light->render_light(transform, i.pos, player_pos);
     }
 }
 

@@ -122,7 +122,9 @@ int Game::init() {
     
     // for testing, TODO delete
     bar->set_current(new CursorModelObject(1));
-        
+    bar->set_index(1);
+    bar->set_current(new CursorModelObject(2));
+    
     return 0;
 }
     

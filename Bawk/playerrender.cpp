@@ -76,7 +76,7 @@ void RenderablePlayer::render() {
     int width, height;
     get_window_size(&width, &height);
     
-    set_block_draw_mode(0);
+    set_block_draw_mode(2);
     
     /* Draw a cross in the center of the screen */
     float cross[4][3] = {

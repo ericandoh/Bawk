@@ -8,128 +8,66 @@
             "weight": 0
         },
         "1": {
+            "name": "lightstone",
+            "resistance": 8,
+            "weight": 20
+        },
+        "2": {
             "name": "stone",
             "resistance": 10,
             "weight": 25
         },
-        "2": {
-            "name": "grass",
-            "resistance": 3,
-            "weight": 12
-        },
         "3": {
+            "name": "darkstone",
+            "resistance": 12,
+            "weight": 30
+        },
+        "10": {
             "name": "sand",
             "resistance": 1,
-            "weight": 12
+            "weight": 10
         },
-        "4": {
-            "name": "wood",
-            "resistance": 6,
-            "weight": 9
-        },
-        "5": {
+        "16": {
             "name": "dirt",
             "resistance": 2,
             "weight": 10
         },
-        "6": {
-            "name": "glass",
-            "resistance": 1,
-            "transparency": 3,
-            "weight": 13
+        "20": {
+            "name": "grass",
+            "resistance": 3,
+            "texture": [16, 20, 16, 16, 16, 16],
+            "weight": 12
         },
-        "7": {
+        "37": {
             "name": "water",
             "resistance": 1,
-            "transparency": 4,
-            "weight": 13
+            "transparency": 3,
+            "weight": 15
         },
-        "8": {
+        "38": {
             "name": "lava",
             "resistance": 1,
-            "transparency": 5,
-            "weight": 13,
-            "light": [3, 5]
+            "transparency": 4,
+            "weight": 15,
+            "light": [1.3, 0.6]
         },
-        "9": {
-            "name": "metal",
+        "94": {
+            "name": "glass",
             "resistance": 1,
-            "weight": 13
+            "transparency": 5,
+            "weight": 15
         },
-        "10": {
-            "name": "engine",
-            "resistance": 2,
-            "texture": "simplebox.obj",
-            "weight": 30,
-            "action": "engine"
+        "120": {
+            "name": "metal",
+            "resistance": 20,
+            "weight": 35
         },
-        "11": {
-            "name": "saddle",
-            "resistance": 2,
-            "texture": "mount.obj",
-            "weight": 30,
-            "vehicle": 1,
-            "action": "vehicle"
+        "128": {
+            "name": "wood",
+            "resistance": 6,
+            "weight": 10
         },
-        "12": {
-            "name": "sidetest",
-            "texture": [16, 17, 18, 19, 20, 21]
-        },
-        "13": {
-            "name": "unnamed"
-        },
-        "14": {
-            "name": "unnamed"
-        },
-        "15": {
-            "name": "unnamed"
-        },
-        "16": {
-            "name": "unnamed"
-        },
-        "17": {
-            "name": "unnamed"
-        },
-        "18": {
-            "name": "unnamed"
-        },
-        "19": {
-            "name": "unnamed"
-        },
-        "20": {
-            "name": "unnamed"
-        },
-        "21": {
-            "name": "unnamed"
-        },
-        "22": {
-            "name": "unnamed"
-        },
-        "23": {
-            "name": "unnamed"
-        },
-        "24": {
-            "name": "unnamed"
-        },
-        "25": {
-            "name": "unnamed"
-        },
-        "26": {
-            "name": "unnamed"
-        },
-        "27": {
-            "name": "unnamed"
-        },
-        "28": {
-            "name": "unnamed"
-        },
-        "29": {
-            "name": "unnamed"
-        },
-        "30": {
-            "name": "unnamed"
-        },
-        "31": {
+        "129": {
             "name": "allsupportedfeatures",
             "resistance": 100,
             "texture": "test.obj",
@@ -137,41 +75,41 @@
             "weight": 100,
             "vehicle": 100,
             "action": "sample",
-            "light": [3, 5]
+            "light": [3, 0.5]
         }
     },
     "models":
     {
-        "0": {
+        "1": {
             "name": "engine",
             "resistance": 2,
             "texture": "simplebox.obj",
             "weight": 30,
             "action": "engine"
         },
-        "1": {
+        "2": {
             "name": "saddle",
             "resistance": 2,
             "texture": "mount.obj",
             "weight": 30,
             "vehicle": 1,
             "action": "vehicle",
-            "light": [3, 5]
+            "light": [3, 1.0]
         },
-        "2": {
+        "3": {
             "name": "allsupportedfeatures",
             "resistance": 100,
             "texture": "test.obj",
             "weight": 100,
             "vehicle": 100,
             "action": "sample",
-            "light": [3, 5]
+            "light": [3, 1.0]
         }
     },
     "recipes":
     {
         "0": {
-            "name": "engine",
+            "name": "undefined",
             "blocks": [{"position": [0, 0, 0]},
                        {"position": [0, 0, 1]},
                        {"position": [0, 1, 1]},
@@ -204,7 +142,7 @@
         },
         "3": {
             "name": "allsupportedfeatures",
-            "blocks": [{"id": 3, "orientation": 5, "position": [0, 0, 0]},
+            "blocks": [{"id": "stone", "orientation": 5, "position": [0, 0, 0]},
                        {"id": 3, "orientation": "top", "position": [0, 0, 1]},
                        {"position": [0, 1, 1]}],
             "blocks": "path/to/superobject_folder",

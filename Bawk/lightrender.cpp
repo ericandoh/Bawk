@@ -127,6 +127,7 @@ void RenderableLight::render_light(fvec3 rwc, fvec3 player_pos) {
     set_lighting_transform_matrix(&view);
     set_lighting_block_draw_mode(1);
     set_lighting_val(rwc);
+    set_lighting_properties(light_radius, light_intensity);
     
     glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
     glBufferData(GL_ARRAY_BUFFER, sizeof light_render_box, light_render_box, GL_DYNAMIC_DRAW);

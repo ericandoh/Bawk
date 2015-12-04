@@ -362,6 +362,25 @@ void RenderableSuperObject::render(fmat4* transform) {
     }
 }
 
+void RenderableSuperObject::render_lights(fmat4* transform, fvec3 player_pos) {
+    for (auto iterator = chunks.begin(); iterator != chunks.end(); iterator++) {
+        if (!iterator->second->has_lights) {
+            continue;
+        }
+        ivec3 sub_pos = iterator->first;
+        
+        fmat4 view;
+        get_mvp(&view);
+        view = glm::translate(view, fvec3(sub_pos.x * CX,
+                                          sub_pos.y * CY,
+                                          sub_pos.z * CZ));
+        
+        view = *transform * view;
+        
+        iterator->second->render_lights(&view, player_pos);
+    }
+}
+
 void RenderableSuperObject::update_chunks(fvec3* player_pos) {
     // get player position in this object's axis
     fvec3 oac;

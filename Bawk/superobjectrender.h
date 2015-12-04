@@ -91,8 +91,8 @@ public:
     // --- Entity ---
     virtual Entity* poke(float x, float y, float z) override;
     virtual bool break_block(float x, float y, float z) override;
-    
     virtual void render(fmat4* transform) override;
+    virtual void render_lights(fmat4* transform, fvec3 player_pos) override;
     virtual void update_chunks(fvec3* player_pos) override;
     
     virtual int get_collision_level() override;

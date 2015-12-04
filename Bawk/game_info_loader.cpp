@@ -18,7 +18,6 @@
 #include "world_generator.h"
 #include "world_generator_structures.h"
 #include "modelrender.h"
-#include "lightrender.h"
 
 // add this to every recipe ID
 // +1, so 0 doesn't map to 0 in the actual block
@@ -868,16 +867,15 @@ bool get_block_is_model(block_type blk) {
     return false;
 }
 
-bool get_block_is_light(block_type blk) {
+RenderableLight* get_block_light(block_type blk) {
     uint16_t block_id = blk.type;
     if (block_id >= recipe_mask) {
         block_id -= recipe_mask;
-        return game_data_object->recipe_block_info[block_id].light.should_render();
+        return &(game_data_object->recipe_block_info[block_id].light);
     }
     else {
-        return game_data_object->block_info[block_id].light.should_render();
+        return &(game_data_object->block_info[block_id].light);
     }
-    return false;
 }
 
 int get_block_resistance(uint16_t block_id) {

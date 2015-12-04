@@ -9,6 +9,8 @@ uniform vec2 l_screen_size;
 
 // this is direction for directional light, or position for point light
 uniform vec3 l_val;
+// some other misc info that we can pass in
+uniform vec3 l_properties;
 // whether we draw directional or point light
 uniform int l_draw_mode;
 
@@ -19,16 +21,15 @@ vec2 get_tex_coord() {
 }
 
 float get_point_light(vec3 worldpos) {
-    float peak = 3;
     vec3 lightdir = worldpos - l_val;
     float distance = length(lightdir);
-    if (distance > peak) {
+    if (distance > l_properties.x) {
         discard;
         //return 0;
     }
     // fraction will be greater the closer you are
-    float fraction = 1.0 - distance / peak;
-    return fraction * 1.0;
+    float fraction = 1.0 - distance / l_properties.x;
+    return fraction * l_properties.y;
     
     //return 1;
     /*
@@ -51,18 +52,18 @@ void main(void) {
     //normal = normalize(normal);
     
     out_color.xyz = (color_o.xyz + color_t) / 2.0;
-    if (l_draw_mode == 0) {
+    //if (l_draw_mode == 0) {
         // ambient lighting
-        out_color.xyz = color_o;
-    }
-    else if (l_draw_mode == 1) {
+        // out_color.xyz = color_o;
+    //} else
+    if (l_draw_mode == 1) {
         // point light
         out_color.xyz = out_color.xyz * get_point_light(worldpos);
         // out_color = color;
     }
-    else {
+    //else {
         // directional light or whatnot
-        out_color.xyz = color_o;
-    }
+        // out_color.xyz = color_o;
+    //}
     out_color.w = 1.0;
 }

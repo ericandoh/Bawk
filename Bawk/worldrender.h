@@ -51,6 +51,7 @@ extern GLuint lighting_color_t_map;
 extern GLuint lighting_normal_map;
 extern GLuint lighting_screen_size;
 extern GLuint lighting_val;
+extern GLuint lighting_properties;
 extern GLuint lighting_draw_mode;
 
 extern GLuint tile_texture;
@@ -71,6 +72,7 @@ void set_alpha_cutoff(float a);
 
 void set_lighting_block_draw_mode(int v);
 void set_lighting_val(fvec3 val);
+void set_lighting_properties(float light_radius, float light_intensity);
 void set_lighting_transform_matrix(fmat4* view);
 void set_unitary_lighting_transform_matrix();
 void set_lighting_screen_size(float width, float height);

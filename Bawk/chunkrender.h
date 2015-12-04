@@ -26,6 +26,7 @@
 #include "includeglfw.h"
 #include <vector>
 #include "block.h"
+#include "lightrender.h"
 
 // dimensions of our chunk
 #define CX 16
@@ -34,9 +35,15 @@
 
 void delete_all_buffers();
 
+struct LightAndPosition {
+    RenderableLight* light;
+    fvec3 pos;
+};
+
 class RenderableChunk {
     GLuint coord_vbo;           // VBO (vertex buffer object) for coordinates
     GLuint texture_vbo;         // VBO (vertex buffer object) for textures/flags
+    std::vector<LightAndPosition> lights;
     // TODO DEPRECATE THIS
     std::vector<fvec3> model_vertices;
     std::vector<fvec3> model_normals;
@@ -49,6 +56,7 @@ class RenderableChunk {
     // internal function used to optimize rendering of blocks
     bool isblocked(int x1, int y1, int z1, int x2, int y2, int z2);
 public:
+    bool has_lights;
     // these set public for ease of setting
     RenderableChunk *left, *right, *below, *above, *front, *back;
     // blk type for each block
@@ -71,6 +79,7 @@ public:
     void update();
     // renders the chunk, given that the transformation matrix has been set previously correctly
     void render();
+    void render_lights(fmat4* transform, fvec3 player_pos);
 };
 
 // fills a CX by CY by CZ array with empty data representing empty (air) blocks

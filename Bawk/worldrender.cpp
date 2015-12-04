@@ -40,6 +40,7 @@ GLuint lighting_normal_map;
 
 GLuint lighting_screen_size;
 GLuint lighting_val;
+GLuint lighting_properties;
 GLuint lighting_draw_mode;
 
 GLuint tile_texture;
@@ -145,6 +146,10 @@ void set_lighting_block_draw_mode(int v) {
 
 void set_lighting_val(fvec3 val) {
     glUniform3f(lighting_val, val.x, val.y, val.z);
+}
+
+void set_lighting_properties(float light_radius, float light_intensity) {
+    glUniform3f(lighting_properties, light_radius, light_intensity, 0.0f);
 }
 
 void set_lighting_transform_matrix(fmat4* view) {

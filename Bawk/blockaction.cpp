@@ -48,6 +48,8 @@ bool default_block_keyboard_callback(Game* game, Entity* owner, block_type* blk,
 // a universal 6 directional engine
 // drawbacks is it is very weak
 bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action) {
+    // TODO we need both the owner entity (the engine on which this is called) and the target (the entire superobject
+    // for which we want to do the action on...
     if (action == Action::MOVE_FORWARD) {
         // move forward
         owner->move_forward(20.0f);
