@@ -170,6 +170,19 @@
                   "lowerpersistence": 0.2
                   },
                   {
+                  "name": "flatty",
+                  "biomes": {"flat": 1},
+                  "sector": [64, 64],
+                  "biomecount": [5, 0],
+                  "islandcount": [5, 0],
+                  "separation": 10,
+                  "fatness": 4,
+                  "melt": 3,
+                  "octaves": 5,
+                  "lowerstrength": 0.0,
+                  "lowerpersistence": 0.2
+                  },
+                  {
                   "name": "full_infinite",
                   "biomes": {"forest": 1},
                   "sector": [256, 256],
@@ -214,6 +227,14 @@
                    "persistence": 0.7,
                    "blocks": [{"id": "stone", "lower": 0, "upper": 8, "frequency": 1}],
                    "events": [{"id": "orespawn", "rid": 4, "lower": 10, "frequency": 0.005, "radius": 3}]
+                   },
+                   {
+                   "name": "flat",
+                   "strength": 1.0,
+                   "persistence": 0.2,
+                   "blocks": [{"id": "grass", "lower": 0, "upper": 0, "frequency": 1},
+                              {"id": "dirt",  "lower": 1, "upper": 3, "frequency": 1},
+                              {"id": "stone", "lower": 4, "frequency": 1}]
                    },
                    {
                    "name": "allsupportedfeatures",

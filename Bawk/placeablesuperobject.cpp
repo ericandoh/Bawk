@@ -102,6 +102,7 @@ void PlaceableSuperObject::update_chunks(fvec3* start_pos) {
 
 // --- PlaceableObject ---
 fvec3 PlaceableSuperObject::calculate_center_position() {
+    // TODO this doesnt keep take into account what direction we're pointing in...
     // calculate the center position of this object
     
     // first, find direction we're pointing in

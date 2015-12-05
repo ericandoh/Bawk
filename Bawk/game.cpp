@@ -253,16 +253,16 @@ void Game::frame() {
             // see if we're in any vehicle of any sort, then see if it'll accept the key i send
             SuperObject* mount = player->get_mount();
             if (mount) {
-                if (mount->block_keyboard_callback(this, do_this, mount)) {
-                    continue;
-                }
+                // if mounted, always capture all key movements even if not valid
+                // this is because all the other below default options should be DISABLE when mounted
+                mount->block_keyboard_callback(this, do_this, mount);
             }
             switch (do_this) {
                 case MOVE_UP:
-                    player->move_up(5.0f);
+                    player->move_up_flat(5.0f);
                     break;
                 case MOVE_DOWN:
-                    player->move_down(5.0f);
+                    player->move_down_flat(5.0f);
                     break;
                 case MOVE_LEFT:
                     player->move_left(5.0f);

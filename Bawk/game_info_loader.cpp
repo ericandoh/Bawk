@@ -759,7 +759,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
             game_data_object->world_gen_modes.push_back(winfo);
         }
     }
-    
+    // TODO change this so this takes by name instead ("default")
     setup_world_generator(&(game_data_object->world_gen_modes[0]), 101);
     
     return 0;

@@ -210,6 +210,18 @@ void Entity::move_down(float force) {
                                       angle.up.z));
 }
 
+void Entity::move_up_flat(float force) {
+    move_dist(fvec3(0.0,
+                    get_speed(force),
+                    0.0));
+}
+
+void Entity::move_down_flat(float force) {
+    move_dist(fvec3(0.0,
+                    -get_speed(force),
+                    0.0));
+}
+
 void Entity::yaw_left(float force) {
     // 1 unit of force turns 1 weight by M_PI/2
     float angular_force = get_speed(force)*RIGHT_ANGLE;

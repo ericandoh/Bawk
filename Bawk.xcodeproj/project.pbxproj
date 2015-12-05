@@ -336,6 +336,7 @@
 		074B6C9A1BB9D2380065192B /* Bawk */ = {
 			isa = PBXGroup;
 			children = (
+				07F738551C136A1D00768B3C /* cs194 */,
 				0704CF6E1BC98CEE0050EE52 /* ui */,
 				074B6CA21BB9D2780065192B /* Cocoa.framework */,
 				076BEFDF1BD19E6100D68C8F /* physics */,
@@ -472,6 +473,13 @@
 				072A0A2E1C0C3A69009304E5 /* collision_detection.h */,
 			);
 			name = physics;
+			sourceTree = "<group>";
+		};
+		07F738551C136A1D00768B3C /* cs194 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = cs194;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
