@@ -318,7 +318,7 @@ void BaseWorld::step() {
         if (!i->stable) {
             //i->velocity = fvec3(0,0,0);
             // TODO set a decay constant here
-            i->velocity = i->velocity * 0.85f;
+            i->velocity = i->velocity * 0.5f;
             if (fabsf(i->velocity.x) < 0.02f) {
                 i->velocity.x = 0.0f;
             }

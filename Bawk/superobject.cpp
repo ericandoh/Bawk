@@ -237,11 +237,11 @@ bool SuperObject::break_block(float x, float y, float z) {
 }
 
 bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
-    for (Entity* ent: entities) {
-        ent->block_keyboard_callback(game, key, ent);
+    bool any = false;
+    for (Entity* entity: entities) {
+        any = any || entity->block_keyboard_callback(game, key, ent);
     }
     if (key_mapping.count(key)) {
-        bool any = false;
         for (int i = 0; i < key_mapping[key].size(); i++) {
             ivec3 position = key_mapping[key][i].position;
             ivec3 rwc;
@@ -257,7 +257,7 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
         }
         return any;
     }
-    return false;
+    return any;
 }
 
 bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
