@@ -157,19 +157,6 @@
     {
         "modes": [
                   {
-                  "name": "default",
-                  "biomes": {"forest": 5, "snow": 2, "desert": 3},
-                  "sector": [64, 64],
-                  "biomecount": [8, 1],
-                  "islandcount": [5, 1],
-                  "separation": 10,
-                  "fatness": 4,
-                  "melt": 8,
-                  "octaves": 5,
-                  "lowerstrength": 20.0,
-                  "lowerpersistence": 0.2
-                  },
-                  {
                   "name": "flatty",
                   "biomes": {"flat": 1},
                   "sector": [64, 64],
@@ -180,6 +167,19 @@
                   "melt": 3,
                   "octaves": 5,
                   "lowerstrength": 0.0,
+                  "lowerpersistence": 0.2
+                  },
+                  {
+                  "name": "default",
+                  "biomes": {"forest": 5, "snow": 2, "desert": 3},
+                  "sector": [64, 64],
+                  "biomecount": [8, 1],
+                  "islandcount": [5, 1],
+                  "separation": 10,
+                  "fatness": 4,
+                  "melt": 8,
+                  "octaves": 5,
+                  "lowerstrength": 20.0,
                   "lowerpersistence": 0.2
                   },
                   {

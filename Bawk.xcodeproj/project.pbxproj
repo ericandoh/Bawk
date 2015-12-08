@@ -73,6 +73,7 @@
 		07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3FA1BED27860088744F /* light_vertex_shader.glsl */; };
 		07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */; };
 		07F6906F1BD388F900818867 /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F6906D1BD388F900818867 /* testing.cpp */; };
+		07F7385B1C136AA300768B3C /* efros_leung.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F738591C136AA300768B3C /* efros_leung.cpp */; };
 		07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FA18381BE5ACAB00C7319C /* worldevent.cpp */; };
 		07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FE04301BEABB90001B26D9 /* debug_action.cpp */; };
 /* End PBXBuildFile section */
@@ -226,6 +227,8 @@
 		07E11BC61BEBFDB700C0F98C /* gbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gbuffer.h; sourceTree = "<group>"; };
 		07F6906D1BD388F900818867 /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
 		07F6906E1BD388F900818867 /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
+		07F738591C136AA300768B3C /* efros_leung.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = efros_leung.cpp; sourceTree = "<group>"; };
+		07F7385A1C136AA300768B3C /* efros_leung.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = efros_leung.h; sourceTree = "<group>"; };
 		07FA18371BE598CA00C7319C /* world_generator_structures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = world_generator_structures.h; sourceTree = "<group>"; };
 		07FA18381BE5ACAB00C7319C /* worldevent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = worldevent.cpp; sourceTree = "<group>"; };
 		07FA18391BE5ACAB00C7319C /* worldevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = worldevent.h; sourceTree = "<group>"; };
@@ -478,6 +481,8 @@
 		07F738551C136A1D00768B3C /* cs194 */ = {
 			isa = PBXGroup;
 			children = (
+				07F738591C136AA300768B3C /* efros_leung.cpp */,
+				07F7385A1C136AA300768B3C /* efros_leung.h */,
 			);
 			name = cs194;
 			sourceTree = "<group>";
@@ -587,6 +592,7 @@
 				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
 				0766EAF81BBF7D1300477144 /* texture_loader.cpp in Sources */,
 				076410711BC45EA300135EDC /* gametemplate.cpp in Sources */,
+				07F7385B1C136AA300768B3C /* efros_leung.cpp in Sources */,
 				076BEFEE1BD204D200D68C8F /* inventory_widget.cpp in Sources */,
 				075C67401BBA3EE800CB87DE /* world.cpp in Sources */,
 				075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */,

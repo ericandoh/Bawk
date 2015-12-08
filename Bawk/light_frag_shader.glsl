@@ -52,11 +52,10 @@ void main(void) {
     //normal = normalize(normal);
     
     out_color.xyz = (color_o.xyz + color_t) / 2.0;
-    //if (l_draw_mode == 0) {
+    if (l_draw_mode == 0) {
         // ambient lighting
-        // out_color.xyz = color_o;
-    //} else
-    if (l_draw_mode == 1) {
+        out_color.xyz = out_color.xyz * 1.3f;
+    } else if (l_draw_mode == 1) {
         // point light
         out_color.xyz = out_color.xyz * get_point_light(worldpos);
         // out_color = color;

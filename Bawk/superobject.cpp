@@ -276,7 +276,7 @@ bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
             }
 
         }
-        else {
+        else if (at_cursor) {
             return at_cursor->block_mouse_callback(game, button, ent);
         }
     }
