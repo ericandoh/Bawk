@@ -124,6 +124,8 @@ int Game::init() {
     bar->set_current(new CursorModelObject(1));
     bar->set_index(1);
     bar->set_current(new CursorModelObject(2));
+    bar->set_index(2);
+    bar->set_current(new CursorModelObject(3));
     
     return 0;
 }

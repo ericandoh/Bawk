@@ -80,6 +80,10 @@ bool World::break_block() {
         return false;
     
     if (src->entity_class != EntityType::BASEWORLD && src->entity_class != EntityType::GAMETEMPLATE) {
+        if (src->entity_class == EntityType::PLAYER) {
+            printf("Can't delete players! wtf you doing mate\n");
+            return false;
+        }
         // if we're not breaking a block or from the gametemplate, kill the entity
         base_world->remove_entity(src);
         delete_entity_from_memory(src);

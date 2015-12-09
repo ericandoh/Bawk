@@ -97,6 +97,19 @@
             "light": [3, 1.0]
         },
         "3": {
+            "name": "gun",
+            "resistance": 2,
+            "texture": "gun.obj",
+            "weight": 50,
+            "action": "shoot"
+        },
+        "4": {
+            "name": "bullet",
+            "resistance": 2,
+            "texture": "bullet.obj",
+            "weight": 20
+        },
+        "5": {
             "name": "allsupportedfeatures",
             "resistance": 100,
             "texture": "test.obj",

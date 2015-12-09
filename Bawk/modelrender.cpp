@@ -47,6 +47,15 @@ void RenderableModel::refresh() {
     center_pos = bounds.get_center_pos();
     
     fvec3 aligned_center_pos = get_nearest_half_or_whole(center_pos);
+    if (aligned_center_pos.x < 0.5f) {
+        aligned_center_pos.x = 0.5f;
+    }
+    if (aligned_center_pos.y < 0.5f) {
+        aligned_center_pos.y = 0.5f;
+    }
+    if (aligned_center_pos.z < 0.5f) {
+        aligned_center_pos.z = 0.5f;
+    }
     fvec3 center_offset = aligned_center_pos - center_pos;
     bounds.lower += center_offset;
     bounds.upper += center_offset;
@@ -58,6 +67,16 @@ void RenderableModel::refresh() {
     
     bounds.lower = get_round_from_fvec3(bounds.lower);
     bounds.upper = get_round_from_fvec3(bounds.upper);
+    // nothing should be 0 wide...
+    if (bounds.upper.x == 0) {
+        bounds.upper.x = 1.0f;
+    }
+    if (bounds.upper.y == 0) {
+        bounds.upper.y = 1.0f;
+    }
+    if (bounds.upper.z == 0) {
+        bounds.upper.z = 1.0f;
+    }
     center_pos = bounds.get_center_pos();
 }
 
