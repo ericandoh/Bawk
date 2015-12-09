@@ -13,18 +13,25 @@
 #include <vector>
 #include <map>
 #include "block.h"
-#include "world.h"
 #include "game_actions.h"
 
 class Game;
+class Entity;
 
-typedef bool (*block_mouse_callback_func)(Game* game, Entity* owner, block_type* blk, fvec3 rwc, Action button);
-typedef bool (*block_keyboard_callback_func)(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action);
+// callback functions for blocks
+// @param owner: the top level object
+// @param rwc: the rwc position
+typedef bool (*block_callback_func)(Game* game, Entity* owner, block_type* blk, ivec3 rwc);
+
+// callback functions for models
+// models = bigger than 1x1 OR can rotate/move around OR have entity-like properties
+typedef bool (*model_callback_func)(Game* game, Entity* owner, Entity* piece);
 
 // used by gameloader to get appropriate action functions
-block_mouse_callback_func get_block_mouse_callback_for(std::string name);
+void get_block_mouse_callback_for(std::string name, std::map<Action, block_callback_func> &action_map);
+void get_block_keyboard_callback_for(std::string name, std::map<Action, block_callback_func> &default_keymap);
 
-block_keyboard_callback_func get_block_keyboard_callback_for(std::string name, std::vector<Action> &default_keymap);
-block_keyboard_callback_func get_model_keyboard_callback_for(std::string name, std::map<Action, int> &default_keymap);
+void get_model_mouse_callback_for(std::string name, std::map<Action, model_callback_func> &action_map);
+void get_model_keyboard_callback_for(std::string name, std::map<Action, model_callback_func> &action_map);
 
 #endif /* defined(__Bawk__blockaction__) */

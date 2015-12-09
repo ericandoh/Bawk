@@ -33,9 +33,8 @@ public:
     std::vector<fvec3> model_normals;
     std::vector<fvec3> model_uvs;
     
-    block_mouse_callback_func mouse_callback;
-    block_keyboard_callback_func keyboard_callback;
-    std::map<Action, int> key_bindings;
+    std::map<Action, model_callback_func> mouse_callback;
+    std::map<Action, model_callback_func> keyboard_callback;
     
     RenderableModel();
     
@@ -43,8 +42,8 @@ public:
     void render();
     void refresh();
     
-    bool model_keyboard_callback(Game* game, Entity* ent, ivec3 rwc, Action key);
-    bool model_mouse_callback(Game* game, Entity* ent, Action key);
+    bool model_keyboard_callback(Game* game, Entity* owner, Entity* ent, Action key);
+    bool model_mouse_callback(Game* game, Entity* owner, Entity* ent, Action key);
 };
 
 #endif /* defined(__Bawk__modelrender__) */

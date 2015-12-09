@@ -10,6 +10,7 @@
 #include "block_orientation.h"
 #include "blocktracer.h"
 #include "superobject.h"
+#include "player.h"
 
 CursorModelObject::CursorModelObject(uint16_t mid): ModelEntity(mid) {
     locked = false;

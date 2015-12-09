@@ -257,28 +257,30 @@ void Game::frame() {
                 // this is because all the other below default options should be DISABLE when mounted
                 mount->block_keyboard_callback(this, do_this, mount);
             }
-            switch (do_this) {
-                case MOVE_UP:
-                    player->move_up_flat(5.0f);
-                    break;
-                case MOVE_DOWN:
-                    player->move_down_flat(5.0f);
-                    break;
-                case MOVE_LEFT:
-                    player->move_left(5.0f);
-                    break;
-                case MOVE_RIGHT:
-                    player->move_right(5.0f);
-                    break;
-                case MOVE_FORWARD:
-                    player->move_forward_flat(5.0f);
-                    break;
-                case MOVE_BACKWARD:
-                    player->move_backward_flat(5.0f);
-                    break;
-                default:
-                    // do nothing
-                    ;
+            else {
+                switch (do_this) {
+                    case MOVE_UP:
+                        player->move_up_flat(5.0f);
+                        break;
+                    case MOVE_DOWN:
+                        player->move_down_flat(5.0f);
+                        break;
+                    case MOVE_LEFT:
+                        player->move_left(5.0f);
+                        break;
+                    case MOVE_RIGHT:
+                        player->move_right(5.0f);
+                        break;
+                    case MOVE_FORWARD:
+                        player->move_forward_flat(5.0f);
+                        break;
+                    case MOVE_BACKWARD:
+                        player->move_backward_flat(5.0f);
+                        break;
+                    default:
+                        // do nothing
+                        ;
+                }
             }
         }
     }

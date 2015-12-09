@@ -133,22 +133,27 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
 // --- RenderableSuperObject
 void SuperObject::handle_block_addition(int x, int y, int z, block_type type) {
     // set key bindings if it has one
-    if (has_block_keyboard_bindings(type)) {
-        std::vector<Action> bindings = get_block_default_keyboard_bindings(type);
+    if (has_block_keyboard_action(type)) {
+        std::map<Action, block_callback_func> bindings;
+        get_block_keyboard_callback_from(type, bindings);
         ivec3 rounded_oac(x, y, z);
         reverse_key_mapping[rounded_oac] = std::vector<Action>();
         reverse_key_mapping[rounded_oac].reserve(bindings.size());
-        for (int i = 0; i < bindings.size(); i++) {
-            if (!key_mapping.count(bindings[i])) {
-                key_mapping[bindings[i]] = std::vector<key_mapping_info>();
-                key_mapping[bindings[i]].reserve(1);
+        pos_to_active_block_mapping[rounded_oac] = type;
+        for (auto &i: bindings) {
+            Action act = i.first;
+            
+            if (!key_mapping.count(act)) {
+                key_mapping[act] = std::vector<key_mapping_info>();
+                key_mapping[act].reserve(1);
             }
+            
             key_mapping_info info;
             info.position = rounded_oac;
             info.blk = type;
-            info.action = bindings[i];
-            key_mapping[bindings[i]].push_back(info);
-            reverse_key_mapping[rounded_oac].push_back(bindings[i]);
+            info.func = i.second;
+            key_mapping[act].push_back(info);
+            reverse_key_mapping[rounded_oac].push_back(act);
         }
     }
     weight += get_block_weight(type.type);
@@ -168,11 +173,11 @@ void SuperObject::handle_block_removal(int x, int y, int z, block_type type) {
                     // assume we only mapped one key to
                     key_mapping[keybinding][j] = key_mapping[keybinding].back();
                     key_mapping[keybinding].pop_back();
-                    break;
                 }
             }
         }
         reverse_key_mapping.erase(rounded_oac);
+        pos_to_active_block_mapping.erase(rounded_oac);
     }
     // remove stats for current block
     // center pos is set outside separately
@@ -244,15 +249,16 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
     if (key_mapping.count(key)) {
         for (int i = 0; i < key_mapping[key].size(); i++) {
             ivec3 position = key_mapping[key][i].position;
+            // transform into rwc
             ivec3 rwc;
             transform_into_world_integer_coordinates(&rwc, position.x, position.y, position.z);
-            block_keyboard_callback_func callback = get_block_keyboard_callback_from(key_mapping[key][i].blk.type);
+            
+            block_callback_func callback = key_mapping[key][i].func;
             if (callback) {
                 any = any || (*callback)(game,
                                          ent,
                                          &(key_mapping[key][i].blk),
-                                         rwc,
-                                         key_mapping[key][i].action);
+                                         rwc);
             }
         }
         return any;
@@ -266,15 +272,12 @@ bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
         Entity* at_cursor = poke(lookingat.x, lookingat.y, lookingat.z);
         if (at_cursor == this) {
             block_type blk = get_block(lookingat.x, lookingat.y, lookingat.z);
-            block_mouse_callback_func callback = get_block_mouse_callback_from(blk.type);
-            if (callback) {
-                return (*callback)(game,
-                                   ent,
-                                   &blk,
-                                   fvec3(lookingat.x, lookingat.y, lookingat.z),
-                                   button);
+            if (has_block_mouse_action(blk)) {
+                ivec3 oac = get_floor_from_fvec3(fvec3(lookingat.x, lookingat.y, lookingat.z));
+                ivec3 rwc;
+                transform_into_world_integer_coordinates(&rwc, oac.x, oac.y, oac.z);
+                return call_block_mouse_callback_from(&blk, game, ent, rwc, button);
             }
-
         }
         else {
             return at_cursor->block_mouse_callback(game, button, ent);
@@ -423,21 +426,33 @@ int SuperObject::load_self(IODataObject* obj) {
         }
     }
     
-    // load key bindings!
-    int keybinding_count = obj->read_value<int>();
-    for (int i = 0; i < keybinding_count; i++) {
-        Action key = obj->read_value<Action>();
-        int keybinded_count = obj->read_value<int>();
-        key_mapping[key] = std::vector<key_mapping_info>(keybinded_count);
-        for (int j = 0; j < keybinded_count; j++) {
-            key_mapping[key].push_back(obj->read_value<key_mapping_info>());
-            // construct the reverse_key_mapping as well
-            if (!reverse_key_mapping.count(key_mapping[key][j].position)) {
-                reverse_key_mapping[key_mapping[key][j].position] = std::vector<Action>();
+    int block_binding_count = obj->read_value<int>();
+    for (int i = 0; i < block_binding_count; i++) {
+        ivec3 pos = obj->read_value<ivec3>();
+        block_type blk = obj->read_value<block_type>();
+        pos_to_active_block_mapping[pos] = blk;
+        
+        std::map<Action, block_callback_func> bindings;
+        get_block_keyboard_callback_from(blk, bindings);
+        reverse_key_mapping[pos] = std::vector<Action>();
+        reverse_key_mapping[pos].reserve(bindings.size());
+        for (auto &i: bindings) {
+            Action act = i.first;
+            
+            if (!key_mapping.count(act)) {
+                key_mapping[act] = std::vector<key_mapping_info>();
+                key_mapping[act].reserve(1);
             }
-            reverse_key_mapping[key_mapping[key][j].position].push_back(key);
+            
+            key_mapping_info info;
+            info.position = pos;
+            info.blk = blk;
+            info.func = i.second;
+            key_mapping[act].push_back(info);
+            reverse_key_mapping[pos].push_back(act);
         }
     }
+    
     block_counter = obj->read_value<int>();
     return 0;
 }
@@ -459,17 +474,14 @@ void SuperObject::remove_self(IODataObject* obj) {
         obj->save_value(entities[i]->entity_class);
     }
     
-    // save key bindings!
-    // TOFU later make a SAVE_MAP and SAVE_VECTOR method in the block_loader, so we don't have to keep doing this hack
-    int keybinding_count = (int)key_mapping.size();
-    obj->save_value(keybinding_count);
-    for (auto &i : key_mapping) {
-        obj->save_value(i.first);   // save the key press
-        int keybinded_count = (int)i.second.size();
-        obj->save_value(keybinded_count);
-        for (int j = 0; j < keybinded_count; j++) {
-            obj->save_value(i.second[j]);
-        }
+    // save only the reverse key mapping
+    int block_binding_count = (int)reverse_key_mapping.size();
+    obj->save_value(block_binding_count);
+    for (auto &i: reverse_key_mapping) {
+        ivec3 pos = i.first;
+        obj->save_value(pos);
+        obj->save_value(pos_to_active_block_mapping[pos]);
     }
+    
     obj->save_value(block_counter);
 }

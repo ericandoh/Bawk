@@ -8,6 +8,7 @@
 
 #include "modelentityrender.h"
 #include "game_info_loader.h"
+#include "worldrender.h"
 
 ModelEntity::ModelEntity(uint16_t mid) {
     entity_class = EntityType::MODELENTITY;
@@ -59,11 +60,11 @@ void ModelEntity::set_model(uint16_t m) {
 // Entity* ModelEntity::poke(float x, float y, float z) {}
 
 bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
-    return model->model_keyboard_callback(game, ent, ivec3(pos.x, pos.y, pos.z), key);
+    return model->model_keyboard_callback(game, ent, this, key);
 }
 
 bool ModelEntity::block_mouse_callback(Game* game, Action button, Entity* ent) {
-    return model->model_mouse_callback(game, ent, button);
+    return model->model_mouse_callback(game, ent, this, button);
 }
 
 void ModelEntity::render(fmat4* transform) {

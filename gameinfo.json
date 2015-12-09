@@ -110,13 +110,10 @@
     {
         "0": {
             "name": "undefined",
-            "blocks": [{"position": [0, 0, 0]},
-                       {"position": [0, 0, 1]},
-                       {"position": [0, 1, 1]},
-                       {"id": 1, "position": [0, 1, 0]}],
-            "texture": "engine.obj",
-            "resistance": 40,
-            "weight": 100
+            "blocks": [{"id": 1, "position": [0, 0, 0]},
+                       {"id": 1, "position": [0, 0, 1]},
+                       {"id": 1, "position": [0, 1, 1]},
+                       {"id": 1, "position": [0, 1, 0]}]
         },
         "1": {
             "name": "tree",
@@ -128,29 +125,22 @@
                        {"id": "grass", "position": [-1, 3, 0]},
                        {"id": "grass", "position": [0, 3, 1]},
                        {"id": "grass", "position": [0, 3, -1]},
-                       {"id": "grass", "position": [0, 4, 0]}],
-            "resistance": 40,
-            "weight": 100
+                       {"id": "grass", "position": [0, 4, 0]}]
         },
         "2": {
             "name": "cactus",
             "blocks": [{"id": "grass", "position": [0, 0, 0]},
                        {"id": "grass", "position": [0, 1, 0]},
-                       {"id": "grass", "position": [0, 2, 0]}],
-            "resistance": 40,
-            "weight": 100
+                       {"id": "grass", "position": [0, 2, 0]}]
         },
         "3": {
             "name": "allsupportedfeatures",
             "blocks": [{"id": "stone", "orientation": 5, "position": [0, 0, 0]},
-                       {"id": 3, "orientation": "top", "position": [0, 0, 1]},
-                       {"position": [0, 1, 1]}],
+                       {"id": 3, "orientation": "top", "position": [0, 0, 1]}],
             "blocks": "path/to/superobject_folder",
-            "resistance": 40,
-            "texture": "test.obj",
-            "transparency": 3,
-            "weight": 100,
-            "vehicle": 1
+            "models": [{"id": "engine", "orientation": 5, "position": [0, 0, 0]},
+                       {"id": "saddle", "orientation": [0, 0, 1], "position": [1, 0, 0]}],
+            "recipes": [{"id": "cactus", "orientation": 5, "position": [3, 3, 3]}]
         }
     },
     "world_gen":

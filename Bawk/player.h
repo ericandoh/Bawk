@@ -49,7 +49,7 @@ public:
     ivec3 get_rounded_left();
     ivec3 get_rounded_forward();
     
-    void set_mount(SuperObject* m, fvec3 pos);
+    void set_mount(SuperObject* m, fvec3 rwc);
     SuperObject* get_mount();
     bool unmount(World* world);
     

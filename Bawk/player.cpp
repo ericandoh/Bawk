@@ -99,7 +99,7 @@ void Player::step() {
     RenderablePlayer::step();
 }
 
-void Player::set_mount(SuperObject* m, fvec3 pos) {
+void Player::set_mount(SuperObject* m, fvec3 rwc) {
     if (!m)
         return;
     if (mount) {
@@ -112,7 +112,7 @@ void Player::set_mount(SuperObject* m, fvec3 pos) {
     // no moving around while mounted!
     velocity = fvec3(0, 0, 0);
     // TODO this is hack fix
-    this->set_pos(pos + fvec3(0.5f,0.5f,0.5f));
+    this->set_pos(rwc);
     mount->add_entity(this);
     //m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
     //set_pos(pos - this->center_pos);

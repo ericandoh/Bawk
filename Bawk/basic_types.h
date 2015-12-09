@@ -66,6 +66,21 @@ struct ivec3 : glm::tvec3<int> {
     }
 };
 
+namespace std
+{
+    template<>
+    struct hash<ivec3> {
+        size_t operator()(const ivec3 &pt) const {
+            // turn first 9 bits to a 27 bit string, then add together
+            // the result should be XYZXYZXYZXYZ for XXXX, YYYY, ZZZZ (but with more bits)
+            uint32_t xb = spread_bits(pt.x);
+            uint32_t yb = spread_bits(pt.y) << 1;
+            uint32_t zb = spread_bits(pt.z) << 2;
+            return xb + yb + zb;
+        }
+    };
+}
+
 struct player_and_id {
     uint32_t pid;
     uint32_t sid;

@@ -27,11 +27,7 @@
 #include <vector>
 #include "block.h"
 #include "lightrender.h"
-
-// dimensions of our chunk
-#define CX 16
-#define CY 16
-#define CZ 16
+#include "settings.h"
 
 void delete_all_buffers();
 

@@ -11,42 +11,13 @@
 #include <fstream>
 #include <string>
 #include <streambuf>
-#include <map>
 #include "json/json.h"
 #include "block_loader.h"
 #include "cursorsuperobject.h"
 #include "world_generator.h"
 #include "world_generator_structures.h"
 #include "modelrender.h"
-
-// add this to every recipe ID
-// +1, so 0 doesn't map to 0 in the actual block
-const uint16_t recipe_mask = 0x1 << 15;
-
-// TODO deprecate parts of this
-// none of these structs have a uint16_t type
-// because those are the indices into our vectors
-struct block_game_info {
-    std::string name;
-    bool is_model;
-    int texture;
-    int textures[6];
-    int resistance;
-    int transparency;
-    int weight;
-    int vehicle;
-    RenderableLight light;
-    block_game_info() {
-        name = "";
-        is_model = false;
-        texture = 0;
-        resistance = 1;
-        transparency = 0;
-        weight = 1;
-        vehicle = 0;
-        light = RenderableLight();
-    }
-};
+#include "blockinfo.h"
 
 // TODO deprecate this
 struct model_game_info {
@@ -67,12 +38,6 @@ struct recipe_game_info {
     std::vector<BlockOrientation> orientations;
 };
 
-struct ui_block_callback_info {
-    block_mouse_callback_func mouse_callback;
-    block_keyboard_callback_func keyboard_callback;
-    std::vector<Action> key_bindings;
-};
-
 class GameInfoDataObject {
     int read_blocks(Json::Value root);
     int read_models(Json::Value root);
@@ -80,11 +45,9 @@ class GameInfoDataObject {
     int read_world_gen(Json::Value root);
 public:
     int version;
-    std::vector<block_game_info> block_info;
+    std::vector<BlockInfo> block_info;
     std::vector<RenderableModel> model_info;
-    std::vector<block_game_info> recipe_block_info;
     std::map<uint16_t, model_game_info> block_model_info;
-    std::map<uint16_t, ui_block_callback_info> block_callback_info;
     std::vector<recipe_game_info> recipe_info;
     std::vector<biome_game_info> biome_info;
     std::vector<world_gen_mode_info> world_gen_modes;
@@ -305,7 +268,7 @@ int GameInfoDataObject::read_blocks(Json::Value root) {
         return 1;
     
     Json::Value block;
-    block_game_info* info;
+    BlockInfo* info;
     
     Json::Value::Members members(root.getMemberNames());
     for (Json::Value::Members::iterator it = members.end() - 1;
@@ -354,10 +317,9 @@ int GameInfoDataObject::read_blocks(Json::Value root) {
             info->vehicle = block["vehicle"].asInt();
         }
         if (block.isMember("action") and block["action"].type() == Json::stringValue) {
-            ui_block_callback_info callback_info;
-            callback_info.mouse_callback = get_block_mouse_callback_for(block["action"].asString());
-            callback_info.keyboard_callback = get_block_keyboard_callback_for(block["action"].asString(), callback_info.key_bindings);
-            block_callback_info[block_id] = callback_info;
+            get_block_mouse_callback_for(block["action"].asString(), info->mouse_callbacks);
+            get_block_keyboard_callback_for(block["action"].asString(), info->keyboard_callbacks);
+            info->set_callback_checks();
         }
         if (block.isMember("light") && block["light"].type() == Json::arrayValue) {
             int size = block["light"].size();
@@ -405,9 +367,8 @@ int GameInfoDataObject::read_models(Json::Value root) {
             info->vehicle = model["vehicle"].asInt();
         }
         if (model.isMember("action") and model["action"].type() == Json::stringValue) {
-            ui_block_callback_info callback_info;
-            info->mouse_callback = get_block_mouse_callback_for(model["action"].asString());
-            info->keyboard_callback = get_model_keyboard_callback_for(model["action"].asString(), info->key_bindings);
+            get_model_mouse_callback_for(model["action"].asString(), info->mouse_callback);
+            get_model_keyboard_callback_for(model["action"].asString(), info->keyboard_callback);
         }
         if (model.isMember("light") && model["light"].type() == Json::arrayValue) {
             int size = model["light"].size();
@@ -431,9 +392,18 @@ uint16_t get_block_id_from_name(Json::Value node) {
                 return i;
             }
         }
+        return 0;
+    }
+    else {
+        return node.asInt();
+    }
+}
+
+uint16_t get_recipe_id_from_name(Json::Value node) {
+    if (node.type() == Json::stringValue) {
         for (uint16_t i = 0; i < game_data_object->recipe_info.size(); i++) {
             if (game_data_object->recipe_info[i].name.compare(node.asString()) == 0) {
-                return i + recipe_mask;
+                return i;
             }
         }
         return 0;
@@ -449,7 +419,6 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
     
     Json::Value recipe;
     recipe_game_info* info;
-    block_game_info* block_info;
     
     Json::Value::Members members(root.getMemberNames());
     for (Json::Value::Members::iterator it = members.end() - 1;
@@ -459,10 +428,8 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
         uint16_t recipe_id = std::stoi(name);
         if (recipe_id >= recipe_info.size()) {
             recipe_info.resize(recipe_id + 1);
-            recipe_block_info.resize(recipe_id + 1);
         }
         info = &(recipe_info[recipe_id]);
-        block_info = &(recipe_block_info[recipe_id]);
         recipe = root[name];
         
         if (recipe.isMember("name") && recipe["name"].type() == Json::stringValue) {
@@ -485,7 +452,7 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
                             left_corner = get_ivec3_minimum(left_corner, position);
                         }
                         
-                        uint16_t bid = recipe_id + recipe_mask;
+                        uint16_t bid = recipe_id;
                         if (submember.isMember("id")) {
                             bid = get_block_id_from_name(submember["id"]);
                         }
@@ -541,6 +508,7 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
             info->upper = ivec3(max_pos.x + 1, max_pos.y + 1, max_pos.z + 1);
             info->from_file = false;
         }
+        // TODO support reading in models/other recipes
         if (recipe.isMember("blocks") && recipe["blocks"].type() == Json::stringValue) {
             if (recipe["blockfile"].asString().compare("auto") == 0) {
                 // using the texture block model obj data, automatically fill in blocks where the model has points
@@ -552,27 +520,6 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
                 info->from_file = true;
                 info->file_path = get_path_to_game_folder() + "/" +  recipe["blockfile"].asString();
             }
-        }
-        if (recipe.isMember("texture") && recipe["texture"].type() == Json::stringValue) {
-            block_model_info[recipe_id + recipe_mask] = model_game_info();
-            read_obj_file(&(block_model_info[recipe_id + recipe_mask]), recipe["texture"].asString());
-            block_info->is_model = true;
-        }
-        else {
-            // the recipe (should) not have recipe blocks, and if it does default to the corresponding block id texture
-            block_info->texture = recipe_id;
-        }
-        if (recipe.isMember("resistance") && recipe["resistance"].type() == Json::intValue) {
-            block_info->resistance = recipe["resistance"].asInt();
-        }
-        if (recipe.isMember("weight") && recipe["weight"].type() == Json::intValue) {
-            block_info->weight = recipe["weight"].asInt();
-        }
-        if (recipe.isMember("action") and recipe["action"].type() == Json::stringValue) {
-            ui_block_callback_info callback_info;
-            callback_info.mouse_callback = get_block_mouse_callback_for(recipe["action"].asString());
-            callback_info.keyboard_callback = get_block_keyboard_callback_for(recipe["action"].asString(), callback_info.key_bindings);
-            block_callback_info[recipe_id + recipe_mask] = callback_info;
         }
     }
     return 0;
@@ -636,7 +583,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
                         continue;
                     block_layer_info struct_layer;
                     if (structure_root.isMember("id")) {
-                        struct_layer.type = get_block_id_from_name(structure_root["id"]);
+                        struct_layer.type = get_recipe_id_from_name(structure_root["id"]);
                     }
                     if (structure_root.isMember("lower") && structure_root["lower"].type() == Json::intValue) {
                         struct_layer.lower = structure_root["lower"].asInt();
@@ -822,129 +769,70 @@ void free_game_info() {
 
 uint16_t get_block_texture(block_type blk, BlockOrientation face) {
     uint16_t block_id = blk.type;
-    if (block_id >= recipe_mask) {
-        block_id -= recipe_mask;
-        int texture = game_data_object->recipe_block_info[block_id].texture;
-        if (texture < 0) {
-            // use the array instead
-            BlockOrientation actual_face = get_translated_orientation(blk.orientation, face);
-            return game_data_object->recipe_block_info[block_id].textures[actual_face];
-        }
-        else {
-            return texture;
-        }
-
+    if (block_id >= game_data_object->block_info.size()) {
+        return block_id;
+    }
+    int texture = game_data_object->block_info[block_id].texture;
+    if (texture < 0) {
+        // use the array instead
+        BlockOrientation actual_face = get_translated_orientation(blk.orientation, face);
+        return game_data_object->block_info[block_id].textures[actual_face];
     }
     else {
-        if (block_id >= game_data_object->block_info.size()) {
-            return block_id;
-        }
-        int texture = game_data_object->block_info[block_id].texture;
-        if (texture < 0) {
-            // use the array instead
-            BlockOrientation actual_face = get_translated_orientation(blk.orientation, face);
-            return game_data_object->block_info[block_id].textures[actual_face];
-        }
-        else {
-            return texture;
-        }
+        return texture;
     }
     return 0;
 }
 
-bool get_block_is_model(block_type blk) {
-    uint16_t block_id = blk.type;
-    if (block_id >= recipe_mask) {
-        block_id -= recipe_mask;
-        if (game_data_object->recipe_block_info[block_id].is_model) {
-            // only render the model if you are the center
-            return blk.relx == 0 && blk.rely == 0 && blk.relz == 0;
-        }
-    }
-    else {
-        return game_data_object->block_info[block_id].is_model;
-    }
-    return false;
+bool get_block_is_model(uint16_t block_id) {
+    return game_data_object->block_info[block_id].is_model;
 }
 
-RenderableLight* get_block_light(block_type blk) {
-    uint16_t block_id = blk.type;
-    if (block_id >= recipe_mask) {
-        block_id -= recipe_mask;
-        return &(game_data_object->recipe_block_info[block_id].light);
-    }
-    else {
-        return &(game_data_object->block_info[block_id].light);
-    }
+RenderableLight* get_block_light(uint16_t block_id) {
+    return &(game_data_object->block_info[block_id].light);
 }
 
 int get_block_resistance(uint16_t block_id) {
-    if (block_id >= recipe_mask) {
-        block_id -= recipe_mask;
-        return game_data_object->recipe_block_info[block_id].resistance;
-    }
-    else {
-        return game_data_object->block_info[block_id].resistance;
-    }
+    return game_data_object->block_info[block_id].resistance;
 }
 
 int get_block_transparency(uint16_t block_id) {
-    if (block_id >= recipe_mask) {
-        block_id -= recipe_mask;
-        return game_data_object->recipe_block_info[block_id].transparency;
-    }
-    else {
-        return game_data_object->block_info[block_id].transparency;
-    }
+    return game_data_object->block_info[block_id].transparency;
 }
 
 int get_block_weight(uint16_t block_id) {
-    if (block_id >= recipe_mask) {
-        block_id -= recipe_mask;
-        return game_data_object->recipe_block_info[block_id].weight;
-    }
-    else {
-        return game_data_object->block_info[block_id].weight;
-    }
+    return game_data_object->block_info[block_id].weight;
 }
 
 int get_block_independence(uint16_t block_id) {
-    if (block_id >= recipe_mask) {
-        block_id -= recipe_mask;
-        return game_data_object->recipe_block_info[block_id].vehicle;
-    }
-    else {
-        return game_data_object->block_info[block_id].vehicle;
-    }
+    return game_data_object->block_info[block_id].vehicle;
+}
+
+BlockInfo* get_block_info(uint16_t block_id) {
+    return &(game_data_object->block_info[block_id]);
 }
 
 RenderableModel* get_game_model(uint16_t model_id) {
     return &(game_data_object->model_info[model_id]);
 }
 
-block_mouse_callback_func get_block_mouse_callback_from(block_type block_id) {
-    if (game_data_object->block_callback_info.count(block_id.type)) {
-        return game_data_object->block_callback_info[block_id.type].mouse_callback;
-    }
-    return 0;
+bool call_block_mouse_callback_from(block_type* block_id, Game* game, Entity* ent, ivec3 pos, Action a) {
+    block_callback_func func = game_data_object->block_info[block_id->type].mouse_callbacks[a];
+    return (*func)(game, ent, block_id, pos);
 }
 
-block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_id) {
-    if (game_data_object->block_callback_info.count(block_id.type)) {
-        return game_data_object->block_callback_info[block_id.type].keyboard_callback;
+void get_block_keyboard_callback_from(block_type block_id, std::map<Action, block_callback_func> &funcs) {
+    for (auto &i: game_data_object->block_info[block_id.type].keyboard_callbacks) {
+        funcs[i.first] = i.second;
     }
-    return 0;
 }
 
-bool has_block_keyboard_bindings(block_type block_id) {
-    if (game_data_object->block_callback_info.count(block_id.type)) {
-        return true;
-    }
-    return false;
+bool has_block_mouse_action(block_type block_id) {
+    return game_data_object->block_info[block_id.type].has_mouse_callback;
 }
 
-std::vector<Action> get_block_default_keyboard_bindings(block_type block_id) {
-    return game_data_object->block_callback_info[block_id.type].key_bindings;
+bool has_block_keyboard_action(block_type block_id) {
+    return game_data_object->block_info[block_id.type].has_keyboard_callback;
 }
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
@@ -1032,18 +920,12 @@ void add_struct_in_biome_randomly(uint16_t biome, ivec3 pos,
         block_layer_info current = game_data_object->biome_info[biome].structures[i];
         if (rv < current.frequency) {
             sids.push_back(current.type);
+            // this is a recipe
             ivec3 pos_off;
-            if (current.type >= recipe_mask) {
-                // this is a recipe
-                dimensions.push_back(game_data_object->recipe_info[current.type - recipe_mask].upper);
-                pos_off.x = game_data_object->recipe_info[current.type - recipe_mask].upper.x / 2;
-                pos_off.y = game_data_object->recipe_info[current.type - recipe_mask].upper.y / 2;
-                pos_off.z = game_data_object->recipe_info[current.type - recipe_mask].upper.z / 2;
-            }
-            else {
-                dimensions.push_back(ivec3(1, 1, 1));
-                pos_off = ivec3(0,0,0);
-            }
+            dimensions.push_back(game_data_object->recipe_info[current.type].upper);
+            pos_off.x = game_data_object->recipe_info[current.type].upper.x / 2;
+            pos_off.y = game_data_object->recipe_info[current.type].upper.y / 2;
+            pos_off.z = game_data_object->recipe_info[current.type].upper.z / 2;
             int height = current.lower;
             if (current.upper > current.lower) {
                 height = current.lower + (rand() % (current.upper - current.lower));
@@ -1066,26 +948,26 @@ void add_recipe_block_to_chunk(block_type to_arr[CX][CY][CZ], uint16_t recipe,
     // offset it by the position of the structure
     // then see if that position is within our chunk
     // if so, then scale it into CRC and then set it in our array
-    if (recipe < recipe_mask) {
+    // TODO handle for when the recipe also has models/other recipe blocks in it...
+    /*if (recipe < recipe_mask) {
         ivec3 aligned_pos = ivec3(recipe_pos.x - chunk_pos.x*CX,
                                   recipe_pos.y - chunk_pos.y*CY,
                                   recipe_pos.z - chunk_pos.z*CZ);
         if (is_within_chunk(aligned_pos)) {
             to_arr[aligned_pos.x][aligned_pos.y][aligned_pos.z] = block_type(recipe);
         }
-    }
-    else {
-        int recipe_block_count = (int)game_data_object->recipe_info[recipe - recipe_mask].blks.size();
-        for (int i = 0; i < recipe_block_count; i++) {
-            ivec3 offset = game_data_object->recipe_info[recipe - recipe_mask].positions[i];
-            ivec3 aligned_pos = ivec3(recipe_pos.x - chunk_pos.x*CX + offset.x,
-                                      recipe_pos.y - chunk_pos.y*CY + offset.y,
-                                      recipe_pos.z - chunk_pos.z*CZ + offset.z);
-            if (is_within_chunk(aligned_pos)) {
-                uint16_t block = game_data_object->recipe_info[recipe - recipe_mask].blks[i];
-                to_arr[aligned_pos.x][aligned_pos.y][aligned_pos.z] = block_type(block);
-            }
+    }*/
+    int recipe_block_count = (int)game_data_object->recipe_info[recipe].blks.size();
+    for (int i = 0; i < recipe_block_count; i++) {
+        ivec3 offset = game_data_object->recipe_info[recipe].positions[i];
+        ivec3 aligned_pos = ivec3(recipe_pos.x - chunk_pos.x*CX + offset.x,
+                                  recipe_pos.y - chunk_pos.y*CY + offset.y,
+                                  recipe_pos.z - chunk_pos.z*CZ + offset.z);
+        if (is_within_chunk(aligned_pos)) {
+            uint16_t block = game_data_object->recipe_info[recipe].blks[i];
+            to_arr[aligned_pos.x][aligned_pos.y][aligned_pos.z] = block_type(block);
         }
+        
     }
 }
 

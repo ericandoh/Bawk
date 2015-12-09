@@ -30,6 +30,7 @@
 #include "base_world.h"
 
 class Game;
+class Player;
 
 class World {
     std::vector<WorldEvent*> events;

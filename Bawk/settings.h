@@ -23,8 +23,13 @@
 #ifndef Bawk_settings_h
 #define Bawk_settings_h
 
-using namespace std;
+#include <string>
 
-const string EXAMPLE_CONSTANT = "this is a sample constant!";
+// dimensions of our chunk
+#define CX 16
+#define CY 16
+#define CZ 16
+
+const std::string EXAMPLE_CONSTANT = "this is a sample constant!";
 
 #endif

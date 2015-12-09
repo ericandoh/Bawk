@@ -24,11 +24,13 @@
 
 #include <stdio.h>
 #include <vector>
+#include <map>
 #include "basic_types.h"
 #include "block.h"
 #include "blockaction.h"
 #include "game_actions.h"
 #include "lightrender.h"
+#include "settings.h"
 
 class CursorItem;
 class RenderableModel;
@@ -38,8 +40,8 @@ void free_game_info();
 
 uint16_t get_block_texture(block_type blk, BlockOrientation face);
 // deprecate below
-bool get_block_is_model(block_type blk);
-RenderableLight* get_block_light(block_type blk);
+bool get_block_is_model(uint16_t block_id);
+RenderableLight* get_block_light(uint16_t block_id);
 int get_block_resistance(uint16_t block_id);
 int get_block_transparency(uint16_t block_id);
 int get_block_weight(uint16_t block_id);
@@ -47,10 +49,11 @@ int get_block_independence(uint16_t block_id);
 
 RenderableModel* get_game_model(uint16_t model_id);
 
-block_mouse_callback_func get_block_mouse_callback_from(block_type block_id);
-block_keyboard_callback_func get_block_keyboard_callback_from(block_type block_id);
-bool has_block_keyboard_bindings(block_type block_id);
-std::vector<Action> get_block_default_keyboard_bindings(block_type block_id);
+bool call_block_mouse_callback_from(block_type* block_id, Game* game, Entity* ent, ivec3 pos, Action a);
+void get_block_keyboard_callback_from(block_type block_id, std::map<Action, block_callback_func> &funcs);
+
+bool has_block_mouse_action(block_type block_id);
+bool has_block_keyboard_action(block_type block_id);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);
 

@@ -15,11 +15,6 @@
 #include "game_info_loader.h"
 #include "block_orientation.h"
 
-// dimensions of a chunk
-#define CX 16
-#define CY 16
-#define CZ 16
-
 // number of chunks to have loaded at any one time
 #define CHUNKSLOTS 1600
 
@@ -97,11 +92,11 @@ bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) 
         return true;
     
     // Recipe Models are also always blocked, because they dont need to be rendered
-    if (get_block_is_model(blk[x1][y1][z1]))
+    if (get_block_is_model(blk[x1][y1][z1].type))
         return true;
     
     // Things next to models however, are rendered (models are sexy!)
-    if (get_block_is_model(get(x2, y2, z2)))
+    if (get_block_is_model(get(x2, y2, z2).type))
         return false;
     
     // Leaves do not block any other block, including themselves
@@ -235,11 +230,11 @@ void RenderableChunk::update() {
     for(int x = CX - 1; x >= 0; x--) {
         for(int y = 0; y < CY; y++) {
             for(int z = 0; z < CZ; z++) {
-                if (get_block_is_model(blk[x][y][z])) {
+                if (get_block_is_model(blk[x][y][z].type)) {
                     // add to
                     fill_game_models(model_vertices, model_normals, model_uvs, blk[x][y][z], x, y, z);
                 }
-                RenderableLight* light = get_block_light(blk[x][y][z]);
+                RenderableLight* light = get_block_light(blk[x][y][z].type);
                 if (light->should_render()) {
                     LightAndPosition light_and_pos;
                     light_and_pos.light = light;

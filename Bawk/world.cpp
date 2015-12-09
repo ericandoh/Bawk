@@ -12,6 +12,7 @@
 #include "blocktracer.h"
 #include "game_info_loader.h"
 #include "entity_loader.h"
+#include "player.h"
 
 // constructor
 World::World(std::string id) {
