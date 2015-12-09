@@ -23,6 +23,7 @@
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
 		071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071FA6B91C10D19700884B70 /* lightrender.cpp */; };
 		072243361C177F0900B60091 /* blockinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072243341C177F0900B60091 /* blockinfo.cpp */; };
+		072243391C17C98E00B60091 /* spriterender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072243371C17C98E00B60091 /* spriterender.cpp */; };
 		072A0A231C0B8ED4009304E5 /* modelentityrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */; };
 		072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A241C0B90C9009304E5 /* modelrender.cpp */; };
 		072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A2A1C0BCE86009304E5 /* cursormodelobject.cpp */; };
@@ -130,6 +131,8 @@
 		071FA6BA1C10D19700884B70 /* lightrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightrender.h; sourceTree = "<group>"; };
 		072243341C177F0900B60091 /* blockinfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blockinfo.cpp; sourceTree = "<group>"; };
 		072243351C177F0900B60091 /* blockinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blockinfo.h; sourceTree = "<group>"; };
+		072243371C17C98E00B60091 /* spriterender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spriterender.cpp; sourceTree = "<group>"; };
+		072243381C17C98E00B60091 /* spriterender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spriterender.h; sourceTree = "<group>"; };
 		072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelentityrender.cpp; sourceTree = "<group>"; };
 		072A0A221C0B8ED4009304E5 /* modelentityrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelentityrender.h; sourceTree = "<group>"; };
 		072A0A241C0B90C9009304E5 /* modelrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelrender.cpp; sourceTree = "<group>"; };
@@ -426,6 +429,8 @@
 				072A0A251C0B90C9009304E5 /* modelrender.h */,
 				071FA6B91C10D19700884B70 /* lightrender.cpp */,
 				071FA6BA1C10D19700884B70 /* lightrender.h */,
+				072243371C17C98E00B60091 /* spriterender.cpp */,
+				072243381C17C98E00B60091 /* spriterender.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -563,6 +568,7 @@
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
 				071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */,
 				0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */,
+				072243391C17C98E00B60091 /* spriterender.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,
