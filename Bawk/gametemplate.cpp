@@ -43,9 +43,12 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
     if (makes_vehicle) {
-        fvec3 rwc_center_pos = calculate_center_position() + bounds.lower;
         // set angle depending on where we've been pointing, and set pos differently
         Rotation vehicle_pointing = get_vehicle_orientation();
+        
+        BlockOrientation vehiclebox_orientation = get_orientation_from_rotation(vehicle_pointing);
+        fvec3 rwc_center_pos = calculate_center_position(vehiclebox_orientation) + bounds.lower;
+        
         // find bounds rotated into my rotation, from the world, rotating around rwc center pos
         bounding_box oac_bounding_box;
         oac_bounding_box.lower = vehicle_pointing.transform_into_my_coordinates(bounds.lower - rwc_center_pos);
@@ -57,7 +60,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     }
     else {
         object->pos = bounds.lower;
-        object->center_pos = calculate_center_position();
+        object->center_pos = calculate_center_position(BlockOrientation::FRONT);
     }
     object->recalculate_transform();
     

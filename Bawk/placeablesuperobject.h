@@ -16,7 +16,7 @@
 class PlaceableSuperObject: public SuperObject, public PlaceableObject {
 protected:
     int makes_vehicle;
-    fvec3 calculate_center_position();
+    fvec3 calculate_center_position(BlockOrientation pointing);
 public:
     // for game templates
     PlaceableSuperObject();

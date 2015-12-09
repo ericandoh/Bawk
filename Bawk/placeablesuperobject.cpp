@@ -101,36 +101,48 @@ void PlaceableSuperObject::update_chunks(fvec3* start_pos) {
 }
 
 // --- PlaceableObject ---
-fvec3 PlaceableSuperObject::calculate_center_position() {
+fvec3 PlaceableSuperObject::calculate_center_position(BlockOrientation pointing) {
     // TODO this doesnt keep take into account what direction we're pointing in...
     // calculate the center position of this object
     
     // first, find direction we're pointing in
     // 0 - x, 1 - y, 2 - z
-    int pointing_in = 0;
+    int pointing_in;
+    if (pointing == BlockOrientation::FRONT || pointing == BlockOrientation::BACK) {
+        // x
+        pointing_in = 0;
+    }
+    else if (pointing == BlockOrientation::LEFT || pointing == BlockOrientation::RIGHT) {
+        // z
+        pointing_in = 2;
+    }
+    else {
+        // y
+        pointing_in = 1;
+    }
+    
     fvec3 aligned_upper = fvec3(bounds.upper.x - bounds.lower.x,
                                 bounds.upper.y - bounds.lower.y,
                                 bounds.upper.z - bounds.lower.z);
     bool align_to_half = false;
     // next, find out if we round to nearest x.5 or to nearest x.0
     if (pointing_in == 0) {
-        // use y
-        int rounded_val = roundf(aligned_upper.y * 2.0f);
+        // use z
+        int rounded_val = roundf(aligned_upper.z);
         if (rounded_val % 2 == 1) {
             align_to_half = true;
         }
     }
     else if (pointing_in == 1) {
-        // use x
-        int rounded_val = roundf(aligned_upper.x * 2.0f);
+        // use y
+        int rounded_val = roundf(aligned_upper.y);
         if (rounded_val % 2 == 1) {
             align_to_half = true;
         }
     }
     else {
-        // we're aligned in z-direction, wtf!!!
-        // use z
-        int rounded_val = roundf(aligned_upper.z * 2.0f);
+        // use x
+        int rounded_val = roundf(aligned_upper.x);
         if (rounded_val % 2 == 1) {
             align_to_half = true;
         }
@@ -163,7 +175,7 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
         target->pos = fvec3(this->pos.x + this->bounds.lower.x,
                             this->pos.y + this->bounds.lower.y,
                             this->pos.z + this->bounds.lower.z);
-        target->center_pos = calculate_center_position();
+        target->center_pos = calculate_center_position(BlockOrientation::FRONT);
         target->angle = angle;
         target->recalculate_transform();
     }
