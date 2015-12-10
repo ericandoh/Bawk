@@ -23,6 +23,8 @@
 #ifndef __Bawk__entity__
 #define __Bawk__entity__
 
+#define MAX_HEALTH 1024
+
 #include <stdio.h>
 #include <string>
 #include "basic_types.h"
@@ -68,6 +70,7 @@ public:
     fvec3 velocity;
     // temp variable that tells me my angular speed at a certain point in time
     fvec3 angular_velocity;
+    float velocity_decay;
     
     // if the object has velocity/angular velocity, mark this so collision detector picks it up
     bool stable;
@@ -130,12 +133,14 @@ public:
     virtual Entity* poke(float x, float y, float z);
     // break whatever is at RWC coords in this object
     virtual bool break_block(float x, float y, float z);
+    // hit this object with some damage
+    virtual void get_hurt(float x, float y, float z, float dmg);
     
     // callback methods for when actions are called on this item
     virtual bool block_keyboard_callback(Game* game, Action key, Entity* ent);
     virtual bool block_mouse_callback(Game* game, Action button, Entity* ent);
     
-    virtual void step();
+    virtual void step(Game* game);
     virtual void render(fmat4* transform);
     virtual void render_lights(fmat4* transform, fvec3 player_pos);
     // update how this is rendered depending on player position
@@ -151,6 +156,8 @@ public:
     virtual int get_collision_level();
     // method for collision detection against base class entities ONLY
     virtual bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
+    // behaviour to do after a collision
+    virtual void after_collision(Game* game);
     
     virtual int load_selfs();
     virtual void remove_selfs();

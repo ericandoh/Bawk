@@ -19,7 +19,7 @@ public:
     SpriteRender();
     
     // --- Entity ---
-    void step() override;
+    void step(Game* game) override;
     void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos);
 

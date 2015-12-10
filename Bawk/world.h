@@ -59,7 +59,7 @@ public:
     void add_entity(Entity* entity);
     void add_event(WorldEvent* event);
     
-    void step();
+    void step(Game* game);
     
     bool will_collide_with_anything(Entity* superobject);
     SuperObject* create_superobject(Player* player);

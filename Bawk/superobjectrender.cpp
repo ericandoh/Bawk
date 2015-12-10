@@ -105,7 +105,7 @@ void RenderableSuperObject::delete_chunk(int x, int y, int z) {
     chunks.erase(pos);
 }
 
-block_type RenderableSuperObject::get_block(float x, float y, float z) {
+block_type* RenderableSuperObject::get_block(float x, float y, float z) {
     
     // first transform to OAC
     fvec3 oac;
@@ -116,7 +116,7 @@ block_type RenderableSuperObject::get_block(float x, float y, float z) {
    
     if (!within_dimensions_chunk(cac.x, cac.y, cac.z)) {
         // there's no block outside the dimensions of the object
-        return block_type();
+        return 0;
     }
     
     // try loading the chunk (if it doesn't exist) then get block
@@ -124,10 +124,10 @@ block_type RenderableSuperObject::get_block(float x, float y, float z) {
         return chunks[cac]->get(crc.x, crc.y, crc.z);
     }
     // loading the chunk failed...return air
-    return block_type();
+    return 0;
 }
 
-block_type RenderableSuperObject::get_block_integral(int x, int y, int z) {
+block_type* RenderableSuperObject::get_block_integral(int x, int y, int z) {
     return get_block(x + 0.5f, y + 0.5f, z + 0.5f);
 }
 
@@ -148,9 +148,9 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
     
     // try loading the chunk (if it doesn't exist) then set block
     if (!load_chunk(cac.x, cac.y, cac.z)) {
-        block_type current = chunks[cac]->get(crc.x, crc.y, crc.z);
-        if (current.type) {
-            handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, current);
+        block_type* current = chunks[cac]->get(crc.x, crc.y, crc.z);
+        if (current && current->type) {
+            handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, *current);
         }
         chunks[cac]->set(crc.x, crc.y, crc.z, type);
         if (type.type) {
@@ -170,9 +170,9 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         RenderableChunk* chunk = new RenderableChunk(raw_chunk);
         chunks[cac] = chunk;
         
-        block_type current = chunks[cac]->get(crc.x, crc.y, crc.z);
-        if (current.type) {
-            handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, current);
+        block_type* current = chunks[cac]->get(crc.x, crc.y, crc.z);
+        if (current && current->type) {
+            handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, *current);
         }
         chunks[cac]->set(crc.x, crc.y, crc.z, type);
         if (type.type) {
@@ -315,7 +315,8 @@ void RenderableSuperObject::save_all_chunks() {
 // --- Entity ---
 Entity* RenderableSuperObject::poke(float x, float y, float z) {
     if (Entity::poke(x, y, z)) {
-        if (get_block(x, y, z).type){
+        block_type* blk = get_block(x, y, z);
+        if (blk && blk->type){
             return this;
         }
     }

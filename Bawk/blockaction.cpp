@@ -10,170 +10,19 @@
 #include "blockaction.h"
 #include "game.h"
 #include "entity.h"
-#include "modelentityrender.h"
+
+#include "modelactionmount.h"
+#include "modelactionmovement.h"
+#include "modelactionshoot.h"
+#include "modelactionexplode.h"
 
 // ----- ALL BLOCK ACTIONS -----
 bool block_default_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc) {
     return true;
 }
 
-// --- MOUSE ---
-
-// --- KEYBOARD ---
-
 // ----- ALL MODEL ACTIONS -----
 bool model_default_callback(Game* game, Entity* owner, Entity* piece) {
-    return true;
-}
-
-// --- MOUSE ---
-bool model_mount_callback(Game* game, Entity* owner, Entity* piece) {
-    if (owner && owner->entity_class == EntityType::SUPEROBJECT) {
-        fvec3 piece_pos = piece->pos + piece->center_pos + fvec3(0.0f, 0.75f, 0.0f);
-        if (piece->parent)
-            piece->parent->transform_into_world_coordinates(&piece_pos, piece_pos.x, piece_pos.y, piece_pos.z);
-        piece_pos = piece_pos - game->player->center_pos;
-        game->player->set_mount((SuperObject*)owner, piece_pos);
-        return true;
-    }
-    return false;
-}
-
-bool model_shoot_callback(Game* game, Entity* owner, Entity* piece) {
-    printf("pew pew! from %f %f %f\n", piece->pos.x, piece->pos.y, piece->pos.z);
-    // TODO this obviously needs to be changed
-    ModelEntity* bullet = new ModelEntity(game->player->pid, game->player->assignID(), 4);
-    if (piece->parent) {
-        fvec3 shoot_pos = piece->angle.dir * 1.3f + piece->pos + piece->center_pos;
-        piece->parent->transform_into_world_coordinates_smooth(&bullet->pos, shoot_pos.x, shoot_pos.y, shoot_pos.z);
-        bullet->pos = bullet->pos - bullet->center_pos;
-        piece->parent->angle.transform_into_world_rotation(&(bullet->angle), piece->angle);
-        bullet->recalculate_transform();
-        bullet->move_forward(3.0f);
-    }
-    game->world->add_entity(bullet);
-    return true;
-}
-
-// --- KEYBOARD ---
-bool model_forward_callback(Game* game, Entity* owner, Entity* piece) {
-    // piece->get_force() or some shizzle...and repeat for all below
-    owner->move_forward(20.0f);
-    return true;
-}
-
-bool model_backward_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->move_backward(5.0f);
-    return true;
-}
-
-bool model_turn_left_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->yaw_left(4.0f);
-    return true;
-}
-
-bool model_turn_right_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->yaw_right(4.0f);
-    return true;
-}
-
-bool model_up_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->move_up(5.0f);
-    return true;
-}
-
-bool model_down_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->move_down(5.0f);
-    return true;
-}
-
-bool model_pitch_up_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->pitch_up(3.0f);
-    return true;
-}
-
-bool model_pitch_down_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->pitch_down(3.0f);
-    return true;
-}
-
-bool model_roll_left_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->roll_left(3.0f);
-    return true;
-}
-
-bool model_roll_right_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->roll_right(3.0f);
-    return true;
-}
-
-bool model_unmount_callback(Game* game, Entity* owner, Entity* piece) {
-    game->player->unmount(game->world);
-    return true;
-}
-
-
-
-// a universal 6 directional engine
-// drawbacks is it is very weak
-bool engine_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action) {
-    // TODO we need both the owner entity (the engine on which this is called) and the target (the entire superobject
-    // for which we want to do the action on...
-    if (action == Action::MOVE_FORWARD) {
-        // move forward
-        owner->move_forward(20.0f);
-    }
-    else if (action == Action::MOVE_BACKWARD) {
-        // move backwards
-        owner->move_backward(5.0f);
-    }
-    else if (action == Action::MOVE_LEFT) {
-        // turn left
-        //owner->move_left(5.0f);
-        owner->yaw_left(4.0f);
-    }
-    else if (action == Action::MOVE_RIGHT) {
-        // turn right
-        //owner->move_right(5.0f);
-        owner->yaw_right(4.0f);
-    }
-    else if (action == Action::MOVE_UP) {
-        // move up
-        owner->move_up(5.0f);
-    }
-    else if (action == Action::MOVE_DOWN) {
-        // move down
-        owner->move_down(5.0f);
-    }
-    else if (action == Action::PITCH_UP) {
-        // pitch up
-        owner->pitch_up(3.0f);
-    }
-    else if (action == Action::PITCH_DOWN) {
-        // pitch down
-        owner->pitch_down(3.0f);
-    }
-    else if (action == Action::ROLL_LEFT) {
-        // pitch up
-        owner->roll_left(3.0f);
-    }
-    else if (action == Action::ROLL_RIGHT) {
-        // pitch down
-        owner->roll_right(3.0f);
-    }
-    else {
-        return false;
-    }
-    return true;
-}
-
-bool vehicle_block_keyboard_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc, Action action) {
-    if (action == Action::MOUNTING) {
-        game->player->unmount(game->world);
-    }
-    else {
-        return false;
-    }
     return true;
 }
 
@@ -217,5 +66,8 @@ void get_model_keyboard_callback_for(std::string name, std::map<Action, model_ca
     }
     else if (name.compare("shoot") == 0) {
         action_map[Action::CLICK_DESTROY] = model_shoot_callback;
+    }
+    else if (name.compare("explode") == 0) {
+        action_map[Action::COLLIDE] = model_explode_callback;
     }
 }

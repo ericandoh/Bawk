@@ -68,9 +68,10 @@ public:
     void recalculate_transform() override;
     Entity* poke(float x, float y, float z) override;
     bool break_block(float x, float y, float z) override;
+    void get_hurt(float x, float y, float z, float dmg) override;
     bool block_keyboard_callback(Game* game, Action key, Entity* ent) override;
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
-    virtual void step() override;
+    virtual void step(Game* game) override;
     virtual void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
     virtual void update_chunks(fvec3* player_pos) override;

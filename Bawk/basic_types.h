@@ -171,6 +171,8 @@ fvec3 get_round_from_fvec3(fvec3 src);
 ivec3 get_ivec3_minimum(ivec3 a, ivec3 b);
 ivec3 get_ivec3_maximum(ivec3 a, ivec3 b);
 
+float get_fvec3_distance(fvec3 src);
+
 void printf_fvec3(fvec3 a);
 void printf_fvec4(fvec4 a);
 

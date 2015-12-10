@@ -154,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/entity.cpp"
-            timestampString = "471034267.314275"
+            timestampString = "471406348.610947"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "415"
-            endingLineNumber = "415"
+            startingLineNumber = "432"
+            endingLineNumber = "432"
             landmarkName = "Entity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level)"
             landmarkType = "5">
          </BreakpointContent>

@@ -54,7 +54,7 @@ public:
     bool unmount(World* world);
     
     // --- Entity ---
-    void step() override;
+    void step(Game* game) override;
     std::string get_save_path() override;
     int load_selfs() override;
     int load_self(IODataObject* obj) override;

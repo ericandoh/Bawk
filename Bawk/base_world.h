@@ -39,7 +39,7 @@ public:
     void update_dimensions_from_chunk(ivec3 chunk_pos) override;
     
     // --- Entity ---
-    void step() override;
+    void step(Game* game) override;
     bool collides_with(Entity* other) override;
 };
 

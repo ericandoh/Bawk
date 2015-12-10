@@ -52,6 +52,10 @@ ivec3 get_ivec3_maximum(ivec3 a, ivec3 b) {
     return result;
 }
 
+float get_fvec3_distance(fvec3 src) {
+    return sqrtf(src.x * src.x + src.y * src.y + src.z * src.z);
+}
+
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b) {
     bounding_box result;
     result.lower.x = std::max(a.lower.x, b.lower.x);

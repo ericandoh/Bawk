@@ -128,8 +128,8 @@ void World::add_event(WorldEvent *event) {
 }
 
 // cycles one timestep for the world
-void World::step() {
-    base_world->step();
+void World::step(Game* game) {
+    base_world->step(game);
     
     int counter = 0;
     while (counter < events.size()) {

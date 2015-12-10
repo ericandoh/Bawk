@@ -95,38 +95,43 @@ bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) 
     if (get_block_is_model(blk[x1][y1][z1].type))
         return true;
     
+    block_type* next = get(x2, y2, z2);
+    uint16_t next_type = 0;
+    if (next) {
+        next_type = next->type;
+    }
     // Things next to models however, are rendered (models are sexy!)
-    if (get_block_is_model(get(x2, y2, z2).type))
+    if (get_block_is_model(next_type))
         return false;
     
     // Leaves do not block any other block, including themselves
-    if(get_block_transparency(get(x2, y2, z2).type) == 1)
+    if(get_block_transparency(next_type) == 1)
         return false;
     
     // Non-transparent blocks always block line of sight
-    if(!get_block_transparency(get(x2, y2, z2).type))
+    if(!get_block_transparency(next_type))
         return true;
     
     // Otherwise, LOS is only blocked by blocks if the same transparency type
-    return get_block_transparency(get(x2, y2, z2).type) == get_block_transparency(blk[x1][y1][z1].type);
+    return get_block_transparency(next_type) == get_block_transparency(blk[x1][y1][z1].type);
 }
 
 
-block_type RenderableChunk::get(int x, int y, int z) {
+block_type* RenderableChunk::get(int x, int y, int z) {
     if(x < 0)
-        return left ? left->blk[x + CX][y][z] : 0;
+        return left ? &left->blk[x + CX][y][z] : 0;
     if(x >= CX)
-        return right ? right->blk[x - CX][y][z] : 0;
+        return right ? &right->blk[x - CX][y][z] : 0;
     if(y < 0)
-        return below ? below->blk[x][y + CY][z] : 0;
+        return below ? &below->blk[x][y + CY][z] : 0;
     if(y >= CY)
-        return above ? above->blk[x][y - CY][z] : 0;
+        return above ? &above->blk[x][y - CY][z] : 0;
     if(z < 0)
-        return front ? front->blk[x][y][z + CZ] : 0;
+        return front ? &front->blk[x][y][z + CZ] : 0;
     if(z >= CZ)
-        return back ? back->blk[x][y][z - CZ] : 0;
+        return back ? &back->blk[x][y][z - CZ] : 0;
     
-    return blk[x][y][z];
+    return &blk[x][y][z];
 }
 
 void RenderableChunk::set(int x, int y, int z, block_type type) {

@@ -287,7 +287,7 @@ void Game::frame() {
         }
     }
     check_need_update();
-    world->step();
+    world->step(this);
 }
 
 float get_dst(fvec3* a, fvec3* b) {

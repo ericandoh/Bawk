@@ -121,8 +121,8 @@ bool sort_on_z(Entity* a, Entity* b) {
  for practice will work well enough
  
  */
-void BaseWorld::step() {
-    SuperObject::step();
+void BaseWorld::step(Game* game) {
+    SuperObject::step(game);
     
     // step on each entity, updating velocity/stable/etc if needed
     // step should also add the velocities to the position/angle/dir
@@ -311,6 +311,9 @@ void BaseWorld::step() {
             }
             else {
                 moved_entity->set_pos(prev_pos);
+                // TODO this is unsafe if our target object is the receiver on later collision detections..
+                // and is removed
+                moved_entity->after_collision(game);
             }
         }
     }
@@ -318,7 +321,7 @@ void BaseWorld::step() {
         if (!i->stable) {
             //i->velocity = fvec3(0,0,0);
             // TODO set a decay constant here
-            i->velocity = i->velocity * 0.5f;
+            i->velocity = i->velocity * i->velocity_decay;
             if (fabsf(i->velocity.x) < 0.02f) {
                 i->velocity.x = 0.0f;
             }

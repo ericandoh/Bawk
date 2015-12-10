@@ -241,6 +241,28 @@ bool SuperObject::break_block(float x, float y, float z) {
     return false;
 }
 
+void SuperObject::get_hurt(float x, float y, float z, float dmg) {
+    Entity* at = poke(x, y, z);
+    if (at == this) {
+        // hit block with the damage, if it is over threshold remove it
+        block_type* blk = get_block(x, y, z);
+        if (blk) {
+            int resistance = get_block_resistance(blk->type);
+            int actual_dmg = (int)((10.0f / (10.0f + resistance)) * dmg);
+            blk->life += actual_dmg;
+            if (blk->life >= MAX_HEALTH) {
+                // TODO don't actually kill the block, unless the block belongs to the world
+                // disable it instead
+                if (!blk->owner)
+                    kill_block(x, y, z);
+            }
+        }
+    }
+    else if (at) {
+        at->get_hurt(x, y, z, dmg);
+    }
+}
+
 bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
     bool any = false;
     for (Entity* entity: entities) {
@@ -271,12 +293,12 @@ bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
     if (get_look_at_vehicle(&lookingat)) {
         Entity* at_cursor = poke(lookingat.x, lookingat.y, lookingat.z);
         if (at_cursor == this) {
-            block_type blk = get_block(lookingat.x, lookingat.y, lookingat.z);
-            if (has_block_mouse_action(blk)) {
+            block_type* blk = get_block(lookingat.x, lookingat.y, lookingat.z);
+            if (blk && has_block_mouse_action(*blk)) {
                 ivec3 oac = get_floor_from_fvec3(fvec3(lookingat.x, lookingat.y, lookingat.z));
                 ivec3 rwc;
                 transform_into_world_integer_coordinates(&rwc, oac.x, oac.y, oac.z);
-                return call_block_mouse_callback_from(&blk, game, ent, rwc, button);
+                return call_block_mouse_callback_from(blk, game, ent, rwc, button);
             }
         }
         else {
@@ -286,12 +308,12 @@ bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
     return false;
 }
 
-void SuperObject::step() {
-    RenderableSuperObject::step();
+void SuperObject::step(Game* game) {
+    RenderableSuperObject::step(game);
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->step();
+        entities[i]->step(game);
     }
-    if (stable) {
+    /*if (stable) {
         float max_movement = 0.05f;
         if (floorf(pos.x) != pos.x) {
             float off = roundf(pos.x) - pos.x;
@@ -321,7 +343,7 @@ void SuperObject::step() {
             stable = false;
         }
         angle.inch_toward_normalization();
-    }
+    }*/
 }
 
 void SuperObject::render(fmat4* transform) {

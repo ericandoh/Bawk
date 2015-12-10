@@ -64,7 +64,7 @@ public:
     RenderableChunk(block_type from[CX][CY][CZ]);
     void cleanup();
     // get block at x, y, z in chunk's coordinates
-    block_type get(int x, int y, int z);
+    block_type* get(int x, int y, int z);
     // set block at x, y, z in chunk's coordinates
     void set(int x, int y, int z, block_type type);
     // get min(x,y,z) and max(x,y,z) over all blocks in this chunk (in chunk's coordinates)

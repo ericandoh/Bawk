@@ -7,6 +7,7 @@
 //
 
 #include "entity.h"
+#include "superobject.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 Entity::Entity() {
@@ -36,6 +37,7 @@ Entity::Entity() {
     // this object is (hopefully) not moving to start out with
     velocity = fvec3(0, 0, 0);
     angular_velocity = fvec3(0, 0, 0);
+    velocity_decay = 0.5f;
     // do a stable check to begin with
     stable = false;
     
@@ -308,6 +310,21 @@ bool Entity::break_block(float x, float y, float z) {
     return false;
 }
 
+void Entity::get_hurt(float x, float y, float z, float dmg) {
+    if (poke(x,y,z) != this) {
+        return;
+    }
+    // i have no resistance. take dmg directly to health
+    health += dmg;
+    if (health >= MAX_HEALTH) {
+        // become disabled, but don't actually remove
+        printf("I AM DEFEATED\n");
+        /*if (parent) {
+            ((SuperObject*)parent)->remove_entity(this);
+        }*/
+    }
+}
+
 bool Entity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
     return false;
 }
@@ -316,7 +333,7 @@ bool Entity::block_mouse_callback(Game* game, Action button, Entity* ent) {
     return false;
 }
 
-void Entity::step() {
+void Entity::step(Game* game) {
     // do nothing
 }
 
@@ -419,6 +436,10 @@ bool Entity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box*
         return true;
     }
     return false;
+}
+
+void Entity::after_collision(Game* game) {
+    // do nothing
 }
 
 std::string Entity::get_save_path() {

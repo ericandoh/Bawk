@@ -31,7 +31,8 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
     BlockOrientation orientation;
     ivec3 upper(1, 1, 1);
     if (get_pointing_position(&locked_pos, &orientation, upper)) {
-        if (object->get_block_integral(locked_pos.x, locked_pos.y, locked_pos.z).type) {
+        block_type* blk = object->get_block_integral(locked_pos.x, locked_pos.y, locked_pos.z);
+        if (blk && blk->type) {
             // there's already a block here!
             return false;
         }

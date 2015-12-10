@@ -49,8 +49,8 @@ public:
     
     // --- RenderableSuperObject ---
     // gets the block at (RWC) xyz
-    block_type get_block(float x, float y, float z);
-    block_type get_block_integral(int x, int y, int z);
+    block_type* get_block(float x, float y, float z);
+    block_type* get_block_integral(int x, int y, int z);
     // sets the block at (RWC) xyz
     void set_block(float x, float y, float z, block_type type);
     void set_block_integral(int x, int y, int z, block_type type);

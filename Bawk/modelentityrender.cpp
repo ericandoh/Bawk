@@ -102,6 +102,10 @@ void ModelEntity::update_chunks(fvec3* player_pos) {
 // int ModelEntity::get_collision_level() {}
 // bool ModelEntity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
 
+void ModelEntity::after_collision(Game* game) {
+    model->model_keyboard_callback(game, this, this, Action::COLLIDE);
+}
+
 std::string ModelEntity::get_save_path() {
     return get_path_to_superobj(pid, vid);
 }

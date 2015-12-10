@@ -107,7 +107,8 @@
             "name": "bullet",
             "resistance": 2,
             "texture": "bullet.obj",
-            "weight": 20
+            "weight": 20,
+            "action": "explode"
         },
         "5": {
             "name": "allsupportedfeatures",
