@@ -9,6 +9,7 @@
 #include "efros_leung.h"
 #include "superobject.h"
 
+/*
 typedef uint16_t block_value;
 
 struct box_position {
@@ -90,31 +91,6 @@ float get_difference(block_value a, block_value b) {
         return 0.0f;
     }
     return 1.0f;
-    /*
-    if (a > b) {
-        block_value temp = b;
-        b = a;
-        a = temp;
-    }
-    int aclass = get_class(a);
-    int bclass = get_class(b);
-    if (aclass == bclass) {
-        return 0.2f;
-    }
-    if (aclass == 0) {
-        // any block against air, return 1.0f
-        return 1.0f;
-    }
-    if (aclass == 1) {
-        if (bclass == 4) {
-            // and kindof? similar to other building mats
-            return 0.4f;
-        }
-        return 0.8f;
-    }
-    else {
-        return 0.8f;
-    }*/
 }
 
 // code heavily modified from
@@ -220,16 +196,16 @@ void train_and_apply_efros_leung(SuperObject* src, SuperObject* dst,
                     // we have a non air block!
                     // tell all neighbors around to increment its neighbor count
                     // TODO uncomment this, for now we don't use/count neighbros
-                    /*
-                    box_coordinate neighbor_box(x, y, z, window_size);
-                    neighbor_box.constrain(0, 0, 0, dst_xd, dst_yd, dst_zd);
-                    for (int xt = neighbor_box.xl; xt < neighbor_box.xu; xt++) {
-                        for (int yt = neighbor_box.yl; yt < neighbor_box.yu; yt++) {
-                            for (int zt = neighbor_box.zl; zt < neighbor_box.zu; zt++) {
-                                neighbor_count[xt][yt][zt]++;
-                            }
-                        }
-                    }*/
+                    
+                    //box_coordinate neighbor_box(x, y, z, window_size);
+                    //neighbor_box.constrain(0, 0, 0, dst_xd, dst_yd, dst_zd);
+                    //for (int xt = neighbor_box.xl; xt < neighbor_box.xu; xt++) {
+                    //    for (int yt = neighbor_box.yl; yt < neighbor_box.yu; yt++) {
+                    //        for (int zt = neighbor_box.zl; zt < neighbor_box.zu; zt++) {
+                    //            neighbor_count[xt][yt][zt]++;
+                    //        }
+                    //    }
+                    //}
                     // if we already have a block here, we don't need to apply Efros Leung to extrapolate
                     has_value[x][y][z] = true;
                     // exclude from list of search points when adding
@@ -292,18 +268,18 @@ void train_and_apply_efros_leung(SuperObject* src, SuperObject* dst,
         
         counter++;
         
-        /*
+        
         // find the position with the highest neighbor count (original + Efros processed)
-        ivec3 best;
-        int best_neighbor_count = -1;
-        int neighbors;
-        for (auto&i: search_points) {
-            neighbors = neighbor_count[i.x][i.y][i.z];
-            if (neighbors > best_neighbor_count) {
-                best_neighbor_count = neighbors;
-                best = i;
-            }
-        }*/
+        //ivec3 best;
+        //int best_neighbor_count = -1;
+        //int neighbors;
+        //for (auto&i: search_points) {
+        //    neighbors = neighbor_count[i.x][i.y][i.z];
+        //    if (neighbors > best_neighbor_count) {
+        //        best_neighbor_count = neighbors;
+        //        best = i;
+        //    }
+        //}
         
         // choose a neighbor at random...for now
         int choice = rand() % search_points.size();
@@ -323,27 +299,6 @@ void train_and_apply_efros_leung(SuperObject* src, SuperObject* dst,
         //dst_window.constrain(0, 0, 0, dst_xd, dst_yd, dst_zd);
         box_coordinate dst_constrained_window;
         dst_constrained_window = dst_window;
-        /*dst_constrained_window.xl = dst_window.xu;
-        dst_constrained_window.yl = dst_window.yu;
-        dst_constrained_window.zl = dst_window.zu;
-        dst_constrained_window.xu = dst_window.xl;
-        dst_constrained_window.yu = dst_window.yl;
-        dst_constrained_window.zu = dst_window.zl;
-        for (int y = dst_window.yl; y < dst_window.yu; y++) {
-            for (int x = dst_window.xl; x < dst_window.xu; x++) {
-                for (int z = dst_window.zl; z < dst_window.zu; z++) {
-                    if (has_value[x][y][z]) {
-                        //printf("%d %d %d\n",x,y,z);
-                        dst_constrained_window.xl = std::min(dst_constrained_window.xl, x);
-                        dst_constrained_window.yl = std::min(dst_constrained_window.yl, y);
-                        dst_constrained_window.zl = std::min(dst_constrained_window.zl, z);
-                        dst_constrained_window.xu = std::max(dst_constrained_window.xu, x + 1);
-                        dst_constrained_window.yu = std::max(dst_constrained_window.yu, y + 1);
-                        dst_constrained_window.zu = std::max(dst_constrained_window.zu, z + 1);
-                    }
-                }
-            }
-        }*/
         
         
         //
@@ -388,9 +343,9 @@ void train_and_apply_efros_leung(SuperObject* src, SuperObject* dst,
                                     float gauss_value = filter[xb][yb][zb];
                                     total_gauss += gauss_value;
                                     if (out_of_bounds) {
-                                        /*from_dst = dst->get_block_integral(xd+dst_box.xl,
-                                                                                    yd+dst_box.yl,
-                                                                                    zd+dst_box.zl).type;*/
+                                        //from_dst = dst->get_block_integral(xd+dst_box.xl,
+                                        //                                            yd+dst_box.yl,
+                                        //                                            zd+dst_box.zl).type;
                                         from_dst = -2;
                                     }
                                     else {
@@ -444,28 +399,6 @@ void train_and_apply_efros_leung(SuperObject* src, SuperObject* dst,
         ivec3 input_choice_vector = close_to_best[input_choice];
         
         
-        // fill in the block at that point, increment/set appropriate variables
-        // below will fill one block only
-        /*dst_vals[xc][yc][zc] = src_vals[input_choice_vector.x][input_choice_vector.y][input_choice_vector.z];
-        has_value[xc][yc][zc] = true;
-        
-        // iterate through neighbors of this point, add to search_points if not efros applied & not search applied
-        box_coordinate neighbor_box(xc, yc, zc, 3);
-        neighbor_box.constrain(0, 0, 0, dst_xd, dst_yd, dst_zd);
-        for (int xt = neighbor_box.xl; xt < neighbor_box.xu; xt++) {
-            for (int yt = neighbor_box.yl; yt < neighbor_box.yu; yt++) {
-                for (int zt = neighbor_box.zl; zt < neighbor_box.zu; zt++) {
-                    if (has_been_queued[xt][yt][zt]) {
-                        continue;
-                    }
-                    // if not, add it to my search points
-                    search_points.push_back(ivec3(xt,yt,zt));
-                    has_been_queued[xt][yt][zt] = true;
-                }
-            }
-        }*/
-        
-        // has_been_queued[xc][yc][zc] should already be true
         
         // below will fill a window of blocks around our choice
         box_coordinate around_coord(xc, yc, zc, fill_window_size);
@@ -526,4 +459,4 @@ void train_and_apply_efros_leung(SuperObject* src, SuperObject* dst,
         }
     }
     printf("Finished!\n");
-}
+}*/

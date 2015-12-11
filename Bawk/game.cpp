@@ -284,6 +284,10 @@ void Game::frame() {
     }
     check_need_update();
     world->step();
+    
+    if (efros_started) {
+        debug_action(this);
+    }
 }
 
 float get_dst(fvec3* a, fvec3* b) {

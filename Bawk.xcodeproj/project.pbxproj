@@ -30,6 +30,7 @@
 		074B6C9C1BB9D2380065192B /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074B6C9B1BB9D2380065192B /* main.cpp */; };
 		074B6CA31BB9D2780065192B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA21BB9D2780065192B /* Cocoa.framework */; };
 		074B6CA51BB9D27D0065192B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 074B6CA41BB9D27D0065192B /* OpenGL.framework */; };
+		0759DEC11C1A6B91002FC703 /* efros_leung_two.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0759DEBF1C1A6B91002FC703 /* efros_leung_two.cpp */; };
 		075B20CF1BDD9FD000F42317 /* blockaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 075B20CD1BDD9FD000F42317 /* blockaction.cpp */; };
 		075C67331BBA2FE200CB87DE /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 075C67321BBA2FE200CB87DE /* libglfw3.a */; };
 		075C67351BBA2FEC00CB87DE /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075C67341BBA2FEC00CB87DE /* IOKit.framework */; };
@@ -144,6 +145,8 @@
 		074B6CA21BB9D2780065192B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		074B6CA41BB9D27D0065192B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		074B6CA61BB9D2850065192B /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		0759DEBF1C1A6B91002FC703 /* efros_leung_two.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = efros_leung_two.cpp; sourceTree = "<group>"; };
+		0759DEC01C1A6B91002FC703 /* efros_leung_two.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = efros_leung_two.h; sourceTree = "<group>"; };
 		075B20CD1BDD9FD000F42317 /* blockaction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blockaction.cpp; sourceTree = "<group>"; };
 		075B20CE1BDD9FD000F42317 /* blockaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blockaction.h; sourceTree = "<group>"; };
 		075C67321BBA2FE200CB87DE /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = ../../../../../usr/local/lib/libglfw3.a; sourceTree = "<group>"; };
@@ -483,6 +486,8 @@
 			children = (
 				07F738591C136AA300768B3C /* efros_leung.cpp */,
 				07F7385A1C136AA300768B3C /* efros_leung.h */,
+				0759DEBF1C1A6B91002FC703 /* efros_leung_two.cpp */,
+				0759DEC01C1A6B91002FC703 /* efros_leung_two.h */,
 			);
 			name = cs194;
 			sourceTree = "<group>";
@@ -544,6 +549,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				074B6C9C1BB9D2380065192B /* main.cpp in Sources */,
+				0759DEC11C1A6B91002FC703 /* efros_leung_two.cpp in Sources */,
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */,
 				075B20CF1BDD9FD000F42317 /* blockaction.cpp in Sources */,

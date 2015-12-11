@@ -13,6 +13,8 @@
 
 class Game;
 
+extern bool efros_started;
+
 void debug_action(Game* game);
 
 #endif /* defined(__Bawk__debug_action__) */
