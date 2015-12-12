@@ -8,8 +8,7 @@
 
 #include "blockrender.h"
 #include "game_info_loader.h"
-
-const unsigned int TILES_PER_TEXTURE = 16;
+#include "settings.h"
 
 void set_coord_and_texture(GLbyte coord[][3],
                            GLbyte texture[][3],

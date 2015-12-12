@@ -31,12 +31,16 @@ void do_shit() {
 
 // COPY DUMP CONTENTS VVV
 void do_shit() {
-    init_orientation_rotation_calculations();
-    //test_orientation_math();
+    // copy me
 }
 
 /*
 Dumps
+ 
+ void do_shit() {
+ init_orientation_rotation_calculations();
+ //test_orientation_math();
+ }
  
  void do_shit() {
  fvec3 a(0.99, 1.02, 3.19);

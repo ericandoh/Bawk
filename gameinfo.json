@@ -120,6 +120,25 @@
             "light": [3, 1.0]
         }
     },
+    "sprites": {
+        "0": {
+            "name": "default",
+            "properties": [{"render": "default"}],
+            "duration": 3000
+        },
+        "1": {
+            "name": "explosion1",
+            "properties": [{"render": "explosion", "texture": 255, "start_radius": 0.5, "end_radius": 5.0}],
+            "duration": 50,
+            "light": [6, 2.0]
+        },
+        "2": {
+            "name": "allsupportedfeatures",
+            "properties": [{"render": "default"},{"step": "default"}],
+            "duration": 0,
+            "light": [3, 1.0]
+        }
+    },
     "recipes":
     {
         "0": {

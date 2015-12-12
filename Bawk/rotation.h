@@ -50,6 +50,7 @@ public:
     void transform_into_world_rotation(Rotation* dst, Rotation other);
     
     fvec3 transform_into_my_coordinates(fvec3 rwc);
+    fvec3 transform_into_world_coordinates_smooth(fvec3 rwc);
 };
 
 #endif /* defined(__Bawk__rotation__) */

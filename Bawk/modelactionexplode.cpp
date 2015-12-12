@@ -11,6 +11,8 @@
 #include "game.h"
 #include "superobject.h"
 
+#include "spritegetter.h"
+
 bool model_explode_callback(Game* game, Entity* owner, Entity* piece) {
     fvec3 pos = piece->pos + piece->center_pos;
     if (piece->parent) {
@@ -35,5 +37,9 @@ bool model_explode_callback(Game* game, Entity* owner, Entity* piece) {
         }
     }
     // TODO add sprites to the world here
+    // TODO redo this - this is horrible, horrible code...
+    SpriteRender* sprite = get_sprite_instance(1, game->player);
+    sprite->set_pos(pos);
+    game->world->base_world->add_entity(sprite);
     return true;
 }

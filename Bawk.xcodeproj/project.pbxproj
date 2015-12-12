@@ -72,6 +72,9 @@
 		077098981BDC0640002F295D /* blocktracer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 077098961BDC0640002F295D /* blocktracer.cpp */; };
 		0774A9761BDEC85A0069489D /* entity_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0774A9741BDEC85A0069489D /* entity_loader.cpp */; };
 		0774A9791BDEF1B80069489D /* world_generator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0774A9771BDEF1B80069489D /* world_generator.cpp */; };
+		078E87A21C1BEF0B00A825EB /* spriteexplosion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A01C1BEF0B00A825EB /* spriteexplosion.cpp */; };
+		078E87A51C1BF98700A825EB /* spritegetter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A31C1BF98700A825EB /* spritegetter.cpp */; };
+		078E87A81C1C11A800A825EB /* json_reader_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A61C1C11A800A825EB /* json_reader_helper.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -236,6 +239,12 @@
 		0774A9771BDEF1B80069489D /* world_generator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = world_generator.cpp; sourceTree = "<group>"; };
 		0774A9781BDEF1B80069489D /* world_generator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = world_generator.h; sourceTree = "<group>"; };
 		0784A7771BE41EC0001779BD /* includeglfw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = includeglfw.h; sourceTree = "<group>"; };
+		078E87A01C1BEF0B00A825EB /* spriteexplosion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spriteexplosion.cpp; sourceTree = "<group>"; };
+		078E87A11C1BEF0B00A825EB /* spriteexplosion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spriteexplosion.h; sourceTree = "<group>"; };
+		078E87A31C1BF98700A825EB /* spritegetter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritegetter.cpp; sourceTree = "<group>"; };
+		078E87A41C1BF98700A825EB /* spritegetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritegetter.h; sourceTree = "<group>"; };
+		078E87A61C1C11A800A825EB /* json_reader_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json_reader_helper.cpp; sourceTree = "<group>"; };
+		078E87A71C1C11A800A825EB /* json_reader_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json_reader_helper.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -381,6 +390,7 @@
 				076BEFDF1BD19E6100D68C8F /* physics */,
 				075C67631BBA78C800CB87DE /* display */,
 				075C67551BBA695900CB87DE /* asset_loaders */,
+				078E879F1C1BC88100A825EB /* sprites */,
 				075C67441BBA426000CB87DE /* render */,
 				071BB7351C18A99D00563D4A /* blockactions */,
 				075C673D1BBA3ED700CB87DE /* entities */,
@@ -462,8 +472,6 @@
 				072A0A251C0B90C9009304E5 /* modelrender.h */,
 				071FA6B91C10D19700884B70 /* lightrender.cpp */,
 				071FA6BA1C10D19700884B70 /* lightrender.h */,
-				072243371C17C98E00B60091 /* spriterender.cpp */,
-				072243381C17C98E00B60091 /* spriterender.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -484,6 +492,8 @@
 				07FA18371BE598CA00C7319C /* world_generator_structures.h */,
 				072A0A281C0BCA3B009304E5 /* entity_type.h */,
 				0713FF521C0FD88B0069FDAF /* entity_type.cpp */,
+				078E87A61C1C11A800A825EB /* json_reader_helper.cpp */,
+				078E87A71C1C11A800A825EB /* json_reader_helper.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";
@@ -515,6 +525,19 @@
 				072A0A2E1C0C3A69009304E5 /* collision_detection.h */,
 			);
 			name = physics;
+			sourceTree = "<group>";
+		};
+		078E879F1C1BC88100A825EB /* sprites */ = {
+			isa = PBXGroup;
+			children = (
+				072243371C17C98E00B60091 /* spriterender.cpp */,
+				072243381C17C98E00B60091 /* spriterender.h */,
+				078E87A01C1BEF0B00A825EB /* spriteexplosion.cpp */,
+				078E87A11C1BEF0B00A825EB /* spriteexplosion.h */,
+				078E87A31C1BF98700A825EB /* spritegetter.cpp */,
+				078E87A41C1BF98700A825EB /* spritegetter.h */,
+			);
+			name = sprites;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -610,6 +633,8 @@
 				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
+				078E87A51C1BF98700A825EB /* spritegetter.cpp in Sources */,
+				078E87A81C1C11A800A825EB /* json_reader_helper.cpp in Sources */,
 				072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
 				071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */,
@@ -636,6 +661,7 @@
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
 				0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */,
 				0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */,
+				078E87A21C1BEF0B00A825EB /* spriteexplosion.cpp in Sources */,
 				07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

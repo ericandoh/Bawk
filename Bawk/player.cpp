@@ -62,7 +62,6 @@ void Player::update_direction(double xdiff, double ydiff) {
     float angley = -ydiff*STRAIGHT_ANGLE;
     
     angle.apply_angles(fvec3(anglex, angley, 0));
-    
 }
 
 ivec3 Player::get_rounded_left() {

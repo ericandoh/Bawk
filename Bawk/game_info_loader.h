@@ -34,6 +34,7 @@
 
 class CursorItem;
 class RenderableModel;
+class SpriteRender;
 
 int load_game_info();
 void free_game_info();
@@ -54,6 +55,8 @@ void get_block_keyboard_callback_from(block_type block_id, std::map<Action, bloc
 
 bool has_block_mouse_action(block_type block_id);
 bool has_block_keyboard_action(block_type block_id);
+
+SpriteRender* get_sprite_renderable(uint16_t sid);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);
 

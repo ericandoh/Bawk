@@ -7,17 +7,25 @@
 //
 
 #include "game_info_loader.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <streambuf>
+
 #include "json/json.h"
+
 #include "block_loader.h"
 #include "cursorsuperobject.h"
+
 #include "world_generator.h"
 #include "world_generator_structures.h"
+
 #include "modelrender.h"
 #include "blockinfo.h"
+
+#include "spriterender.h"
+#include "spritegetter.h"
 
 // TODO deprecate this
 struct model_game_info {
@@ -38,9 +46,15 @@ struct recipe_game_info {
     std::vector<BlockOrientation> orientations;
 };
 
+struct sprite_game_info {
+    std::string name;
+    SpriteRender sprite;
+};
+
 class GameInfoDataObject {
     int read_blocks(Json::Value root);
     int read_models(Json::Value root);
+    int read_sprites(Json::Value root);
     int read_recipes(Json::Value root);
     int read_world_gen(Json::Value root);
 public:
@@ -48,6 +62,7 @@ public:
     std::vector<BlockInfo> block_info;
     std::vector<RenderableModel> model_info;
     std::map<uint16_t, model_game_info> block_model_info;
+    std::vector<sprite_game_info> sprite_info;
     std::vector<recipe_game_info> recipe_info;
     std::vector<biome_game_info> biome_info;
     std::vector<world_gen_mode_info> world_gen_modes;
@@ -381,6 +396,53 @@ int GameInfoDataObject::read_models(Json::Value root) {
     // calculate auxiliary data
     for (auto&i: model_info) {
         i.refresh();
+    }
+    return 0;
+}
+
+uint16_t get_sprite_id_from_name(const std::string &name) {
+    for (uint16_t i = 0; i < game_data_object->sprite_info.size(); i++) {
+        if (game_data_object->sprite_info[i].name.compare(name) == 0) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+int GameInfoDataObject::read_sprites(Json::Value root) {
+    if (root.type() != Json::objectValue)
+        return 1;
+    
+    Json::Value sprite;
+    sprite_game_info* info;
+    
+    Json::Value::Members members(root.getMemberNames());
+    for (Json::Value::Members::iterator it = members.end() - 1;
+         it >= members.begin();
+         --it) {
+        const std::string& name = *it;
+        uint16_t sprite_id = std::stoi(name);
+        if (sprite_id >= sprite_info.size()) {
+            sprite_info.resize(sprite_id + 1);
+        }
+        info = &(sprite_info[sprite_id]);
+        sprite = root[name];
+        if (sprite.isMember("name") && sprite["name"].isString()) {
+            info->name.assign(sprite["name"].asString().c_str());
+        }
+        if (sprite.isMember("properties")) {
+            set_sprite_properties(&(info->sprite), sprite["properties"]);
+        }
+        if (sprite.isMember("duration") && sprite["duration"].isInt()) {
+            info->sprite.duration = sprite["duration"].asInt();
+        }
+        if (sprite.isMember("light") && sprite["light"].type() == Json::arrayValue) {
+            int size = sprite["light"].size();
+            if (size >= 2) {
+                info->sprite.light.light_radius = sprite["light"][0].asFloat();
+                info->sprite.light.light_intensity = sprite["light"][1].asFloat();
+            }
+        }
     }
     return 0;
 }
@@ -750,6 +812,8 @@ int GameInfoDataObject::read_values() {
         read_blocks(root["blocks"]);
     if (root.isMember("models"))
         read_models(root["models"]);
+    if (root.isMember("sprites"))
+        read_sprites(root["sprites"]);
     if (root.isMember("recipes"))
         read_recipes(root["recipes"]);
     if (root.isMember("world_gen"))
@@ -833,6 +897,10 @@ bool has_block_mouse_action(block_type block_id) {
 
 bool has_block_keyboard_action(block_type block_id) {
     return game_data_object->block_info[block_id.type].has_keyboard_callback;
+}
+
+SpriteRender* get_sprite_renderable(uint16_t sid) {
+    return &(game_data_object->sprite_info[sid].sprite);
 }
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid) {

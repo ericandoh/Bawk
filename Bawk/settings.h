@@ -30,6 +30,8 @@
 #define CY 16
 #define CZ 16
 
+const unsigned int TILES_PER_TEXTURE = 16;
+
 const std::string EXAMPLE_CONSTANT = "this is a sample constant!";
 
 #endif

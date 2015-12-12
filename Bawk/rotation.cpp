@@ -214,7 +214,15 @@ void Rotation::set_angle(glm::quat angle) {
 
 void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
     // align dir to to_dir
-    float to_angle0 = acosf(glm::dot(to_dir, dir));
+    float val = glm::dot(to_dir, dir);
+    if (val > 1.0f) {
+        // account for rounding errors...
+        val = 1.0f;
+    }
+    else if (val < -1.0f) {
+        val = -1.0f;
+    }
+    float to_angle0 = acosf(val);
     glm::quat to_quat = quaternion;
     glm::quat temp;
     if (to_angle0 != 0) {
@@ -238,7 +246,15 @@ void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
     temp_up = glm::normalize(temp_up);
     
     // now align up to an axis
-    float to_angle1 = acosf(glm::dot(to_up, temp_up));
+    val = glm::dot(to_up, temp_up);
+    if (val > 1.0f) {
+        // account for rounding errors...
+        val = 1.0f;
+    }
+    else if (val < -1.0f) {
+        val = -1.0f;
+    }
+    float to_angle1 = acosf(val);
     if (to_angle1 != 0) {
         fvec3 to_rotation_axis1 = glm::cross(temp_up, to_up);
         if (to_rotation_axis1 == fvec3(0,0,0)) {
@@ -310,6 +326,15 @@ fvec3 Rotation::transform_into_my_coordinates(fvec3 rwc) {
     fvec4 result(rwc.x, rwc.y, rwc.z, 1.0f);
     fmat4 mat(1);
     add_my_rotation_rounded(&mat);
+    result = mat * result;
+    fvec3 src(result.x,result.y,result.z);
+    return src;
+}
+
+fvec3 Rotation::transform_into_world_coordinates_smooth(fvec3 rwc) {
+    fvec4 result(rwc.x, rwc.y, rwc.z, 1.0f);
+    fmat4 mat(1);
+    add_world_rotation(&mat);
     result = mat * result;
     fvec3 src(result.x,result.y,result.z);
     return src;
