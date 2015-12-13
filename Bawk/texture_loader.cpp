@@ -10,12 +10,13 @@
 #include <string>
 #include "SOIL.h"
 #include "display.h"
+#include "main_dir.h"
 
-const char* TILE_IMAGE = "tiles.png";
+const std::string TILE_IMAGE = MAIN_INFO_DIR + "gameinfo/tiles.png";
 
 GLuint load_tiles() {
     /* load an image file directly as a new OpenGL texture */
-    GLuint tiles = SOIL_load_OGL_texture(TILE_IMAGE,
+    GLuint tiles = SOIL_load_OGL_texture(TILE_IMAGE.c_str(),
                                          SOIL_LOAD_AUTO,
                                          SOIL_CREATE_NEW_ID,
                                          //SOIL_FLAG_MIPMAPS |
@@ -34,6 +35,7 @@ GLuint load_tiles() {
 void save_tile() {
     int width, height;
     get_window_size(&width, &height);
-    int result = SOIL_save_screenshot("/Users/Eric/haha.png", SOIL_SAVE_TYPE_BMP, 0, 0, width, height);
+    std::string to_result = MAIN_INFO_DIR + "haha.png";
+    int result = SOIL_save_screenshot(to_result.c_str(), SOIL_SAVE_TYPE_BMP, 0, 0, width, height);
     printf("%d\n", result);
 }

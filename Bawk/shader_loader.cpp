@@ -14,14 +14,15 @@
 #include "includeglfw.h"
 #include "shader_loader.h"
 #include "worldrender.h"
+#include "main_dir.h"
 
 // VERSION 1.1
 // TOFU references to old shaders here
 
-const std::string GEOMETRY_VERTEX_SHADER = "vertex_shader.glsl";
-const std::string GEOMETRY_FRAG_SHADER = "frag_shader.glsl";
-const std::string LIGHTING_VERTEX_SHADER = "light_vertex_shader.glsl";
-const std::string LIGHTING_FRAG_SHADER = "light_frag_shader.glsl";
+const std::string GEOMETRY_VERTEX_SHADER = MAIN_INFO_DIR + "gameinfo/vertex_shader.glsl";
+const std::string GEOMETRY_FRAG_SHADER = MAIN_INFO_DIR + "gameinfo/frag_shader.glsl";
+const std::string LIGHTING_VERTEX_SHADER = MAIN_INFO_DIR + "gameinfo/light_vertex_shader.glsl";
+const std::string LIGHTING_FRAG_SHADER = MAIN_INFO_DIR + "gameinfo/light_frag_shader.glsl";
 
 long get_file_length(std::string file_name) {
     std::ifstream t(file_name, std::ifstream::ate | std::ifstream::binary);

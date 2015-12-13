@@ -1,0 +1,251 @@
+{
+    "version": 4,
+    "blocks":
+    {
+        "0": {
+            "name": "air",
+            "transparency": 2,
+            "weight": 0
+        },
+        "1": {
+            "name": "lightstone",
+            "resistance": 8,
+            "weight": 20
+        },
+        "2": {
+            "name": "stone",
+            "resistance": 10,
+            "weight": 25
+        },
+        "3": {
+            "name": "darkstone",
+            "resistance": 12,
+            "weight": 30
+        },
+        "10": {
+            "name": "sand",
+            "resistance": 1,
+            "weight": 10
+        },
+        "16": {
+            "name": "dirt",
+            "resistance": 2,
+            "weight": 10
+        },
+        "20": {
+            "name": "grass",
+            "resistance": 3,
+            "texture": [16, 20, 16, 16, 16, 16],
+            "weight": 12
+        },
+        "37": {
+            "name": "water",
+            "resistance": 1,
+            "transparency": 3,
+            "weight": 15
+        },
+        "38": {
+            "name": "lava",
+            "resistance": 1,
+            "transparency": 4,
+            "weight": 15,
+            "light": [1.3, 0.6]
+        },
+        "94": {
+            "name": "glass",
+            "resistance": 1,
+            "transparency": 5,
+            "weight": 15
+        },
+        "120": {
+            "name": "metal",
+            "resistance": 20,
+            "weight": 35
+        },
+        "128": {
+            "name": "wood",
+            "resistance": 6,
+            "weight": 10
+        },
+        "129": {
+            "name": "allsupportedfeatures",
+            "resistance": 100,
+            "texture": "test.obj",
+            "transparency": 2,
+            "weight": 100,
+            "vehicle": 100,
+            "action": "sample",
+            "light": [3, 0.5]
+        }
+    },
+    "models":
+    {
+        "1": {
+            "name": "engine",
+            "resistance": 2,
+            "texture": "simplebox.obj",
+            "weight": 30,
+            "action": "engine"
+        },
+        "2": {
+            "name": "saddle",
+            "resistance": 2,
+            "texture": "mount.obj",
+            "weight": 30,
+            "vehicle": 1,
+            "action": "vehicle",
+            "light": [3, 1.0]
+        },
+        "3": {
+            "name": "allsupportedfeatures",
+            "resistance": 100,
+            "texture": "test.obj",
+            "weight": 100,
+            "vehicle": 100,
+            "action": "sample",
+            "light": [3, 1.0]
+        }
+    },
+    "recipes":
+    {
+        "0": {
+            "name": "undefined",
+            "blocks": [{"position": [0, 0, 0]},
+                       {"position": [0, 0, 1]},
+                       {"position": [0, 1, 1]},
+                       {"id": 1, "position": [0, 1, 0]}],
+            "texture": "engine.obj",
+            "resistance": 40,
+            "weight": 100
+        },
+        "1": {
+            "name": "tree",
+            "blocks": [{"id": "wood", "position": [0, 0, 0]},
+                       {"id": "wood", "position": [0, 1, 0]},
+                       {"id": "wood", "position": [0, 2, 0]},
+                       {"id": "wood", "position": [0, 3, 0]},
+                       {"id": "grass", "position": [1, 3, 0]},
+                       {"id": "grass", "position": [-1, 3, 0]},
+                       {"id": "grass", "position": [0, 3, 1]},
+                       {"id": "grass", "position": [0, 3, -1]},
+                       {"id": "grass", "position": [0, 4, 0]}],
+            "resistance": 40,
+            "weight": 100
+        },
+        "2": {
+            "name": "cactus",
+            "blocks": [{"id": "grass", "position": [0, 0, 0]},
+                       {"id": "grass", "position": [0, 1, 0]},
+                       {"id": "grass", "position": [0, 2, 0]}],
+            "resistance": 40,
+            "weight": 100
+        },
+        "3": {
+            "name": "allsupportedfeatures",
+            "blocks": [{"id": "stone", "orientation": 5, "position": [0, 0, 0]},
+                       {"id": 3, "orientation": "top", "position": [0, 0, 1]},
+                       {"position": [0, 1, 1]}],
+            "blocks": "path/to/superobject_folder",
+            "resistance": 40,
+            "texture": "test.obj",
+            "transparency": 3,
+            "weight": 100,
+            "vehicle": 1
+        }
+    },
+    "world_gen":
+    {
+        "modes": [
+                  {
+                  "name": "flatty",
+                  "biomes": {"flat": 1},
+                  "sector": [64, 64],
+                  "biomecount": [5, 0],
+                  "islandcount": [5, 0],
+                  "separation": 10,
+                  "fatness": 4,
+                  "melt": 3,
+                  "octaves": 5,
+                  "lowerstrength": 0.0,
+                  "lowerpersistence": 0.2
+                  },
+                  {
+                  "name": "default",
+                  "biomes": {"forest": 5, "snow": 2, "desert": 3},
+                  "sector": [64, 64],
+                  "biomecount": [8, 1],
+                  "islandcount": [5, 1],
+                  "separation": 10,
+                  "fatness": 4,
+                  "melt": 8,
+                  "octaves": 5,
+                  "lowerstrength": 20.0,
+                  "lowerpersistence": 0.2
+                  },
+                  {
+                  "name": "full_infinite",
+                  "biomes": {"forest": 1},
+                  "sector": [256, 256],
+                  "biomecount": [1, 0],
+                  "islandcount": [1, 0],
+                  "separation": 14,
+                  "fatness": 5,
+                  "melt": 10,
+                  "octaves": 5,
+                  "lowerstrength": 20.0,
+                  "lowerpersistence": 0.2
+                  }],
+        "biomes": [{
+                   "name": "empty",
+                   "strength": 0.0,
+                   "persistence": 0.0
+                   },
+                   {
+                   "name": "forest",
+                   "strength": 15.0,
+                   "persistence": 0.6,
+                   "blocks": [{"id": "grass", "lower": 0, "upper": 0, "frequency": 1},
+                              {"id": "dirt",  "lower": 1, "upper": 15, "frequency": 1},
+                              {"id": "stone", "lower": 5, "frequency": 2}],
+                   "events": [{"id": "spawn", "mob": 0, "lower": 0, "upper": 0, "frequency": 0.02},
+                              {"id": "earthquake", "lower": 20, "frequency": 0.005}],
+                   "structures": [{"id": "tree", "lower": -1, "upper": -1, "frequency": 0.01}]
+                   },
+                   {
+                   "name": "desert",
+                   "strength": 7.0,
+                   "persistence": 0.9,
+                   "blocks": [{"id": "sand", "lower": 0, "upper": 8, "frequency": 1},
+                              {"id": "stone", "lower": 5, "frequency": 1}],
+                   "events": [{"id": "spawn", "mob": 1, "lower": 0, "upper": 0, "frequency": 0.02},
+                              {"id": "earthquake", "lower": 20, "frequency": 0.005}],
+                   "structures": [{"id": "cactus", "lower": -1, "upper": -1, "frequency": 0.01}]
+                   },
+                   {
+                   "name": "snow",
+                   "strength": 40.0,
+                   "persistence": 0.7,
+                   "blocks": [{"id": "stone", "lower": 0, "upper": 8, "frequency": 1}],
+                   "events": [{"id": "orespawn", "rid": 4, "lower": 10, "frequency": 0.005, "radius": 3}]
+                   },
+                   {
+                   "name": "flat",
+                   "strength": 1.0,
+                   "persistence": 0.2,
+                   "blocks": [{"id": "grass", "lower": 0, "upper": 0, "frequency": 1},
+                              {"id": "dirt",  "lower": 1, "upper": 3, "frequency": 1},
+                              {"id": "stone", "lower": 4, "frequency": 1}]
+                   },
+                   {
+                   "name": "allsupportedfeatures",
+                   "frequency": 10,
+                   "roughness": 10,
+                   "blocks": [{"id": 3, "lower": 0, "upper": 10, "frequency": 1},
+                              {"id": "allsupportedfeatures", "lower": 11, "upper": 20, "frequency": 2}],
+                   "events": [{"id": "spawn", "mob": 0, "lower": 0, "upper": 0, "frequency": 0.02},
+                              {"id": "earthquake", "lower": 20, "frequency": 0.005}],
+                   "structures": [{"id": "tree", "lower": 0, "upper": 0, "frequency": 0.01}]
+                   }
+        ]
+    }
+}

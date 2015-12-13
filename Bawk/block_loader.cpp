@@ -8,10 +8,10 @@
 //
 
 #include "block_loader.h"
+#include "main_dir.h"
 
-
-const std::string BLOCK_DATA_PATH = "/Users/Eric/Bawk";
-const std::string GAME_JSON_DATA_PATH = "./gameinfo.json";
+const std::string BLOCK_DATA_PATH = MAIN_INFO_DIR + "data";
+const std::string GAME_JSON_DATA_PATH = MAIN_INFO_DIR + "gameinfo/gameinfo.json";
 
 // what world we're in right now
 std::string save_to_world_name;
