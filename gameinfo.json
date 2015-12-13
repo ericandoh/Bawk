@@ -133,6 +133,12 @@
             "light": [6, 2.0]
         },
         "2": {
+            "name": "explosion2",
+            "properties": [{"render": "explosion", "texture": 255, "start_radius": 0.3, "end_radius": 0.8}],
+            "duration": 5,
+            "light": [1, 0.8]
+        },
+        "3": {
             "name": "allsupportedfeatures",
             "properties": [{"render": "default"},{"step": "default"}],
             "duration": 0,
