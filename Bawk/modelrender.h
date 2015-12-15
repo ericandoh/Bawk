@@ -14,8 +14,8 @@
 #include <string>
 #include <map>
 #include "basic_types.h"
-#include "blockaction.h"
 #include "lightrender.h"
+#include "modelaction.h"
 
 class Game;
 
@@ -26,6 +26,7 @@ public:
     int weight;
     int vehicle;
     RenderableLight light;
+    ModelActionMultiplexer* multiplexer;
     
     bounding_box bounds;
     fvec3 center_pos;
@@ -33,17 +34,11 @@ public:
     std::vector<fvec3> model_normals;
     std::vector<fvec3> model_uvs;
     
-    std::map<Action, model_callback_func> mouse_callback;
-    std::map<Action, model_callback_func> keyboard_callback;
-    
     RenderableModel();
     
     // --- RenderableModel ---
     void render();
     void refresh();
-    
-    bool model_keyboard_callback(Game* game, Entity* owner, Entity* ent, Action key);
-    bool model_mouse_callback(Game* game, Entity* owner, Entity* ent, Action key);
 };
 
 #endif /* defined(__Bawk__modelrender__) */

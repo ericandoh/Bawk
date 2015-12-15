@@ -69,6 +69,11 @@ public:
     virtual SpriteRenderable* copy();
 };
 
+// defined for subclasses when fetching
+namespace Json {
+    class Value;
+}
+
 class SpriteRender: public Entity {
 public:
     Player* player;

@@ -16,15 +16,7 @@
 
 SpriteRenderable* get_sprite_renderable_from_string(std::string name, Json::Value node) {
     if (name.compare("explosion") == 0) {
-        // read stuff from node
-        int texture_id;
-        float start_radius, end_radius;
-        texture_id = start_radius = end_radius = 0;
-        std::string key = "texture";
-        json_read_int_safe(&texture_id, node, "texture");
-        json_read_float_safe(&start_radius, node, "start_radius");
-        json_read_float_safe(&end_radius, node, "end_radius");
-        return get_sprite_explosive(texture_id, start_radius, end_radius);
+        return get_sprite_explosive(node);
     }
     return 0;
 }

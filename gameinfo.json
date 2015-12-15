@@ -85,7 +85,7 @@
             "resistance": 2,
             "texture": "simplebox.obj",
             "weight": 30,
-            "action": "engine"
+            "action": {"name": "engine"}
         },
         "2": {
             "name": "saddle",
@@ -93,7 +93,7 @@
             "texture": "mount.obj",
             "weight": 30,
             "vehicle": 1,
-            "action": "vehicle",
+            "action": {"name": "mount"},
             "light": [3, 1.0]
         },
         "3": {
@@ -101,14 +101,14 @@
             "resistance": 2,
             "texture": "gun.obj",
             "weight": 50,
-            "action": "shoot"
+            "action": {"name": "shoot", "projectile": "bullet", "pspeed": 5.0}
         },
         "4": {
             "name": "bullet",
             "resistance": 2,
             "texture": "bullet.obj",
             "weight": 20,
-            "action": "explode"
+            "action": {"name": "explode", "radius": 5, "damage": 300}
         },
         "5": {
             "name": "allsupportedfeatures",
@@ -116,7 +116,7 @@
             "texture": "test.obj",
             "weight": 100,
             "vehicle": 100,
-            "action": "sample",
+            "action": {"name": "sample"},
             "light": [3, 1.0]
         }
     },

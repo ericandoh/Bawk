@@ -12,12 +12,14 @@
 #include <stdio.h>
 #include "entity.h"
 #include "modelrender.h"
+#include "modelaction.h"
 
 class ModelEntity: public Entity {
     bool in_range;
 public:
     uint16_t model_id;
     RenderableModel* model;
+    ModelActionMultiplexer* multiplexer;
     ModelEntity(uint16_t mid);
     ModelEntity(uint32_t p, uint32_t v);
     ModelEntity(uint32_t p, uint32_t v, uint16_t mid);

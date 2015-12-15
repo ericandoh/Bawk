@@ -10,7 +10,13 @@
 #include "game.h"
 #include "entity.h"
 
-bool model_mount_callback(Game* game, Entity* owner, Entity* piece) {
+class ModelMountActionMultiplexer: public ModelActionMultiplexer {
+public:
+    bool model_callback_clicked_secondary(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_mount(Game *game, Entity *owner, Entity *piece) override;
+};
+
+bool ModelMountActionMultiplexer::model_callback_clicked_secondary(Game* game, Entity* owner, Entity* piece) {
     if (owner && owner->entity_class == EntityType::SUPEROBJECT) {
         fvec3 piece_pos = piece->pos + piece->center_pos + fvec3(0.0f, 0.75f, 0.0f);
         if (piece->parent)
@@ -22,7 +28,11 @@ bool model_mount_callback(Game* game, Entity* owner, Entity* piece) {
     return false;
 }
 
-bool model_unmount_callback(Game* game, Entity* owner, Entity* piece) {
+bool ModelMountActionMultiplexer::model_callback_mount(Game* game, Entity* owner, Entity* piece) {
     game->player->unmount(game->world);
     return true;
+}
+
+ModelActionMultiplexer* get_mount_model_multiplexer() {
+    return new ModelMountActionMultiplexer();
 }

@@ -18,6 +18,7 @@ RenderableModel::RenderableModel() {
     bounds = bounding_box();
     center_pos = fvec3(0,0,0);
     light = RenderableLight();
+    multiplexer = 0;
 }
 
 void RenderableModel::render() {
@@ -78,22 +79,4 @@ void RenderableModel::refresh() {
         bounds.upper.z = 1.0f;
     }
     center_pos = bounds.get_center_pos();
-}
-
-bool RenderableModel::model_keyboard_callback(Game* game, Entity* owner, Entity* ent, Action key) {
-    if (keyboard_callback.count(key)) {
-        return (*keyboard_callback[key])(game,
-                                         owner,
-                                         ent);
-    }
-    return false;
-}
-
-bool RenderableModel::model_mouse_callback(Game* game, Entity* owner, Entity* ent, Action key) {
-    if (mouse_callback.count(key)) {
-        return (*mouse_callback[key])(game,
-                                      owner,
-                                      ent);
-    }
-    return false;
 }

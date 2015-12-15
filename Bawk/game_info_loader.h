@@ -36,6 +36,10 @@ class CursorItem;
 class RenderableModel;
 class SpriteRender;
 
+namespace Json {
+    class Value;
+}
+
 int load_game_info();
 void free_game_info();
 
@@ -57,6 +61,8 @@ bool has_block_mouse_action(block_type block_id);
 bool has_block_keyboard_action(block_type block_id);
 
 SpriteRender* get_sprite_renderable(uint16_t sid);
+
+uint16_t get_model_id_from_name(Json::Value node);
 
 CursorItem* get_recipe_cursoritem_from(uint16_t vid);
 

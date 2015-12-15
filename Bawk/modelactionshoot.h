@@ -10,8 +10,8 @@
 #define __Bawk__modelactionshoot__
 
 #include <stdio.h>
-#include "blockaction.h"
+#include "modelaction.h"
 
-bool model_shoot_callback(Game* game, Entity* owner, Entity* piece);
+ModelActionMultiplexer* get_shoot_model_multiplexer(Json::Value node);
 
 #endif /* defined(__Bawk__modelactionshoot__) */

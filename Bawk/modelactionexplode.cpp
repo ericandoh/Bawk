@@ -10,10 +10,25 @@
 #include "entity.h"
 #include "game.h"
 #include "superobject.h"
+#include "json/json.h"
+#include "json_reader_helper.h"
 
 #include "spritegetter.h"
 
-bool model_explode_callback(Game* game, Entity* owner, Entity* piece) {
+class ModelExplodeActionMultiplexer: public ModelActionMultiplexer {
+public:
+    float radius;
+    float damage;
+    ModelExplodeActionMultiplexer();
+    bool model_callback_collision(Game *game, Entity *owner, Entity *piece) override;
+};
+
+ModelExplodeActionMultiplexer::ModelExplodeActionMultiplexer() {
+    radius = 3.0f;
+    damage = 500.0f;
+}
+
+bool ModelExplodeActionMultiplexer::model_callback_collision(Game* game, Entity* owner, Entity* piece) {
     fvec3 pos = piece->pos + piece->center_pos;
     if (piece->parent) {
         piece->parent->transform_into_world_coordinates_smooth(&pos, pos.x, pos.y, pos.z);
@@ -42,4 +57,11 @@ bool model_explode_callback(Game* game, Entity* owner, Entity* piece) {
     sprite->set_pos(pos);
     game->world->base_world->add_entity(sprite);
     return true;
+}
+
+ModelActionMultiplexer* get_explode_model_multiplexer(Json::Value node) {
+    ModelExplodeActionMultiplexer* mult = new ModelExplodeActionMultiplexer();
+    json_read_float_safe(&mult->radius, node, "radius");
+    json_read_float_safe(&mult->damage, node, "damage");
+    return mult;
 }

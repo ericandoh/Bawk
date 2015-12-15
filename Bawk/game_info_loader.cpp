@@ -27,6 +27,8 @@
 #include "spriterender.h"
 #include "spritegetter.h"
 
+#include "modelaction.h"
+
 // TODO deprecate this
 struct model_game_info {
     // we will use this to bind to texture which is loaded in by SOIL
@@ -356,6 +358,8 @@ int GameInfoDataObject::read_models(Json::Value root) {
     RenderableModel* info;
     
     Json::Value::Members members(root.getMemberNames());
+    
+    // read in all names first, in case we have some property that recursively asks for an ID given a name
     for (Json::Value::Members::iterator it = members.end() - 1;
          it >= members.begin();
          --it) {
@@ -369,6 +373,15 @@ int GameInfoDataObject::read_models(Json::Value root) {
         if (model.isMember("name") && model["name"].type() == Json::stringValue) {
             info->name.assign(model["name"].asString().c_str());
         }
+    }
+    
+    for (Json::Value::Members::iterator it = members.end() - 1;
+         it >= members.begin();
+         --it) {
+        const std::string& name = *it;
+        uint16_t model_id = std::stoi(name);
+        info = &(model_info[model_id]);
+        model = root[name];
         if (model.isMember("resistance") && model["resistance"].type() == Json::intValue) {
             info->resistance = model["resistance"].asInt();
         }
@@ -381,9 +394,11 @@ int GameInfoDataObject::read_models(Json::Value root) {
         if (model.isMember("vehicle") && model["vehicle"].type() == Json::intValue) {
             info->vehicle = model["vehicle"].asInt();
         }
-        if (model.isMember("action") and model["action"].type() == Json::stringValue) {
-            get_model_mouse_callback_for(model["action"].asString(), info->mouse_callback);
-            get_model_keyboard_callback_for(model["action"].asString(), info->keyboard_callback);
+        if (model.isMember("action")) {
+            info->multiplexer = get_model_action_multiplexer_from(model["action"]);
+        }
+        else {
+            info->multiplexer = 0;
         }
         if (model.isMember("light") && model["light"].type() == Json::arrayValue) {
             int size = model["light"].size();
@@ -451,6 +466,20 @@ uint16_t get_block_id_from_name(Json::Value node) {
     if (node.type() == Json::stringValue) {
         for (uint16_t i = 0; i < game_data_object->block_info.size(); i++) {
             if (game_data_object->block_info[i].name.compare(node.asString()) == 0) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    else {
+        return node.asInt();
+    }
+}
+
+uint16_t get_model_id_from_name(Json::Value node) {
+    if (node.type() == Json::stringValue) {
+        for (uint16_t i = 0; i < game_data_object->block_info.size(); i++) {
+            if (game_data_object->model_info[i].name.compare(node.asString()) == 0) {
                 return i;
             }
         }

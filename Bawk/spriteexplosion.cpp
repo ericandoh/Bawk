@@ -9,16 +9,25 @@
 #include "spriteexplosion.h"
 #include "settings.h"
 #include "worldrender.h"
+#include "json_reader_helper.h"
+#include "json/json.h"
 
 class SpriteExplosiveRenderable: public SpriteRenderable {
 public:
     int texture_id;
     float start_radius, end_radius;
     
+    SpriteExplosiveRenderable();
     void render(fmat4* transform, SpriteRender* render) override;
     
     SpriteRenderable* copy() override;
 };
+
+SpriteExplosiveRenderable::SpriteExplosiveRenderable() {
+    texture_id = 0;
+    start_radius = 1;
+    end_radius = 1;
+}
 
 void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {
     // assume radius gets larger...or does it
@@ -53,10 +62,10 @@ SpriteRenderable* SpriteExplosiveRenderable::copy() {
     return copy;
 }
 
-SpriteRenderable* get_sprite_explosive(int texture_id, float start_radius, float end_radius) {
+SpriteRenderable* get_sprite_explosive(Json::Value node) {
     SpriteExplosiveRenderable* sprite_render = new SpriteExplosiveRenderable();
-    sprite_render->texture_id = texture_id;
-    sprite_render->start_radius = start_radius;
-    sprite_render->end_radius = end_radius;
+    json_read_int_safe(&sprite_render->texture_id, node, "texture");
+    json_read_float_safe(&sprite_render->start_radius, node, "start_radius");
+    json_read_float_safe(&sprite_render->end_radius, node, "end_radius");
     return sprite_render;
 }

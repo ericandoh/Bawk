@@ -10,17 +10,8 @@
 #define __Bawk__modelactionmovement__
 
 #include <stdio.h>
-#include "blockaction.h"
+#include "modelaction.h"
 
-bool model_forward_callback(Game* game, Entity* owner, Entity* piece);
-bool model_backward_callback(Game* game, Entity* owner, Entity* piece);
-bool model_turn_left_callback(Game* game, Entity* owner, Entity* piece);
-bool model_turn_right_callback(Game* game, Entity* owner, Entity* piece);
-bool model_up_callback(Game* game, Entity* owner, Entity* piece);
-bool model_down_callback(Game* game, Entity* owner, Entity* piece);
-bool model_pitch_up_callback(Game* game, Entity* owner, Entity* piece);
-bool model_pitch_down_callback(Game* game, Entity* owner, Entity* piece);
-bool model_roll_left_callback(Game* game, Entity* owner, Entity* piece);
-bool model_roll_right_callback(Game* game, Entity* owner, Entity* piece);
+ModelActionMultiplexer* get_engine_model_multiplexer(Json::Value node);
 
 #endif /* defined(__Bawk__modelactionmovement__) */

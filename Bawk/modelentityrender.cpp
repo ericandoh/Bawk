@@ -14,6 +14,8 @@ ModelEntity::ModelEntity(uint16_t mid) {
     entity_class = EntityType::MODELENTITY;
     in_range = true;
     
+    multiplexer = 0;
+    
     // some permissions/flags
     can_collide = true;
     can_rotate = true;
@@ -51,6 +53,8 @@ ModelEntity::ModelEntity(uint32_t p, uint32_t v, uint16_t mid) {
 void ModelEntity::set_model(uint16_t m) {
     model_id = m;
     model = get_game_model(model_id);
+    if (model->multiplexer)
+        multiplexer = model->multiplexer->copy();
     bounds = model->bounds;
     center_pos = model->center_pos;
     recalculate_transform();
@@ -60,11 +64,21 @@ void ModelEntity::set_model(uint16_t m) {
 // Entity* ModelEntity::poke(float x, float y, float z) {}
 
 bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
-    return model->model_keyboard_callback(game, ent, this, key);
+    if (multiplexer)
+        return multiplexer->model_callback(game, ent, this, key);
+    return false;
 }
 
 bool ModelEntity::block_mouse_callback(Game* game, Action button, Entity* ent) {
-    return model->model_mouse_callback(game, ent, this, button);
+    if (multiplexer) {
+        if (button == Action::CLICK_DESTROY) {
+            return multiplexer->model_callback_clicked_main(game, ent, this);
+        }
+        else if (button == Action::CLICK_CREATE) {
+            return multiplexer->model_callback_clicked_secondary(game, ent, this);
+        }
+    }
+    return false;
 }
 
 void ModelEntity::render(fmat4* transform) {
@@ -103,7 +117,8 @@ void ModelEntity::update_chunks(fvec3* player_pos) {
 // bool ModelEntity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
 
 void ModelEntity::after_collision(Game* game) {
-    model->model_keyboard_callback(game, this, this, Action::COLLIDE);
+    if (multiplexer)
+        multiplexer->model_callback_collision(game, this, this);
 }
 
 std::string ModelEntity::get_save_path() {

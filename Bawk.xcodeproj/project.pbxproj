@@ -24,7 +24,6 @@
 		071BB73B1C18B0D900563D4A /* modelactionshoot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7391C18B0D900563D4A /* modelactionshoot.cpp */; };
 		071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB73C1C18B12900563D4A /* modelactionmovement.cpp */; };
 		071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7421C18B36800563D4A /* modelactionexplode.cpp */; };
-		071BB7471C18D40E00563D4A /* modeldata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7451C18D40E00563D4A /* modeldata.cpp */; };
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
 		071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071FA6B91C10D19700884B70 /* lightrender.cpp */; };
 		072243361C177F0900B60091 /* blockinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072243341C177F0900B60091 /* blockinfo.cpp */; };
@@ -75,6 +74,7 @@
 		078E87A21C1BEF0B00A825EB /* spriteexplosion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A01C1BEF0B00A825EB /* spriteexplosion.cpp */; };
 		078E87A51C1BF98700A825EB /* spritegetter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A31C1BF98700A825EB /* spritegetter.cpp */; };
 		078E87A81C1C11A800A825EB /* json_reader_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A61C1C11A800A825EB /* json_reader_helper.cpp */; };
+		07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07919A341C1F9E050047C7FE /* modelaction.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -141,8 +141,6 @@
 		071BB73D1C18B12900563D4A /* modelactionmovement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionmovement.h; sourceTree = "<group>"; };
 		071BB7421C18B36800563D4A /* modelactionexplode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelactionexplode.cpp; sourceTree = "<group>"; };
 		071BB7431C18B36800563D4A /* modelactionexplode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionexplode.h; sourceTree = "<group>"; };
-		071BB7451C18D40E00563D4A /* modeldata.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modeldata.cpp; sourceTree = "<group>"; };
-		071BB7461C18D40E00563D4A /* modeldata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modeldata.h; sourceTree = "<group>"; };
 		071C5C121BF7FE9C0087F398 /* rotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation.cpp; sourceTree = "<group>"; };
 		071C5C131BF7FE9C0087F398 /* rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation.h; sourceTree = "<group>"; };
 		071FA6B91C10D19700884B70 /* lightrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightrender.cpp; sourceTree = "<group>"; };
@@ -245,6 +243,8 @@
 		078E87A41C1BF98700A825EB /* spritegetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritegetter.h; sourceTree = "<group>"; };
 		078E87A61C1C11A800A825EB /* json_reader_helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json_reader_helper.cpp; sourceTree = "<group>"; };
 		078E87A71C1C11A800A825EB /* json_reader_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json_reader_helper.h; sourceTree = "<group>"; };
+		07919A341C1F9E050047C7FE /* modelaction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelaction.cpp; sourceTree = "<group>"; };
+		07919A351C1F9E050047C7FE /* modelaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelaction.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -334,8 +334,8 @@
 				071BB73D1C18B12900563D4A /* modelactionmovement.h */,
 				071BB7421C18B36800563D4A /* modelactionexplode.cpp */,
 				071BB7431C18B36800563D4A /* modelactionexplode.h */,
-				071BB7451C18D40E00563D4A /* modeldata.cpp */,
-				071BB7461C18D40E00563D4A /* modeldata.h */,
+				07919A341C1F9E050047C7FE /* modelaction.cpp */,
+				07919A351C1F9E050047C7FE /* modelaction.h */,
 			);
 			name = blockactions;
 			sourceTree = "<group>";
@@ -639,7 +639,6 @@
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
 				071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */,
 				071B46861BF3C1D8000CB782 /* cursoritem.cpp in Sources */,
-				071BB7471C18D40E00563D4A /* modeldata.cpp in Sources */,
 				0766EAEE1BBF74FD00477144 /* block.cpp in Sources */,
 				071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */,
 				0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */,
@@ -647,6 +646,7 @@
 				071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */,
 				071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
+				07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,
 				07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */,

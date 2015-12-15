@@ -10,8 +10,24 @@
 #include "game.h"
 #include "entity.h"
 #include "spritegetter.h"
+#include "json/json.h"
+#include "json_reader_helper.h"
 
-bool model_forward_callback(Game* game, Entity* owner, Entity* piece) {
+class ModelEngineActionMultiplexer: public ModelActionMultiplexer {
+public:
+    bool model_callback_move_forward(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_move_backward(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_move_up(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_move_down(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_yaw_left(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_yaw_right(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_roll_left(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_roll_right(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_pitch_up(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_pitch_down(Game *game, Entity *owner, Entity *piece) override;
+};
+
+bool ModelEngineActionMultiplexer::model_callback_move_forward(Game* game, Entity* owner, Entity* piece) {
     // piece->get_force() or some shizzle...and repeat for all below
     owner->move_forward(20.0f);
     
@@ -26,47 +42,56 @@ bool model_forward_callback(Game* game, Entity* owner, Entity* piece) {
     return true;
 }
 
-bool model_backward_callback(Game* game, Entity* owner, Entity* piece) {
+bool ModelEngineActionMultiplexer::model_callback_move_backward(Game* game, Entity* owner, Entity* piece) {
     owner->move_backward(5.0f);
     return true;
 }
 
-bool model_turn_left_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->yaw_left(4.0f);
-    return true;
-}
-
-bool model_turn_right_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->yaw_right(4.0f);
-    return true;
-}
-
-bool model_up_callback(Game* game, Entity* owner, Entity* piece) {
+bool ModelEngineActionMultiplexer::model_callback_move_up(Game* game, Entity* owner, Entity* piece) {
     owner->move_up(5.0f);
     return true;
 }
 
-bool model_down_callback(Game* game, Entity* owner, Entity* piece) {
+bool ModelEngineActionMultiplexer::model_callback_move_down(Game* game, Entity* owner, Entity* piece) {
     owner->move_down(5.0f);
     return true;
 }
 
-bool model_pitch_up_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->pitch_up(3.0f);
+bool ModelEngineActionMultiplexer::model_callback_yaw_left(Game* game, Entity* owner, Entity* piece) {
+    owner->yaw_left(4.0f);
     return true;
 }
 
-bool model_pitch_down_callback(Game* game, Entity* owner, Entity* piece) {
-    owner->pitch_down(3.0f);
+bool ModelEngineActionMultiplexer::model_callback_yaw_right(Game* game, Entity* owner, Entity* piece) {
+    owner->yaw_right(4.0f);
     return true;
 }
 
-bool model_roll_left_callback(Game* game, Entity* owner, Entity* piece) {
+bool ModelEngineActionMultiplexer::model_callback_roll_left(Game* game, Entity* owner, Entity* piece) {
     owner->roll_left(3.0f);
     return true;
 }
 
-bool model_roll_right_callback(Game* game, Entity* owner, Entity* piece) {
+bool ModelEngineActionMultiplexer::model_callback_roll_right(Game* game, Entity* owner, Entity* piece) {
     owner->roll_right(3.0f);
     return true;
 }
+
+bool ModelEngineActionMultiplexer::model_callback_pitch_up(Game* game, Entity* owner, Entity* piece) {
+    owner->pitch_up(3.0f);
+    return true;
+}
+
+bool ModelEngineActionMultiplexer::model_callback_pitch_down(Game* game, Entity* owner, Entity* piece) {
+    owner->pitch_down(3.0f);
+    return true;
+}
+
+ModelActionMultiplexer* get_engine_model_multiplexer(Json::Value node) {
+    ModelEngineActionMultiplexer* mult = new ModelEngineActionMultiplexer();
+    
+    //json_read_float_safe(&mult->fillme, node, "value");
+    
+    return mult;
+}
+

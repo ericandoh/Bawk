@@ -12,10 +12,6 @@
 #include <stdio.h>
 #include "spriterender.h"
 
-enum SpriteBehaviour {
-    DEFAULT, EXPLOSION_RENDER
-};
-
 namespace Json {
     class Value;
 }

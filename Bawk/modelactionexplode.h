@@ -10,8 +10,8 @@
 #define __Bawk__modelactionexplode__
 
 #include <stdio.h>
-#include "blockaction.h"
+#include "modelaction.h"
 
-bool model_explode_callback(Game* game, Entity* owner, Entity* piece);
+ModelActionMultiplexer* get_explode_model_multiplexer(Json::Value node);
 
 #endif /* defined(__Bawk__modelactionexplode__) */
