@@ -178,4 +178,6 @@ void printf_fvec4(fvec4 a);
 
 fvec3 get_nearest_half_or_whole(fvec3 a);
 
+fvec3 get_random_color();
+
 #endif

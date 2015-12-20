@@ -39,8 +39,8 @@ void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {
     float texture_y = 1.0f - (texture_id / TILES_PER_TEXTURE + 0.005f) * 1.0f / TILES_PER_TEXTURE;
     //fvec3 texture(texture_id % TILES_PER_TEXTURE, texture_id / TILES_PER_TEXTURE, 0);
     textures[0] = fvec3(texture_x, texture_y, 0.0f);
-    textures[2] = fvec3(texture_x, texture_y - width, 0.0f);
     textures[1] = fvec3(texture_x + width, texture_y, 0.0f);
+    textures[2] = fvec3(texture_x, texture_y - width, 0.0f);
     textures[3] = fvec3(texture_x + width, texture_y - width, 0.0f);
     
     /*for (int i = 0; i < 4; i++) {
@@ -50,7 +50,8 @@ void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {
     // drawing from block texture
     set_block_draw_mode(0);
     // bind a rectangle pointing in direction of player, at pos
-    render->render_rectangle(transform, radius, textures);
+    render->set_relative_transform();
+    render->render_rectangle(transform, radius, radius, textures);
 }
 
 SpriteRenderable* SpriteExplosiveRenderable::copy() {

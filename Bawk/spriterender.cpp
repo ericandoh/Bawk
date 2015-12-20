@@ -36,21 +36,25 @@ float SpriteRender::get_perc_age() {
     return 1.0f - (ttl * 1.0f / duration);
 }
 
-void SpriteRender::render_rectangle(fmat4* transform, float radius, fvec3 texture_corners[4]) {
+void SpriteRender::set_relative_transform() {
     // set this sprite's angle to point toward player
     fvec3 dir = pos - player->get_rwc_pos();
     dir = glm::normalize(dir);
     fvec3 up = glm::cross(player->angle.right, dir);
+    up = glm::normalize(up);
+    
     Rotation pointing = Rotation();
     pointing.set_to_point(dir, up);
     set_angle(pointing);
-    recalculate_transform();
+}
+
+void SpriteRender::render_rectangle(fmat4* transform, float width, float height, fvec3 texture_corners[4]) {
     
     fmat4 view;
     get_mvp(&view);
     view = *transform * view;
     // add to the transformation matrix a scaling factor for the radius
-    view = glm::scale(view, fvec3(radius, radius, radius));
+    view = glm::scale(view, fvec3(0, height, width));
     set_transform_matrix(&view);
     
     int num_triangles = 6;

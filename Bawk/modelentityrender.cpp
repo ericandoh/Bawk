@@ -116,9 +116,10 @@ void ModelEntity::update_chunks(fvec3* player_pos) {
 // int ModelEntity::get_collision_level() {}
 // bool ModelEntity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
 
-void ModelEntity::after_collision(Game* game) {
+bool ModelEntity::after_collision(Game* game) {
     if (multiplexer)
         multiplexer->model_callback_collision(game, this, this);
+    return true;
 }
 
 std::string ModelEntity::get_save_path() {

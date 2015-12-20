@@ -39,7 +39,6 @@ class Entity {
 protected:
     // up/dir vectors, derived from angle.x/angle.y
     float get_speed(float force);
-    void get_mvp(fmat4* dst);
 public:
     // ----- IDENTIFYING INFO -----
     // identifying information for the entity
@@ -101,6 +100,8 @@ public:
     void transform_into_world_integer_coordinates(ivec3* src, int x, int y, int z);
     void transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z);
     
+    void get_mvp(fmat4* dst);
+    
     // movement methods
     void set_pos(fvec3 p);
     void set_angle(Rotation a);
@@ -157,7 +158,7 @@ public:
     // method for collision detection against base class entities ONLY
     virtual bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
     // behaviour to do after a collision
-    virtual void after_collision(Game* game);
+    virtual bool after_collision(Game* game);
     
     virtual int load_selfs();
     virtual void remove_selfs();

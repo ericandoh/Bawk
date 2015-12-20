@@ -313,7 +313,11 @@ void BaseWorld::step(Game* game) {
                 moved_entity->set_pos(prev_pos);
                 // TODO this is unsafe if our target object is the receiver on later collision detections..
                 // and is removed
-                moved_entity->after_collision(game);
+                // solution is easy - just put these objects into a queue (if they will remove themselves)
+                if (moved_entity->after_collision(game)) {
+                    // TODO add to some list saying "remove me!"
+                    // note that this is mostly for projectiles that are like, totally blown up afterwards
+                }
             }
         }
     }

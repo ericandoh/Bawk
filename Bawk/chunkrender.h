@@ -40,7 +40,7 @@ class RenderableChunk {
     GLuint coord_vbo;           // VBO (vertex buffer object) for coordinates
     GLuint texture_vbo;         // VBO (vertex buffer object) for textures/flags
     std::vector<LightAndPosition> lights;
-    // TODO DEPRECATE THIS
+    // TODO DEPRECATE THIS into our VBO function
     std::vector<fvec3> model_vertices;
     std::vector<fvec3> model_normals;
     std::vector<fvec3> model_uvs;

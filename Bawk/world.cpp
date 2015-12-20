@@ -24,6 +24,8 @@ World::World(std::string id) {
     // try loading itself
     base_world = new BaseWorld();
     load_self();
+    
+    weather = WorldWeather();
 }
 
 uint32_t World::assignID() {
@@ -54,12 +56,14 @@ void World::remove_self() {
 }
 
 // renders the world
-void World::render(fmat4* transform) {
+void World::render(fmat4* transform, Player* player) {
     //shade_intensity -= (abs((int)(age % 400) - 200)/200.0f) * 0.5f;
     //if (shade_intensity < 0.2f)
     //    shade_intensity = 0.2f;
     //set_shader_intensity(shade_intensity);
     base_world->render(transform);
+    
+    weather.render(transform, player);
 }
 
 void World::render_lights(fmat4* transform, fvec3 player_pos) {
@@ -145,6 +149,7 @@ void World::step(Game* game) {
             counter++;
         }
     }
+    weather.step();
     age++;
 }
 

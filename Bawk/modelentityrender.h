@@ -39,7 +39,7 @@ public:
     // bool collides_with(Entity* other) override;
     // int get_collision_level() override;
     // bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
-    void after_collision(Game* game) override;
+    bool after_collision(Game* game) override;
     
     virtual std::string get_save_path() override;
     int load_self(IODataObject* obj) override;

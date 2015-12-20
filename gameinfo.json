@@ -51,6 +51,24 @@
             "weight": 15,
             "light": [1.3, 0.6]
         },
+        "48": {
+            "name": "wood",
+            "resistance": 7,
+            "texture": [49, 48, 49, 49, 48, 49],
+            "weight": 10
+        },
+        "49": {
+            "name": "leaf",
+            "resistance": 1,
+            "texture": 254,
+            "transparency": 5,
+            "weight": 1
+        },
+        "50": {
+            "name": "cactus",
+            "resistance": 2,
+            "weight": 5
+        },
         "94": {
             "name": "glass",
             "resistance": 1,
@@ -63,7 +81,7 @@
             "weight": 35
         },
         "128": {
-            "name": "wood",
+            "name": "woodplank",
             "resistance": 6,
             "weight": 10
         },
@@ -111,6 +129,13 @@
             "action": {"name": "explode", "radius": 5, "damage": 300}
         },
         "5": {
+            "name": "fan",
+            "resistance": 2,
+            "texture": "fan.obj",
+            "weight": 20,
+            "action": {"name": "engine"}
+        },
+        "6": {
             "name": "allsupportedfeatures",
             "resistance": 100,
             "texture": "test.obj",
@@ -160,17 +185,17 @@
                        {"id": "wood", "position": [0, 1, 0]},
                        {"id": "wood", "position": [0, 2, 0]},
                        {"id": "wood", "position": [0, 3, 0]},
-                       {"id": "grass", "position": [1, 3, 0]},
-                       {"id": "grass", "position": [-1, 3, 0]},
-                       {"id": "grass", "position": [0, 3, 1]},
-                       {"id": "grass", "position": [0, 3, -1]},
-                       {"id": "grass", "position": [0, 4, 0]}]
+                       {"id": "leaf", "position": [1, 3, 0]},
+                       {"id": "leaf", "position": [-1, 3, 0]},
+                       {"id": "leaf", "position": [0, 3, 1]},
+                       {"id": "leaf", "position": [0, 3, -1]},
+                       {"id": "leaf", "position": [0, 4, 0]}]
         },
         "2": {
             "name": "cactus",
-            "blocks": [{"id": "grass", "position": [0, 0, 0]},
-                       {"id": "grass", "position": [0, 1, 0]},
-                       {"id": "grass", "position": [0, 2, 0]}]
+            "blocks": [{"id": "cactus", "position": [0, 0, 0]},
+                       {"id": "cactus", "position": [0, 1, 0]},
+                       {"id": "cactus", "position": [0, 2, 0]}]
         },
         "3": {
             "name": "allsupportedfeatures",

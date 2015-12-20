@@ -107,3 +107,10 @@ fvec3 get_nearest_half_or_whole(fvec3 a) {
         return result;
     }
 }
+
+fvec3 get_random_color() {
+    fvec3 result((rand() % 255) / 255.0f,
+                 (rand() % 255) / 255.0f,
+                 (rand() % 255) / 255.0f);
+    return result;
+}

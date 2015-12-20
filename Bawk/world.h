@@ -28,12 +28,14 @@
 #include "worldrender.h"
 #include "worldevent.h"
 #include "base_world.h"
+#include "worldweather.h"
 
 class Game;
 class Player;
 
 class World {
     std::vector<WorldEvent*> events;
+    WorldWeather weather;
 public:
     std::string name;
     // how many cycles the world has lived through
@@ -46,7 +48,7 @@ public:
     
     int load_self();
     void remove_self();
-    void render(fmat4* transform);
+    void render(fmat4* transform, Player* player);
     void render_lights(fmat4* transform, fvec3 player_pos);
     void update_chunks(fvec3* player_pos);
     

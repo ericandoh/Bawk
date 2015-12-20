@@ -90,7 +90,8 @@ public:
     // --- SpriteRender ---
     // some helper functions for common operations usually done on sprite, that are stateless
     float get_perc_age();
-    void render_rectangle(fmat4* transform, float radius, fvec3 texture_corners[4]);
+    void set_relative_transform();
+    void render_rectangle(fmat4* transform, float width, float height, fvec3 texture_corners[4]);
     SpriteRender* copy();
     
     // --- Entity ---

@@ -10,6 +10,9 @@
 		0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF6F1BC98D300050EE52 /* base_widget.cpp */; };
 		0704CF741BC997550050EE52 /* item_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF721BC997550050EE52 /* item_bar.cpp */; };
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
+		071026581C272E7400BBC711 /* spritecolorquad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026561C272E7400BBC711 /* spritecolorquad.cpp */; };
+		0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026591C273E5800BBC711 /* spritecolortriangle.cpp */; };
+		0710265F1C275EBD00BBC711 /* frag_shader_shadows.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0710265D1C275EAD00BBC711 /* frag_shader_shadows.glsl */; };
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
 		0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */; };
 		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
@@ -83,6 +86,7 @@
 		07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3FA1BED27860088744F /* light_vertex_shader.glsl */; };
 		07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */; };
 		07F6906F1BD388F900818867 /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F6906D1BD388F900818867 /* testing.cpp */; };
+		07F858481C2397AB005ACAA9 /* worldweather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F858461C2397AB005ACAA9 /* worldweather.cpp */; };
 		07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FA18381BE5ACAB00C7319C /* worldevent.cpp */; };
 		07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FE04301BEABB90001B26D9 /* debug_action.cpp */; };
 /* End PBXBuildFile section */
@@ -94,6 +98,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				0710265F1C275EBD00BBC711 /* frag_shader_shadows.glsl in CopyFiles */,
 				07CCD6571BF1D309001C50CF /* light_frag_shader.glsl in CopyFiles */,
 				07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */,
 				071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */,
@@ -114,6 +119,11 @@
 		0704CF761BC997DE0050EE52 /* item_barlet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = item_barlet.h; sourceTree = "<group>"; };
 		0705F3F91BED27860088744F /* light_frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = light_frag_shader.glsl; path = Bawk/light_frag_shader.glsl; sourceTree = "<group>"; };
 		0705F3FA1BED27860088744F /* light_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = light_vertex_shader.glsl; path = Bawk/light_vertex_shader.glsl; sourceTree = "<group>"; };
+		071026561C272E7400BBC711 /* spritecolorquad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritecolorquad.cpp; sourceTree = "<group>"; };
+		071026571C272E7400BBC711 /* spritecolorquad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritecolorquad.h; sourceTree = "<group>"; };
+		071026591C273E5800BBC711 /* spritecolortriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritecolortriangle.cpp; sourceTree = "<group>"; };
+		0710265A1C273E5800BBC711 /* spritecolortriangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritecolortriangle.h; sourceTree = "<group>"; };
+		0710265D1C275EAD00BBC711 /* frag_shader_shadows.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader_shadows.glsl; path = Bawk/frag_shader_shadows.glsl; sourceTree = "<group>"; };
 		0712E1251C06EB8E008AF269 /* block_orientation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_orientation.cpp; sourceTree = "<group>"; };
 		0712E1261C06EB8E008AF269 /* block_orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_orientation.h; sourceTree = "<group>"; };
 		0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkresourcemanager.cpp; sourceTree = "<group>"; };
@@ -256,6 +266,8 @@
 		07E11BC61BEBFDB700C0F98C /* gbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gbuffer.h; sourceTree = "<group>"; };
 		07F6906D1BD388F900818867 /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
 		07F6906E1BD388F900818867 /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
+		07F858461C2397AB005ACAA9 /* worldweather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = worldweather.cpp; sourceTree = "<group>"; };
+		07F858471C2397AB005ACAA9 /* worldweather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = worldweather.h; sourceTree = "<group>"; };
 		07FA18371BE598CA00C7319C /* world_generator_structures.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = world_generator_structures.h; sourceTree = "<group>"; };
 		07FA18381BE5ACAB00C7319C /* worldevent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = worldevent.cpp; sourceTree = "<group>"; };
 		07FA18391BE5ACAB00C7319C /* worldevent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = worldevent.h; sourceTree = "<group>"; };
@@ -355,6 +367,7 @@
 				0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */,
 				071A040C1BD9875C003BF218 /* gameinfo.json */,
 				0766EAF41BBF7CDA00477144 /* tiles.png */,
+				0710265D1C275EAD00BBC711 /* frag_shader_shadows.glsl */,
 				07FE042E1BEA79D5001B26D9 /* frag_shader_old.glsl */,
 				07FE042F1BEA79D5001B26D9 /* vertex_shader_old.glsl */,
 				07C4260C1BBB18AB0045D796 /* frag_shader.glsl */,
@@ -472,6 +485,8 @@
 				072A0A251C0B90C9009304E5 /* modelrender.h */,
 				071FA6B91C10D19700884B70 /* lightrender.cpp */,
 				071FA6BA1C10D19700884B70 /* lightrender.h */,
+				07F858461C2397AB005ACAA9 /* worldweather.cpp */,
+				07F858471C2397AB005ACAA9 /* worldweather.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -536,6 +551,10 @@
 				078E87A11C1BEF0B00A825EB /* spriteexplosion.h */,
 				078E87A31C1BF98700A825EB /* spritegetter.cpp */,
 				078E87A41C1BF98700A825EB /* spritegetter.h */,
+				071026561C272E7400BBC711 /* spritecolorquad.cpp */,
+				071026571C272E7400BBC711 /* spritecolorquad.h */,
+				071026591C273E5800BBC711 /* spritecolortriangle.cpp */,
+				0710265A1C273E5800BBC711 /* spritecolortriangle.h */,
 			);
 			name = sprites;
 			sourceTree = "<group>";
@@ -596,6 +615,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				071026581C272E7400BBC711 /* spritecolorquad.cpp in Sources */,
 				074B6C9C1BB9D2380065192B /* main.cpp in Sources */,
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */,
@@ -627,8 +647,10 @@
 				071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */,
 				071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */,
 				0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */,
+				0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */,
 				072243391C17C98E00B60091 /* spriterender.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
+				07F858481C2397AB005ACAA9 /* worldweather.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,

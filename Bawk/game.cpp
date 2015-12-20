@@ -148,7 +148,7 @@ void Game::render() {
     }
     
     fmat4 transform(1);
-    world->render(&transform);
+    world->render(&transform, player);
     // get depth coordinates
     player->query_depth(world);
     // render current item based on those depth coordinates

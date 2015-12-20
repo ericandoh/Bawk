@@ -18,6 +18,7 @@
 // VERSION 1.1
 // TOFU references to old shaders here
 
+// TODO reset these references to some absolute path, not relative
 const std::string GEOMETRY_VERTEX_SHADER = "vertex_shader.glsl";
 const std::string GEOMETRY_FRAG_SHADER = "frag_shader.glsl";
 const std::string LIGHTING_VERTEX_SHADER = "light_vertex_shader.glsl";
