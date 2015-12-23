@@ -48,7 +48,7 @@ void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {
     }*/
     
     // drawing from block texture
-    set_block_draw_mode(0);
+    OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
     // bind a rectangle pointing in direction of player, at pos
     render->set_relative_transform();
     render->render_rectangle(transform, radius, radius, textures);

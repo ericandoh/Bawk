@@ -14,53 +14,62 @@
 #include "cursorblock.h"
 #include "game_info_loader.h"
 
-// shaders and attributes set by shader loading program
-// put these inside a namespace or some shizzle
-GLuint vao;
+#include "opengl_debug.h"
 
-GLuint geometry_program;
-GLuint lighting_program;
-
-GLuint geometry_coord;
-GLuint geometry_texture_coord;
-GLuint geometry_mvp;
-GLuint geometry_world_transform;
-GLuint geometry_draw_mode;
-GLuint geometry_intensity;
-GLuint geometry_alphacutoff;
-GLuint geometry_tile_texture;
-
-GLuint lighting_coord;
-GLuint lighting_mvp;
-
-GLuint lighting_position_map;
-GLuint lighting_color_map;
-GLuint lighting_color_t_map;
-GLuint lighting_normal_map;
-
-GLuint lighting_screen_size;
-GLuint lighting_val;
-GLuint lighting_properties;
-GLuint lighting_draw_mode;
-
-GLuint tile_texture;
-
-fmat4 camera_transform;
-
-int CHUNK_RENDER_DIST = 3;
-
-GLuint common_vertex_vbo;
-GLuint common_texture_vbo;
-
-void check_for_error_w() {
-    int error = glGetError();
-    if (error != 0) {
-        printf("Error in OPENGL: %d\n",error);
-    }
+namespace OGLAttr {
+    // shaders and attributes set by shader loading program
+    // put these inside a namespace or some shizzle
+    GLuint vao;
+    GLuint tile_texture;
+    
+    GLuint common_vertex_vbo;
+    GLuint common_texture_vbo;
+    
+    GeometryShaderProgram geometry_shader;
+    LightingShaderProgram lighting_shader;
+    ShadowShaderProgram shadow_shader;
+    
+    FirstPassShaderProgram* current_shader;
 }
 
+using namespace OGLAttr;
+
+// some local variables, these shouldn't be directly exposed
+fmat4 camera_transform;
+
+void ShaderProgram::set_transform_matrix(fmat4* view) {
+    fmat4 mvp = camera_transform * (*view);
+    check_for_error();
+    glUniformMatrix4fv(this->mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    check_for_error();
+}
+
+void GeometryShaderProgram::set_transform_matrix(fmat4* view) {
+    fmat4 mvp = camera_transform * (*view);
+    glUniformMatrix4fv(this->mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniformMatrix4fv(world_transform, 1, GL_FALSE, glm::value_ptr(*view));
+    check_for_error();
+}
+
+void GeometryShaderProgram::set_block_draw_mode(BlockDrawMode v) {
+    glUniform1i(draw_mode, v);
+    check_for_error();
+}
+
+void GeometryShaderProgram::set_shader_intensity(float m) {
+    glUniform1f(intensity, m);
+    //glUniform1f(geometry_intensity, 0.3f);
+    check_for_error();
+}
+
+void GeometryShaderProgram::set_alpha_cutoff(float a) {
+    glUniform1f(alphacutoff, a);
+    check_for_error();
+}
+
+
 int world_load_resources() {
-    check_for_error_w();
+    check_for_error();
     glActiveTexture(GL_TEXTURE0);
     // Load textures
     tile_texture = load_tiles();
@@ -84,7 +93,7 @@ int world_load_resources() {
     
     load_game_info();
     
-    check_for_error_w();
+    check_for_error();
     return 0;
 }
 
@@ -96,18 +105,23 @@ void world_free_resources() {
     
     glDeleteBuffers(1, &common_vertex_vbo);
     glDeleteBuffers(1, &common_texture_vbo);
+    check_for_error();
 }
 
-GLuint get_vertex_attribute_vbo() {
-    return common_vertex_vbo;
+void set_geometry_as_current_shader() {
+    glUseProgram(geometry_shader.program);
+    glEnableVertexAttribArray(geometry_shader.coord);
+    glEnableVertexAttribArray(geometry_shader.texture_coord);
+    current_shader = &geometry_shader;
+    check_for_error();
 }
 
-GLuint get_texture_attribute_vbo() {
-    return common_texture_vbo;
-}
-
-void set_block_draw_mode(int v) {
-    glUniform1i(geometry_draw_mode, v);
+void set_shadow_as_current_shader() {
+    glUseProgram(shadow_shader.program);
+    glEnableVertexAttribArray(shadow_shader.coord);
+    glEnableVertexAttribArray(shadow_shader.texture_coord);
+    current_shader = &shadow_shader;
+    check_for_error();
 }
 
 void set_camera_transform_matrix(fmat4* camera) {
@@ -116,14 +130,8 @@ void set_camera_transform_matrix(fmat4* camera) {
 
 void set_unitary_transform_matrix() {
     glm::mat4 one(1);
-    glUniformMatrix4fv(geometry_mvp, 1, GL_FALSE, glm::value_ptr(one));
-    glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(one));
-}
-
-void set_transform_matrix(fmat4* view) {
-    fmat4 mvp = camera_transform * (*view);
-    glUniformMatrix4fv(geometry_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
-    glUniformMatrix4fv(geometry_world_transform, 1, GL_FALSE, glm::value_ptr(*view));
+    camera_transform = one;
+    current_shader->set_transform_matrix(&one);
 }
 
 fvec4 apply_mvp_matrix(fmat4* view, fvec4 a) {
@@ -131,37 +139,34 @@ fvec4 apply_mvp_matrix(fmat4* view, fvec4 a) {
     return mvp * a;
 }
 
-void set_shader_intensity(float m) {
-    glUniform1f(geometry_intensity, m);
-    //glUniform1f(geometry_intensity, 0.3f);
-}
-
-void set_alpha_cutoff(float a) {
-    glUniform1f(geometry_alphacutoff, a);
-}
-
 void set_lighting_block_draw_mode(int v) {
-    glUniform1i(lighting_draw_mode, v);
+    glUniform1i(lighting_shader.draw_mode, v);
+    check_for_error();
 }
 
 void set_lighting_val(fvec3 val) {
-    glUniform3f(lighting_val, val.x, val.y, val.z);
+    glUniform3f(lighting_shader.val, val.x, val.y, val.z);
+    check_for_error();
 }
 
 void set_lighting_properties(float light_radius, float light_intensity) {
-    glUniform3f(lighting_properties, light_radius, light_intensity, 0.0f);
-}
-
-void set_lighting_transform_matrix(fmat4* view) {
-    fmat4 mvp = camera_transform * (*view);
-    glUniformMatrix4fv(lighting_mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    glUniform3f(lighting_shader.properties, light_radius, light_intensity, 0.0f);
+    check_for_error();
 }
 
 void set_unitary_lighting_transform_matrix() {
     fmat4 one(1);
-    glUniformMatrix4fv(lighting_mvp, 1, GL_FALSE, glm::value_ptr(one));
+    glUniformMatrix4fv(lighting_shader.mvp, 1, GL_FALSE, glm::value_ptr(one));
+    check_for_error();
+}
+
+void set_lighting_transform_matrix(fmat4* view) {
+    fmat4 mvp = camera_transform * (*view);
+    glUniformMatrix4fv(lighting_shader.mvp, 1, GL_FALSE, glm::value_ptr(mvp));
+    check_for_error();
 }
 
 void set_lighting_screen_size(float width, float height) {
-    glUniform2f(lighting_screen_size, width, height);
+    glUniform2f(lighting_shader.screen_size, width, height);
+    check_for_error();
 }

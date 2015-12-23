@@ -76,7 +76,7 @@ void RenderablePlayer::render() {
     int width, height;
     get_window_size(&width, &height);
     
-    set_block_draw_mode(2);
+    OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::COLOR);
     
     /* Draw a cross in the center of the screen */
     float cross[4][3] = {
@@ -94,13 +94,13 @@ void RenderablePlayer::render() {
     };
     
     set_unitary_transform_matrix();
-    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof cross, cross, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(geometry_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof cross_colors, cross_colors, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(geometry_texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_LINES, 0, 4);
 }

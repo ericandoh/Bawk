@@ -24,6 +24,9 @@ const std::string GEOMETRY_FRAG_SHADER = "frag_shader.glsl";
 const std::string LIGHTING_VERTEX_SHADER = "light_vertex_shader.glsl";
 const std::string LIGHTING_FRAG_SHADER = "light_frag_shader.glsl";
 
+const std::string SHADOW_VERTEX_SHADER = "shadows_vertex_shader.glsl";
+const std::string SHADOW_FRAG_SHADER = "shadows_frag_shader.glsl";
+
 long get_file_length(std::string file_name) {
     std::ifstream t(file_name, std::ifstream::ate | std::ifstream::binary);
     return t.tellg();
@@ -157,8 +160,6 @@ int compile_program(GLuint* program,
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
     
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
     return 0;
 }
 
@@ -184,15 +185,15 @@ int get_uniform_location(GLuint* dst, const std::string &attribute_name, GLuint 
 int bind_geometry_shader_attributes(GLuint program) {
     int errors = 0;
     
-    errors += get_attrib_location(&geometry_coord, "g_coord", program);
-    errors += get_attrib_location(&geometry_texture_coord, "g_texturecoord", program);
+    errors += get_attrib_location(&OGLAttr::geometry_shader.coord, "g_coord", program);
+    errors += get_attrib_location(&OGLAttr::geometry_shader.texture_coord, "g_texturecoord", program);
     
-    errors += get_uniform_location(&geometry_mvp, "g_mvp", program);
-    errors += get_uniform_location(&geometry_world_transform, "g_worldtransform", program);
-    errors += get_uniform_location(&geometry_draw_mode, "g_drawmode", program);
-    errors += get_uniform_location(&geometry_intensity, "g_intensity", program);
-    errors += get_uniform_location(&geometry_alphacutoff, "g_alphacutoff", program);
-    errors += get_uniform_location(&geometry_tile_texture, "tile_texture", program);
+    errors += get_uniform_location(&OGLAttr::geometry_shader.mvp, "g_mvp", program);
+    errors += get_uniform_location(&OGLAttr::geometry_shader.world_transform, "g_worldtransform", program);
+    errors += get_uniform_location(&OGLAttr::geometry_shader.draw_mode, "g_drawmode", program);
+    errors += get_uniform_location(&OGLAttr::geometry_shader.intensity, "g_intensity", program);
+    errors += get_uniform_location(&OGLAttr::geometry_shader.alphacutoff, "g_alphacutoff", program);
+    errors += get_uniform_location(&OGLAttr::geometry_shader.tile_texture, "tile_texture", program);
     
     if (errors) {
         printf("Could not bind one of the above variables. Aborting\n");
@@ -206,18 +207,33 @@ int bind_geometry_shader_attributes(GLuint program) {
 int bind_light_shader_attributes(GLuint program) {
     int errors = 0;
     
-    errors += get_attrib_location(&lighting_coord, "l_coord", program);
-    errors += get_uniform_location(&lighting_mvp, "l_mvp", program);
+    errors += get_attrib_location(&OGLAttr::lighting_shader.coord, "l_coord", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.mvp, "l_mvp", program);
     
-    errors += get_uniform_location(&lighting_position_map, "g_position_map", program);
-    errors += get_uniform_location(&lighting_color_map, "g_color_map", program);
-    errors += get_uniform_location(&lighting_color_t_map, "g_color_t_map", program);
-    //errors += get_uniform_location(&lighting_normal_map, "g_normal_map", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.position_map, "g_position_map", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.color_map, "g_color_map", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.color_t_map, "g_color_t_map", program);
+    //errors += get_uniform_location(&OGLAttr::lighting_shader.normal_map, "g_normal_map", program);
     
-    errors += get_uniform_location(&lighting_screen_size, "l_screen_size", program);
-    errors += get_uniform_location(&lighting_val, "l_val", program);
-    errors += get_uniform_location(&lighting_properties, "l_properties", program);
-    errors += get_uniform_location(&lighting_draw_mode, "l_draw_mode", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.screen_size, "l_screen_size", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.val, "l_val", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.properties, "l_properties", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.draw_mode, "l_draw_mode", program);
+    
+    if (errors) {
+        printf("Could not bind one of the above variables. Aborting\n");
+        return errors;
+    }
+    printf("Done loading lighting shaders: %d\n", glGetError());
+    return 0;
+}
+
+int bind_shadow_shader_attributes(GLuint program) {
+    int errors = 0;
+    
+    errors += get_attrib_location(&OGLAttr::shadow_shader.coord, "g_coord", program);
+    errors += get_attrib_location(&OGLAttr::shadow_shader.texture_coord, "g_coord", program);
+    errors += get_uniform_location(&OGLAttr::shadow_shader.mvp, "g_mvp", program);
     
     if (errors) {
         printf("Could not bind one of the above variables. Aborting\n");
@@ -228,14 +244,23 @@ int bind_light_shader_attributes(GLuint program) {
 }
 
 int set_shaders() {
-    if (compile_program(&geometry_program, GEOMETRY_VERTEX_SHADER, GEOMETRY_FRAG_SHADER))
+    if (compile_program(&OGLAttr::geometry_shader.program, GEOMETRY_VERTEX_SHADER, GEOMETRY_FRAG_SHADER))
         return 1;
-    if (bind_geometry_shader_attributes(geometry_program))
+    if (bind_geometry_shader_attributes(OGLAttr::geometry_shader.program))
         return 1;
     
-    if (compile_program(&lighting_program, LIGHTING_VERTEX_SHADER, LIGHTING_FRAG_SHADER))
+    if (compile_program(&OGLAttr::lighting_shader.program, LIGHTING_VERTEX_SHADER, LIGHTING_FRAG_SHADER))
         return 1;
-    if (bind_light_shader_attributes(lighting_program))
+    if (bind_light_shader_attributes(OGLAttr::lighting_shader.program))
         return 1;
+    
+    // TODO doing this means we dont call glUseProgram correctly. fix this!
+    /*if (compile_program(&OGLAttr::shadow_shader.program, SHADOW_VERTEX_SHADER, SHADOW_FRAG_SHADER))
+        return 1;
+    if (bind_light_shader_attributes(OGLAttr::shadow_shader.program))
+        return 1;*/
+    
+    glGenVertexArrays(1, &OGLAttr::vao);
+    glBindVertexArray(OGLAttr::vao);
     return 0;
 }

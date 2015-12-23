@@ -60,7 +60,7 @@ void World::render(fmat4* transform, Player* player) {
     //shade_intensity -= (abs((int)(age % 400) - 200)/200.0f) * 0.5f;
     //if (shade_intensity < 0.2f)
     //    shade_intensity = 0.2f;
-    //set_shader_intensity(shade_intensity);
+    //OGLAttr::current_shader->set_shader_intensity(shade_intensity);
     base_world->render(transform);
     
     weather.render(transform, player);

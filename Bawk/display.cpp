@@ -16,14 +16,20 @@
 #include "gbuffer.h"
 #include "shader_loader.h"
 #include "worldrender.h"
+#include "shadow_mapper.h"
+
+#include "opengl_debug.h"
 
 // 30 fps
 const double FRAME_RATE=30.0;
 const double TIME_PER_FRAME = 1.0 / FRAME_RATE;
 
 GLFWwindow* window;
+// wow talk about inefficient
 GBuffer g_buffer;
 GBuffer g_buffer_transparent;
+
+//ShadowMapper shadow_mapper;
 
 GLuint depth_peeling_texture;
 
@@ -104,13 +110,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
         current_display->scroll_callback(xoffset, yoffset);
 }
 
-void check_for_error() {
-    int error = glGetError();
-    if (error != 0) {
-        printf("Error in OPENGL: %d\n",error);
-    }
-}
-
 int init_display() {
     /* Initialize the library */
     if (!glfwInit())
@@ -157,8 +156,11 @@ int init_display() {
     // 0        => tile_texture
     // 1,2,3    => G_BUFFER textures
     // 4,5,6    => G_BUFFER transparent textures (for depth peeling)
+    // 7        => SHADOW MAP texture(s)
     g_buffer.init(wwidth, wheight, 1);
     g_buffer_transparent.init(wwidth, wheight, 4);
+    
+    // shadow_mapper.init(wwidth, wheight, 7);
     
     /* Connect inputs to game */
     glfwSetKeyCallback(window, key_callback);
@@ -208,8 +210,9 @@ void close_render_loop() {
 
 void display_close() {
     glDeleteTextures(1, &depth_peeling_texture);
-    glDeleteProgram(geometry_program);
-    glDeleteProgram(lighting_program);
+    glDeleteProgram(OGLAttr::geometry_shader.program);
+    glDeleteProgram(OGLAttr::lighting_shader.program);
+    //glDeleteProgram(OGLAttr::shadow_shader.program);
     glfwTerminate();
 }
 
@@ -219,10 +222,10 @@ void show_depth_peeler() {
     // DEPRECATED
     //glViewport(0, 0, width, height);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tile_texture);
+    glBindTexture(GL_TEXTURE_2D, OGLAttr::tile_texture);
     glDisable(GL_DEPTH_TEST);
     
-    set_block_draw_mode(0);
+    OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
     float vertex[6][3] = {
         {-1, -1, 0},
         {1, -1, 0},
@@ -243,13 +246,13 @@ void show_depth_peeler() {
     
     set_unitary_transform_matrix();
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(geometry_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof texture, texture, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(geometry_texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
@@ -257,14 +260,13 @@ void show_depth_peeler() {
 void render_geometry() {
     check_for_error();
     // VERSION 1.1 NOT SUPPORTED
-    glUseProgram(geometry_program);
-    glEnableVertexAttribArray(geometry_coord);
-    glEnableVertexAttribArray(geometry_texture_coord);
+    set_geometry_as_current_shader();
     
     // disable blending. we have only RGB (not RGBA)
     glDisable(GL_BLEND);
     
-    glUniform1i(geometry_tile_texture, 0);
+    // bind TEXTURES0 to our uniform
+    glUniform1i(OGLAttr::geometry_shader.tile_texture, 0);
     
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
@@ -273,7 +275,7 @@ void render_geometry() {
     // first, write to our regular G-buffer with a low alpha-cutoff
     g_buffer.bind_for_write();
     check_for_error();
-    set_alpha_cutoff(0.3f);
+    OGLAttr::current_shader->set_alpha_cutoff(0.3f);
     check_for_error();
     
     // VERSION 1.1
@@ -282,7 +284,7 @@ void render_geometry() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     set_alpha_set(1.0f);
     bind_to_tiles();
-    set_alpha_cutoff(1.0f/3.0f);
+    OGLAttr::current_shader->set_alpha_cutoff(1.0f/3.0f);
     current_display->render();
     glFlush();
     glBindTexture(GL_TEXTURE_2D, depth_peeling_texture);
@@ -293,7 +295,7 @@ void render_geometry() {
     // clear the viewport, screen
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    set_shader_intensity(0.5f); // this needs to be deprecated/changed
+    OGLAttr::current_shader->set_shader_intensity(0.5f); // this needs to be deprecated/changed
     check_for_error();
     current_display->render();
     check_for_error();
@@ -302,18 +304,24 @@ void render_geometry() {
     // now, write to our depth-peeled, 2nd G-buffer which will NOT render medium alpha components
     g_buffer_transparent.bind_for_write();
     check_for_error();
-    set_alpha_cutoff(0.7f);
+    OGLAttr::current_shader->set_alpha_cutoff(0.7f);
     check_for_error();
     
     // clear the viewport, screen
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    set_shader_intensity(0.5f); // this needs to be deprecated/changed
+    OGLAttr::current_shader->set_shader_intensity(0.5f); // this needs to be deprecated/changed
     check_for_error();
     current_display->render();
     check_for_error();
     glFinish();
     check_for_error();
+}
+
+void render_shadowmetry() {
+    check_for_error();
+    //glUseProgram(shading_program);
+    
 }
 
 void render_g_buffer() {
@@ -356,11 +364,44 @@ void render_g_buffer() {
     check_for_error();
 }
 
+void render_shadowmap() {
+    /*
+    check_for_error();
+    
+    int wwidth, wheight;
+    glfwGetFramebufferSize(window, &wwidth, &wheight);
+    
+    // VERSION 1.1 NOT SUPPORTED
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    check_for_error();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // we'll copy to top left of screen
+    GLsizei thirdwwidth = (GLsizei)(wwidth / 3.0f);
+    GLsizei thirdwheight = (GLsizei)(wheight / 3.0f);
+    glViewport(0, 0, thirdwwidth, thirdwheight);
+    check_for_error();
+    
+    //shadow_mapper.bind_for_read();
+    
+    
+    
+    check_for_error();
+    g_buffer_transparent.bind_for_readg();
+    // top right is normals
+    g_buffer_transparent.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_COLOR);
+    glBlitFramebuffer(0, 0, wwidth, wheight,
+                      halfwwidth, halfwheight, wwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    
+    check_for_error();
+    glFinish();
+    check_for_error();*/
+}
+
 void render_lights() {
     check_for_error();
-    glUseProgram(lighting_program);
+    glUseProgram(OGLAttr::lighting_shader.program);
     check_for_error();
-    glEnableVertexAttribArray(lighting_coord);
+    glEnableVertexAttribArray(OGLAttr::lighting_shader.coord);
     
     check_for_error();
     
@@ -399,9 +440,9 @@ void render_lights() {
     
     check_for_error();
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(lighting_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
     check_for_error();

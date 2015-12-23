@@ -129,9 +129,9 @@ void RenderableLight::render_light(fvec3 rwc, fvec3 player_pos) {
     set_lighting_val(rwc);
     set_lighting_properties(light_radius, light_intensity);
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof light_render_box, light_render_box, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(lighting_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 36);
     if (!cull_backface) {

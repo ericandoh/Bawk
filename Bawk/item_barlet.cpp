@@ -24,7 +24,7 @@ ItemBarlet::~ItemBarlet() {
 
 void ItemBarlet::render_elements() {
     // first, fill with black box
-    set_block_draw_mode(2);
+    OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::COLOR);
     float vertex[6][3] = {
         {-1, -1, 0},
         {1, -1, 0},
@@ -63,13 +63,13 @@ void ItemBarlet::render_elements() {
     
     set_unitary_transform_matrix();
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(geometry_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_texture_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof texture, texture, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(geometry_texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
     

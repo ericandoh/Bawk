@@ -358,7 +358,7 @@ void RenderableSuperObject::render(fmat4* transform) {
         if(fabsf(center.x) > 1 + fabsf(CY * 2 / center.w) || fabsf(center.y) > 1 + fabsf(CY * 2 / center.w))
             continue;
         
-        set_transform_matrix(&view);
+        OGLAttr::current_shader->set_transform_matrix(&view);
         iterator->second->render();
     }
 }

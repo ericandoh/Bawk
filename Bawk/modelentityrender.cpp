@@ -88,7 +88,7 @@ void ModelEntity::render(fmat4* transform) {
     get_mvp(&view);
     view = *transform * view;
     // TODO don't render if out of bounds of screen (see code in chunkrender)
-    set_transform_matrix(&view);
+    OGLAttr::current_shader->set_transform_matrix(&view);
     
     model->render();
 }

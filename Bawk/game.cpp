@@ -141,10 +141,10 @@ void Game::render() {
     
     // TODO fix this hack
     if (game_template) {
-        set_shader_intensity(0.3f);
+        OGLAttr::current_shader->set_shader_intensity(0.3f);
     }
     else {
-        set_shader_intensity(0.6f);
+        OGLAttr::current_shader->set_shader_intensity(0.6f);
     }
     
     fmat4 transform(1);
@@ -240,9 +240,9 @@ void Game::render_lights() {
     set_lighting_block_draw_mode(1);
     set_lighting_val(player->get_rwc_pos());
     
-    glBindBuffer(GL_ARRAY_BUFFER, get_vertex_attribute_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(lighting_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+    glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 36);*/
 }

@@ -29,46 +29,96 @@
 #include "superobject.h"
 #include "block.h"
 
-extern GLuint vao;
+// --- Some Globals ---
 
-extern GLuint geometry_program;
-extern GLuint lighting_program;
+class ShaderProgram {
+public:
+    GLuint program;
+    
+    GLuint coord;
+    GLuint mvp;
+    
+    virtual void set_transform_matrix(fmat4* view);
+};
 
-extern GLuint geometry_coord;
-extern GLuint geometry_texture_coord;
-extern GLuint geometry_mvp;
-extern GLuint geometry_world_transform;
-extern GLuint geometry_draw_mode;
-extern GLuint geometry_intensity;
-extern GLuint geometry_alphacutoff;
-extern GLuint geometry_tile_texture;
+enum BlockDrawMode {
+    UV = 0, VOXEL = 1, COLOR = 2
+};
 
-extern GLuint lighting_coord;
-extern GLuint lighting_mvp;
-extern GLuint lighting_position_map;
-extern GLuint lighting_color_map;
-extern GLuint lighting_color_t_map;
-extern GLuint lighting_normal_map;
-extern GLuint lighting_screen_size;
-extern GLuint lighting_val;
-extern GLuint lighting_properties;
-extern GLuint lighting_draw_mode;
+class FirstPassShaderProgram: public ShaderProgram {
+public:
+    GLuint texture_coord;
+    virtual void set_block_draw_mode(BlockDrawMode v) { };
+    virtual void set_shader_intensity(float m) { };
+    virtual void set_alpha_cutoff(float a) { };
+};
 
-extern GLuint tile_texture;
+// stage 1 of the deferred rendering
+// geometry pass
+class GeometryShaderProgram: public FirstPassShaderProgram {
+public:
+    
+    GLuint world_transform;
+    GLuint draw_mode;
+    GLuint intensity;
+    GLuint alphacutoff;
+    GLuint tile_texture;
+    
+    void set_transform_matrix(fmat4* view) override;
+    void set_block_draw_mode(BlockDrawMode v) override;
+    void set_shader_intensity(float m) override;
+    void set_alpha_cutoff(float a) override;
+};
 
-extern int CHUNK_RENDER_DIST;
+// stage 2 of the deferred rendering
+// light pass
+class LightingShaderProgram: public ShaderProgram {
+public:
+    GLuint position_map;
+    GLuint color_map;
+    GLuint color_t_map;
+    GLuint normal_map;
+    GLuint screen_size;
+    GLuint val;
+    GLuint properties;
+    GLuint draw_mode;
+};
+
+// depth buffer write from POV of light
+// shadow mapping
+class ShadowShaderProgram: public FirstPassShaderProgram {
+public:
+    
+};
+
+namespace OGLAttr {
+    // vertex array object (for everythings!)
+    extern GLuint vao;
+    
+    // handle to texture
+    extern GLuint tile_texture;
+    
+    extern GLuint common_vertex_vbo;
+    extern GLuint common_texture_vbo;
+    
+    extern GeometryShaderProgram geometry_shader;
+    extern LightingShaderProgram lighting_shader;
+    extern ShadowShaderProgram shadow_shader;
+    
+    // current first pass shader we're using
+    extern FirstPassShaderProgram* current_shader;
+}
 
 int world_load_resources();
 void world_free_resources();
-GLuint get_vertex_attribute_vbo();
-GLuint get_texture_attribute_vbo();
-void set_block_draw_mode(int v);
+
+void set_geometry_as_current_shader();
+void set_shadow_as_current_shader();
+
 void set_camera_transform_matrix(fmat4* camera);
 void set_unitary_transform_matrix();
-void set_transform_matrix(fmat4* view);
+
 fvec4 apply_mvp_matrix(fmat4* view, fvec4 a);
-void set_shader_intensity(float m);
-void set_alpha_cutoff(float a);
 
 void set_lighting_block_draw_mode(int v);
 void set_lighting_val(fvec3 val);

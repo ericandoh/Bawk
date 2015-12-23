@@ -12,11 +12,14 @@
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
 		071026581C272E7400BBC711 /* spritecolorquad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026561C272E7400BBC711 /* spritecolorquad.cpp */; };
 		0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026591C273E5800BBC711 /* spritecolortriangle.cpp */; };
-		0710265F1C275EBD00BBC711 /* frag_shader_shadows.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0710265D1C275EAD00BBC711 /* frag_shader_shadows.glsl */; };
+		0710265F1C275EBD00BBC711 /* shadows_frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */; };
+		071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026611C27618200BBC711 /* shadow_mapper.cpp */; };
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
 		0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */; };
 		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
+		07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */; };
 		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
+		0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718EAC41C2A81EC0084826F /* opengl_debug.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
 		071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 071A040C1BD9875C003BF218 /* gameinfo.json */; };
@@ -98,7 +101,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				0710265F1C275EBD00BBC711 /* frag_shader_shadows.glsl in CopyFiles */,
+				07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */,
+				0710265F1C275EBD00BBC711 /* shadows_frag_shader.glsl in CopyFiles */,
 				07CCD6571BF1D309001C50CF /* light_frag_shader.glsl in CopyFiles */,
 				07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */,
 				071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */,
@@ -123,15 +127,20 @@
 		071026571C272E7400BBC711 /* spritecolorquad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritecolorquad.h; sourceTree = "<group>"; };
 		071026591C273E5800BBC711 /* spritecolortriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritecolortriangle.cpp; sourceTree = "<group>"; };
 		0710265A1C273E5800BBC711 /* spritecolortriangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritecolortriangle.h; sourceTree = "<group>"; };
-		0710265D1C275EAD00BBC711 /* frag_shader_shadows.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader_shadows.glsl; path = Bawk/frag_shader_shadows.glsl; sourceTree = "<group>"; };
+		0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = shadows_frag_shader.glsl; path = Bawk/shadows_frag_shader.glsl; sourceTree = "<group>"; };
+		071026611C27618200BBC711 /* shadow_mapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shadow_mapper.cpp; sourceTree = "<group>"; };
+		071026621C27618200BBC711 /* shadow_mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shadow_mapper.h; sourceTree = "<group>"; };
 		0712E1251C06EB8E008AF269 /* block_orientation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_orientation.cpp; sourceTree = "<group>"; };
 		0712E1261C06EB8E008AF269 /* block_orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_orientation.h; sourceTree = "<group>"; };
 		0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkresourcemanager.cpp; sourceTree = "<group>"; };
 		0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkresourcemanager.h; sourceTree = "<group>"; };
 		0713FF521C0FD88B0069FDAF /* entity_type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity_type.cpp; sourceTree = "<group>"; };
+		07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shadows_vertex_shader.glsl; sourceTree = "<group>"; };
 		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
 		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
 		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
+		0718EAC41C2A81EC0084826F /* opengl_debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl_debug.cpp; sourceTree = "<group>"; };
+		0718EAC51C2A81EC0084826F /* opengl_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl_debug.h; sourceTree = "<group>"; };
 		071A04031BD96349003BF218 /* game_info_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game_info_loader.cpp; sourceTree = "<group>"; };
 		071A04041BD96349003BF218 /* game_info_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game_info_loader.h; sourceTree = "<group>"; };
 		071A04091BD98454003BF218 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
@@ -367,7 +376,8 @@
 				0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */,
 				071A040C1BD9875C003BF218 /* gameinfo.json */,
 				0766EAF41BBF7CDA00477144 /* tiles.png */,
-				0710265D1C275EAD00BBC711 /* frag_shader_shadows.glsl */,
+				0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */,
+				07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */,
 				07FE042E1BEA79D5001B26D9 /* frag_shader_old.glsl */,
 				07FE042F1BEA79D5001B26D9 /* vertex_shader_old.glsl */,
 				07C4260C1BBB18AB0045D796 /* frag_shader.glsl */,
@@ -465,8 +475,6 @@
 		075C67441BBA426000CB87DE /* render */ = {
 			isa = PBXGroup;
 			children = (
-				075C67451BBA427B00CB87DE /* worldrender.cpp */,
-				075C67461BBA427B00CB87DE /* worldrender.h */,
 				075C674A1BBA4AD600CB87DE /* playerrender.cpp */,
 				075C674B1BBA4AD600CB87DE /* playerrender.h */,
 				075C674D1BBA53B300CB87DE /* chunkrender.h */,
@@ -521,6 +529,12 @@
 				0784A7771BE41EC0001779BD /* includeglfw.h */,
 				07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */,
 				07E11BC61BEBFDB700C0F98C /* gbuffer.h */,
+				071026611C27618200BBC711 /* shadow_mapper.cpp */,
+				071026621C27618200BBC711 /* shadow_mapper.h */,
+				075C67451BBA427B00CB87DE /* worldrender.cpp */,
+				075C67461BBA427B00CB87DE /* worldrender.h */,
+				0718EAC41C2A81EC0084826F /* opengl_debug.cpp */,
+				0718EAC51C2A81EC0084826F /* opengl_debug.h */,
 			);
 			name = display;
 			sourceTree = "<group>";
@@ -643,6 +657,7 @@
 				071B468D1BF3C265000CB782 /* placeablesuperobject.cpp in Sources */,
 				076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */,
 				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
+				0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */,
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
 				071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */,
 				071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */,
@@ -670,6 +685,7 @@
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
+				071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,
 				07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */,
 				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
