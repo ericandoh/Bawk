@@ -1,7 +1,7 @@
 #version 330
 
-attribute in vec3 g_coord;
-attribute in vec3 texture_coord;
+in vec3 g_coord;
+
 uniform mat4 g_mvp;
 
 void main(void) {

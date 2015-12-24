@@ -78,11 +78,11 @@ void SpriteRender::render_rectangle(fmat4* transform, float width, float height,
     
     glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof rectangle_vertex_data, rectangle_vertex_data, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    OGLAttr::current_shader->set_coord_attribute(GL_FLOAT);
     
     glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof texture_binds, &(texture_binds[0]), GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    OGLAttr::current_shader->set_texture_coord_attribute(GL_FLOAT);
     
     glDrawArrays(GL_TRIANGLES, 0, num_triangles);
 }

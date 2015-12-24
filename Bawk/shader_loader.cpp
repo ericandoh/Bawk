@@ -215,6 +215,8 @@ int bind_light_shader_attributes(GLuint program) {
     errors += get_uniform_location(&OGLAttr::lighting_shader.color_t_map, "g_color_t_map", program);
     //errors += get_uniform_location(&OGLAttr::lighting_shader.normal_map, "g_normal_map", program);
     
+    errors += get_uniform_location(&OGLAttr::lighting_shader.shadow_map, "g_shadow_map", program);
+    
     errors += get_uniform_location(&OGLAttr::lighting_shader.screen_size, "l_screen_size", program);
     errors += get_uniform_location(&OGLAttr::lighting_shader.val, "l_val", program);
     errors += get_uniform_location(&OGLAttr::lighting_shader.properties, "l_properties", program);
@@ -232,7 +234,6 @@ int bind_shadow_shader_attributes(GLuint program) {
     int errors = 0;
     
     errors += get_attrib_location(&OGLAttr::shadow_shader.coord, "g_coord", program);
-    errors += get_attrib_location(&OGLAttr::shadow_shader.texture_coord, "g_coord", program);
     errors += get_uniform_location(&OGLAttr::shadow_shader.mvp, "g_mvp", program);
     
     if (errors) {
@@ -255,10 +256,10 @@ int set_shaders() {
         return 1;
     
     // TODO doing this means we dont call glUseProgram correctly. fix this!
-    /*if (compile_program(&OGLAttr::shadow_shader.program, SHADOW_VERTEX_SHADER, SHADOW_FRAG_SHADER))
+    if (compile_program(&OGLAttr::shadow_shader.program, SHADOW_VERTEX_SHADER, SHADOW_FRAG_SHADER))
         return 1;
-    if (bind_light_shader_attributes(OGLAttr::shadow_shader.program))
-        return 1;*/
+    if (bind_shadow_shader_attributes(OGLAttr::shadow_shader.program))
+        return 1;
     
     glGenVertexArrays(1, &OGLAttr::vao);
     glBindVertexArray(OGLAttr::vao);

@@ -487,10 +487,10 @@ void RenderableChunk::render() {
         
         // Render the VBO here
         glBindBuffer(GL_ARRAY_BUFFER, coord_vbo);
-        glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+        OGLAttr::current_shader->set_coord_attribute(GL_BYTE);
         
         glBindBuffer(GL_ARRAY_BUFFER, texture_vbo);
-        glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+        OGLAttr::current_shader->set_texture_coord_attribute(GL_BYTE);
         
         glDrawArrays(GL_TRIANGLES, 0, elements);
     }
@@ -506,11 +506,11 @@ void RenderableChunk::render() {
         
         glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
         glBufferData(GL_ARRAY_BUFFER, model_vertices.size() * sizeof(fvec3), &(model_vertices[0]), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        OGLAttr::current_shader->set_coord_attribute(GL_FLOAT);
         
         glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
         glBufferData(GL_ARRAY_BUFFER, model_uvs.size() * sizeof(fvec3), &(model_uvs[0]), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        OGLAttr::current_shader->set_texture_coord_attribute(GL_FLOAT);
         glDrawArrays(GL_TRIANGLES, 0, num_triangles);
     }
 }

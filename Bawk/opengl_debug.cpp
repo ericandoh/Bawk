@@ -12,6 +12,6 @@
 void check_for_error() {
     int error = glGetError();
     if (error != 0) {
-        printf("Error in OPENGL: %d\n",error);
+        printf("Error in OPENGL: %x\n",error);
     }
 }

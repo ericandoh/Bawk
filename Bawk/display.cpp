@@ -29,7 +29,7 @@ GLFWwindow* window;
 GBuffer g_buffer;
 GBuffer g_buffer_transparent;
 
-//ShadowMapper shadow_mapper;
+ShadowMapper shadow_mapper;
 
 GLuint depth_peeling_texture;
 
@@ -160,7 +160,7 @@ int init_display() {
     g_buffer.init(wwidth, wheight, 1);
     g_buffer_transparent.init(wwidth, wheight, 4);
     
-    // shadow_mapper.init(wwidth, wheight, 7);
+    shadow_mapper.init(wwidth, wheight, 7);
     
     /* Connect inputs to game */
     glfwSetKeyCallback(window, key_callback);
@@ -212,7 +212,7 @@ void display_close() {
     glDeleteTextures(1, &depth_peeling_texture);
     glDeleteProgram(OGLAttr::geometry_shader.program);
     glDeleteProgram(OGLAttr::lighting_shader.program);
-    //glDeleteProgram(OGLAttr::shadow_shader.program);
+    glDeleteProgram(OGLAttr::shadow_shader.program);
     glfwTerminate();
 }
 
@@ -248,11 +248,11 @@ void show_depth_peeler() {
     
     glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    OGLAttr::current_shader->set_coord_attribute(GL_FLOAT);
     
     glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof texture, texture, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    OGLAttr::current_shader->set_texture_coord_attribute(GL_FLOAT);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
@@ -320,8 +320,26 @@ void render_geometry() {
 
 void render_shadowmetry() {
     check_for_error();
-    //glUseProgram(shading_program);
+    set_shadow_as_current_shader();
     
+    glDisable(GL_BLEND);
+    
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    glEnable(GL_DEPTH_TEST);
+    check_for_error();
+    // tell our shader to actually
+    shadow_mapper.bind_for_write();
+    check_for_error();
+    
+    // clear the viewport, screen
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    check_for_error();
+    current_display->render();
+    check_for_error();
+    glFinish();
+    check_for_error();
 }
 
 void render_g_buffer() {
@@ -365,36 +383,30 @@ void render_g_buffer() {
 }
 
 void render_shadowmap() {
-    /*
-    check_for_error();
-    
     int wwidth, wheight;
     glfwGetFramebufferSize(window, &wwidth, &wheight);
     
-    // VERSION 1.1 NOT SUPPORTED
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    float vertex[6][3] = {
+        {-1, -1, 0},
+        {0, -1, 0},
+        {-1, 0, 0},
+        {-1, 0, 0},
+        {0, -1, 0},
+        {0, 0, 0},
+    };
+    
+    glDisable(GL_BLEND);
+    set_lighting_block_draw_mode(3);
+    set_lighting_screen_size(wwidth, wheight);
+    set_unitary_lighting_transform_matrix();
+    //glUniform1i(OGLAttr::lighting_shader.shadow_map, 0);
     check_for_error();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // we'll copy to top left of screen
-    GLsizei thirdwwidth = (GLsizei)(wwidth / 3.0f);
-    GLsizei thirdwheight = (GLsizei)(wheight / 3.0f);
-    glViewport(0, 0, thirdwwidth, thirdwheight);
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     check_for_error();
-    
-    //shadow_mapper.bind_for_read();
-    
-    
-    
-    check_for_error();
-    g_buffer_transparent.bind_for_readg();
-    // top right is normals
-    g_buffer_transparent.set_read_buffer(GBuffer::GBUFFER_TEXTURE_TYPE_COLOR);
-    glBlitFramebuffer(0, 0, wwidth, wheight,
-                      halfwwidth, halfwheight, wwidth, wheight, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-    
-    check_for_error();
-    glFinish();
-    check_for_error();*/
+    glEnable(GL_BLEND);
 }
 
 void render_lights() {
@@ -416,6 +428,9 @@ void render_lights() {
     
     g_buffer.bind_for_read();
     g_buffer_transparent.bind_for_read_color_map_only();
+    check_for_error();
+    
+    shadow_mapper.bind_for_read();
     
     check_for_error();
     
@@ -451,6 +466,9 @@ void render_lights() {
     // this will mainly be just point lights top kek
     
     current_display->render_lights();
+    
+    // for debugging only
+    // render_shadowmap();
 }
 
 int display_run()
@@ -470,6 +488,7 @@ int display_run()
         }
         
         render_geometry();
+        render_shadowmetry();
         //render_g_buffer();
         render_lights();
         

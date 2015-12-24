@@ -47,7 +47,8 @@ enum BlockDrawMode {
 
 class FirstPassShaderProgram: public ShaderProgram {
 public:
-    GLuint texture_coord;
+    void set_coord_attribute(GLenum type);
+    virtual void set_texture_coord_attribute(GLenum type) { };
     virtual void set_block_draw_mode(BlockDrawMode v) { };
     virtual void set_shader_intensity(float m) { };
     virtual void set_alpha_cutoff(float a) { };
@@ -57,7 +58,7 @@ public:
 // geometry pass
 class GeometryShaderProgram: public FirstPassShaderProgram {
 public:
-    
+    GLuint texture_coord;
     GLuint world_transform;
     GLuint draw_mode;
     GLuint intensity;
@@ -65,6 +66,7 @@ public:
     GLuint tile_texture;
     
     void set_transform_matrix(fmat4* view) override;
+    void set_texture_coord_attribute(GLenum type) override;
     void set_block_draw_mode(BlockDrawMode v) override;
     void set_shader_intensity(float m) override;
     void set_alpha_cutoff(float a) override;
@@ -78,6 +80,9 @@ public:
     GLuint color_map;
     GLuint color_t_map;
     GLuint normal_map;
+    
+    GLuint shadow_map;
+    
     GLuint screen_size;
     GLuint val;
     GLuint properties;
@@ -117,6 +122,10 @@ void set_shadow_as_current_shader();
 
 void set_camera_transform_matrix(fmat4* camera);
 void set_unitary_transform_matrix();
+
+// calls glVertexAttributePointer assuming the data's been loaded into a VBO
+void set_coord_attribute(GLenum type);
+void set_texture_coord_attribute(GLenum type);
 
 fvec4 apply_mvp_matrix(fmat4* view, fvec4 a);
 

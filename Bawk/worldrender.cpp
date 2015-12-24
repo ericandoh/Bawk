@@ -44,11 +44,19 @@ void ShaderProgram::set_transform_matrix(fmat4* view) {
     check_for_error();
 }
 
+void FirstPassShaderProgram::set_coord_attribute(GLenum type) {
+    glVertexAttribPointer(coord, 3, type, GL_FALSE, 0, 0);
+}
+
 void GeometryShaderProgram::set_transform_matrix(fmat4* view) {
     fmat4 mvp = camera_transform * (*view);
     glUniformMatrix4fv(this->mvp, 1, GL_FALSE, glm::value_ptr(mvp));
     glUniformMatrix4fv(world_transform, 1, GL_FALSE, glm::value_ptr(*view));
     check_for_error();
+}
+
+void GeometryShaderProgram::set_texture_coord_attribute(GLenum type) {
+    glVertexAttribPointer(texture_coord, 3, type, GL_FALSE, 0, 0);
 }
 
 void GeometryShaderProgram::set_block_draw_mode(BlockDrawMode v) {
@@ -119,7 +127,7 @@ void set_geometry_as_current_shader() {
 void set_shadow_as_current_shader() {
     glUseProgram(shadow_shader.program);
     glEnableVertexAttribArray(shadow_shader.coord);
-    glEnableVertexAttribArray(shadow_shader.texture_coord);
+    //glEnableVertexAttribArray(shadow_shader.texture_coord);
     current_shader = &shadow_shader;
     check_for_error();
 }

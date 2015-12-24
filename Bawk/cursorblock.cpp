@@ -164,10 +164,10 @@ void CursorBlock::render_block(fmat4* transform) {
     
     glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::current_shader->coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+    OGLAttr::current_shader->set_coord_attribute(GL_BYTE);
     
     glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::current_shader->texture_coord, 3, GL_BYTE, GL_FALSE, 0, 0);
+    OGLAttr::current_shader->set_texture_coord_attribute(GL_BYTE);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }

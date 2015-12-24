@@ -5,6 +5,8 @@ uniform sampler2D g_color_map;
 uniform sampler2D g_color_t_map;
 uniform sampler2D g_normal_map;
 
+uniform sampler2D g_shadow_map;
+
 uniform vec2 l_screen_size;
 
 // this is direction for directional light, or position for point light
@@ -65,5 +67,13 @@ void main(void) {
         // directional light or whatnot
         // out_color.xyz = color_o;
     //}
+    else if (l_draw_mode == 3) {
+        // hack, but this is to show the light shader part
+        float depth = texture(g_shadow_map, texcoord).x;
+        depth = 1.0 - (1.0 - depth) * 25.0;
+        //depth = depth / 15.0;
+        //depth = depth - 0.3;
+        out_color = vec4(depth);
+    }
     out_color.w = 1.0;
 }
