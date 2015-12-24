@@ -82,6 +82,7 @@ public:
     GLuint normal_map;
     
     GLuint shadow_map;
+    GLuint shadow_mvp;
     
     GLuint screen_size;
     GLuint val;
@@ -93,7 +94,6 @@ public:
 // shadow mapping
 class ShadowShaderProgram: public FirstPassShaderProgram {
 public:
-    
 };
 
 namespace OGLAttr {
@@ -132,6 +132,8 @@ fvec4 apply_mvp_matrix(fmat4* view, fvec4 a);
 void set_lighting_block_draw_mode(int v);
 void set_lighting_val(fvec3 val);
 void set_lighting_properties(float light_radius, float light_intensity);
+void set_ambient_lighting_properties(float light_intensity);
+void set_directional_lighting_transform_matrix(fmat4* light_mvp);
 void set_lighting_transform_matrix(fmat4* view);
 void set_unitary_lighting_transform_matrix();
 void set_lighting_screen_size(float width, float height);

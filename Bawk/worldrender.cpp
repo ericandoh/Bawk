@@ -162,6 +162,14 @@ void set_lighting_properties(float light_radius, float light_intensity) {
     check_for_error();
 }
 
+void set_ambient_lighting_properties(float light_intensity) {
+    glUniform3f(lighting_shader.properties, 0.0f, light_intensity, 0.0f);
+}
+
+void set_directional_lighting_transform_matrix(fmat4* light_mvp) {
+    glUniformMatrix4fv(lighting_shader.shadow_mvp, 1, GL_FALSE, glm::value_ptr(*light_mvp));
+}
+
 void set_unitary_lighting_transform_matrix() {
     fmat4 one(1);
     glUniformMatrix4fv(lighting_shader.mvp, 1, GL_FALSE, glm::value_ptr(one));

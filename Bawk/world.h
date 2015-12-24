@@ -29,6 +29,7 @@
 #include "worldevent.h"
 #include "base_world.h"
 #include "worldweather.h"
+#include "directionallightrender.h"
 
 class Game;
 class Player;
@@ -36,6 +37,8 @@ class Player;
 class World {
     std::vector<WorldEvent*> events;
     WorldWeather weather;
+    // TODO later move this to weather or some shizzle
+    DirectionalRenderableLight dir_light;
 public:
     std::string name;
     // how many cycles the world has lived through
@@ -50,6 +53,8 @@ public:
     void remove_self();
     void render(fmat4* transform, Player* player);
     void render_lights(fmat4* transform, fvec3 player_pos);
+    void set_light_camera(Player* player);
+    void set_light_camera_for_lighting(Player* player);
     void update_chunks(fvec3* player_pos);
     
     void get_entity_at(float x, float y, float z, Entity** selected);

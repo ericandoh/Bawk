@@ -6,6 +6,7 @@ uniform sampler2D g_color_t_map;
 uniform sampler2D g_normal_map;
 
 uniform sampler2D g_shadow_map;
+uniform mat4 l_shadow_mvp;
 
 uniform vec2 l_screen_size;
 
@@ -54,11 +55,20 @@ void main(void) {
     //normal = normalize(normal);
     
     out_color.xyz = (color_o.xyz + color_t) / 2.0;
-    //if (l_draw_mode == 0) {
-        // ambient lighting
+    if (l_draw_mode == 0) {
+        // ambient lighting, do lighting here
+        
+        vec4 shadow_coord = l_shadow_mvp * vec4(worldpos, 1);
+        
+        float visibility = 1.0;
+        if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z) {
+            visibility = 0.5;
+        }
+        out_color.xyz = out_color.xyz * l_properties.y * visibility;
         // out_color.xyz = color_o;
-    //} else
-    if (l_draw_mode == 1) {
+        
+    }
+    else if (l_draw_mode == 1) {
         // point light
         out_color.xyz = out_color.xyz * get_point_light(worldpos);
         // out_color = color;
@@ -69,7 +79,8 @@ void main(void) {
     //}
     else if (l_draw_mode == 3) {
         // hack, but this is to show the light shader part
-        float depth = texture(g_shadow_map, texcoord).x;
+        //float depth = texture(g_shadow_map, shadow_coord.xy).x;
+        float depth = texture(g_shadow_map, texcoord.xy).x;
         depth = 1.0 - (1.0 - depth) * 25.0;
         //depth = depth / 15.0;
         //depth = depth - 0.3;

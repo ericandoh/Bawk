@@ -31,6 +31,7 @@
 		071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB73C1C18B12900563D4A /* modelactionmovement.cpp */; };
 		071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7421C18B36800563D4A /* modelactionexplode.cpp */; };
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
+		071F632B1C2C5E7100609129 /* directionallightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071F63291C2C5E7100609129 /* directionallightrender.cpp */; };
 		071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071FA6B91C10D19700884B70 /* lightrender.cpp */; };
 		072243361C177F0900B60091 /* blockinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072243341C177F0900B60091 /* blockinfo.cpp */; };
 		072243391C17C98E00B60091 /* spriterender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072243371C17C98E00B60091 /* spriterender.cpp */; };
@@ -162,6 +163,8 @@
 		071BB7431C18B36800563D4A /* modelactionexplode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionexplode.h; sourceTree = "<group>"; };
 		071C5C121BF7FE9C0087F398 /* rotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation.cpp; sourceTree = "<group>"; };
 		071C5C131BF7FE9C0087F398 /* rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation.h; sourceTree = "<group>"; };
+		071F63291C2C5E7100609129 /* directionallightrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = directionallightrender.cpp; sourceTree = "<group>"; };
+		071F632A1C2C5E7100609129 /* directionallightrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = directionallightrender.h; sourceTree = "<group>"; };
 		071FA6B91C10D19700884B70 /* lightrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightrender.cpp; sourceTree = "<group>"; };
 		071FA6BA1C10D19700884B70 /* lightrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightrender.h; sourceTree = "<group>"; };
 		072243341C177F0900B60091 /* blockinfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blockinfo.cpp; sourceTree = "<group>"; };
@@ -495,6 +498,8 @@
 				071FA6BA1C10D19700884B70 /* lightrender.h */,
 				07F858461C2397AB005ACAA9 /* worldweather.cpp */,
 				07F858471C2397AB005ACAA9 /* worldweather.h */,
+				071F63291C2C5E7100609129 /* directionallightrender.cpp */,
+				071F632A1C2C5E7100609129 /* directionallightrender.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -699,6 +704,7 @@
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
 				0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */,
 				0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */,
+				071F632B1C2C5E7100609129 /* directionallightrender.cpp in Sources */,
 				078E87A21C1BEF0B00A825EB /* spriteexplosion.cpp in Sources */,
 				07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */,
 			);

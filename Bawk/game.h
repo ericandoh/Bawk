@@ -56,6 +56,7 @@ class Game : public Displayable {
     
     bool in_game;
     
+    void render_geometry();
     void check_need_update();
     int load_game_data();
     int save_game_data();
@@ -67,7 +68,9 @@ public:
     GameTemplate* game_template;
     void set_parameters(std::string wn, uint32_t p);
     int init() override;
+    // TODO refactor the rendering pipeline into its own class
     void render() override;
+    void render_shadows() override;
     void render_lights() override;
     void frame() override;
     void switch_current_item(int to_index);

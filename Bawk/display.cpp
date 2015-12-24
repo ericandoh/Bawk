@@ -336,7 +336,7 @@ void render_shadowmetry() {
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     check_for_error();
-    current_display->render();
+    current_display->render_shadows();
     check_for_error();
     glFinish();
     check_for_error();
@@ -439,31 +439,10 @@ void render_lights() {
     glBlendEquation(GL_FUNC_ADD);
    	glBlendFunc(GL_ONE, GL_ONE);
     
-    // drawing ambient lighting here
-    set_lighting_block_draw_mode(0);
-    set_lighting_screen_size(wwidth, wheight);
-    float vertex[6][3] = {
-        {-1, -1, 0},
-        {1, -1, 0},
-        {-1, 1, 0},
-        {-1, 1, 0},
-        {1, -1, 0},
-        {1, 1, 0},
-    };
-    
-    set_unitary_lighting_transform_matrix();
-    
-    check_for_error();
-    
-    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    check_for_error();
-    
     // draw more lights here, by drawing a box, then sending coordinates to the renderer above
     // this will mainly be just point lights top kek
+    
+    set_lighting_screen_size(wwidth, wheight);
     
     current_display->render_lights();
     

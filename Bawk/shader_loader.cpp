@@ -216,6 +216,7 @@ int bind_light_shader_attributes(GLuint program) {
     //errors += get_uniform_location(&OGLAttr::lighting_shader.normal_map, "g_normal_map", program);
     
     errors += get_uniform_location(&OGLAttr::lighting_shader.shadow_map, "g_shadow_map", program);
+    errors += get_uniform_location(&OGLAttr::lighting_shader.shadow_mvp, "l_shadow_mvp", program);
     
     errors += get_uniform_location(&OGLAttr::lighting_shader.screen_size, "l_screen_size", program);
     errors += get_uniform_location(&OGLAttr::lighting_shader.val, "l_val", program);

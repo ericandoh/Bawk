@@ -131,12 +131,10 @@ int Game::init() {
 }
     
 // Called in the main render loop. Pass the rendering to the appropriate entries
-void Game::render() {
+void Game::render_geometry() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_CULL_FACE);
-    // get transform from player's perspective
-    player->set_camera();
     // render world in player's perspective
     
     // TODO fix this hack
@@ -149,8 +147,6 @@ void Game::render() {
     
     fmat4 transform(1);
     world->render(&transform, player);
-    // get depth coordinates
-    player->query_depth(world);
     // render current item based on those depth coordinates
     glDisable(GL_CULL_FACE);
     if (bar->get_current()) {
@@ -169,7 +165,43 @@ void Game::render() {
     story->render();
 }
 
+void Game::render() {
+    // get transform from player's perspective
+    player->set_camera();
+    render_geometry();
+}
+
+void Game::render_shadows() {
+    // get transform from light's perspective
+    world->set_light_camera(player);
+    render_geometry();
+}
+
 void Game::render_lights() {
+    
+    // --- AMBIENT LIGHTING ---
+    // drawing ambient lighting here
+    set_lighting_block_draw_mode(0);
+    float vertex[6][3] = {
+        {-1, -1, 0},
+        {1, -1, 0},
+        {-1, 1, 0},
+        {-1, 1, 0},
+        {1, -1, 0},
+        {1, 1, 0},
+    };
+    set_ambient_lighting_properties(1.0f);
+    set_unitary_lighting_transform_matrix();
+    world->set_light_camera_for_lighting(player);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    
+    // --- OTHER LIGHTING ---
     // render a light around the player for now
     player->set_camera();
     glEnable(GL_CULL_FACE);
@@ -287,6 +319,10 @@ void Game::frame() {
         }
     }
     check_need_update();
+    
+    // get depth coordinates
+    player->query_depth(world);
+    
     world->step(this);
 }
 
