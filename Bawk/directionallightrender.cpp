@@ -39,8 +39,9 @@ void DirectionalRenderableLight::set_camera(fvec3 player_pos) {
     
     float length = 30.0f;
     fvec3 center_pos = player_pos; // TODO + player->dir * FAR * 0.5f;
-    fvec3 start_pos = get_height_aligned_offset(center_pos, direction, SUN_HEIGHT);
-    fvec3 toward_pos = fvec3(0, 0, 0);
+    float sun_height = std::max(SUN_HEIGHT, SUN_HEIGHT + center_pos.y);
+    fvec3 start_pos = get_height_aligned_offset(center_pos, direction, sun_height) + center_pos;
+    fvec3 toward_pos = center_pos;
     
     fmat4 view = glm::lookAt(start_pos, toward_pos, fvec3(0, 1, 0));
     

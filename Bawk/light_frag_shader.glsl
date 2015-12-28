@@ -19,6 +19,11 @@ uniform int l_draw_mode;
 
 out vec4 out_color;
 
+vec2 poisson_disk[4] = vec2[](vec2( -0.94201624, -0.39906216 ),
+                              vec2( 0.94558609, -0.76890725 ),
+                              vec2( -0.094184101, -0.92938870 ),
+                              vec2( 0.34495938, 0.29387760 ));
+
 vec2 get_tex_coord() {
     return gl_FragCoord.xy / l_screen_size;
 }
@@ -59,14 +64,19 @@ void main(void) {
         // ambient lighting, do lighting here
         
         vec4 shadow_coord = l_shadow_mvp * vec4(worldpos, 1);
-        
+        float bias = 0.0005;
         float visibility = 1.0;
-        if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z) {
-            visibility = 0.5;
+        //if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z - bias) {
+        //    visibility = 0.5;
+        //}
+        for (int i = 0; i < 4; i++) {
+            if (texture(g_shadow_map, shadow_coord.xy + poisson_disk[i]/700.0).x < shadow_coord.z-bias) {
+                visibility-=0.125;
+            }
         }
-        out_color.xyz = out_color.xyz * l_properties.y * visibility;
-        // out_color.xyz = color_o;
         
+        //float visibility = 1.0 - texture(g_shadow_map, vec3(shadow_coord.xy, (shadow_coord.z - bias) / shadow_coord.w ));
+        out_color.xyz = out_color.xyz * l_properties.y * visibility;
     }
     else if (l_draw_mode == 1) {
         // point light
@@ -79,8 +89,8 @@ void main(void) {
     //}
     else if (l_draw_mode == 3) {
         // hack, but this is to show the light shader part
-        //float depth = texture(g_shadow_map, shadow_coord.xy).x;
         float depth = texture(g_shadow_map, texcoord.xy).x;
+        //float depth = 1.0 - texture(g_shadow_map, vec3(texcoord.xy, 0)).x;
         depth = 1.0 - (1.0 - depth) * 25.0;
         //depth = depth / 15.0;
         //depth = depth - 0.3;
