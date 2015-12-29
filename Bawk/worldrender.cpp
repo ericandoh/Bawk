@@ -77,6 +77,15 @@ void GeometryShaderProgram::set_alpha_cutoff(float a) {
     check_for_error();
 }
 
+void GeometryShaderProgram::set_enable_shadows(bool v) {
+    if (v) {
+        glUniform1i(enable_shadows, 1);
+    }
+    else {
+        glUniform1i(enable_shadows, 0);
+    }
+}
+
 
 int world_load_resources() {
     check_for_error();

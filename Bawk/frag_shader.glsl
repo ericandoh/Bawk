@@ -8,15 +8,22 @@ uniform sampler2D tile_texture;
 uniform int g_drawmode;
 uniform float g_intensity;
 uniform float g_alphacutoff;
+uniform int g_enable_shadows;
 
 layout (location = 0) out vec3 worldpos_out;
 layout (location = 1) out vec3 color_out;
 layout (location = 3) out vec3 normal_out;
 
 void main(void) {
-    worldpos_out.xyz = g_worldpos;
-    // fill in normal later on
-    normal_out.xyz = vec3(0.3,0.4,0.5);
+    if (g_enable_shadows == 0) {
+        worldpos_out = vec3(0,0,0);
+        normal_out.xyz = vec3(0,0,0);
+    }
+    else {
+        worldpos_out.xyz = g_worldpos;
+        // fill in normal later on
+        normal_out.xyz = vec3(0.3,0.4,0.5);
+    }
     
     if (g_drawmode == 0) {
         vec4 color = texture(tile_texture, g_texcoord.xy);

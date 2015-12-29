@@ -56,17 +56,21 @@ void main(void) {
     vec3 worldpos = texture(g_position_map, texcoord).xyz;
     vec3 color_o = texture(g_color_map, texcoord).xyz;
     vec3 color_t = texture(g_color_t_map, texcoord).xyz;
-    //vec3 normal = texture(gNormalMap, texcoord).xyz;
+    //vec3 normal = texture(g_normal_map, texcoord).xyz;
     //normal = normalize(normal);
     
     out_color.xyz = (color_o.xyz + color_t) / 2.0;
+    if (any(equal(worldpos, vec3(0,0,0)))) {
+        // do nothing
+        ;
+    }
     if (l_draw_mode == 1) {
         // ambient lighting, do lighting here
-        
-        vec4 shadow_coord = l_shadow_mvp * vec4(worldpos, 1);
-        float bias = 0.001;
-        //float bias = 0;
         float visibility = 1.0;
+        // if normal is zerod - we don't do shadowing
+        vec4 shadow_coord = l_shadow_mvp * vec4(worldpos, 1);
+        float bias = 0.0002;
+        //float bias = 0;
         //if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z - bias) {
         //    visibility = 0.5;
         //}

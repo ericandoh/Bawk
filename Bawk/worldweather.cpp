@@ -14,14 +14,14 @@
 #define SKYBOX_YFRAGS 20
 
 WorldWeather::WorldWeather() {
-    distance = 500;
+    distance = 900;
     
     daytime = fvec3(0.53f, 0.808f, 0.98f);
     nighttime = fvec3(0.05f, 0.01f, 0.09f);
     suntime = fvec3(0.93f, 0.94f, 0.02f);
     
     time = 0;
-    time_per_day = 2400;
+    time_per_day = 24000;
     
     time_update = 5;
     

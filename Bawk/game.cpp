@@ -157,7 +157,9 @@ void Game::render_ui() {
 void Game::render() {
     // get transform from player's perspective
     player->set_camera();
+    OGLAttr::current_shader->set_enable_shadows(true);
     render_geometry();
+    OGLAttr::current_shader->set_enable_shadows(false);
     fmat4 transform(1);
     world->render_background(&transform, player);
     render_ui();
@@ -168,6 +170,8 @@ void Game::render_shadows() {
     world->set_light_camera(player);
     // only render geometry of world
     render_geometry();
+    //fmat4 transform(1);
+    //world->render_background(&transform, player);
 }
 
 void Game::render_lights() {

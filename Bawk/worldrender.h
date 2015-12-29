@@ -60,6 +60,7 @@ public:
     virtual void set_block_draw_mode(BlockDrawMode v) { };
     virtual void set_shader_intensity(float m) { };
     virtual void set_alpha_cutoff(float a) { };
+    virtual void set_enable_shadows(bool v) { };
 };
 
 // stage 1 of the deferred rendering
@@ -71,6 +72,7 @@ public:
     GLuint draw_mode;
     GLuint intensity;
     GLuint alphacutoff;
+    GLuint enable_shadows;
     GLuint tile_texture;
     
     void set_transform_matrix(fmat4* view) override;
@@ -78,6 +80,7 @@ public:
     void set_block_draw_mode(BlockDrawMode v) override;
     void set_shader_intensity(float m) override;
     void set_alpha_cutoff(float a) override;
+    void set_enable_shadows(bool v) override;
 };
 
 // stage 2 of the deferred rendering
