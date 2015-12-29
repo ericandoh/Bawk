@@ -64,7 +64,7 @@ void main(void) {
         // ambient lighting, do lighting here
         
         vec4 shadow_coord = l_shadow_mvp * vec4(worldpos, 1);
-        float bias = 0.0005;
+        float bias = 0.001;
         //float bias = 0;
         float visibility = 1.0;
         //if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z - bias) {

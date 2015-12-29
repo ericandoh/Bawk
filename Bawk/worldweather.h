@@ -13,6 +13,7 @@
 #include <vector>
 #include "basic_types.h"
 #include "spriterender.h"
+#include "directionallightrender.h"
 
 class Player;
 
@@ -31,6 +32,8 @@ class WorldWeather {
     int time_update;
     
 public:
+    DirectionalRenderableLight dir_light;
+    
     WorldWeather();
     void setup();
     void render(fmat4* transform, Player* player);

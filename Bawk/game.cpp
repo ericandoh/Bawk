@@ -159,7 +159,7 @@ void Game::render() {
     player->set_camera();
     render_geometry();
     fmat4 transform(1);
-    //world->render_background(&transform, player);
+    world->render_background(&transform, player);
     render_ui();
 }
 

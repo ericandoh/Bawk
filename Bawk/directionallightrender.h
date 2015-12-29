@@ -12,15 +12,18 @@
 #include <stdio.h>
 #include "basic_types.h"
 
+class Player;
+
 class DirectionalRenderableLight {
     fmat4 mvp;
 public:
+    // TODO this is unused
     float light_intensity;
     // direction from player to light
     fvec3 direction;
     DirectionalRenderableLight();
     void render_light();
-    void set_camera(fvec3 player_pos);
+    void set_camera(Player* player);
     void set_camera_for_light(fvec3 player_pos);
 };
 

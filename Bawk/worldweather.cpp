@@ -21,10 +21,11 @@ WorldWeather::WorldWeather() {
     suntime = fvec3(0.93f, 0.94f, 0.02f);
     
     time = 0;
-    time_per_day = 24000;
+    time_per_day = 2400;
     
-    time_update = 25;
+    time_update = 5;
     
+    dir_light = DirectionalRenderableLight();
     setup();
 }
 
@@ -117,6 +118,9 @@ void WorldWeather::update_sky() {
     float frac_cycle = time * 1.0f / time_per_day;
     float frac_day = 0.5f + 0.5f * cosf(frac_cycle * 2 * M_PI);
     float frac_night = 0.5f + 0.5f * sinf(frac_cycle * 2 * M_PI);
+    
+    dir_light.direction = fvec3(0.5f - frac_day, 0.4f, 0.2f);
+    dir_light.direction = glm::normalize(dir_light.direction);
     
     float sun_x;
     if (frac_cycle < 0.5f) {

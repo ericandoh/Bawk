@@ -26,8 +26,6 @@ World::World(std::string id) {
     load_self();
     
     weather = WorldWeather();
-    
-    dir_light = DirectionalRenderableLight();
 }
 
 uint32_t World::assignID() {
@@ -75,11 +73,11 @@ void World::render_background(fmat4* transform, Player* player) {
 }
 
 void World::set_light_camera(Player* player) {
-    dir_light.set_camera(player->get_rwc_pos());
+    weather.dir_light.set_camera(player);
 }
 
 void World::set_light_camera_for_lighting(Player* player) {
-    dir_light.set_camera_for_light(player->get_rwc_pos());
+    weather.dir_light.set_camera_for_light(player->get_rwc_pos());
 }
 
 void World::update_chunks(fvec3* player_pos) {
