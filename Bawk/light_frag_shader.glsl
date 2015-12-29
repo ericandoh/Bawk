@@ -60,11 +60,12 @@ void main(void) {
     //normal = normalize(normal);
     
     out_color.xyz = (color_o.xyz + color_t) / 2.0;
-    if (l_draw_mode == 0) {
+    if (l_draw_mode == 1) {
         // ambient lighting, do lighting here
         
         vec4 shadow_coord = l_shadow_mvp * vec4(worldpos, 1);
         float bias = 0.0005;
+        //float bias = 0;
         float visibility = 1.0;
         //if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z - bias) {
         //    visibility = 0.5;
@@ -78,7 +79,7 @@ void main(void) {
         //float visibility = 1.0 - texture(g_shadow_map, vec3(shadow_coord.xy, (shadow_coord.z - bias) / shadow_coord.w ));
         out_color.xyz = out_color.xyz * l_properties.y * visibility;
     }
-    else if (l_draw_mode == 1) {
+    else if (l_draw_mode == 2) {
         // point light
         out_color.xyz = out_color.xyz * get_point_light(worldpos);
         // out_color = color;

@@ -59,17 +59,19 @@ void World::remove_self() {
 
 // renders the world
 void World::render(fmat4* transform, Player* player) {
+    base_world->render(transform);
+}
+
+void World::render_lights(fmat4* transform, fvec3 player_pos) {
     //shade_intensity -= (abs((int)(age % 400) - 200)/200.0f) * 0.5f;
     //if (shade_intensity < 0.2f)
     //    shade_intensity = 0.2f;
     //OGLAttr::current_shader->set_shader_intensity(shade_intensity);
-    base_world->render(transform);
-    
-    weather.render(transform, player);
+    base_world->render_lights(transform, player_pos);
 }
 
-void World::render_lights(fmat4* transform, fvec3 player_pos) {
-    base_world->render_lights(transform, player_pos);
+void World::render_background(fmat4* transform, Player* player) {
+    weather.render(transform, player);
 }
 
 void World::set_light_camera(Player* player) {

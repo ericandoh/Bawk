@@ -117,7 +117,6 @@ public:
     void move_up_flat(float force);
     void move_down_flat(float force);
     
-    
     void yaw_left(float force);
     void yaw_right(float force);
     void pitch_up(float force);

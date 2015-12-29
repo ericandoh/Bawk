@@ -33,8 +33,9 @@ class Game;
 // represents a template in the making
 class GameTemplate: public PlaceableSuperObject {
     Rotation get_vehicle_orientation();
+    World* world;
 public:
-    GameTemplate();
+    GameTemplate(World* w);
     
     // --- SuperObject ---
     void render(fmat4* transform) override;

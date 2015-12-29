@@ -57,6 +57,7 @@ class Game : public Displayable {
     bool in_game;
     
     void render_geometry();
+    void render_ui();
     void check_need_update();
     int load_game_data();
     int save_game_data();

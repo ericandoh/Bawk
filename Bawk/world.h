@@ -53,6 +53,7 @@ public:
     void remove_self();
     void render(fmat4* transform, Player* player);
     void render_lights(fmat4* transform, fvec3 player_pos);
+    void render_background(fmat4* transform, Player* player);
     void set_light_camera(Player* player);
     void set_light_camera_for_lighting(Player* player);
     void update_chunks(fvec3* player_pos);

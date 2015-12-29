@@ -13,8 +13,9 @@
 #include "modelentityrender.h"
 #include "entity_loader.h"
 
-GameTemplate::GameTemplate() {
+GameTemplate::GameTemplate(World* w) {
     entity_class = EntityType::GAMETEMPLATE;
+    world = w;
 }
 
 Rotation GameTemplate::get_vehicle_orientation() {
@@ -89,9 +90,11 @@ void GameTemplate::unpublish(World* world) {
 }
 
 void GameTemplate::render(fmat4* transform) {
-    OGLAttr::current_shader->set_shader_intensity(0.6f);
+    int frequency = 50;
+    float intensity = (cosf((world->age % frequency) * 2 * M_PI / frequency)) / 4.0f + 1.0f;
+    OGLAttr::current_shader->set_shader_intensity(intensity);
     // do any special rendering you'd like if you want to make this shine
     PlaceableSuperObject::render(transform);
-    OGLAttr::current_shader->set_shader_intensity(0.3f);
+    OGLAttr::current_shader->set_shader_intensity(1.0f);
 }
 

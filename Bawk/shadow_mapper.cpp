@@ -11,6 +11,9 @@
 
 #include "shadow_mapper.h"
 #include "worldrender.h"
+#include "texture_allocator.h"
+
+#include "opengl_debug.h"
 
 ShadowMapper::ShadowMapper() {
     m_fbo = 0;
@@ -28,9 +31,10 @@ ShadowMapper::~ShadowMapper() {
     }
 }
 
-bool ShadowMapper::init(unsigned int wwidth, unsigned int wheight, int to) {
+bool ShadowMapper::init(unsigned int wwidth, unsigned int wheight) {
     // make the FBO
     glGenFramebuffers(1, &m_fbo);
+    check_for_error();
     
     // make the shadow map texture
     glGenTextures(1, &m_shadow_map);
@@ -45,11 +49,12 @@ bool ShadowMapper::init(unsigned int wwidth, unsigned int wheight, int to) {
     // should we add these?
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    check_for_error();
     
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     // last 0 is mipmap level (no mipmapping)
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_shadow_map, 0);
-    //glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_shadow_map, 0);
+    check_for_error();
     
     // for this framebuffer, don't write to color
     glDrawBuffer(GL_NONE);
@@ -62,7 +67,7 @@ bool ShadowMapper::init(unsigned int wwidth, unsigned int wheight, int to) {
         return false;
     }
     
-    texture_offset = to;
+    texture_offset = reserve_n_active_textures(1);
     
     return true;
 }
@@ -73,8 +78,7 @@ void ShadowMapper::bind_for_write() {
 
 void ShadowMapper::bind_for_read() {
     //glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
-    
-    glActiveTexture(GL_TEXTURE0 + texture_offset);
+    set_active_texture(texture_offset);
     glBindTexture(GL_TEXTURE_2D, m_shadow_map);
     
     glUniform1i(OGLAttr::lighting_shader.shadow_map, texture_offset);

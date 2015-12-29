@@ -8,6 +8,9 @@
 
 #include "gbuffer.h"
 #include "worldrender.h"
+#include "texture_allocator.h"
+
+#include "opengl_debug.h"
 
 GBuffer::GBuffer()
 {
@@ -32,21 +35,21 @@ GBuffer::~GBuffer()
     if (m_depthTexture != 0) {
         glDeleteTextures(1, &m_depthTexture);
     }
+    check_for_error();
 }
 
-bool GBuffer::init(unsigned int wwidth, unsigned int wheight, unsigned int to) {
+bool GBuffer::init(unsigned int wwidth, unsigned int wheight) {
     // Create the FBO
     glGenFramebuffers(1, &m_fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_fbo);
-    
-    printf("A %d\n",glGetError());
+    check_for_error();
     
     // Create the gbuffer textures
     glGenTextures(GBUFFER_NUM_TEXTURES, m_textures);
     glGenTextures(1, &m_depthTexture);
+    check_for_error();
     
-    printf("B %d\n",glGetError());
-    
+    // Create the G-buffer textures
     for (unsigned int i = 0 ; i < GBUFFER_NUM_TEXTURES ; i++) {
         glBindTexture(GL_TEXTURE_2D, m_textures[i]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, wwidth, wheight, 0, GL_RGB, GL_FLOAT, NULL);
@@ -54,45 +57,35 @@ bool GBuffer::init(unsigned int wwidth, unsigned int wheight, unsigned int to) {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_textures[i], 0);
     }
+    check_for_error();
     
-    printf("C %d\n",glGetError());
-    
-    // depth
+    // Create the depth texture
     glBindTexture(GL_TEXTURE_2D, m_depthTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, wwidth, wheight, 0, GL_DEPTH_COMPONENT, GL_FLOAT,
                  NULL);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
+    check_for_error();
     
-    printf("DE %d\n",glGetError());
-    
-    /*GLenum DrawBuffers[GBUFFER_NUM_TEXTURES];
-    
-    for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
-        DrawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
-    }*/
-    //GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-    GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0,
+    GLenum draw_buffers[] = {
+        GL_COLOR_ATTACHMENT0,
         GL_COLOR_ATTACHMENT1,
         GL_COLOR_ATTACHMENT2,
-    GL_COLOR_ATTACHMENT3};
-    glDrawBuffers(4, DrawBuffers);
+        GL_COLOR_ATTACHMENT3
+    };
+    glDrawBuffers(4, draw_buffers);
+    check_for_error();
     
-    printf("D %d\n",glGetError());
-    
-    GLenum Status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    
-    if (Status != GL_FRAMEBUFFER_COMPLETE) {
-        printf("FB error, status: 0x%x\n", Status);
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        printf("Framebuffer error, status: 0x%x\n", status);
         return false;
     }
     
-    printf("E %d\n",glGetError());
-    
-    // restore default FBO
+    // Restore default FBO
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    
-    texture_offset = to;
-    
+    check_for_error();
+    // Reserve some active textures for our FBO
+    texture_offset = reserve_n_active_textures(GBUFFER_NUM_TEXTURES);
     return true;
 }
 
@@ -102,16 +95,15 @@ void GBuffer::bind_for_write() {
 
 void GBuffer::bind_for_read() {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
-    int num_textures;
-    //num_textures = GBUFFER_NUM_TEXTURES;
-    num_textures = 2;
+    // only bind color and position
+    int num_textures = 2;
     for (unsigned int i = 0; i < num_textures; i++) {
         glActiveTexture(GL_TEXTURE0 + i + texture_offset);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]);
     }
     glUniform1i(OGLAttr::lighting_shader.position_map, texture_offset);
     glUniform1i(OGLAttr::lighting_shader.color_map, texture_offset + 1);
-    //glUniform1i(lighting_normal_map, texture_offset + 2);
+    //glUniform1i(OGLAttr::lighting_normal_map, texture_offset + 2);
 }
 
 void GBuffer::bind_for_read_color_map_only() {

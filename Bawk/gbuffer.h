@@ -24,7 +24,7 @@ public:
     };
     GBuffer();
     ~GBuffer();
-    bool init(unsigned int wwidth, unsigned int wheight, unsigned int to);
+    bool init(unsigned int wwidth, unsigned int wheight);
     void bind_for_write();
     void bind_for_read();
     void bind_for_read_color_map_only();

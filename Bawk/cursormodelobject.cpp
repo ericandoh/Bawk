@@ -131,6 +131,13 @@ void CursorModelObject::render_in_world(fmat4* transform) {
     render(transform);
 }
 
+void CursorModelObject::render_light_in_world(fmat4* transform, fvec3 player_pos) {
+    if (locked) {
+        // TODO fix this
+        render_lights(transform, player_pos);
+    }
+}
+
 cursor_item_identifier CursorModelObject::get_identifier() {
     cursor_item_identifier val;
     val.is_blk = false;

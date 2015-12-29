@@ -17,6 +17,7 @@
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
 		0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */; };
 		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
+		07141EC61C31ED03009CD608 /* texture_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07141EC41C31ED03009CD608 /* texture_allocator.cpp */; };
 		07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */; };
 		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
 		0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718EAC41C2A81EC0084826F /* opengl_debug.cpp */; };
@@ -136,6 +137,8 @@
 		0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkresourcemanager.cpp; sourceTree = "<group>"; };
 		0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkresourcemanager.h; sourceTree = "<group>"; };
 		0713FF521C0FD88B0069FDAF /* entity_type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity_type.cpp; sourceTree = "<group>"; };
+		07141EC41C31ED03009CD608 /* texture_allocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture_allocator.cpp; sourceTree = "<group>"; };
+		07141EC51C31ED03009CD608 /* texture_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture_allocator.h; sourceTree = "<group>"; };
 		07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shadows_vertex_shader.glsl; sourceTree = "<group>"; };
 		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
 		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
@@ -540,6 +543,8 @@
 				075C67461BBA427B00CB87DE /* worldrender.h */,
 				0718EAC41C2A81EC0084826F /* opengl_debug.cpp */,
 				0718EAC51C2A81EC0084826F /* opengl_debug.h */,
+				07141EC41C31ED03009CD608 /* texture_allocator.cpp */,
+				07141EC51C31ED03009CD608 /* texture_allocator.h */,
 			);
 			name = display;
 			sourceTree = "<group>";
@@ -639,6 +644,7 @@
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				0766EAFE1BBF7DBE00477144 /* image_helper.c in Sources */,
 				075B20CF1BDD9FD000F42317 /* blockaction.cpp in Sources */,
+				07141EC61C31ED03009CD608 /* texture_allocator.cpp in Sources */,
 				072A0A2F1C0C3A69009304E5 /* collision_detection.cpp in Sources */,
 				0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */,
 				071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */,

@@ -136,6 +136,12 @@ void CursorSuperObject::render_in_world(fmat4* transform) {
     render_blocks(transform);
 }
 
+void CursorSuperObject::render_light_in_world(fmat4* transform, fvec3 player_pos) {
+    if (locked) {
+        render_lights(transform, player_pos);
+    }
+}
+
 cursor_item_identifier CursorSuperObject::get_identifier() {
     cursor_item_identifier val;
     val.is_blk = false;

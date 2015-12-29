@@ -12,13 +12,7 @@
 #include "gametemplate.h"
 #include "blockrender.h"
 #include <glm/gtc/matrix_transform.hpp>
-
-/*
-#include "includeglfw.h"
-#include "cursorblock.h"
-#include "worldrender.h"
-#include "temporarytemplate.h"
-*/
+#include "game_info_loader.h"
 
 CursorBlock::CursorBlock(block_type type) {
     block = type;
@@ -106,6 +100,7 @@ void CursorBlock::render_block(fmat4* transform) {
     
     int i = 0;
     
+    // x
     set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::BACK);
     set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::BACK);
     set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::BACK);
@@ -141,19 +136,19 @@ void CursorBlock::render_block(fmat4* transform) {
     
     // z
     set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::RIGHT);
-    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::RIGHT);
     set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::RIGHT);
     
-    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::RIGHT);
     set_coord_and_texture(box, box_texture, i++, 1, 0, 0, block, BlockOrientation::RIGHT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 0, block, BlockOrientation::RIGHT);
     set_coord_and_texture(box, box_texture, i++, 1, 1, 0, block, BlockOrientation::RIGHT);
     
-    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::LEFT);
     set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 0, 1, block, BlockOrientation::LEFT);
     set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::LEFT);
     
-    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::LEFT);
     set_coord_and_texture(box, box_texture, i++, 1, 1, 1, block, BlockOrientation::LEFT);
+    set_coord_and_texture(box, box_texture, i++, 0, 1, 1, block, BlockOrientation::LEFT);
     set_coord_and_texture(box, box_texture, i++, 1, 0, 1, block, BlockOrientation::LEFT);
     
     fmat4 view = glm::translate(fmat4(1), pos);
@@ -170,4 +165,20 @@ void CursorBlock::render_block(fmat4* transform) {
     glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
     OGLAttr::current_shader->set_texture_coord_attribute(GL_BYTE);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+}
+
+void CursorBlock::render_light_in_world(fmat4* transform, fvec3 player_pos) {
+    // if block has light, render it
+    // TODO
+    ivec3 locked_pos;
+    BlockOrientation orientation;
+    ivec3 upper(1, 1, 1);
+    if (get_pointing_position(&locked_pos, &orientation, upper)) {
+        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+        RenderableLight* light = get_block_light(block.type);
+        light->render_light(transform, pos, player_pos);
+    }
+    else {
+        return;
+    }
 }

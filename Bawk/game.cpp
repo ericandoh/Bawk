@@ -136,32 +136,21 @@ void Game::render_geometry() {
     glEnable(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_CULL_FACE);
     // render world in player's perspective
-    
-    // TODO fix this hack
-    if (game_template) {
-        OGLAttr::current_shader->set_shader_intensity(0.3f);
-    }
-    else {
-        OGLAttr::current_shader->set_shader_intensity(0.6f);
-    }
+    OGLAttr::current_shader->set_shader_intensity(1.0f);
     
     fmat4 transform(1);
     world->render(&transform, player);
-    // render current item based on those depth coordinates
-    glDisable(GL_CULL_FACE);
     if (bar->get_current()) {
         bar->get_current()->render_in_world(&transform);
     }
-    
+}
+
+void Game::render_ui() {
+    glDisable(GL_CULL_FACE);
     glDisable(GL_POLYGON_OFFSET_FILL);
-    
     glDisable(GL_DEPTH_TEST);
     // render the cursor
     player->render();
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-    // Render UI elements here
-    // always render the item bar (for now)
     story->render();
 }
 
@@ -169,11 +158,15 @@ void Game::render() {
     // get transform from player's perspective
     player->set_camera();
     render_geometry();
+    fmat4 transform(1);
+    //world->render_background(&transform, player);
+    render_ui();
 }
 
 void Game::render_shadows() {
     // get transform from light's perspective
     world->set_light_camera(player);
+    // only render geometry of world
     render_geometry();
 }
 
@@ -181,7 +174,7 @@ void Game::render_lights() {
     
     // --- AMBIENT LIGHTING ---
     // drawing ambient lighting here
-    set_lighting_block_draw_mode(0);
+    set_lighting_block_draw_mode(LightDrawMode::BASE);
     float vertex[6][3] = {
         {-1, -1, 0},
         {1, -1, 0},
@@ -209,74 +202,9 @@ void Game::render_lights() {
     
     fmat4 transform(1);
     world->render_lights(&transform, player->get_rwc_pos());
-    
-    /*
-    // Render a box around the block we are pointing at
-    GLbyte box[36][3] = {
-        {0,0,0},
-        {0,0,1},
-        {0,1,0},
-        
-        {0,1,0},
-        {0,0,1},
-        {0,1,1},
-        
-        {1,0,0},
-        {1,1,0},
-        {1,0,1},
-        
-        {1,1,0},
-        {1,1,1},
-        {1,0,1},
-        
-        {0,0,0},
-        {1,0,0},
-        {0,0,1},
-        
-        {0,0,1},
-        {1,0,0},
-        {1,0,1},
-        
-        {0,1,0},
-        {0,1,1},
-        {1,1,0},
-        
-        {0,1,1},
-        {1,1,1},
-        {1,1,0},
-        
-        {0,0,0},
-        {1,0,0},
-        {0,1,0},
-        
-        {0,1,0},
-        {1,0,0},
-        {1,1,0},
-        
-        {0,0,1},
-        {0,1,1},
-        {1,0,1},
-        
-        {0,1,1},
-        {1,1,1},
-        {1,0,1},
-    };
-    for (int i = 0; i < 36; i++) {
-        for (int j = 0; j < 3; j++) {
-            box[i][j] *= 10;
-        }
+    if (bar->get_current()) {
+        bar->get_current()->render_light_in_world(&transform, player->get_rwc_pos());
     }
-    // TODO this box is positioned in all sorts of wrong...
-    fmat4 view = glm::translate(fmat4(1), player->get_rwc_pos() - fvec3(0.5f,0.5f,0.5f));
-    set_lighting_transform_matrix(&view);
-    set_lighting_block_draw_mode(1);
-    set_lighting_val(player->get_rwc_pos());
-    
-    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_BYTE, GL_FALSE, 0, 0);
-    
-    glDrawArrays(GL_TRIANGLES, 0, 36);*/
 }
 
 // runs one frame of the game
@@ -365,7 +293,7 @@ void Game::key_callback_default(int key) {
         else {
             printf("Making new template\n");
             // create a new place_info
-            game_template = new GameTemplate();
+            game_template = new GameTemplate(world);
             world->add_entity(game_template);
         }
     }

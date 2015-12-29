@@ -13,6 +13,7 @@
 #include "chunkrender.h"
 #include "cursorblock.h"
 #include "game_info_loader.h"
+#include "texture_allocator.h"
 
 #include "opengl_debug.h"
 
@@ -21,6 +22,7 @@ namespace OGLAttr {
     // put these inside a namespace or some shizzle
     GLuint vao;
     GLuint tile_texture;
+    GLuint active_tile_texture;
     
     GLuint common_vertex_vbo;
     GLuint common_texture_vbo;
@@ -78,7 +80,9 @@ void GeometryShaderProgram::set_alpha_cutoff(float a) {
 
 int world_load_resources() {
     check_for_error();
-    glActiveTexture(GL_TEXTURE0);
+    
+    active_tile_texture = reserve_n_active_textures(1);
+    set_active_texture(active_tile_texture);
     // Load textures
     tile_texture = load_tiles();
     glBindTexture(GL_TEXTURE_2D, tile_texture);
@@ -147,7 +151,7 @@ fvec4 apply_mvp_matrix(fmat4* view, fvec4 a) {
     return mvp * a;
 }
 
-void set_lighting_block_draw_mode(int v) {
+void set_lighting_block_draw_mode(LightDrawMode v) {
     glUniform1i(lighting_shader.draw_mode, v);
     check_for_error();
 }

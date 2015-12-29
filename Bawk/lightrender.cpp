@@ -125,7 +125,7 @@ void RenderableLight::render_light(fvec3 rwc, fvec3 player_pos) {
     view = glm::translate(view, rwc);
     view = glm::scale(view, fvec3(light_radius, light_radius, light_radius));
     set_lighting_transform_matrix(&view);
-    set_lighting_block_draw_mode(1);
+    set_lighting_block_draw_mode(LightDrawMode::POINT);
     set_lighting_val(rwc);
     set_lighting_properties(light_radius, light_intensity);
     

@@ -45,6 +45,14 @@ enum BlockDrawMode {
     UV = 0, VOXEL = 1, COLOR = 2
 };
 
+// NONE = render scene without any lighting correction
+// BASE = light with directional/shadows/ambient
+// POINT = point light
+// LIGHT_TEST = render texcoord of shadowmap directly
+enum LightDrawMode {
+    NONE = 0, BASE = 1, POINT = 2, LIGHT_TEST = 3
+};
+
 class FirstPassShaderProgram: public ShaderProgram {
 public:
     void set_coord_attribute(GLenum type);
@@ -102,6 +110,7 @@ namespace OGLAttr {
     
     // handle to texture
     extern GLuint tile_texture;
+    extern GLuint active_tile_texture;
     
     extern GLuint common_vertex_vbo;
     extern GLuint common_texture_vbo;
@@ -129,7 +138,7 @@ void set_texture_coord_attribute(GLenum type);
 
 fvec4 apply_mvp_matrix(fmat4* view, fvec4 a);
 
-void set_lighting_block_draw_mode(int v);
+void set_lighting_block_draw_mode(LightDrawMode v);
 void set_lighting_val(fvec3 val);
 void set_lighting_properties(float light_radius, float light_intensity);
 void set_ambient_lighting_properties(float light_intensity);

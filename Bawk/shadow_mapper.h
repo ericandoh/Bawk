@@ -21,7 +21,7 @@ public:
     ShadowMapper();
     ~ShadowMapper();
     // to = texture_offset
-    bool init(unsigned int wwidth, unsigned int wheight, int to);
+    bool init(unsigned int wwidth, unsigned int wheight);
     void bind_for_write();
     void bind_for_read();
 };

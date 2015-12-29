@@ -37,7 +37,7 @@ void DirectionalRenderableLight::set_camera(fvec3 player_pos) {
     int width, height;
     get_window_size(&width, &height);
     
-    float length = 30.0f;
+    float length = 50.0f;
     fvec3 center_pos = player_pos; // TODO + player->dir * FAR * 0.5f;
     float sun_height = std::max(SUN_HEIGHT, SUN_HEIGHT + center_pos.y);
     fvec3 start_pos = get_height_aligned_offset(center_pos, direction, sun_height) + center_pos;

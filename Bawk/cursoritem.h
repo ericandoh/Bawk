@@ -61,6 +61,7 @@ public:
     virtual void render_item() = 0;
     // render the item in the world
     virtual void render_in_world(fmat4* transform) = 0;
+    virtual void render_light_in_world(fmat4* transform, fvec3 player_pos) { };
     
     virtual cursor_item_identifier get_identifier() = 0;
 };

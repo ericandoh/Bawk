@@ -73,9 +73,15 @@ void ItemBarlet::render_elements() {
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glEnable(GL_DEPTH_TEST);
     if (entity) {
         entity->render_item();
     }
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_POLYGON_OFFSET_FILL);
+    glDisable(GL_DEPTH_TEST);
 }
 
 CursorItem* ItemBarlet::get_cursor_item() {

@@ -37,7 +37,7 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, EntityType entity_class) {
         printf("Warning: Attempted to load a cursorsuperobject from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
     }
     else if (entity_class == EntityType::GAMETEMPLATE) {
-        val = new GameTemplate();
+        //val = new GameTemplate(world);
         printf("Warning: Attempted to load a gameTemplate from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
     }
     else if (entity_class == EntityType::MODELENTITY) {
