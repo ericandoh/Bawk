@@ -7,7 +7,11 @@
 //
 
 #include "chunkresourcemanager.h"
+#include <unordered_map>
+#include <deque>
+#include "superobjectrender.h"
 
+#define CHUNK_RESOURCE_SLOTS 2000
 
 /*
  Algorithm Summary
@@ -33,21 +37,132 @@
  
  */
 
-// register a new chunk owner (whether it be the baseworld, some superobject, etc)
-int register_chunk_owner(std::string save_path) { return 0; }
+namespace ChunkResources {
+    enum ChunkStatus {
+        UNLOADED, LOADING, LOADED
+    };
+    enum ChunkPolicy {
+        DNE, EVICT_OK, EVICTED
+    };
+    
+    struct ChunkStatusInfo {
+        ChunkStatus status;
+        ChunkPolicy policy;
+        RenderableSuperObject* owner;
+        ivec3 pos;
+    };
+}
 
-// gets me a new placecard slot for which we can evict
-int get_placecard_slot() { return 0; }
+using namespace ChunkResources;
 
-// creates a new chunk entirely. This is a new Jerry being dropped off for some nice daycaring!
-RenderableChunk* create_new_chunk(block_type raw_chunk[CX][CY][CZ]) { return 0; }
+ChunkStatusInfo chunk_info[CHUNK_RESOURCE_SLOTS];
+RenderableChunk chunk_data[CHUNK_RESOURCE_SLOTS];
+std::deque<int> evicted_list;
+int last_filled = 0;
 
-// an owner hands his owner ID and the placecard he has.
-// we go look at the Jerry we have at the placecard indicated. If his Jerry is NOT at that placecard we'll make
-// him a new one, load it from memory
-RenderableChunk* get_chunk_from_placecard(int owner, int placecard) { return 0; }
 
-// some method to get all chunks loaded in for an owner, and call render on them, or some shizzle
-ChunkOwnerInformation* get_all_chunks(int owner) { return 0; }
+int find_chunk_index() {
+    if (last_filled < CHUNK_RESOURCE_SLOTS) {
+        return (last_filled++);
+    }
+    else if (evicted_list.size()) {
+        int placecard = evicted_list.front();
+        evicted_list.pop_front();
+        return placecard;
+    }
+    else {
+        // we have no evictable chunks, and we apparently don't keep track of holes...
+        // go through our chunk list and evict a chunk by force
+        int placecard = last_filled % CHUNK_RESOURCE_SLOTS;
+        save_chunk_resource(&chunk_data[placecard]);
+        // find owner it belongs to and tell that to evict that chunk from its list
+        ivec3 pos = chunk_info[placecard].pos;
+        chunk_info[placecard].owner->chunks.erase(pos);
+        last_filled++;
+        return placecard;
+    }
+}
 
-// create_new_chunk: creates a new chunk given data. a placecard is generated
+RenderableChunk* reserve_chunk_resource(RenderableSuperObject* owner, ivec3 pos) {
+    int placecard = find_chunk_index();
+    chunk_info[placecard].policy = DNE;
+    chunk_info[placecard].owner = owner;
+    chunk_info[placecard].pos = pos;
+    chunk_data[placecard].reset();
+    
+    // now copy data into our chunk
+    block_type raw_chunk[CX][CY][CZ];
+    chunk_info[placecard].status = LOADING;
+    if (owner->get_chunk(raw_chunk, pos.x, pos.y, pos.z)) {
+        // failed to load chunk
+        return 0;
+    }
+    chunk_info[placecard].status = LOADED;
+    memcpy(&chunk_data[placecard].blk[0][0][0], &raw_chunk[0][0][0], sizeof(block_type)*CX*CY*CZ);
+    chunk_data[placecard].update_dimensions();
+    return &chunk_data[placecard];
+}
+
+RenderableChunk* reserve_empty_chunk_resource(RenderableSuperObject* owner, ivec3 pos) {
+    int placecard = find_chunk_index();
+    chunk_info[placecard].policy = DNE;
+    chunk_info[placecard].owner = owner;
+    chunk_info[placecard].pos = pos;
+    chunk_data[placecard].reset();
+    
+    chunk_info[placecard].status = LOADING;
+    get_empty_chunk(chunk_data[placecard].blk);
+    chunk_info[placecard].status = LOADED;
+    chunk_data[placecard].update_dimensions();
+    return &chunk_data[placecard];
+}
+
+/*
+RenderableChunk* get_chunk_resource(int placecard) {
+    return &chunk_data[placecard];
+}
+
+RenderableChunk* get_chunk_resource(int placecard, RenderableSuperObject* owner, ivec3 chunk_pos) {
+    if (chunk_info[placecard].owner == owner &&
+        chunk_info[placecard].pos == chunk_pos &&
+        chunk_info[placecard].status == LOADED &&
+        chunk_info[placecard].policy != EVICTED) {
+        return &chunk_data[placecard];
+    }
+    return 0;
+}
+
+RenderableChunk* get_chunk_resource_async(int placecard, RenderableSuperObject* owner, ivec3 chunk_pos) {
+    // TODO implement this
+    return get_chunk_resource(placecard, owner, chunk_pos);
+}*/
+
+int get_placecard_from(RenderableChunk* chunk) {
+    return (int)(chunk - chunk_data);
+}
+
+void save_chunk_resource(RenderableChunk* chunk) {
+    int placecard = get_placecard_from(chunk);
+    int x = chunk_info[placecard].pos.x;
+    int y = chunk_info[placecard].pos.y;
+    int z = chunk_info[placecard].pos.z;
+    chunk_info[placecard].owner->save_chunk(chunk_data[placecard].blk, x, y, z);
+}
+
+void free_chunk_resource(RenderableChunk* chunk) {
+    int placecard = get_placecard_from(chunk);
+    chunk_info[placecard].policy = EVICT_OK;
+    chunk_data[placecard].cleanup();
+    evicted_list.push_back(placecard);
+}
+
+void save_all_chunk_resources() {
+    int total = std::min(last_filled, CHUNK_RESOURCE_SLOTS);
+    for (int i = 0; i < total; i++) {
+        if (chunk_info[i].owner &&
+            chunk_info[i].status == LOADED &&
+            chunk_info[i].policy != EVICTED) {
+            save_chunk_resource(&chunk_data[i]);
+        }
+    }
+}

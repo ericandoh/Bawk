@@ -28,6 +28,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     entity_class = EntityType::SUPEROBJECT;
     can_rotate = true;
     block_counter = 0;
+    velocity_decay = 0.9f;
 }
 
 // --- SuperObject ---

@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "worldrender.h"
 #include "superobjectrender.h"
+#include "chunkresourcemanager.h"
 
 RenderableSuperObject::RenderableSuperObject(): Entity() {
     // nothing special needed here
@@ -39,14 +40,11 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
         return 0;
     }
     
-    //printf("Loading chunk for %d %d %d\n", x, y, z);
-    block_type raw_chunk[CX][CY][CZ];
-    if (get_chunk(raw_chunk, x, y, z)) {
+    RenderableChunk* chunk = reserve_chunk_resource(this, ivec3(x,y,z));
+    if (!chunk) {
         // failed to load chunk
-        printf("failed to get chunk\n");
         return 1;
     }
-    RenderableChunk* chunk = new RenderableChunk(raw_chunk);
     chunks[ivec3(x, y, z)] = chunk;
     // we load data from disk so this should be consistent, but just to be safe do a check
     update_dimensions_from_chunk(ivec3(x, y, z));
@@ -92,16 +90,19 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     return 0;
 }
 
+int RenderableSuperObject::load_chunk_async(int x, int y, int z) {
+    // TODO make this thread
+    return load_chunk(x, y, z);
+}
+
 void RenderableSuperObject::delete_chunk(int x, int y, int z) {
     ivec3 pos(x, y, z);
     if (!chunks.count(pos)) {
         // this chunk is already gone mate
         return;
     }
-    // this will call destructor which will (hopefully) cleanly erase/detach the chunk!
-    // TODO WRONG WRONG WRONG THIS WONT SAVE THE CHUNK FUCK
-    chunks[pos]->cleanup();
-    delete chunks[pos];
+    save_chunk_resource(chunks[pos]);
+    free_chunk_resource(chunks[pos]);
     chunks.erase(pos);
 }
 
@@ -164,10 +165,11 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         // make a new chunk here
         // this should only be called while creating vehicles from blocks while
         // finishing up a template
-        
-        block_type raw_chunk[CX][CY][CZ];
-        get_empty_chunk(raw_chunk);
-        RenderableChunk* chunk = new RenderableChunk(raw_chunk);
+        RenderableChunk* chunk = reserve_empty_chunk_resource(this, cac);
+        if (!chunk) {
+            // failed to reserve resources for empty chunk...
+            return;
+        }
         chunks[cac] = chunk;
         
         block_type* current = chunks[cac]->get(crc.x, crc.y, crc.z);
@@ -417,7 +419,7 @@ void RenderableSuperObject::update_chunks(fvec3* player_pos) {
                 if (!within_dimensions_chunk(x, y, z)) {
                     continue;
                 }
-                load_chunk(x, y, z);
+                load_chunk_async(x, y, z);
             }
         }
     }

@@ -27,9 +27,22 @@ struct vboholder {
 // slots for VBO for the chunks. This gets cycled if we don't have enough
 static vboholder chunk_slot[CHUNKSLOTS] = {0};
 
+RenderableChunk::RenderableChunk() {
+    memset(blk, 0, sizeof blk);
+    elements = 0;
+    block_counter = -1;
+    slot = 0;
+    lastused = glfwGetTime();
+    changed = true;
+    left = right = below = above = front = back = 0;
+    has_lights = false;
+    update_dimensions();
+}
+
 RenderableChunk::RenderableChunk(block_type from[CX][CY][CZ]) {
     memset(blk, 0, sizeof blk);
     elements = 0;
+    // wait what - TODO
     block_counter = -1;
     slot = 0;
     lastused = glfwGetTime();
@@ -72,6 +85,18 @@ void RenderableChunk::cleanup() {
         back->front = 0;
         back->changed = true;
     }
+}
+
+void RenderableChunk::reset() {
+    memset(blk, 0, sizeof blk);
+    elements = 0;
+    block_counter = -1;
+    slot = 0;
+    lastused = glfwGetTime();
+    changed = true;
+    left = right = below = above = front = back = 0;
+    has_lights = false;
+    update_dimensions();
 }
 
 void delete_all_buffers() {

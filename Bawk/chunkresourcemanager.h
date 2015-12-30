@@ -17,18 +17,13 @@
 // this will make it so chunks arent stored in heap and keep memory allocating/deallocating
 // fixed size
 
-struct ChunkOwnerInformation {
-    std::vector<int> placecards;
-};
+class RenderableSuperObject;
 
-// register a new chunk owner (whether it be the baseworld, some superobject, etc)
-int register_chunk_owner(std::string save_path);
-
-RenderableChunk* create_new_chunk(block_type raw_chunk[CX][CY][CZ]);
-
-RenderableChunk* get_chunk_from_placecard(int owner, int placecard);
-
-// some method to get all chunks loaded in for an owner, and call render on them, or some shizzle
-ChunkOwnerInformation* get_all_chunks(int owner);
+// blocks the thread
+RenderableChunk* reserve_chunk_resource(RenderableSuperObject* owner, ivec3 pos);
+RenderableChunk* reserve_empty_chunk_resource(RenderableSuperObject* owner, ivec3 pos);
+void save_chunk_resource(RenderableChunk* chunk);
+void free_chunk_resource(RenderableChunk* chunk);
+void save_all_chunk_resources();
 
 #endif /* defined(__Bawk__chunkresourcemanager__) */

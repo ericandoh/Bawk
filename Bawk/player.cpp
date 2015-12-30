@@ -32,7 +32,7 @@ Player::Player(uint32_t p) {
     recalculate_transform();
     
     weight = 20;
-    
+    velocity_decay = 0.5f;
     
     update_direction(0.0, 0.0);
     
