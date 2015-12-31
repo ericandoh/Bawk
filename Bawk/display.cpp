@@ -71,33 +71,39 @@ void get_window_size(int* width, int* height) {
 }
 
 void display_enable_cursor() {
-    throw 1;
+    SDL_SetRelativeMouseMode(SDL_FALSE);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void display_disable_cursor() {
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void display_get_cursor_position(double* x, double* y) {
     //glfwGetWindowSize(window, &wwidth, &wheight);
     //glfwGetFramebufferSize(window, &fwidth, &fheight);
-    //glfwGetCursorPos(window, x, y);
-    *y = window_height - *y;
-    *x = (*x * screen_width) / window_width;
-    *y = (*y * screen_height) / window_height;
+    int mx, my;
+    SDL_GetMouseState(&mx, &my);
+    printf("Clicked %d %d\n", mx, my);
+    my = window_height - my;
+    *x = (mx * screen_width) / window_width;
+    *y = (my * screen_height) / window_height;
 }
 
-void key_callback(SDL_Window* window, int key, int scancode, int action, int mods) {
+// these are deprecated
+void key_callback(int key, int scancode, int action, int mods) {
     if (current_display) {
         current_display->key_callback(key, scancode, action, mods);
     }
 }
 
-void mouse_move_callback(SDL_Window* window, double xpos, double ypos) {
+void mouse_move_callback(double xpos, double ypos) {
     if (current_display) {
-        double xdiff = xpos - xprev;
-        double ydiff = ypos - yprev;
+        //double xdiff = xpos - xprev;
+        //double ydiff = ypos - yprev;
+        double xdiff = xpos;
+        double ydiff = ypos;
         if (xdiff < -max_mouse_movement) {
             xdiff = -max_mouse_movement;
         }
@@ -119,12 +125,12 @@ void mouse_move_callback(SDL_Window* window, double xpos, double ypos) {
     }
 }
 
-void mouse_button_callback(SDL_Window* window, int button, int action, int mods) {
+void mouse_button_callback(int button, int action, int mods) {
     if (current_display)
         current_display->mouse_button_callback(button, action, mods);
 }
 
-void scroll_callback(SDL_Window* window, double xoffset, double yoffset) {
+void scroll_callback(double xoffset, double yoffset) {
     if (current_display)
         current_display->scroll_callback(xoffset, yoffset);
 }
@@ -443,15 +449,29 @@ int display_run()
         //glfwSwapBuffers(window);
         SDL_GL_SwapWindow(window);
         
-        SDL_Delay(20);
+        //SDL_Delay(20);
         /* Poll for and process events */
         //glfwPollEvents();
         SDL_Event e;
         if (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT)
+            if (e.type == SDL_QUIT) {
                 should_exit = true;
-            else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_x)
+            }
+            else if (e.type == SDL_KEYUP || e.type == SDL_KEYDOWN) {
+                key_callback(e.key.keysym.sym, e.key.keysym.scancode, e.type, e.key.keysym.mod);
+            }
+            else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
+                mouse_button_callback(e.button.button, e.type, 0);
+            }
+            else if (e.type == SDL_MOUSEMOTION) {
+                mouse_move_callback(e.motion.xrel, e.motion.yrel);
+            }
+            else if (e.type == SDL_MOUSEWHEEL) {
+                scroll_callback(e.wheel.x, e.wheel.y);
+            }
+            else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_x) {
                 should_exit = true;
+            }
         }
     }
     

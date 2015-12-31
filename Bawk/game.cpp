@@ -456,10 +456,10 @@ void Game::mouse_move_callback(double xdiff, double ydiff) {
 
 void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == SDL_MOUSEBUTTONDOWN) {
+        Action do_this = mouse_to_action[button];
         if (in_game) {
             // see if we're in any vehicle of any sort, then see if it'll accept the mouse button i send
             SuperObject* mount = player->get_mount();
-            Action do_this = mouse_to_action[button];
             if (mount) {
                 if (mount->block_keyboard_callback(this, do_this, mount)) {
                     return;
@@ -479,7 +479,7 @@ void Game::mouse_button_callback(int button, int action, int mods) {
         else {
             double mx, my;
             display_get_cursor_position(&mx, &my);
-            story->onclick((int)mx, (int)my, button);
+            story->onclick((int)mx, (int)my, do_this);
         }
     }
 }
