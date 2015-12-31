@@ -10,7 +10,7 @@
 #define __Bawk__shadow_mapper__
 
 #include <stdio.h>
-#include "includeglfw.h"
+#include "importopengl.h"
 
 class ShadowMapper {
 private:

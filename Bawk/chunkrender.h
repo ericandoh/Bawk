@@ -23,7 +23,7 @@
 #ifndef Bawk_chunk_h
 #define Bawk_chunk_h
 
-#include "includeglfw.h"
+#include "importopengl.h"
 #include <vector>
 #include "block.h"
 #include "lightrender.h"

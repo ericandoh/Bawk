@@ -22,14 +22,21 @@
 // deleteme
 #include "cursormodelobject.h"
 
+#include "importsdl.h"
+
 // THIS IS USEDF OR LIGHTING< MOVE TO A CUSTOM LIGHT RENDERING METHOD
 // TODO FROG
 #include <glm/gtc/matrix_transform.hpp>
 
-int toggleable_keys[] = {GLFW_KEY_SPACE,
+/*int toggleable_keys[] = {GLFW_KEY_SPACE,
                             GLFW_KEY_C, GLFW_KEY_A, GLFW_KEY_D,
                             GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_TAB, GLFW_KEY_LEFT_SHIFT,
-                            GLFW_KEY_Q, GLFW_KEY_E};
+                            GLFW_KEY_Q, GLFW_KEY_E};*/
+
+int toggleable_keys[] = {SDLK_SPACE,
+    SDLK_c, SDLK_a, SDLK_d,
+    SDLK_w, SDLK_s, SDLK_TAB, SDLK_LSHIFT,
+    SDLK_q, SDLK_e};
 
 std::map<int, Action> key_to_action;
 std::map<int, Action> mouse_to_action;
@@ -70,38 +77,38 @@ int Game::init() {
     
     // set key mappings
     // movement key mappings
-    key_to_action[GLFW_KEY_SPACE] = MOVE_UP;
-    key_to_action[GLFW_KEY_C] = MOVE_DOWN;
-    key_to_action[GLFW_KEY_A] = MOVE_LEFT;
-    key_to_action[GLFW_KEY_D] = MOVE_RIGHT;
-    key_to_action[GLFW_KEY_W] = MOVE_FORWARD;
-    key_to_action[GLFW_KEY_S] = MOVE_BACKWARD;
+    key_to_action[SDLK_SPACE] = MOVE_UP;
+    key_to_action[SDLK_c] = MOVE_DOWN;
+    key_to_action[SDLK_a] = MOVE_LEFT;
+    key_to_action[SDLK_d] = MOVE_RIGHT;
+    key_to_action[SDLK_w] = MOVE_FORWARD;
+    key_to_action[SDLK_s] = MOVE_BACKWARD;
     
-    key_to_action[GLFW_KEY_TAB] = PITCH_UP;
-    key_to_action[GLFW_KEY_LEFT_SHIFT] = PITCH_DOWN;
-    key_to_action[GLFW_KEY_Q] = ROLL_LEFT;
-    key_to_action[GLFW_KEY_E] = ROLL_RIGHT;
+    key_to_action[SDLK_TAB] = PITCH_UP;
+    key_to_action[SDLK_LSHIFT] = PITCH_DOWN;
+    key_to_action[SDLK_q] = ROLL_LEFT;
+    key_to_action[SDLK_e] = ROLL_RIGHT;
     
-    key_to_action[GLFW_KEY_ENTER] = CONFIRM;
-    key_to_action[GLFW_KEY_ESCAPE] = CANCEL;
+    key_to_action[SDLK_RETURN] = CONFIRM;
+    key_to_action[SDLK_ESCAPE] = CANCEL;
     
-    key_to_action[GLFW_KEY_PERIOD] = MOVE_BLOCK_UP;
-    key_to_action[GLFW_KEY_SLASH] = MOVE_BLOCK_DOWN;
-    key_to_action[GLFW_KEY_LEFT] = MOVE_BLOCK_LEFT;
-    key_to_action[GLFW_KEY_RIGHT] = MOVE_BLOCK_RIGHT;
-    key_to_action[GLFW_KEY_UP] = MOVE_BLOCK_FORWARD;
-    key_to_action[GLFW_KEY_DOWN] = MOVE_BLOCK_BACKWARD;
-    key_to_action[GLFW_KEY_SEMICOLON] = MOVE_BLOCK_ROTATE;
+    key_to_action[SDLK_PERIOD] = MOVE_BLOCK_UP;
+    key_to_action[SDLK_SLASH] = MOVE_BLOCK_DOWN;
+    key_to_action[SDLK_LEFT] = MOVE_BLOCK_LEFT;
+    key_to_action[SDLK_RIGHT] = MOVE_BLOCK_RIGHT;
+    key_to_action[SDLK_UP] = MOVE_BLOCK_FORWARD;
+    key_to_action[SDLK_DOWN] = MOVE_BLOCK_BACKWARD;
+    key_to_action[SDLK_SEMICOLON] = MOVE_BLOCK_ROTATE;
     
-    key_to_action[GLFW_KEY_I] = OPEN_INV;
-    key_to_action[GLFW_KEY_B] = SAVE_TEMPLATE;
+    key_to_action[SDLK_i] = OPEN_INV;
+    key_to_action[SDLK_b] = SAVE_TEMPLATE;
     
-    key_to_action[GLFW_KEY_M] = DEBUG_ACTION;
+    key_to_action[SDLK_m] = DEBUG_ACTION;
     
-    key_to_action[GLFW_KEY_Y] = MOUNTING;
+    key_to_action[SDLK_y] = MOUNTING;
     
-    mouse_to_action[GLFW_MOUSE_BUTTON_LEFT] = CLICK_DESTROY;
-    mouse_to_action[GLFW_MOUSE_BUTTON_RIGHT] = CLICK_CREATE;
+    mouse_to_action[SDL_BUTTON_LEFT] = CLICK_MAIN;
+    mouse_to_action[SDL_BUTTON_RIGHT] = CLICK_SECONDARY;
     
     for (unsigned int i = 0; i < sizeof(toggleable_keys); i++) {
         key_toggled[toggleable_keys[i]] = false;
@@ -390,17 +397,17 @@ void Game::key_callback_default(int key) {
         debug_action(this);
         player->query_depth(world);
     }
-    else if (key >= GLFW_KEY_1 && key <= GLFW_KEY_9) {
-        int to_index = key - GLFW_KEY_1;
+    else if (key >= SDLK_1 && key <= SDLK_9) {
+        int to_index = key - SDLK_1;
         switch_current_item(to_index);
     }
-    else if (key == GLFW_KEY_0) {
+    else if (key == SDLK_0) {
         switch_current_item(9);
     }
 }
 
 void Game::mouse_callback_default(Action key, Entity* on) {
-    if (key == CLICK_DESTROY) {
+    if (key == CLICK_MAIN) {
         // destroy blocks, for all click destroy commands
         world->break_block();
     }
@@ -416,20 +423,20 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
     // http://www.glfw.org/docs/latest/input.html#input_keyboard
     // http://www.glfw.org/docs/latest/quick.html
     
-    if (key == GLFW_KEY_DELETE or key == GLFW_KEY_P) {
+    if (key == SDLK_DELETE or key == SDLK_p) {
         exit_game();
     }
 
     // if toggleable key
     if (key_toggled.count(key)) {
-        if (action == GLFW_PRESS) {
+        if (action == SDL_KEYDOWN) {
             key_toggled[key] = true;
         }
-        else if (action == GLFW_RELEASE) {
+        else if (action == SDL_KEYUP) {
             key_toggled[key] = false;
         }
     }
-    else if (action == GLFW_PRESS) {
+    else if (action == SDL_KEYDOWN) {
         // see if we're in any vehicle of any sort, then see if it'll accept the key i send
         SuperObject* mount = player->get_mount();
         if (mount) {
@@ -448,7 +455,7 @@ void Game::mouse_move_callback(double xdiff, double ydiff) {
 }
 
 void Game::mouse_button_callback(int button, int action, int mods) {
-    if (action == GLFW_PRESS) {
+    if (action == SDL_MOUSEBUTTONDOWN) {
         if (in_game) {
             // see if we're in any vehicle of any sort, then see if it'll accept the mouse button i send
             SuperObject* mount = player->get_mount();

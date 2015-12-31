@@ -7,7 +7,7 @@
 //
 
 #include "spriterender.h"
-#include "includeglfw.h"
+#include "importopengl.h"
 #include "player.h"
 #include "worldrender.h"
 

@@ -143,14 +143,14 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
     // move item that is here onto the item bar
     ItemBarlet* barlet = (ItemBarlet*)clicked_child;
     CursorItem* item = barlet->get_cursor_item();
-    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+    if (button == Action::CLICK_MAIN) {
         // TOFU discard this template, later add in a warning button or some shizzle
         if (fetch == InventoryButtonAction::TO_CUSTOM) {
             inventory->del_custom_at(item);
             refresh();
         }
     }
-    else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+    else if (button == Action::CLICK_SECONDARY) {
         // move item to bar
         if (item) {
             itembar->set_current(inventory->get_item_from(item->get_identifier()));

@@ -23,7 +23,6 @@
 #define __Bawk__display__
 
 #include <stdio.h>
-#include "includeglfw.h"
 #include "displayable.h"
 
 void get_window_size(int* width, int* height);
@@ -35,6 +34,8 @@ int init_display();
 void set_current_game(Displayable* display);
 void display_close();
 void close_render_loop();
+
+void render_debug();
 
 int display_run();
 

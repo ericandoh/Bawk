@@ -25,7 +25,7 @@
 #define __Bawk__texture_loader__
 
 #include <stdio.h>
-#include "includeglfw.h"
+#include "importopengl.h"
 
 GLuint load_tiles();
 void save_tile();

@@ -71,10 +71,10 @@ bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
 
 bool ModelEntity::block_mouse_callback(Game* game, Action button, Entity* ent) {
     if (multiplexer) {
-        if (button == Action::CLICK_DESTROY) {
+        if (button == Action::CLICK_MAIN) {
             return multiplexer->model_callback_clicked_main(game, ent, this);
         }
-        else if (button == Action::CLICK_CREATE) {
+        else if (button == Action::CLICK_SECONDARY) {
             return multiplexer->model_callback_clicked_secondary(game, ent, this);
         }
     }

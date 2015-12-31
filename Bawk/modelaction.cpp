@@ -60,8 +60,8 @@ void init_model_action_multiplexer() {
     action_map[Action::PITCH_UP] = &ModelActionMultiplexer::model_callback_pitch_up;
     action_map[Action::PITCH_DOWN] = &ModelActionMultiplexer::model_callback_pitch_down;
     
-    action_map[Action::CLICK_DESTROY] = &ModelActionMultiplexer::model_callback_click_main;
-    action_map[Action::CLICK_CREATE] = &ModelActionMultiplexer::model_callback_click_secondary;
+    action_map[Action::CLICK_MAIN] = &ModelActionMultiplexer::model_callback_click_main;
+    action_map[Action::CLICK_SECONDARY] = &ModelActionMultiplexer::model_callback_click_secondary;
     
     action_map[Action::MOUNTING] = &ModelActionMultiplexer::model_callback_mount;
     

@@ -24,7 +24,7 @@
 #define __Bawk__worldrender__
 
 #include <stdio.h>
-#include "includeglfw.h"
+#include "importopengl.h"
 #include "basic_types.h"
 #include "superobject.h"
 #include "block.h"

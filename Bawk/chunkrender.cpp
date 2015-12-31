@@ -8,12 +8,14 @@
 
 #include <stdio.h>
 #include <cstring>
-#include "includeglfw.h"
+#include "importopengl.h"
 #include "glm/glm.hpp"
 #include "worldrender.h"
 #include "blockrender.h"
 #include "game_info_loader.h"
 #include "block_orientation.h"
+
+#include "importsdl.h"
 
 // number of chunks to have loaded at any one time
 #define CHUNKSLOTS 1600
@@ -32,7 +34,7 @@ RenderableChunk::RenderableChunk() {
     elements = 0;
     block_counter = -1;
     slot = 0;
-    lastused = glfwGetTime();
+    lastused = get_current_time();
     changed = true;
     left = right = below = above = front = back = 0;
     has_lights = false;
@@ -45,7 +47,7 @@ RenderableChunk::RenderableChunk(block_type from[CX][CY][CZ]) {
     // wait what - TODO
     block_counter = -1;
     slot = 0;
-    lastused = glfwGetTime();
+    lastused = get_current_time();
     changed = true;
     left = right = below = above = front = back = 0;
     memcpy(&blk[0][0][0], &from[0][0][0], sizeof(block_type)*CX*CY*CZ);
@@ -92,7 +94,7 @@ void RenderableChunk::reset() {
     elements = 0;
     block_counter = -1;
     slot = 0;
-    lastused = glfwGetTime();
+    lastused = get_current_time();
     changed = true;
     left = right = below = above = front = back = 0;
     has_lights = false;
@@ -503,7 +505,7 @@ void RenderableChunk::render() {
     if(changed)
         update();
     
-    lastused = glfwGetTime();
+    lastused = get_current_time();
     
     // If this chunk is empty, we don't need to draw anything.
     if(elements) {

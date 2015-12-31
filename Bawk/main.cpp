@@ -25,7 +25,6 @@
 // this is definitely not professional at all ... dude just make a new target + make it run test directly...
 #include "testing.h"
 
-#define GLFW_INCLUDE_ES3
 #define TESTING 0
 
 int main(void)

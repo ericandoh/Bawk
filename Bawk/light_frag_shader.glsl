@@ -62,9 +62,8 @@ void main(void) {
     out_color.xyz = (color_o.xyz + color_t) / 2.0;
     if (any(equal(worldpos, vec3(0,0,0)))) {
         // do nothing
-        ;
     }
-    if (l_draw_mode == 1) {
+    else if (l_draw_mode == 1) {
         // ambient lighting, do lighting here
         float visibility = 1.0;
         // if normal is zerod - we don't do shadowing

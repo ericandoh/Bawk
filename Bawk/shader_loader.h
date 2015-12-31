@@ -26,7 +26,7 @@
 #define __Bawk__shader_loader__
 
 #include <stdio.h>
-#include "includeglfw.h"
+#include "importopengl.h"
 
 int set_shaders();
 

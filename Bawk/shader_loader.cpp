@@ -11,7 +11,7 @@
 #include <fstream>
 #include <streambuf>
 #include <iostream>
-#include "includeglfw.h"
+#include "importopengl.h"
 #include "shader_loader.h"
 #include "worldrender.h"
 

@@ -21,15 +21,32 @@
 
 #include "opengl_debug.h"
 
+// TODO multiplex this input for windows
+#include "importsdl.h"
+#include "importopengl.h"
+
+// --- Screen Dimensions ---
+// physical px width on screen
+int window_width = 720;
+int window_height = 480;
+
+// width of the framebuffers
+int screen_width = window_width;
+int screen_height = window_height;
+
+// OpenGL Context
+SDL_GLContext glContext;
+
 // --- FPS Related Globals ---
 const double FRAME_RATE=30.0;
-const double TIME_PER_FRAME = 1.0 / FRAME_RATE;
+// in milliseconds
+const double TIME_PER_FRAME = 1000.0f / FRAME_RATE;
 
 // if current time is bigger than this, run the frame()
-double need_refresh_time = 0.0;
+int need_refresh_time = 0;
 
 // --- Rendering Buffers ---
-GLFWwindow* window;
+SDL_Window* window;
 // wow talk about inefficient
 GBuffer g_buffer;
 GBuffer g_buffer_transparent;
@@ -48,34 +65,36 @@ bool should_exit = 0;
 
 // --- Display Info Accessors ---
 void get_window_size(int* width, int* height) {
-    glfwGetFramebufferSize(window, width, height);
+    //glfwGetFramebufferSize(window, width, height);
+    *width = screen_width;
+    *height = screen_height;
 }
 
 void display_enable_cursor() {
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    throw 1;
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void display_disable_cursor() {
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void display_get_cursor_position(double* x, double* y) {
-    int wwidth, wheight, fwidth, fheight;
-    glfwGetWindowSize(window, &wwidth, &wheight);
-    glfwGetFramebufferSize(window, &fwidth, &fheight);
-    glfwGetCursorPos(window, x, y);
-    *y = wheight - *y;
-    *x = (*x * fwidth) / wwidth;
-    *y = (*y * fheight) / wheight;
+    //glfwGetWindowSize(window, &wwidth, &wheight);
+    //glfwGetFramebufferSize(window, &fwidth, &fheight);
+    //glfwGetCursorPos(window, x, y);
+    *y = window_height - *y;
+    *x = (*x * screen_width) / window_width;
+    *y = (*y * screen_height) / window_height;
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void key_callback(SDL_Window* window, int key, int scancode, int action, int mods) {
     if (current_display) {
         current_display->key_callback(key, scancode, action, mods);
     }
 }
 
-void mouse_move_callback(GLFWwindow* window, double xpos, double ypos) {
+void mouse_move_callback(SDL_Window* window, double xpos, double ypos) {
     if (current_display) {
         double xdiff = xpos - xprev;
         double ydiff = ypos - yprev;
@@ -100,47 +119,60 @@ void mouse_move_callback(GLFWwindow* window, double xpos, double ypos) {
     }
 }
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+void mouse_button_callback(SDL_Window* window, int button, int action, int mods) {
     if (current_display)
         current_display->mouse_button_callback(button, action, mods);
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+void scroll_callback(SDL_Window* window, double xoffset, double yoffset) {
     if (current_display)
         current_display->scroll_callback(xoffset, yoffset);
 }
 
 // --- INIT ---
 int init_display() {
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
+    printf("Initializing display\n");
     
-    int width = 720;   //1080
-    int height = 480;   //640
-    
-    // Set OpenGL version
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(width, height, "Bawk", NULL, NULL);
-    if (!window)
-    {
-        printf("Could not create GLFW context window...\n");
-        glfwTerminate();
-        return -1;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("Unable to init video");
+        return 1;
     }
     
-    std::cout<<"OpenGL "<<glGetString(GL_VERSION)<<" (GLSL "<<glGetString(GL_SHADING_LANGUAGE_VERSION)<<')'<<std::endl;
+    window = SDL_CreateWindow("Huzzah",
+                              SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED,
+                              window_width, window_height,
+                              SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     
-    // can set vsync interval later on
-    //glfwSwapInterval(1);
+    if (!window) {
+        printf("Unable to make SDL window\n");
+        return 1;
+    }
     
-    // Make the window's context current
-    glfwMakeContextCurrent(window);
+    printf("Setting OpenGL hints\n");
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    
+    glContext = SDL_GL_CreateContext(window);
+    
+    if (glContext == NULL) {
+        printf("There was an error creating the OpenGL context!\n");
+        return 0;
+    }
+    
+    const unsigned char* version = glGetString(GL_VERSION);
+    if (version == NULL) {
+        printf("There was an error creating the OpenGL context!\n");
+        return 1;
+    }
+    
+    printf("OpenGL version: %s\n", version);
+    printf("GLSL version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    
+    SDL_GL_MakeCurrent(window, glContext);
+    
+    //render_debug();
     
     // --- SETUP BUFFERS ---
     int wwidth, wheight;
@@ -151,13 +183,13 @@ int init_display() {
     shadow_mapper.init(wwidth, wheight);
     
     /* Connect inputs to game */
-    glfwSetKeyCallback(window, key_callback);
+    //glfwSetKeyCallback(window, key_callback);
     
     display_disable_cursor();
     
-    glfwSetCursorPosCallback(window, mouse_move_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    //glfwSetCursorPosCallback(window, mouse_move_callback);
+    //glfwSetMouseButtonCallback(window, mouse_button_callback);
+    //glfwSetScrollCallback(window, scroll_callback);
     check_for_error();
     
     if (set_shaders()) {
@@ -180,7 +212,9 @@ void display_close() {
     glDeleteProgram(OGLAttr::geometry_shader.program);
     glDeleteProgram(OGLAttr::lighting_shader.program);
     glDeleteProgram(OGLAttr::shadow_shader.program);
-    glfwTerminate();
+    SDL_GL_DeleteContext(glContext);
+    SDL_Quit();
+    //glfwTerminate();
 }
 
 // --- Rendering Stages ---
@@ -196,7 +230,7 @@ void render_geometry() {
     glUniform1i(OGLAttr::geometry_shader.tile_texture, OGLAttr::active_tile_texture);
     
     int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
+    get_window_size(&width, &height);
     glEnable(GL_DEPTH_TEST);
     
     // first, write to our regular G-buffer with a low alpha-cutoff
@@ -238,7 +272,7 @@ void render_shadowmetry() {
     glDisable(GL_BLEND);
     
     int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
+    get_window_size(&width, &height);
     // enable depth obviously, since we're writing light depth...
     glEnable(GL_DEPTH_TEST);
     check_for_error();
@@ -260,7 +294,7 @@ void render_g_buffer() {
     check_for_error();
     
     int wwidth, wheight;
-    glfwGetFramebufferSize(window, &wwidth, &wheight);
+    get_window_size(&wwidth, &wheight);
     
     // set up framebuffers for reading
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -299,7 +333,7 @@ void render_g_buffer() {
 void render_shadowmap() {
     // test method to render the shadowmap contents directly to screen
     int wwidth, wheight;
-    glfwGetFramebufferSize(window, &wwidth, &wheight);
+    get_window_size(&wwidth, &wheight);
     
     float vertex[6][3] = {
         {-0.5f, -0.5f, 0},
@@ -333,7 +367,7 @@ void render_lights() {
     check_for_error();
     
     int wwidth, wheight;
-    glfwGetFramebufferSize(window, &wwidth, &wheight);
+    get_window_size(&wwidth, &wheight);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     check_for_error();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -361,15 +395,39 @@ void render_lights() {
     //render_shadowmap();
 }
 
+void render_debug() {
+    /* Clear our buffer with a red background */
+    glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    /* Swap our back buffer to the front */
+    SDL_GL_SwapWindow(window);
+    /* Wait 2 seconds */
+    SDL_Delay(200);
+    
+    /* Same as above, but green */
+    glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    SDL_GL_SwapWindow(window);
+    SDL_Delay(200);
+    
+    /* Same as above, but blue */
+    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    SDL_GL_SwapWindow(window);
+    SDL_Delay(200);
+    
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
 int display_run()
 {
     should_exit = false;
-    need_refresh_time = glfwGetTime() + TIME_PER_FRAME;
-    /* Loop until the user closes the window */
-    while (!(glfwWindowShouldClose(window) || should_exit))
-    {
+    need_refresh_time = get_current_time() + TIME_PER_FRAME;
+    // render loop
+    
+    while (!should_exit) {
         // change to while to make it catch up to events
-        if (glfwGetTime() > need_refresh_time) {
+        if (get_current_time() > need_refresh_time) {
             need_refresh_time += TIME_PER_FRAME;
             current_display->frame();
         }
@@ -382,10 +440,19 @@ int display_run()
         check_for_error();
         
         /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        //glfwSwapBuffers(window);
+        SDL_GL_SwapWindow(window);
         
+        SDL_Delay(20);
         /* Poll for and process events */
-        glfwPollEvents();
+        //glfwPollEvents();
+        SDL_Event e;
+        if (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT)
+                should_exit = true;
+            else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_x)
+                should_exit = true;
+        }
     }
     
     if (!should_exit) {

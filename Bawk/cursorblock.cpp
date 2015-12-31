@@ -45,7 +45,7 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
 
 // --- CursorItem ---
 bool CursorBlock::clicked(Game* game, Action mouse, Entity* on) {
-    if (mouse == CLICK_CREATE) {
+    if (mouse == CLICK_SECONDARY) {
         return PlaceableObject::set_blocks(game);
     }
     return true;

@@ -26,7 +26,7 @@
 #define __Bawk__game__
 
 #include <stdio.h>
-#include "includeglfw.h"
+#include "importopengl.h"
 #include <vector>
 #include <string>
 #include "world.h"

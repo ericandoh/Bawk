@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
-#include "includeglfw.h"
+#include "importopengl.h"
 #include "blockaction.h"
 #include "game.h"
 #include "entity.h"

@@ -12,7 +12,7 @@
 #define __Bawk__gbuffer__
 
 #include <stdio.h>
-#include "includeglfw.h"
+#include "importopengl.h"
 
 class GBuffer {
 public:

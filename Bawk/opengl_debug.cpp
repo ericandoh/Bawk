@@ -7,7 +7,7 @@
 //
 
 #include "opengl_debug.h"
-#include "includeglfw.h"
+#include "importopengl.h"
 
 void check_for_error() {
     int error = glGetError();
