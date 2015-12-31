@@ -12,6 +12,8 @@
 #include "superobjectrender.h"
 #include "chunkresourcemanager.h"
 
+#include "importsdl.h"
+
 RenderableSuperObject::RenderableSuperObject(): Entity() {
     // nothing special needed here
 }
@@ -90,9 +92,36 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     return 0;
 }
 
+struct LoadChunkInfo {
+    RenderableSuperObject* obj;
+    int x, y, z;
+};
+
+static int load_chunk_thread(void* ptr) {
+    LoadChunkInfo* info = (LoadChunkInfo*)ptr;
+    info->obj->load_chunk(info->x, info->y, info->z);
+    delete info;
+    return 0;
+}
+
 int RenderableSuperObject::load_chunk_async(int x, int y, int z) {
-    // TODO make this thread
-    return load_chunk(x, y, z);
+    // TODO make threads spawned here waited by an end thread manager which will fire at the end of display.cpp
+    SDL_Thread* thread;
+    LoadChunkInfo* info = new LoadChunkInfo();
+    info->obj = this;
+    info->x = x;
+    info->y = y;
+    info->z = z;
+    thread = SDL_CreateThread(load_chunk_thread, "load_chunk", (void*)info);
+    if (thread == 0) {
+        printf("Thread creation failed\n");
+        return load_chunk(x, y, z);
+    }
+    else {
+        // do nothing
+    }
+    // TODO unsafe - thread is not waited on by anyone and might become zombie rawr this is so dangerous shit
+    return 0;
 }
 
 void RenderableSuperObject::delete_chunk(int x, int y, int z) {

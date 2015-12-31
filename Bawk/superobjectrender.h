@@ -37,16 +37,18 @@ protected:
     chunk_bound_map chunk_bounds;
     // internal function to transform OAC xyz to CAC cac, CRC crc
     void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, float x, float y, float z);
-    // internal function that will make calls to load and save a chunk given CAC xyz
-    int load_chunk(int x, int y, int z);
     int load_chunk_async(int x, int y, int z);
     void delete_chunk(int x, int y, int z);
 public:
     // mapping from CAC position to chunk for all chunks currently in memory
     // the actual superobject may have more chunks, but those will be loaded from disk if necessary
     chunk_map chunks;
+    
     // makes a renderable super object that is presumed to be empty initially
     RenderableSuperObject();
+    
+    // internal function that will make calls to load and save a chunk given CAC xyz
+    int load_chunk(int x, int y, int z);
     
     // --- RenderableSuperObject ---
     // gets the block at (RWC) xyz
