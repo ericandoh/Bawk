@@ -10,12 +10,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "worldrender.h"
 #include "superobjectrender.h"
-#include "chunkresourcemanager.h"
 
 #include "importsdl.h"
 
 RenderableSuperObject::RenderableSuperObject(): Entity() {
     // nothing special needed here
+    manager = ChunkLoadManager();
 }
 
 // --- RenderableSuperObject
@@ -36,18 +36,17 @@ void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
     cac->z = (zr - crc->z) / CZ;
 }
 
-int RenderableSuperObject::load_chunk(int x, int y, int z) {
-    if (chunks.count(ivec3(x, y, z))) {
-        // chunk is already loaded
+RenderableChunk* RenderableSuperObject::obtain_chunk(int x, int y, int z) {
+    block_type raw_chunk[CX][CY][CZ];
+    if (get_chunk(raw_chunk, x, y, z)) {
+        // failed to load chunk
         return 0;
     }
+    return new RenderableChunk(raw_chunk);
+}
+
+void RenderableSuperObject::setup_chunk(RenderableChunk* chunk, int x, int y, int z) {
     
-    RenderableChunk* chunk = reserve_chunk_resource(this, ivec3(x,y,z));
-    if (!chunk) {
-        // failed to load chunk
-        return 1;
-    }
-    chunks[ivec3(x, y, z)] = chunk;
     // we load data from disk so this should be consistent, but just to be safe do a check
     update_dimensions_from_chunk(ivec3(x, y, z));
     
@@ -57,7 +56,7 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     ivec3 above(x, y + 1, z);
     ivec3 front(x, y, z - 1);
     ivec3 back(x, y, z + 1);
-
+    
     if (chunks.count(left)) {
         chunk->left = chunks[left];
         chunks[left]->right = chunk;
@@ -88,51 +87,34 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
         chunks[back]->front = chunk;
         chunk->back->changed = true;
     }
+
+}
+
+int RenderableSuperObject::load_chunk(int x, int y, int z) {
+    if (chunks.count(ivec3(x, y, z))) {
+        // chunk is already loaded
+        return 0;
+    }
     
-    return 0;
-}
-
-struct LoadChunkInfo {
-    RenderableSuperObject* obj;
-    int x, y, z;
-};
-
-static int load_chunk_thread(void* ptr) {
-    LoadChunkInfo* info = (LoadChunkInfo*)ptr;
-    info->obj->load_chunk(info->x, info->y, info->z);
-    delete info;
-    return 0;
-}
-
-int RenderableSuperObject::load_chunk_async(int x, int y, int z) {
-    // TODO make threads spawned here waited by an end thread manager which will fire at the end of display.cpp
-    SDL_Thread* thread;
-    LoadChunkInfo* info = new LoadChunkInfo();
-    info->obj = this;
-    info->x = x;
-    info->y = y;
-    info->z = z;
-    thread = SDL_CreateThread(load_chunk_thread, "load_chunk", (void*)info);
-    if (thread == 0) {
-        printf("Thread creation failed\n");
-        return load_chunk(x, y, z);
+    RenderableChunk* chunk = obtain_chunk(x, y, z);
+    if (chunk) {
+        chunks[ivec3(x, y, z)] = chunk;
+        setup_chunk(chunk, x, y, z);
     }
-    else {
-        // do nothing
-    }
-    // TODO unsafe - thread is not waited on by anyone and might become zombie rawr this is so dangerous shit
-    return 0;
+    return 1;
 }
 
 void RenderableSuperObject::delete_chunk(int x, int y, int z) {
-    ivec3 pos(x, y, z);
-    if (!chunks.count(pos)) {
+    ivec3 chunk_pos(x,y,z);
+    if (!chunks.count(chunk_pos)) {
         // this chunk is already gone mate
         return;
     }
-    save_chunk_resource(chunks[pos]);
-    free_chunk_resource(chunks[pos]);
-    chunks.erase(pos);
+    RenderableChunk* chunk = chunks[chunk_pos];
+    save_chunk(chunk->blk, x, y, z);
+    chunk->cleanup();
+    delete chunk;
+    chunks.erase(chunk_pos);
 }
 
 block_type* RenderableSuperObject::get_block(float x, float y, float z) {
@@ -149,12 +131,13 @@ block_type* RenderableSuperObject::get_block(float x, float y, float z) {
         return 0;
     }
     
+    block_type* result = 0;
     // try loading the chunk (if it doesn't exist) then get block
     if (!load_chunk(cac.x, cac.y, cac.z)) {
-        return chunks[cac]->get(crc.x, crc.y, crc.z);
+        result = chunks[cac]->get(crc.x, crc.y, crc.z);
     }
     // loading the chunk failed...return air
-    return 0;
+    return result;
 }
 
 block_type* RenderableSuperObject::get_block_integral(int x, int y, int z) {
@@ -194,11 +177,10 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         // make a new chunk here
         // this should only be called while creating vehicles from blocks while
         // finishing up a template
-        RenderableChunk* chunk = reserve_empty_chunk_resource(this, cac);
-        if (!chunk) {
-            // failed to reserve resources for empty chunk...
-            return;
-        }
+        
+        block_type raw_chunk[CX][CY][CZ];
+        get_empty_chunk(raw_chunk);
+        RenderableChunk* chunk = new RenderableChunk(raw_chunk);
         chunks[cac] = chunk;
         
         block_type* current = chunks[cac]->get(crc.x, crc.y, crc.z);
@@ -359,6 +341,10 @@ bool RenderableSuperObject::break_block(float x, float y, float z) {
     return true;
 }
 
+void RenderableSuperObject::step(Game* game) {
+    manager.flush_chunks();
+}
+
 void RenderableSuperObject::render(fmat4* transform) {
     for (auto iterator = chunks.begin(); iterator != chunks.end(); iterator++) {
         ivec3 sub_pos = iterator->first;
@@ -414,44 +400,7 @@ void RenderableSuperObject::render_lights(fmat4* transform, fvec3 player_pos) {
 }
 
 void RenderableSuperObject::update_chunks(fvec3* player_pos) {
-    // get player position in this object's axis
-    fvec3 oac;
-    transform_into_my_coordinates(&oac, player_pos->x, player_pos->y, player_pos->z);
-    // now transform into cac, crc. we will only need the CAC coordinates
-    ivec3 cac, crc;
-    transform_into_chunk_bounds(&cac, &crc, oac.x, oac.y, oac.z);
-    
-    int xmin, xmax, ymin, ymax, zmin, zmax;
-    xmin = cac.x - CHUNK_RENDER_DIST;
-    xmax = cac.x + CHUNK_RENDER_DIST + 1;
-    ymin = cac.y - CHUNK_RENDER_DIST;
-    ymax = cac.y + CHUNK_RENDER_DIST + 1;
-    zmin = cac.z - CHUNK_RENDER_DIST;
-    zmax = cac.z + CHUNK_RENDER_DIST + 1;
-    
-    // make bounding box here and check
-    
-    std::vector<ivec3> chunks_to_delete;
-    for (auto &i: chunks) {
-        if (i.first.x < xmin || i.first.x >= xmax
-            || i.first.y < ymin || i.first.y >= ymax
-            || i.first.z < zmin || i.first.z >= zmax) {
-            chunks_to_delete.push_back(i.first);
-        }
-    }
-    for (auto &i: chunks_to_delete) {
-        delete_chunk(i.x, i.y, i.z);
-    }
-    for (int x = xmin; x < xmax; x++) {
-        for (int y = ymin; y < ymax; y++) {
-            for (int z = zmin; z < zmax; z++) {
-                if (!within_dimensions_chunk(x, y, z)) {
-                    continue;
-                }
-                load_chunk_async(x, y, z);
-            }
-        }
-    }
+    manager.start_update(this, *player_pos);
 }
 
 int RenderableSuperObject::get_collision_level() {

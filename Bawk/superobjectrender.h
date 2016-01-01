@@ -24,6 +24,8 @@
 #include "entity.h"
 #include "block.h"
 
+#include "chunkloadmanager.h"
+
 struct chunk_bounds {
     ivec3 lower_bound, upper_bound;
 };
@@ -35,10 +37,11 @@ class RenderableSuperObject: public Entity {
 protected:
     // mapping from CAC position to the actual physical bound of that chunk, for ALL chunks
     chunk_bound_map chunk_bounds;
-    // internal function to transform OAC xyz to CAC cac, CRC crc
-    void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, float x, float y, float z);
-    int load_chunk_async(int x, int y, int z);
-    void delete_chunk(int x, int y, int z);
+    
+    ChunkLoadManager manager;
+    
+    // internal function that will make calls to load and save a chunk given CAC xyz
+    int load_chunk(int x, int y, int z);
 public:
     // mapping from CAC position to chunk for all chunks currently in memory
     // the actual superobject may have more chunks, but those will be loaded from disk if necessary
@@ -47,10 +50,14 @@ public:
     // makes a renderable super object that is presumed to be empty initially
     RenderableSuperObject();
     
-    // internal function that will make calls to load and save a chunk given CAC xyz
-    int load_chunk(int x, int y, int z);
-    
     // --- RenderableSuperObject ---
+    // public for access to chunkloadmanager
+    RenderableChunk* obtain_chunk(int x, int y, int z);
+    void setup_chunk(RenderableChunk* chunk, int x, int y, int z);
+    // internal function to transform OAC xyz to CAC cac, CRC crc
+    void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, float x, float y, float z);
+    void delete_chunk(int x, int y, int z);
+    
     // gets the block at (RWC) xyz
     block_type* get_block(float x, float y, float z);
     block_type* get_block_integral(int x, int y, int z);
@@ -79,9 +86,11 @@ public:
     // --- Entity ---
     virtual Entity* poke(float x, float y, float z) override;
     virtual bool break_block(float x, float y, float z) override;
+    virtual void step(Game* game) override;
     virtual void render(fmat4* transform) override;
     virtual void render_lights(fmat4* transform, fvec3 player_pos) override;
     virtual void update_chunks(fvec3* player_pos) override;
+    void update_chunks_async(fvec3* player_pos);
     
     virtual int get_collision_level() override;
     virtual bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) override;

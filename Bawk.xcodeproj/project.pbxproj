@@ -15,11 +15,11 @@
 		0710265F1C275EBD00BBC711 /* shadows_frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */; };
 		071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026611C27618200BBC711 /* shadow_mapper.cpp */; };
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
-		0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */; };
 		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
 		07141EC61C31ED03009CD608 /* texture_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07141EC41C31ED03009CD608 /* texture_allocator.cpp */; };
 		07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */; };
 		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
+		0716ADC21C37192900344A8C /* chunkloadmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0716ADC01C37192900344A8C /* chunkloadmanager.cpp */; };
 		0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718EAC41C2A81EC0084826F /* opengl_debug.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
@@ -34,6 +34,7 @@
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
 		071F632B1C2C5E7100609129 /* directionallightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071F63291C2C5E7100609129 /* directionallightrender.cpp */; };
 		071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071FA6B91C10D19700884B70 /* lightrender.cpp */; };
+		0720107F1C365988003FE723 /* readwritelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0720107D1C365988003FE723 /* readwritelock.cpp */; };
 		072243361C177F0900B60091 /* blockinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072243341C177F0900B60091 /* blockinfo.cpp */; };
 		072243391C17C98E00B60091 /* spriterender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072243371C17C98E00B60091 /* spriterender.cpp */; };
 		072A0A231C0B8ED4009304E5 /* modelentityrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */; };
@@ -132,14 +133,14 @@
 		071026621C27618200BBC711 /* shadow_mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shadow_mapper.h; sourceTree = "<group>"; };
 		0712E1251C06EB8E008AF269 /* block_orientation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_orientation.cpp; sourceTree = "<group>"; };
 		0712E1261C06EB8E008AF269 /* block_orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_orientation.h; sourceTree = "<group>"; };
-		0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkresourcemanager.cpp; sourceTree = "<group>"; };
-		0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkresourcemanager.h; sourceTree = "<group>"; };
 		0713FF521C0FD88B0069FDAF /* entity_type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity_type.cpp; sourceTree = "<group>"; };
 		07141EC41C31ED03009CD608 /* texture_allocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture_allocator.cpp; sourceTree = "<group>"; };
 		07141EC51C31ED03009CD608 /* texture_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture_allocator.h; sourceTree = "<group>"; };
 		07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shadows_vertex_shader.glsl; sourceTree = "<group>"; };
 		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
 		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
+		0716ADC01C37192900344A8C /* chunkloadmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkloadmanager.cpp; sourceTree = "<group>"; };
+		0716ADC11C37192900344A8C /* chunkloadmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkloadmanager.h; sourceTree = "<group>"; };
 		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
 		0718EAC41C2A81EC0084826F /* opengl_debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl_debug.cpp; sourceTree = "<group>"; };
 		0718EAC51C2A81EC0084826F /* opengl_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl_debug.h; sourceTree = "<group>"; };
@@ -168,6 +169,8 @@
 		071F632A1C2C5E7100609129 /* directionallightrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = directionallightrender.h; sourceTree = "<group>"; };
 		071FA6B91C10D19700884B70 /* lightrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightrender.cpp; sourceTree = "<group>"; };
 		071FA6BA1C10D19700884B70 /* lightrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightrender.h; sourceTree = "<group>"; };
+		0720107D1C365988003FE723 /* readwritelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = readwritelock.cpp; sourceTree = "<group>"; };
+		0720107E1C365988003FE723 /* readwritelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = readwritelock.h; sourceTree = "<group>"; };
 		072243341C177F0900B60091 /* blockinfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blockinfo.cpp; sourceTree = "<group>"; };
 		072243351C177F0900B60091 /* blockinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blockinfo.h; sourceTree = "<group>"; };
 		072243371C17C98E00B60091 /* spriterender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spriterender.cpp; sourceTree = "<group>"; };
@@ -482,8 +485,6 @@
 				077098951BDBFE5E002F295D /* bresenham3d.h */,
 				077098961BDC0640002F295D /* blocktracer.cpp */,
 				077098971BDC0640002F295D /* blocktracer.h */,
-				0712E12E1C0795E6008AF269 /* chunkresourcemanager.cpp */,
-				0712E12F1C0795E6008AF269 /* chunkresourcemanager.h */,
 				072A0A241C0B90C9009304E5 /* modelrender.cpp */,
 				072A0A251C0B90C9009304E5 /* modelrender.h */,
 				071FA6B91C10D19700884B70 /* lightrender.cpp */,
@@ -492,6 +493,10 @@
 				07F858471C2397AB005ACAA9 /* worldweather.h */,
 				071F63291C2C5E7100609129 /* directionallightrender.cpp */,
 				071F632A1C2C5E7100609129 /* directionallightrender.h */,
+				0720107D1C365988003FE723 /* readwritelock.cpp */,
+				0720107E1C365988003FE723 /* readwritelock.h */,
+				0716ADC01C37192900344A8C /* chunkloadmanager.cpp */,
+				0716ADC11C37192900344A8C /* chunkloadmanager.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -686,6 +691,7 @@
 				071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */,
+				0716ADC21C37192900344A8C /* chunkloadmanager.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,
@@ -699,7 +705,7 @@
 				075EA6D61BBDBE26001CC402 /* superobject.cpp in Sources */,
 				073A507E1BD4893F002AA73F /* parent_widget.cpp in Sources */,
 				075C673B1BBA350200CB87DE /* game.cpp in Sources */,
-				0712E1301C0795E6008AF269 /* chunkresourcemanager.cpp in Sources */,
+				0720107F1C365988003FE723 /* readwritelock.cpp in Sources */,
 				0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */,
 				07A4A5841C35B0C60060F28C /* importsdl.cpp in Sources */,
 				071F632B1C2C5E7100609129 /* directionallightrender.cpp in Sources */,

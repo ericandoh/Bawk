@@ -52,7 +52,8 @@ bool BaseWorld::intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos) {
     if (load_chunk(chunkpos.x, chunkpos.y, chunkpos.z) ) {
         return false;
     }
-    return chunks[chunkpos]->intersects_my_bounds(lower, upper);
+    bool result = chunks[chunkpos]->intersects_my_bounds(lower, upper);
+    return result;
 }
 
 // --- Entity ---
