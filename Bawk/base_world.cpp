@@ -268,34 +268,33 @@ void BaseWorld::step(Game* game) {
             // now try moving the entity slowly in the direction until final destination
             fvec3 start_pos = moved_entity->pos;
             fvec3 current_pos = start_pos;
-            fvec3 normalized_velocity = glm::normalize(moved_entity->velocity);
-            fvec3 step_velocity = normalized_velocity * 0.1f;
+            fvec3 entity_velocity = moved_entity->velocity;
+            // step in increments of 1 first
+            fvec3 step_velocity = glm::normalize(moved_entity->velocity);
             int steps = 0;
             if (step_velocity.x == 0) {
                 if (step_velocity.y == 0) {
-                    steps = (int)(moved_entity->velocity.z / step_velocity.z);
+                    steps = (int)(entity_velocity.z / step_velocity.z);
                 }
                 else {
-                    steps = (int)(moved_entity->velocity.y / step_velocity.y);
+                    steps = (int)(entity_velocity.y / step_velocity.y);
                 }
             } else {
-                steps = (int)(moved_entity->velocity.x / step_velocity.x);
+                steps = (int)(entity_velocity.x / step_velocity.x);
             }
-            if (checking_against.size() == 2) {
-                printf("frog %d %d\n", steps, rand());
-                if (steps < 0) {
-                    printf("what\n");
-                }
-            }
-            if (steps <= 0) {
-                steps = 1;
-            }
+            // the last step will be against the end position
+            steps += 1;
             int counter = 0;
             fvec3 prev_pos;
             bool collided = false;
             while (counter < steps && (!collided)) {
                 prev_pos = current_pos;
-                current_pos = current_pos + step_velocity;
+                if (counter == steps - 1) {
+                    current_pos = start_pos + entity_velocity;
+                }
+                else {
+                    current_pos = current_pos + step_velocity;
+                }
                 moved_entity->set_pos(current_pos);
                 for (auto &j: checking_against) {
                     if (j->collides_with(moved_entity)) {
@@ -308,9 +307,26 @@ void BaseWorld::step(Game* game) {
                 counter++;
             }
             if (!collided) {
-                moved_entity->set_pos(start_pos + moved_entity->velocity);
+                moved_entity->set_pos(start_pos + entity_velocity);
             }
             else {
+                // precision step
+                int precision_steps = 8;
+                float precision_increment = 1.0f / precision_steps;
+                step_velocity = step_velocity * precision_increment;
+                current_pos = start_pos;
+                for (int i = 0; i < precision_steps; i++) {
+                    prev_pos = current_pos;
+                    current_pos = current_pos + step_velocity;
+                    for (auto &j: checking_against) {
+                        if (j->collides_with(moved_entity)) {
+                            collided = true;
+                            break;
+                        }
+                    }
+                    if (collided)
+                        break;
+                }
                 moved_entity->set_pos(prev_pos);
                 // TODO this is unsafe if our target object is the receiver on later collision detections..
                 // and is removed
