@@ -22,6 +22,11 @@ ChunkLoadManager::ChunkLoadManager() {
 int load_chunks_async(void* ptr) {
     ChunkLoadManager* manager = (ChunkLoadManager*) ptr;
     
+    for (auto &i: manager->save_and_free) {
+        manager->obj->save_chunk(i.chunk->blk, i.pos.x, i.pos.y, i.pos.z);
+        delete i.chunk;
+    }
+    
     for (int x = manager->xmin; x < manager->xmax; x++) {
         for (int y = manager->ymin; y < manager->ymax; y++) {
             for (int z = manager->zmin; z < manager->zmax; z++) {
@@ -64,6 +69,10 @@ void ChunkLoadManager::start_update(RenderableSuperObject* obj, fvec3 player_pos
         am_updating = true;
         needs_update = false;
         am_finished = false;
+        
+        loaded.clear();
+        save_and_free.clear();
+        
         // delete all chunks
         fvec3 oac;
         obj->transform_into_my_coordinates(&oac, player_pos.x, player_pos.y, player_pos.z);
@@ -91,6 +100,12 @@ void ChunkLoadManager::start_update(RenderableSuperObject* obj, fvec3 player_pos
             }
         }
         for (auto &i: chunks_to_delete) {
+            if (obj->chunks.count(i)) {
+                LoadedChunkInfo info = LoadedChunkInfo();
+                info.pos = i;
+                info.chunk = obj->chunks[i];
+                save_and_free.push_back(info);
+            }
             obj->delete_chunk(i.x, i.y, i.z);
         }
         // multithread this part

@@ -32,6 +32,7 @@ public:
     RenderableSuperObject* obj;
     int xmin, xmax, ymin, ymax, zmin, zmax;
     std::vector<LoadedChunkInfo> loaded;
+    std::vector<LoadedChunkInfo> save_and_free;
     SDL_mutex* am_finished_mutex;
     SDL_mutex* import_loaded_mutex;
     bool am_finished;   // modifiable on both main + side thread, needs lock protection

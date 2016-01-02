@@ -111,9 +111,7 @@ void RenderableSuperObject::delete_chunk(int x, int y, int z) {
         return;
     }
     RenderableChunk* chunk = chunks[chunk_pos];
-    save_chunk(chunk->blk, x, y, z);
     chunk->cleanup();
-    delete chunk;
     chunks.erase(chunk_pos);
 }
 
