@@ -263,6 +263,9 @@ void Game::frame() {
     player->query_depth(world);
     
     world->step(this);
+    if (bar->get_current()) {
+        bar->get_current()->step();
+    }
 }
 
 float get_dst(fvec3* a, fvec3* b) {

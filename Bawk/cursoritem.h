@@ -57,6 +57,9 @@ public:
     virtual bool handle_movement(ivec3 dir);
     virtual bool handle_rotation();
     
+    // behaviour to update at each step
+    virtual void step() {};
+    
     // render the item with transform in a small box or whatnot
     virtual void render_item() = 0;
     // render the item in the world

@@ -14,6 +14,7 @@
 
 CursorModelObject::CursorModelObject(uint16_t mid): ModelEntity(mid) {
     locked = false;
+    show_item = false;
     entity_class = EntityType::CURSORMODELENTITY;
 }
 
@@ -43,16 +44,8 @@ void CursorModelObject::reset() {
 
 bool CursorModelObject::clicked(Game* game, Action mouse, Entity* on) {
     if (!locked) {
-        // try locking this object into position
-        ivec3 locked_pos;
-        BlockOrientation orientation;
-        ivec3 upper;
-        upper.x = bounds.upper.x - bounds.lower.x;
-        upper.y = bounds.upper.y - bounds.lower.y;
-        upper.z = bounds.upper.z - bounds.lower.z;
-        if (get_pointing_position(&locked_pos, &orientation, upper)) {
+        if (show_item) {
             locked = true;
-            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
         }
         return true;
     }
@@ -95,6 +88,25 @@ bool CursorModelObject::handle_rotation() {
     return true;
 }
 
+void CursorModelObject::step() {
+    if (!locked) {
+        // if locked, no need to track movement
+        ivec3 locked_pos;
+        BlockOrientation orientation;
+        ivec3 upper;
+        upper.x = bounds.upper.x - bounds.lower.x;
+        upper.y = bounds.upper.y - bounds.lower.y;
+        upper.z = bounds.upper.z - bounds.lower.z;
+        if (get_pointing_position(&locked_pos, &orientation, upper)) {
+            show_item = true;
+            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
+        }
+        else {
+            show_item = false;
+        }
+    }
+}
+
 void CursorModelObject::render_item() {
     if (!mvp_set) {
         ivec3 upper;
@@ -114,17 +126,7 @@ void CursorModelObject::render_item() {
 
 void CursorModelObject::render_in_world(fmat4* transform) {
     if (!locked) {
-        BlockOrientation orientation;
-        ivec3 upper;
-        ivec3 locked_pos;
-        upper.x = bounds.upper.x - bounds.lower.x;
-        upper.y = bounds.upper.y - bounds.lower.y;
-        upper.z = bounds.upper.z - bounds.lower.z;
-        if (get_pointing_position(&locked_pos, &orientation, upper)) {
-            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
-        }
-        else {
-            // out of bounds, do not render top kek
+        if (!show_item) {
             return;
         }
     }

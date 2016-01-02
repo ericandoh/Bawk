@@ -16,6 +16,7 @@ CursorSuperObject::CursorSuperObject(uint32_t s): PlaceableSuperObject(s) {
     locked = false;
     entity_class = EntityType::CURSORSUPEROBJECT;
     is_recipe = true;
+    show_item = false;
 }
 
 // heavily modify this so that
@@ -29,6 +30,7 @@ CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): PlaceableSuperObje
     locked = false;
     entity_class = EntityType::CURSORSUPEROBJECT;
     is_recipe = false;
+    show_item = false;
 }
 
 // --- CursorItem ---
@@ -51,16 +53,8 @@ void CursorSuperObject::reset() {
 
 bool CursorSuperObject::clicked(Game* game, Action mouse, Entity* on) {
     if (!locked) {
-        // try locking this object into position
-        ivec3 locked_pos;
-        BlockOrientation orientation;
-        ivec3 upper;
-        upper.x = bounds.upper.x - bounds.lower.x;
-        upper.y = bounds.upper.y - bounds.lower.y;
-        upper.z = bounds.upper.z - bounds.lower.z;
-        if (get_pointing_position(&locked_pos, &orientation, upper)) {
+        if (show_item) {
             locked = true;
-            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
         }
         return true;
     }
@@ -96,6 +90,25 @@ bool CursorSuperObject::handle_movement(ivec3 dir) {
     return true;
 }
 
+void CursorSuperObject::step() {
+    // try locking this object into position
+    if (!locked ) {
+        ivec3 locked_pos;
+        BlockOrientation orientation;
+        ivec3 upper;
+        upper.x = bounds.upper.x - bounds.lower.x;
+        upper.y = bounds.upper.y - bounds.lower.y;
+        upper.z = bounds.upper.z - bounds.lower.z;
+        if (get_pointing_position(&locked_pos, &orientation, upper)) {
+            show_item = true;
+            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
+        }
+        else {
+            show_item = false;
+        }
+    }
+}
+
 bool CursorSuperObject::handle_rotation() {
     rotate_template();
     return true;
@@ -119,17 +132,7 @@ void CursorSuperObject::render_item() {
 
 void CursorSuperObject::render_in_world(fmat4* transform) {
     if (!locked) {
-        BlockOrientation orientation;
-        ivec3 upper;
-        ivec3 locked_pos;
-        upper.x = bounds.upper.x - bounds.lower.x;
-        upper.y = bounds.upper.y - bounds.lower.y;
-        upper.z = bounds.upper.z - bounds.lower.z;
-        if (get_pointing_position(&locked_pos, &orientation, upper)) {
-            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
-        }
-        else {
-            // out of bounds, do not render top kek
+        if (!show_item) {
             return;
         }
     }
@@ -137,7 +140,7 @@ void CursorSuperObject::render_in_world(fmat4* transform) {
 }
 
 void CursorSuperObject::render_light_in_world(fmat4* transform, fvec3 player_pos) {
-    if (locked) {
+    if (locked || show_item) {
         render_lights(transform, player_pos);
     }
 }

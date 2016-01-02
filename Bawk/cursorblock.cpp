@@ -17,27 +17,22 @@
 CursorBlock::CursorBlock(block_type type) {
     block = type;
     pos = fvec3(0,0,0);
+    show_item = false;
 }
 
 // --- PlaceableObject
 bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) {
-    ivec3 locked_pos;
-    BlockOrientation orientation;
-    ivec3 upper(1, 1, 1);
-    if (get_pointing_position(&locked_pos, &orientation, upper)) {
-        block_type* blk = object->get_block_integral(locked_pos.x, locked_pos.y, locked_pos.z);
+    if (show_item) {
+        block_type* blk = object->get_block_integral(pos.x, pos.y, pos.z);
         if (blk && blk->type) {
             // there's already a block here!
             return false;
         }
-        if (orientation == BlockOrientation::TOP || orientation == BlockOrientation::BOTTOM) {
+        if (block.orientation == BlockOrientation::TOP || block.orientation == BlockOrientation::BOTTOM) {
             BlockOrientation player_direction = get_player_direction();
             block.orientation = player_direction;
         }
-        else {
-            block.orientation = orientation;
-        }
-        object->set_block_integral(locked_pos.x, locked_pos.y, locked_pos.z, block);
+        object->set_block_integral(pos.x, pos.y, pos.z, block);
         return true;
     }
     return false;
@@ -55,6 +50,21 @@ bool CursorBlock::confirmed(Game* game) {
     return false;
 }
 
+void CursorBlock::step() {
+    // track item
+    ivec3 locked_pos;
+    BlockOrientation orientation;
+    ivec3 upper(1, 1, 1);
+    if (get_pointing_position(&locked_pos, &orientation, upper)) {
+        show_item = true;
+        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+        block.orientation = get_player_direction();
+    }
+    else {
+        show_item = false;
+    }
+}
+
 void CursorBlock::render_item() {
     if (!mvp_set) {
         ivec3 upper(1, 1, 1);
@@ -69,17 +79,9 @@ void CursorBlock::render_item() {
 }
 
 void CursorBlock::render_in_world(fmat4* transform) {
-    ivec3 locked_pos;
-    BlockOrientation orientation;
-    ivec3 upper(1, 1, 1);
-    if (get_pointing_position(&locked_pos, &orientation, upper)) {
-        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
-        block.orientation = get_player_direction();
+    if (show_item) {
+        render_block(transform);
     }
-    else {
-        return;
-    }
-    render_block(transform);
 }
 
 cursor_item_identifier CursorBlock::get_identifier() {
@@ -170,15 +172,8 @@ void CursorBlock::render_block(fmat4* transform) {
 void CursorBlock::render_light_in_world(fmat4* transform, fvec3 player_pos) {
     // if block has light, render it
     // TODO
-    ivec3 locked_pos;
-    BlockOrientation orientation;
-    ivec3 upper(1, 1, 1);
-    if (get_pointing_position(&locked_pos, &orientation, upper)) {
-        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
+    if (show_item) {
         RenderableLight* light = get_block_light(block.type);
         light->render_light(transform, pos, player_pos);
-    }
-    else {
-        return;
     }
 }
