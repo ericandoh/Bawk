@@ -164,6 +164,45 @@ struct bounding_box {
     }
 };
 
+struct int_bounding_box {
+    ivec3 lower, upper;
+    int_bounding_box() {
+        lower = ivec3(INT32_MAX, INT32_MAX, INT32_MAX);
+        upper = ivec3(INT32_MIN, INT32_MIN, INT32_MIN);
+    }
+    int_bounding_box(ivec3 l, ivec3 u) {
+        lower = l;
+        upper = u;
+    }
+    void refit() {
+        int lowerx = std::min(lower.x, upper.x);
+        int lowery = std::min(lower.y, upper.y);
+        int lowerz = std::min(lower.z, upper.z);
+        int upperx = std::max(lower.x, upper.x);
+        int uppery = std::max(lower.y, upper.y);
+        int upperz = std::max(lower.z, upper.z);
+        lower.x = lowerx;
+        lower.y = lowery;
+        lower.z = lowerz;
+        upper.x = upperx;
+        upper.y = uppery;
+        upper.z = upperz;
+    }
+    fvec3 get_center_pos() {
+        fvec3 center_pos;
+        center_pos.x = (lower.x + upper.x) / 2.0f;
+        center_pos.y = (lower.y + upper.y) / 2.0f;
+        center_pos.z = (lower.z + upper.z) / 2.0f;
+        return center_pos;
+    }
+    ivec3 get_dimensions() {
+        ivec3 result(upper.x - lower.x,
+                     upper.y - lower.y,
+                     upper.z - lower.z);
+        return result;
+    }
+};
+
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);
 
 ivec3 get_floor_from_fvec3(fvec3 src);

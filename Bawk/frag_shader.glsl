@@ -51,7 +51,12 @@ void main(void) {
             discard;
         color_out = color.xyz;
     }
+    else if (g_drawmode == 2) {
+        color_out = g_texcoord.xyz * g_intensity;
+    }
     else {
+        if (g_alphacutoff > 0.5)
+            discard;
         color_out = g_texcoord.xyz * g_intensity;
     }
 }

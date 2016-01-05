@@ -21,6 +21,7 @@
 
 // deleteme
 #include "cursormodelobject.h"
+#include "cursorscantool.h"
 
 #include "importsdl.h"
 
@@ -133,6 +134,9 @@ int Game::init() {
     bar->set_current(new CursorModelObject(2));
     bar->set_index(2);
     bar->set_current(new CursorModelObject(3));
+    
+    bar->set_index(3);
+    bar->set_current(new CursorScanTool());
     
     return 0;
 }

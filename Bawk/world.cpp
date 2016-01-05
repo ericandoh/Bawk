@@ -106,8 +106,9 @@ bool World::break_block() {
         return false;
     }
     
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
+    ivec3 looking_at;
+    BlockOrientation orient;
+    if (!get_look_at(&looking_at, &orient)) {
         return false;
     }
     

@@ -28,10 +28,6 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
             // there's already a block here!
             return false;
         }
-        if (block.orientation == BlockOrientation::TOP || block.orientation == BlockOrientation::BOTTOM) {
-            BlockOrientation player_direction = get_player_direction();
-            block.orientation = player_direction;
-        }
         object->set_block_integral(pos.x, pos.y, pos.z, block);
         return true;
     }
@@ -58,7 +54,11 @@ void CursorBlock::step() {
     if (get_pointing_position(&locked_pos, &orientation, upper)) {
         show_item = true;
         pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
-        block.orientation = get_player_direction();
+        block.orientation = orientation;
+        if (block.orientation == BlockOrientation::TOP || block.orientation == BlockOrientation::BOTTOM) {
+            BlockOrientation player_direction = get_player_direction();
+            block.orientation = player_direction;
+        }
     }
     else {
         show_item = false;

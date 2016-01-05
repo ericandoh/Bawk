@@ -50,6 +50,7 @@ public:
     
     // behaviour when this cursor item is clicked
     virtual bool clicked(Game* game, Action mouse, Entity* on);
+    virtual bool pushed(Game* game, Action key) { return false; };
     
     // behaviour when this cursor item is entered
     virtual bool confirmed(Game* game);

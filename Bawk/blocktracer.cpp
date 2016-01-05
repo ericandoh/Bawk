@@ -67,12 +67,12 @@ void set_look_at(fvec3 pos, fvec3 dir, World* world) {
     player_face = get_nearest_compass_direction(dir);
 }
 
-bool get_look_at(ivec4* src) {
+bool get_look_at(ivec3* src, BlockOrientation* orient) {
     if (in_range) { // & world_selected
         src->x = floorf(mx);
         src->y = floorf(my);
         src->z = floorf(mz);
-        src->w = face;
+        *orient = face;
         return true;
     }
     return false;
@@ -90,14 +90,14 @@ bool get_look_at_vehicle(fvec4* src) {
 }
 
 bool get_pointing_position(ivec3* dst, BlockOrientation* orient, ivec3 bounds) {
-    ivec4 looking_at;
-    if (!get_look_at(&looking_at)) {
+    ivec3 looking_at;
+    BlockOrientation face;
+    if (!get_look_at(&looking_at, &face)) {
         return false;
     }
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
-    BlockOrientation face = static_cast<BlockOrientation>(looking_at.w);
     if(face == BlockOrientation::FRONT)
         mx++;
     if(face == BlockOrientation::BACK)

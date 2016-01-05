@@ -42,7 +42,7 @@ public:
 };
 
 enum BlockDrawMode {
-    UV = 0, VOXEL = 1, COLOR = 2
+    UV = 0, VOXEL = 1, COLOR = 2, COLOR_TRANSPARENT = 3
 };
 
 // NONE = render scene without any lighting correction
