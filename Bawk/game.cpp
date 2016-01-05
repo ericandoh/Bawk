@@ -452,6 +452,12 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
                 return;
             }
         }
+        if (bar->get_current()) {
+            Action do_this = key_to_action[key];
+            if (bar->get_current()->pushed(this, do_this)) {
+                return;
+            }
+        }
         key_callback_default(key);
     }
 }

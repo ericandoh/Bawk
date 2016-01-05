@@ -201,6 +201,14 @@ struct int_bounding_box {
                      upper.z - lower.z);
         return result;
     }
+    void expand(ivec3 a) {
+        lower.x = std::min(lower.x, a.x);
+        lower.y = std::min(lower.y, a.y);
+        lower.z = std::min(lower.z, a.z);
+        upper.x = std::max(upper.x, a.x);
+        upper.y = std::max(upper.y, a.y);
+        upper.z = std::max(upper.z, a.z);
+    }
 };
 
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);

@@ -14,7 +14,7 @@
 #include "block_orientation.h"
 
 enum ScanStages {
-    SETTING_LOWER, SETTING_UPPER, EXTENDING, SELECTED
+    SETTING_LOWER, SETTING_UPPER, EXTENDING, EXTENDED, SELECTED
 };
 
 class CursorScanTool: public CursorItem {

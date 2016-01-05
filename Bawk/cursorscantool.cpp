@@ -78,6 +78,9 @@ bool CursorScanTool::clicked(Game* game, Action mouse, Entity* on) {
     }
     else if (current_stage == ScanStages::EXTENDING) {
         // do nothing?
+        if (show_item) {
+            current_stage = ScanStages::EXTENDED;
+        }
     }
     else if (current_stage == ScanStages::SELECTED) {
         if (mouse == Action::CLICK_MAIN) {
@@ -89,7 +92,7 @@ bool CursorScanTool::clicked(Game* game, Action mouse, Entity* on) {
 }
 
 bool CursorScanTool::pushed(Game* game, Action key) {
-    if (key == Action::ROLL_LEFT) {
+    if (key == Action::MOUNTING) {
         if (current_stage == ScanStages::SELECTED) {
             current_stage = ScanStages::EXTENDING;
             extending_box = box;
@@ -104,7 +107,7 @@ bool CursorScanTool::confirmed(Game* game) {
         // TODO copy into
         current_stage = ScanStages::SETTING_LOWER;
     }
-    else if (current_stage == ScanStages::EXTENDING) {
+    else if (current_stage == ScanStages::EXTENDED) {
         // TODO find new int_bounding_box
         // for every coordinate in new BB not in old BB
         // find modded coordinate in the old BB and fill with selected block
@@ -116,7 +119,8 @@ bool CursorScanTool::confirmed(Game* game) {
 }
 
 bool CursorScanTool::canceled(Game* game) {
-    if (current_stage == ScanStages::EXTENDING) {
+    if (current_stage == ScanStages::EXTENDING ||
+        current_stage == ScanStages::EXTENDED) {
         current_stage = ScanStages::SELECTED;
     }
     else if (current_stage == ScanStages::SETTING_LOWER) {
@@ -130,6 +134,10 @@ bool CursorScanTool::canceled(Game* game) {
 
 bool CursorScanTool::handle_movement(ivec3 dir) {
     // TODO
+    BlockOrientation player_orientation = get_player_direction();
+    fvec3 player_dir = get_direction_from_orientation(player_orientation);
+    
+    
     return true;
 }
 
@@ -158,6 +166,11 @@ void CursorScanTool::step() {
             else if (current_stage == ScanStages::EXTENDING) {
                 // TODO calculate extending box
                 extended = pos;
+                extending_box.lower = lower;
+                extending_box.upper = upper;
+                extending_box.refit();
+                extending_box.expand(extended);
+                extending_box.upper += 1;
             }
             player_orientation = get_player_direction();
         }
@@ -179,7 +192,7 @@ void CursorScanTool::render_item() {
     UIHelper::draw_square_voxel(255);
 }
 
-void render_colored_box(fmat4* transform, int_bounding_box box, fvec3 color) {
+void render_colored_box(fmat4* transform, int_bounding_box box, fvec3 color, float offset=0.125f) {
     
     GLfloat box_texture[36][3];
     for (int i = 0; i < 36; i++) {
@@ -195,7 +208,6 @@ void render_colored_box(fmat4* transform, int_bounding_box box, fvec3 color) {
     // scale box to dimensions
     ivec3 dimensions = box.get_dimensions();
     // add offset so our box "floats" above the actual blocks
-    float offset = 0.125f;
     view = glm::scale(view, fvec3(dimensions.x / 2.0f + offset,
                                   dimensions.y / 2.0f + offset,
                                   dimensions.z / 2.0f + offset));
@@ -230,17 +242,17 @@ void CursorScanTool::render_in_world(fmat4* transform) {
         // if show_item, render like SELECTED
         // else, render like SETTING_LOWER
         render_colored_box(transform, box, SELECTING_COLOR);
-        /*if (show_item) {
-            render_colored_box(transform, box, SELECTING_COLOR);
-        }
-        else {
-            render_colored_box(transform, box, SELECTING_COLOR);
-        }*/
     }
     else if (current_stage == ScanStages::EXTENDING) {
         // render the current selected box
         // then if show_selected, render a slightly bigger box showing the extended box
-        render_colored_box(transform, box, SELECTED_COLOR);
+        //render_colored_box(transform, box, SELECTED_COLOR);
+        if (show_item) {
+            render_colored_box(transform, extending_box, EXTENDED_COLOR);
+        }
+    }
+    else if (current_stage == ScanStages::EXTENDED) {
+        //render_colored_box(transform, box, SELECTED_COLOR);
         render_colored_box(transform, extending_box, EXTENDED_COLOR);
     }
 }
