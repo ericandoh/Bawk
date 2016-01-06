@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "worldrender.h"
 #include "superobjectrender.h"
+#include "game_info_loader.h"
 
 #include "importsdl.h"
 
@@ -236,10 +237,6 @@ void RenderableSuperObject::set_block_integral(int x, int y, int z, block_type t
     set_block(x + 0.5f, y + 0.5f, z + 0.5f, type);
 }
 
-void RenderableSuperObject::kill_block(float x, float y, float z) {
-    set_block(x, y, z, block_type());
-}
-
 // helper function, sees if the absolute distance is less than the chunk render distance
 bool is_within_range(ivec3* chunk_pos, int x, int y, int z) {
     return abs(chunk_pos->x - x) <= CHUNK_RENDER_DIST &&
@@ -334,8 +331,23 @@ Entity* RenderableSuperObject::poke(float x, float y, float z) {
     return 0;
 }
 
-bool RenderableSuperObject::break_block(float x, float y, float z) {
-    set_block(x, y, z, block_type());
+bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, uint32_t pid) {
+    if (!can_be_hurt(policy, pid)) {
+        return false;
+    }
+    // hit block with the damage, if it is over threshold remove it
+    block_type* blk = get_block(x, y, z);
+    if (blk) {
+        int resistance = get_block_resistance(blk->type);
+        int actual_dmg = (int)calculate_damage(dmg, resistance);
+        blk->life += actual_dmg;
+        if (blk->life >= MAX_HEALTH) {
+            blk->life = MAX_HEALTH;
+            if (can_be_destroyed(policy, pid)) {
+                set_block(x, y, z, block_type());
+            }
+        }
+    }
     return true;
 }
 
@@ -397,7 +409,7 @@ void RenderableSuperObject::render_lights(fmat4* transform, fvec3 player_pos) {
     }
 }
 
-void RenderableSuperObject::update_chunks(fvec3* player_pos) {
+void RenderableSuperObject::update_render(fvec3* player_pos) {
     manager.start_update(this, *player_pos);
 }
 
@@ -516,8 +528,8 @@ int RenderableSuperObject::load_self(IODataObject* obj) {
     return 0;
 }
 
-void RenderableSuperObject::remove_self(IODataObject* obj) {
-    Entity::remove_self(obj);
+void RenderableSuperObject::save_self(IODataObject* obj) {
+    Entity::save_self(obj);
     
     // save chunk bounds
     int chunk_count = (int)chunk_bounds.size();

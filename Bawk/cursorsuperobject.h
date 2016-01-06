@@ -44,7 +44,7 @@ public:
     void init() override;
     void cleanup() override;
     void reset() override;
-    bool clicked(Game* game, Action mouse, Entity* on) override;
+    bool clicked(Game* game, Action mouse) override;
     bool confirmed(Game* game) override;
     bool canceled(Game* game) override;
     bool handle_movement(ivec3 dir) override;
@@ -63,7 +63,7 @@ public:
     std::string get_save_path() override;
     std::string get_chunk_save_path(ivec3* pos) override;
     int load_self(IODataObject* obj) override;
-    void remove_self(IODataObject* obj) override;
+    void save_self(IODataObject* obj) override;
 };
 
 #endif /* defined(__Bawk__cursorsuperobject__) */

@@ -33,7 +33,7 @@ bool ModelExplodeActionMultiplexer::model_callback_collision(Game* game, Entity*
     if (piece->parent) {
         piece->parent->transform_into_world_coordinates_smooth(&pos, pos.x, pos.y, pos.z);
         // remove myself from the world
-        ((SuperObject*)piece->parent)->remove_entity(piece);
+        piece->parent->remove_entity(piece);
     }
     // now explode everything in a radius of 4 around our target
     int radius = 4;
@@ -46,7 +46,7 @@ bool ModelExplodeActionMultiplexer::model_callback_collision(Game* game, Entity*
             for (int z = ilower.z; z <= iupper.z; z++) {
                 if (get_fvec3_distance(fvec3(x - pos.x, y - pos.y, z - pos.z)) <= radius) {
                     // damage whatever is at this position
-                    game->world->base_world->get_hurt(x, y, z, 500.0f);
+                    game->world->base_world->get_hurt(x, y, z, damage, BreakablePolicy::ACTIONED, owner->pid);
                 }
             }
         }

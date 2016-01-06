@@ -51,7 +51,7 @@ void CursorSuperObject::reset() {
     locked = false;
 }
 
-bool CursorSuperObject::clicked(Game* game, Action mouse, Entity* on) {
+bool CursorSuperObject::clicked(Game* game, Action mouse) {
     if (!locked) {
         if (show_item) {
             locked = true;
@@ -180,8 +180,8 @@ int CursorSuperObject::load_self(IODataObject* obj) {
     return 0;
 }
 
-void CursorSuperObject::remove_self(IODataObject* obj) {
-    SuperObject::remove_self(obj);
+void CursorSuperObject::save_self(IODataObject* obj) {
+    SuperObject::save_self(obj);
     obj->save_value(makes_vehicle);
     obj->save_value(independent);
     save_all_chunks();

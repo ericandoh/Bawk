@@ -44,14 +44,14 @@ int World::load_self() {
     return 0;
 }
 
-void World::remove_self() {
+void World::save_self() {
     IODataObject writer(get_path_to_world());
     if (writer.save()) {
         return;
     }
     writer.save_value(age);
     writer.save_value(id_assign);
-    base_world->remove_selfs();
+    base_world->save_selfs();
     writer.close();
 }
 
@@ -80,47 +80,12 @@ void World::set_light_camera_for_lighting(Player* player) {
     weather.dir_light.set_camera_for_light(player->get_rwc_pos());
 }
 
-void World::update_chunks(fvec3* player_pos) {
-    base_world->update_chunks(player_pos);
+void World::update_render(fvec3* player_pos) {
+    base_world->update_render(player_pos);
 }
 
 void World::get_entity_at(float x, float y, float z, Entity** selected) {
     *selected = base_world->poke(x, y, z);
-}
-
-bool World::break_block() {
-    Entity* src = get_look_at();
-    if (!src)
-        return false;
-    
-    if (src->entity_class != EntityType::BASEWORLD && src->entity_class != EntityType::GAMETEMPLATE) {
-        if (src->entity_class == EntityType::PLAYER) {
-            printf("Can't delete players! wtf you doing mate\n");
-            return false;
-        }
-        // if we're not breaking a block or from the gametemplate, kill the entity
-        base_world->remove_entity(src);
-        delete_entity_from_memory(src);
-        // only permit block removal from
-        // TOFU this COULD be changed - that would actually be pretty cool - but I'd have to think about it
-        return false;
-    }
-    
-    ivec3 looking_at;
-    BlockOrientation orient;
-    if (!get_look_at(&looking_at, &orient)) {
-        return false;
-    }
-    
-    int mx = looking_at.x;
-    int my = looking_at.y;
-    int mz = looking_at.z;
-    
-    printf("Removing at (%d, %d, %d)\n",
-           mx, my, mz);
-    
-    src->break_block(mx, my, mz);
-    return true;
 }
 
 void World::add_player(Player* player) {

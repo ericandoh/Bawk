@@ -26,6 +26,10 @@
 #include <climits>
 #include <algorithm>
 
+#define EMPTY_BOOL_FUNCTION { return false; }
+#define EMPTY_FUNCTION { }
+
+
 // float vec3
 typedef glm::vec3 fvec3;
 

@@ -34,7 +34,7 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
 // --- SuperObject ---
 void SuperObject::add_entity(Entity* entity) {
     if (entity->parent) {
-        ((SuperObject*)entity->parent)->remove_entity(entity);
+        entity->parent->remove_entity(entity);
     }
     // transform entity rotation/pos into this object's frame
     fvec3 true_center = entity->pos + entity->center_pos;
@@ -218,50 +218,13 @@ void SuperObject::recalculate_transform() {
 Entity* SuperObject::poke(float x, float y, float z) {
     if (RenderableSuperObject::poke(x, y, z))
         return this;
-    
     for (unsigned int i = 0; i < entities.size(); i++) {
-        if (entities[i]->poke(x, y, z)) {
-            return entities[i];
+        Entity* result = entities[i]->poke(x, y, z);
+        if (result) {
+            return result;
         }
     }
     return 0;
-}
-
-bool SuperObject::break_block(float x, float y, float z) {
-    Entity* at = poke(x, y, z);
-    if (at == this) {
-        // remove block from this
-        kill_block(x, y, z);
-    }
-    else if (at) {
-        // break away the entity at from this object
-        remove_entity(at);
-        delete_entity_from_memory(at);
-        return true;
-    }
-    return false;
-}
-
-void SuperObject::get_hurt(float x, float y, float z, float dmg) {
-    Entity* at = poke(x, y, z);
-    if (at == this) {
-        // hit block with the damage, if it is over threshold remove it
-        block_type* blk = get_block(x, y, z);
-        if (blk) {
-            int resistance = get_block_resistance(blk->type);
-            int actual_dmg = (int)((10.0f / (10.0f + resistance)) * dmg);
-            blk->life += actual_dmg;
-            if (blk->life >= MAX_HEALTH) {
-                // TODO don't actually kill the block, unless the block belongs to the world
-                // disable it instead
-                if (!blk->owner)
-                    kill_block(x, y, z);
-            }
-        }
-    }
-    else if (at) {
-        at->get_hurt(x, y, z, dmg);
-    }
 }
 
 bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
@@ -290,22 +253,17 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
 }
 
 bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
-    fvec4 lookingat;
-    if (get_look_at_vehicle(&lookingat)) {
-        Entity* at_cursor = poke(lookingat.x, lookingat.y, lookingat.z);
-        if (at_cursor == this) {
-            block_type* blk = get_block(lookingat.x, lookingat.y, lookingat.z);
-            if (blk && has_block_mouse_action(*blk)) {
-                ivec3 oac = get_floor_from_fvec3(fvec3(lookingat.x, lookingat.y, lookingat.z));
-                ivec3 rwc;
-                transform_into_world_integer_coordinates(&rwc, oac.x, oac.y, oac.z);
-                return call_block_mouse_callback_from(blk, game, ent, rwc, button);
-            }
-        }
-        else {
-            return at_cursor->block_mouse_callback(game, button, ent);
+    if (BlockTracing::show_item) {
+        fvec3 lookingat = BlockTracing::pointed_pos;
+        block_type* blk = get_block(lookingat.x, lookingat.y, lookingat.z);
+        if (blk && has_block_mouse_action(*blk)) {
+            ivec3 oac = get_floor_from_fvec3(fvec3(lookingat.x, lookingat.y, lookingat.z));
+            ivec3 rwc;
+            transform_into_world_integer_coordinates(&rwc, oac.x, oac.y, oac.z);
+            return call_block_mouse_callback_from(blk, game, ent, rwc, button);
         }
     }
+    // the else should not be called...
     return false;
 }
 
@@ -361,14 +319,14 @@ void SuperObject::render_lights(fmat4* transform, fvec3 player_pos) {
     }
 }
 
-void SuperObject::update_chunks(fvec3* player_pos) {
+void SuperObject::update_render(fvec3* player_pos) {
     // TODO check if the bounds of this superobject even intersect our vision
-    RenderableSuperObject::update_chunks(player_pos);
+    RenderableSuperObject::update_render(player_pos);
     // TODO clean trash like here
     //fvec3 oac;
     //transform_into_my_coordinates(&oac, player_pos->x, player_pos->y, player_pos->z);
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->update_chunks(player_pos);
+        entities[i]->update_render(player_pos);
     }
 }
 
@@ -480,11 +438,11 @@ int SuperObject::load_self(IODataObject* obj) {
     return 0;
 }
 
-void SuperObject::remove_self(IODataObject* obj) {
-    RenderableSuperObject::remove_self(obj);
+void SuperObject::save_self(IODataObject* obj) {
+    RenderableSuperObject::save_self(obj);
     
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->remove_selfs();
+        entities[i]->save_selfs();
     }
     int entities_count = (int)entities.size();
     // TODO handle that player/baseworld? is removed/saved here

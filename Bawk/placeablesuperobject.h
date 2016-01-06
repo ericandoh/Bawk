@@ -36,7 +36,7 @@ public:
     int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     void handle_block_addition(int x, int y, int z, block_type type) override;
     void handle_block_removal(int x, int y, int z, block_type type) override;
-    void update_chunks(fvec3* start_pos) override;
+    void update_render(fvec3* start_pos) override;
     
     // --- PlaceableObject ---
     bool set_blocks(Player* player, World* world, SuperObject* object) override;

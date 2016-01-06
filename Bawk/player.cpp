@@ -53,7 +53,7 @@ uint32_t Player::getID() {
 uint32_t Player::assignID() {
     uint32_t id_to_assign = (uint32_t)(id_assign++);
     // save the player
-    remove_selfs();
+    save_selfs();
     return id_to_assign;
 }
 
@@ -169,12 +169,12 @@ int Player::load_self(IODataObject* obj) {
     return 0;
 }
 
-void Player::remove_self(IODataObject* obj) {
-    RenderablePlayer::remove_self(obj);
+void Player::save_self(IODataObject* obj) {
+    RenderablePlayer::save_self(obj);
     // save player stuff here
     obj->save_value(id_assign);
     
-    inventory->remove_self(obj);
+    inventory->save_self(obj);
 }
 
 void Player::debug() {

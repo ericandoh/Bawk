@@ -77,7 +77,6 @@ public:
     void switch_current_item(int to_index);
     
     void key_callback_default(int key);
-    void mouse_callback_default(Action key, Entity* on);
     
     void key_callback(int key, int scancode, int action, int mods) override;
     void mouse_move_callback(double xdiff, double ydiff) override;

@@ -49,8 +49,8 @@ public:
     virtual void reset();
     
     // behaviour when this cursor item is clicked
-    virtual bool clicked(Game* game, Action mouse, Entity* on);
-    virtual bool pushed(Game* game, Action key) { return false; };
+    virtual bool clicked(Game* game, Action mouse);
+    virtual bool pushed(Game* game, Action key) EMPTY_BOOL_FUNCTION;
     
     // behaviour when this cursor item is entered
     virtual bool confirmed(Game* game);
@@ -65,7 +65,7 @@ public:
     virtual void render_item() = 0;
     // render the item in the world
     virtual void render_in_world(fmat4* transform) = 0;
-    virtual void render_light_in_world(fmat4* transform, fvec3 player_pos) { };
+    virtual void render_light_in_world(fmat4* transform, fvec3 player_pos) EMPTY_FUNCTION;
     
     virtual cursor_item_identifier get_identifier() = 0;
 };

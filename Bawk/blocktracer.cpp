@@ -13,13 +13,21 @@
 const float PLACE_BLOCK_FRONT = 1.4f;
 const float PLACE_BLOCK_BACK = 10.0f;
 
-float mx, my, mz = 0;
-// used for placement relative to
-BlockOrientation face;
-// is the player's orientation, set as orientation of block when placed
-BlockOrientation player_face;
-bool in_range = false;
-Entity* selected = 0;
+
+namespace BlockTracing {
+    // exposed variables
+    bool show_item = false;
+    Entity* selected = 0;
+    fvec3 pointed_pos;
+    ivec3 pointed_rounded_pos;
+    
+    // used for placement relative to
+    BlockOrientation face;
+    // is the player's orientation, set as orientation of block when placed
+    BlockOrientation player_face;
+}
+
+using namespace BlockTracing;
 
 class WorldTracer: public BresenhamTracer {
     World* world;
@@ -39,11 +47,15 @@ WorldTracer::WorldTracer(World* w) {
 bool WorldTracer::check_at_coord(float x, float y, float z, BlockOrientation side) {
     world->get_entity_at(x, y, z, &selected);
     if (selected) {
-        mx = x;
-        my = y;
-        mz = z;
+        pointed_pos.x = x;
+        pointed_pos.y = y;
+        pointed_pos.z = z;
+        
+        pointed_rounded_pos.x = floorf(pointed_pos.x);
+        pointed_rounded_pos.y = floorf(pointed_pos.y);
+        pointed_rounded_pos.z = floorf(pointed_pos.z);
         face = side;
-        in_range = true;
+        show_item = true;
         return true;
     }
     return false;
@@ -57,7 +69,7 @@ void set_look_at(fvec3 pos, fvec3 dir, World* world) {
     fvec3 end(pos.x + dir.x*PLACE_BLOCK_BACK, pos.y + dir.y*PLACE_BLOCK_BACK, pos.z + dir.z*PLACE_BLOCK_BACK);
     
     selected = 0;
-    in_range = false;
+    show_item = false;
     
     // do voxel block tracing
     WorldTracer tracer(world);
@@ -67,34 +79,11 @@ void set_look_at(fvec3 pos, fvec3 dir, World* world) {
     player_face = get_nearest_compass_direction(dir);
 }
 
-bool get_look_at(ivec3* src, BlockOrientation* orient) {
-    if (in_range) { // & world_selected
-        src->x = floorf(mx);
-        src->y = floorf(my);
-        src->z = floorf(mz);
-        *orient = face;
-        return true;
-    }
-    return false;
-}
-
-bool get_look_at_vehicle(fvec4* src) {
-    if (in_range && selected) {
-        src->x = mx;
-        src->y = my;
-        src->z = mz;
-        src->w = face;
-        return true;
-    }
-    return false;
-}
-
 bool get_pointing_position(ivec3* dst, BlockOrientation* orient, ivec3 bounds) {
-    ivec3 looking_at;
-    BlockOrientation face;
-    if (!get_look_at(&looking_at, &face)) {
+    if (!show_item) {
         return false;
     }
+    ivec3 looking_at = pointed_rounded_pos;
     int mx = looking_at.x;
     int my = looking_at.y;
     int mz = looking_at.z;
@@ -121,6 +110,3 @@ BlockOrientation get_player_direction() {
     return player_face;
 }
 
-Entity* get_look_at() {
-    return selected;
-}

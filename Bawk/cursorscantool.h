@@ -36,7 +36,7 @@ public:
     void reset() override;
     
     // behaviour when this cursor item is clicked
-    bool clicked(Game* game, Action mouse, Entity* on) override;
+    bool clicked(Game* game, Action mouse) override;
     bool pushed(Game* game, Action key) override;
     
     // behaviour when this cursor item is entered

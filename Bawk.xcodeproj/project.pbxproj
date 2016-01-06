@@ -15,6 +15,10 @@
 		0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026591C273E5800BBC711 /* spritecolortriangle.cpp */; };
 		0710265F1C275EBD00BBC711 /* shadows_frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */; };
 		071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026611C27618200BBC711 /* shadow_mapper.cpp */; };
+		0710EE2D1C3D9EBF0007F5C4 /* cursorweapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0710EE2B1C3D9EBF0007F5C4 /* cursorweapon.cpp */; };
+		0710EE301C3D9ED10007F5C4 /* cursordrill.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0710EE2E1C3D9ED10007F5C4 /* cursordrill.cpp */; };
+		0710EE331C3DA31A0007F5C4 /* positionable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0710EE311C3DA31A0007F5C4 /* positionable.cpp */; };
+		0710EE361C3DB8460007F5C4 /* cursorselector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0710EE341C3DB8460007F5C4 /* cursorselector.cpp */; };
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
 		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
 		07141EC61C31ED03009CD608 /* texture_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07141EC41C31ED03009CD608 /* texture_allocator.cpp */; };
@@ -135,6 +139,14 @@
 		0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = shadows_frag_shader.glsl; path = Bawk/shadows_frag_shader.glsl; sourceTree = "<group>"; };
 		071026611C27618200BBC711 /* shadow_mapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shadow_mapper.cpp; sourceTree = "<group>"; };
 		071026621C27618200BBC711 /* shadow_mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shadow_mapper.h; sourceTree = "<group>"; };
+		0710EE2B1C3D9EBF0007F5C4 /* cursorweapon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorweapon.cpp; sourceTree = "<group>"; };
+		0710EE2C1C3D9EBF0007F5C4 /* cursorweapon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorweapon.h; sourceTree = "<group>"; };
+		0710EE2E1C3D9ED10007F5C4 /* cursordrill.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursordrill.cpp; sourceTree = "<group>"; };
+		0710EE2F1C3D9ED10007F5C4 /* cursordrill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursordrill.h; sourceTree = "<group>"; };
+		0710EE311C3DA31A0007F5C4 /* positionable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = positionable.cpp; sourceTree = "<group>"; };
+		0710EE321C3DA31A0007F5C4 /* positionable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = positionable.h; sourceTree = "<group>"; };
+		0710EE341C3DB8460007F5C4 /* cursorselector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorselector.cpp; sourceTree = "<group>"; };
+		0710EE351C3DB8460007F5C4 /* cursorselector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorselector.h; sourceTree = "<group>"; };
 		0712E1251C06EB8E008AF269 /* block_orientation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_orientation.cpp; sourceTree = "<group>"; };
 		0712E1261C06EB8E008AF269 /* block_orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_orientation.h; sourceTree = "<group>"; };
 		0713FF521C0FD88B0069FDAF /* entity_type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity_type.cpp; sourceTree = "<group>"; };
@@ -350,6 +362,12 @@
 				072A0A2B1C0BCE86009304E5 /* cursormodelobject.h */,
 				070930721C38985C009DB251 /* cursorscantool.cpp */,
 				070930731C38985C009DB251 /* cursorscantool.h */,
+				0710EE2B1C3D9EBF0007F5C4 /* cursorweapon.cpp */,
+				0710EE2C1C3D9EBF0007F5C4 /* cursorweapon.h */,
+				0710EE2E1C3D9ED10007F5C4 /* cursordrill.cpp */,
+				0710EE2F1C3D9ED10007F5C4 /* cursordrill.h */,
+				0710EE341C3DB8460007F5C4 /* cursorselector.cpp */,
+				0710EE351C3DB8460007F5C4 /* cursorselector.h */,
 			);
 			name = building;
 			sourceTree = "<group>";
@@ -456,6 +474,8 @@
 		075C673D1BBA3ED700CB87DE /* entities */ = {
 			isa = PBXGroup;
 			children = (
+				076BEFE01BD19E9F00D68C8F /* entity.cpp */,
+				076BEFE11BD19E9F00D68C8F /* entity.h */,
 				072A0A211C0B8ED4009304E5 /* modelentityrender.cpp */,
 				072A0A221C0B8ED4009304E5 /* modelentityrender.h */,
 				075C673E1BBA3EE800CB87DE /* world.cpp */,
@@ -558,8 +578,6 @@
 		076BEFDF1BD19E6100D68C8F /* physics */ = {
 			isa = PBXGroup;
 			children = (
-				076BEFE01BD19E9F00D68C8F /* entity.cpp */,
-				076BEFE11BD19E9F00D68C8F /* entity.h */,
 				0715F1101BF2D3CC00242F86 /* rotation_math.cpp */,
 				0715F1111BF2D3CC00242F86 /* rotation_math.h */,
 				071C5C121BF7FE9C0087F398 /* rotation.cpp */,
@@ -568,6 +586,8 @@
 				0712E1261C06EB8E008AF269 /* block_orientation.h */,
 				072A0A2D1C0C3A69009304E5 /* collision_detection.cpp */,
 				072A0A2E1C0C3A69009304E5 /* collision_detection.h */,
+				0710EE311C3DA31A0007F5C4 /* positionable.cpp */,
+				0710EE321C3DA31A0007F5C4 /* positionable.h */,
 			);
 			name = physics;
 			sourceTree = "<group>";
@@ -685,6 +705,7 @@
 				07F858481C2397AB005ACAA9 /* worldweather.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,
+				0710EE2D1C3D9EBF0007F5C4 /* cursorweapon.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
 				078E87A51C1BF98700A825EB /* spritegetter.cpp in Sources */,
@@ -696,10 +717,13 @@
 				0766EAEE1BBF74FD00477144 /* block.cpp in Sources */,
 				071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */,
 				0766EB121BC0BE9800477144 /* block_loader.cpp in Sources */,
+				0710EE361C3DB8460007F5C4 /* cursorselector.cpp in Sources */,
 				077098941BDBFDA5002F295D /* bresenham3d.cpp in Sources */,
 				071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */,
 				071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */,
+				0710EE331C3DA31A0007F5C4 /* positionable.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
+				0710EE301C3D9ED10007F5C4 /* cursordrill.cpp in Sources */,
 				07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */,
 				0716ADC21C37192900344A8C /* chunkloadmanager.cpp in Sources */,
 				070930741C38985C009DB251 /* cursorscantool.cpp in Sources */,

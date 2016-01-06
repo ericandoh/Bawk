@@ -64,7 +64,7 @@ void CursorScanTool::reset() {
     show_item = false;
 }
 
-bool CursorScanTool::clicked(Game* game, Action mouse, Entity* on) {
+bool CursorScanTool::clicked(Game* game, Action mouse) {
     if (current_stage == ScanStages::SETTING_LOWER) {
         // we've selected a lower corner, upgrade
         if (show_item) {
@@ -145,19 +145,17 @@ void CursorScanTool::step() {
     if (current_stage == ScanStages::SETTING_LOWER ||
         current_stage == ScanStages::SETTING_UPPER ||
         current_stage == ScanStages::EXTENDING) {
-        BlockOrientation orientation;
-        ivec3 pos;
-        if (get_look_at(&pos, &orientation)) {
+        if (BlockTracing::show_item) {
             show_item = true;
             if (current_stage == ScanStages::SETTING_LOWER) {
-                lower = pos;
+                lower = BlockTracing::pointed_rounded_pos;
                 box.lower = lower;
                 box.upper = ivec3(lower.x + 1,
                                   lower.y + 1,
                                   lower.z + 1);
             }
             else if (current_stage == ScanStages::SETTING_UPPER) {
-                upper = pos;
+                upper = BlockTracing::pointed_rounded_pos;
                 box.lower = lower;
                 box.upper = upper;
                 box.refit();
@@ -165,7 +163,7 @@ void CursorScanTool::step() {
             }
             else if (current_stage == ScanStages::EXTENDING) {
                 // TODO calculate extending box
-                extended = pos;
+                extended = BlockTracing::pointed_rounded_pos;
                 extending_box.lower = lower;
                 extending_box.upper = upper;
                 extending_box.refit();

@@ -74,7 +74,7 @@ int Game::init() {
     last_player_pos = player->get_rwc_pos();
     
     world->add_player(player);
-    world->update_chunks(&(last_player_pos));
+    world->update_render(&(last_player_pos));
     
     // set key mappings
     // movement key mappings
@@ -126,17 +126,14 @@ int Game::init() {
     
     inventory_ui = new MainInventoryWidget(bar, player->inventory, width / 2, height / 2);
     
-    bar->set_index(0);
+    bar->set_index(3);
     
     // for testing, TODO delete
     bar->set_current(new CursorModelObject(1));
-    bar->set_index(1);
+    bar->set_index(4);
     bar->set_current(new CursorModelObject(2));
-    bar->set_index(2);
+    bar->set_index(5);
     bar->set_current(new CursorModelObject(3));
-    
-    bar->set_index(3);
-    bar->set_current(new CursorScanTool());
     
     return 0;
 }
@@ -279,7 +276,7 @@ float get_dst(fvec3* a, fvec3* b) {
 void Game::check_need_update() {
     fvec3 player_pos = player->get_rwc_pos();
     if (get_dst(&last_player_pos, &player_pos) >= CHUNK_UPDATE_TRIGGER_DISTANCE) {
-        world->update_chunks(&player_pos);
+        world->update_render(&player_pos);
         last_player_pos = player_pos;
     }
 }
@@ -296,17 +293,14 @@ void Game::key_callback_default(int key) {
         }
         else if (game_template) {
             printf("Exporting template to current cursor!\n");
-            // we're done making this template.
-            // publish it to either the baseworld or to a new superobject
-            // do we need to free? what if its already in inventory
-            // let's not free this l8 on, since we still need to render if its in inventory
-            // then l8 we can have a separate memory scheme for if this is in memory or not
-            bar->set_current(game_template->create_from_template(player, world));
-            GameTemplate* reference = game_template;
-            game_template = 0;
-            reference->publish(this);
-            delete reference;
-            game_template = 0;
+            if (bar->can_set_current()) {
+                bar->set_current(game_template->create_from_template(player, world));
+                GameTemplate* reference = game_template;
+                game_template = 0;
+                reference->publish(this);
+                delete reference;
+                game_template = 0;
+            }
         }
         else {
             printf("Making new template\n");
@@ -413,17 +407,6 @@ void Game::key_callback_default(int key) {
     }
 }
 
-void Game::mouse_callback_default(Action key, Entity* on) {
-    if (key == CLICK_MAIN) {
-        // destroy blocks, for all click destroy commands
-        world->break_block();
-    }
-    else if (bar->get_current()) {
-        bar->get_current()->clicked(this, key, on);
-    }
-}
-
-
 // Calls an action depending on key pressed
 // Not all key presses may correspond to player so this method belongs here
 void Game::key_callback(int key, int scancode, int action, int mods) {
@@ -478,15 +461,15 @@ void Game::mouse_button_callback(int button, int action, int mods) {
                     return;
                 }
             }
-            Entity* src = get_look_at();
-            if (src) {
-                if (src->block_mouse_callback(this, do_this, src)) {
+            if (BlockTracing::show_item) {
+                Entity* src = BlockTracing::selected->find_top_level_parent();
+                if (BlockTracing::selected->block_mouse_callback(this, do_this, src)) {
                     return;
                 }
-                else {
-                    // using cursor to click
-                    mouse_callback_default(do_this, src);
-                }
+            }
+            if (bar->get_current()) {
+                // using mouse
+                bar->get_current()->clicked(this, do_this);
             }
         }
         else {
@@ -543,7 +526,7 @@ Game::~Game() {
     printf("Cleaning up game\n");
     player->unmount(world);
     save_game_data();
-    world->remove_self();
+    world->save_self();
     if (game_template)
         delete game_template;
     // player deleted as part of world...?

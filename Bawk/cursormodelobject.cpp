@@ -42,7 +42,7 @@ void CursorModelObject::reset() {
     locked = false;
 }
 
-bool CursorModelObject::clicked(Game* game, Action mouse, Entity* on) {
+bool CursorModelObject::clicked(Game* game, Action mouse) {
     if (!locked) {
         if (show_item) {
             locked = true;

@@ -64,7 +64,7 @@ public:
     void del_custom_at(CursorItem* item);
     
     int load_self(IODataObject* obj);
-    void remove_self(IODataObject* obj);
+    void save_self(IODataObject* obj);
 };
 
 #endif /* defined(__Bawk__inventory__) */

@@ -105,7 +105,7 @@ void ModelEntity::render_lights(fmat4* transform, fvec3 player_pos) {
     }
 }
 
-void ModelEntity::update_chunks(fvec3* player_pos) {
+void ModelEntity::update_render(fvec3* player_pos) {
     // fvec3 rcp = pos + center_pos;
     // TODO implement this
     in_range = true;
@@ -133,8 +133,8 @@ int ModelEntity::load_self(IODataObject* obj) {
     return 0;
 }
 
-void ModelEntity::remove_self(IODataObject* obj) {
-    Entity::remove_self(obj);
+void ModelEntity::save_self(IODataObject* obj) {
+    Entity::save_self(obj);
     obj->save_value(model_id);
 }
 

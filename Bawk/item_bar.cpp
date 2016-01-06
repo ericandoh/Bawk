@@ -8,6 +8,12 @@
 
 #include "item_bar.h"
 
+#include "cursorweapon.h"
+#include "cursordrill.h"
+#include "cursorscantool.h"
+
+const int STATIC_BAR_ELEMENTS = 3;
+
 ItemBar::ItemBar(PlayerInventory* inv, int width, int height): ParentWidget(width, height) {
     inventory = inv;
     // pixel distance between each barlet
@@ -27,7 +33,18 @@ ItemBar::ItemBar(PlayerInventory* inv, int width, int height): ParentWidget(widt
     
     for (int i = 0; i < BAR_ITEMS; i++) {
         ItemBarlet* barlet = new ItemBarlet(x_offset + i*barlet_n_gap, this->y, per_barlet_width, height);
-        barlet->set_cursor_item(inventory->get_cursoritem_at(i));
+        if (i >= STATIC_BAR_ELEMENTS) {
+            barlet->set_cursor_item(inventory->get_cursoritem_at(i - STATIC_BAR_ELEMENTS));
+        }
+        else if (i == 0) {
+            barlet->set_cursor_item(0); //new CursorWeapon()
+        }
+        else if (i == 1) {
+            barlet->set_cursor_item(new CursorDrill());
+        }
+        else if (i == 2) {
+            barlet->set_cursor_item(new CursorScanTool());
+        }
         add_child(barlet);
     }
     index = 0;
@@ -44,7 +61,13 @@ CursorItem* ItemBar::get_current() {
     return ((ItemBarlet*)children[index])->get_cursor_item();
 }
 
+bool ItemBar::can_set_current() {
+    return index >= STATIC_BAR_ELEMENTS;
+}
+
 void ItemBar::set_current(CursorItem* item) {
+    if (index < STATIC_BAR_ELEMENTS)
+        return;
     inventory->set_cursoritem_at(item, index);
     ((ItemBarlet*)children[index])->set_cursor_item(item);
 }

@@ -68,7 +68,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     if (set_blocks(player, world, object)) {
         // save the object to disk
         // this doesn't actually delete the object from memory
-        object->remove_selfs();
+        object->save_selfs();
         // tell object to publish to the world, the position/orientation should already be good
         object->set_blocks(player, world, world->base_world);
         object->print_debug();

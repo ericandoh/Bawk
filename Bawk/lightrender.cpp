@@ -114,7 +114,9 @@ void RenderableLight::render_light(fvec3 rwc, fvec3 player_pos) {
     if (fabsf(player_diff.x) >= light_radius ||
         fabsf(player_diff.y) >= light_radius ||
         fabsf(player_diff.z) >= light_radius) {
-        //enable backface culling, which we think is done by default
+        //enable backface culling
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
     }
     else {
         cull_backface = false;
@@ -134,11 +136,6 @@ void RenderableLight::render_light(fvec3 rwc, fvec3 player_pos) {
     glVertexAttribPointer(OGLAttr::lighting_shader.coord, 3, GL_BYTE, GL_FALSE, 0, 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    if (!cull_backface) {
-        // re-enable cull backface
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-    }
 }
 
 void RenderableLight::render_light(fmat4* transform, fvec3 p, fvec3 player_pos) {

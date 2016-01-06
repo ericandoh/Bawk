@@ -45,10 +45,9 @@ void DirectionalRenderableLight::set_camera(Player* player) {
     fvec3 up = glm::cross(right, direction);
     up = glm::normalize(up);
     
-    fvec4 src;
     fvec3 center_pos;
-    if (get_look_at_vehicle(&src)) {
-        center_pos = fvec3(src.x, src.y, src.z);
+    if (BlockTracing::show_item) {
+        center_pos = BlockTracing::pointed_pos;
     }
     else {
         center_pos = player->get_rwc_pos() + player->angle.dir * 10.0f;

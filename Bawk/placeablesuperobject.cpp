@@ -95,7 +95,7 @@ void PlaceableSuperObject::handle_block_removal(int x, int y, int z, block_type 
     }
 }
 
-void PlaceableSuperObject::update_chunks(fvec3* start_pos) {
+void PlaceableSuperObject::update_render(fvec3* start_pos) {
     // always render all objects in PlaceableSuperObject
     // do nothing
 }

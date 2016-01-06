@@ -305,7 +305,7 @@ int PlayerInventory::load_self(IODataObject* obj) {
     return 0;
 }
 
-void PlayerInventory::remove_self(IODataObject* obj) {
+void PlayerInventory::save_self(IODataObject* obj) {
     obj->save_value(energy_production);
     obj->save_value(money);
     

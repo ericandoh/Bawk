@@ -9,10 +9,9 @@
 #ifndef __Bawk__modelaction__
 #define __Bawk__modelaction__
 
-#define EMPTY_FUNCTION { return false; }
-
 #include <stdio.h>
 #include "game_actions.h"
+#include "basic_types.h"
 
 class Game;
 class Entity;
@@ -20,35 +19,35 @@ class Entity;
 class ModelActionMultiplexer {
 public:
     // copyme
-    virtual bool model_callback_default(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
+    virtual bool model_callback_default(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
     
     // --- INPUT FROM USER (needs multiplexing) ---
     // movement related
-    virtual bool model_callback_move_forward(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_move_backward(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_move_up(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_move_down(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_yaw_left(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_yaw_right(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_roll_left(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_roll_right(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_pitch_up(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_pitch_down(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
+    virtual bool model_callback_move_forward(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_move_backward(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_move_up(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_move_down(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_yaw_left(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_yaw_right(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_roll_left(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_roll_right(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_pitch_up(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_pitch_down(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
     
     // click related
-    virtual bool model_callback_click_main(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_click_secondary(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
+    virtual bool model_callback_click_main(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_click_secondary(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
     
     // other
-    virtual bool model_callback_mount(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
+    virtual bool model_callback_mount(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
     
     // --- INPUT FROM GAME (no multiplexing needed) ---
     // when clicked on
-    virtual bool model_callback_clicked_main(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
-    virtual bool model_callback_clicked_secondary(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
+    virtual bool model_callback_clicked_main(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
+    virtual bool model_callback_clicked_secondary(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
     
     // collision related
-    virtual bool model_callback_collision(Game* game, Entity* owner, Entity* piece) EMPTY_FUNCTION;
+    virtual bool model_callback_collision(Game* game, Entity* owner, Entity* piece) EMPTY_BOOL_FUNCTION;
     
     // --- ModelActionMultiplexer ---
     bool model_callback(Game* game, Entity* owner, Entity* piece, Action key);

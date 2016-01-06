@@ -25,7 +25,7 @@ public:
     
     // --- CursorItem ---
     void reset() override;
-    bool clicked(Game* game, Action mouse, Entity* on) override;
+    bool clicked(Game* game, Action mouse) override;
     bool confirmed(Game* game) override;
     bool canceled(Game* game) override;
     bool handle_movement(ivec3 dir) override;

@@ -8,142 +8,35 @@
 
 #include "entity.h"
 #include "superobject.h"
+#include "entity_loader.h"
 #include <glm/gtc/matrix_transform.hpp>
+
+#define DEFAULT_VELOCITY_DECAY 0.5f
 
 Entity::Entity() {
     // identifying info for the entity. this should be overwritten
     vid = 0;
     pid = 0;
     entity_class = EntityType::ENTITY;
+    can_collide = true;
+    stable = false;
+    bounds = bounding_box();
+    velocity = fvec3(0, 0, 0);
+    angular_velocity = fvec3(0, 0, 0);
+    velocity_decay = DEFAULT_VELOCITY_DECAY;
+    weight = 0;
+    // 0 is full health
+    health = 0;
     
     // start out with no parent
     // damn that's depresssing
     parent = 0;
     
-    // this should be overridden as needed
-    can_collide = true;
-    can_rotate = false;
-    
-    // set initial pos/angle to origin, overwrite for most objects
-    pos = fvec3(0,0,0);
-    angle = Rotation();
-    
-    // set initial bounds to be maxed out
-    bounds = bounding_box();
-    center_pos = fvec3(0,0,0);
-    
-    recalculate_transform();
-    
-    // this object is (hopefully) not moving to start out with
-    velocity = fvec3(0, 0, 0);
-    angular_velocity = fvec3(0, 0, 0);
-    velocity_decay = 0.5f;
-    // do a stable check to begin with
-    stable = false;
-    
-    // start with no weight
-    weight = 0;
-    // 0 is full health
-    health = 0;
-}
-
-void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
-    fvec4 result(x, y, z, 1.0f);
-    result = into_my_mat * result;
-    
-    src->x = result.x;
-    src->y = result.y;
-    src->z = result.z;
-}
-
-void Entity::transform_into_my_integer_coordinates(ivec3* src, int x, int y, int z) {
-    fvec3 result;
-    transform_into_my_coordinates(&result, x + 0.5f, y + 0.5f, z + 0.5f);
-    src->x = floorf(result.x);
-    src->y = floorf(result.y);
-    src->z = floorf(result.z);
-}
-
-void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) {
-    fvec4 result(x, y, z, 1.0f);
-    result = into_my_mat_smooth * result;
-    
-    src->x = result.x;
-    src->y = result.y;
-    src->z = result.z;
-}
-
-void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
-    fvec4 result(x, y, z, 1.0f);
-    result = into_world_mat * result;
-    
-    src->x = result.x;
-    src->y = result.y;
-    src->z = result.z;
-}
-
-void Entity::transform_into_world_integer_coordinates(ivec3* src, int x, int y, int z) {
-    fvec3 result;
-    transform_into_world_coordinates(&result, x + 0.5f, y + 0.5f, z + 0.5f);
-    src->x = floorf(result.x);
-    src->y = floorf(result.y);
-    src->z = floorf(result.z);
-}
-
-void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z) {
-    fvec4 result(x, y, z, 1.0f);
-    result = into_world_mat_smooth * result;
-    
-    src->x = result.x;
-    src->y = result.y;
-    src->z = result.z;
-}
-
-void Entity::set_pos(fvec3 p) {
-    pos = p;
-    recalculate_transform();
-}
-
-void Entity::set_angle(Rotation a) {
-    angle = a;
     recalculate_transform();
 }
 
 void Entity::recalculate_transform() {
-    // into my coordinates
-    into_my_mat = fmat4(1);
-    if (can_rotate) {
-        into_my_mat = glm::translate(into_my_mat, center_pos);
-        angle.add_my_rotation_rounded(&into_my_mat);
-        into_my_mat = glm::translate(into_my_mat, -center_pos);
-    }
-    into_my_mat = glm::translate(into_my_mat, -pos);
-    
-    into_my_mat_smooth = fmat4(1);
-    if (can_rotate) {
-        into_my_mat_smooth = glm::translate(into_my_mat_smooth, center_pos);
-        angle.add_my_rotation(&into_my_mat_smooth);
-        into_my_mat_smooth = glm::translate(into_my_mat_smooth, -center_pos);
-    }
-    into_my_mat_smooth = glm::translate(into_my_mat_smooth, -pos);
-
-    // into world coordinates
-    into_world_mat = glm::translate(fmat4(1), pos);
-    if (can_rotate) {
-        // round angle to nearest angle
-        into_world_mat = glm::translate(into_world_mat, center_pos);
-        angle.add_world_rotation_rounded(&into_world_mat);
-        into_world_mat = glm::translate(into_world_mat, -center_pos);
-    }
-    
-    // into world coordinates, smoothly (without rounded angles)
-    into_world_mat_smooth = glm::translate(fmat4(1), pos);
-    if (can_rotate) {
-        into_world_mat_smooth = glm::translate(into_world_mat_smooth, center_pos);
-        angle.add_world_rotation(&into_world_mat_smooth);
-        into_world_mat_smooth = glm::translate(into_world_mat_smooth, -center_pos);
-    }
-    
+    Positionable::recalculate_transform();
     if (parent) {
         // apply parent matrices
         into_my_mat = into_my_mat * parent->into_my_mat;
@@ -304,25 +197,55 @@ Entity* Entity::poke(float x, float y, float z) {
     return 0;
 }
 
-bool Entity::break_block(float x, float y, float z) {
-    // behaviour for destroying a block on a regular entity is undefined
-    // to remove an entity entirely use other pathways
-    return false;
+bool Entity::can_be_hurt(BreakablePolicy policy, uint32_t o_pid) {
+    if (policy == ACTIONED) {
+        // if actioned, a player can't hurt himself unless he is the world (pid 0)
+        return (pid != o_pid) || (o_pid == 0);
+    }
+    else if (policy == EXECUTED) {
+        // if executed, only the player can hurt himself, unless he is the world (pid 0) in
+        // which a world executed action can hurt anything
+        return (pid == o_pid) || (o_pid == 0);
+    }
+    else {
+        return false;
+    }
 }
 
-void Entity::get_hurt(float x, float y, float z, float dmg) {
-    if (poke(x,y,z) != this) {
-        return;
+bool Entity::can_be_destroyed(BreakablePolicy policy, uint32_t o_pid) {
+    if (policy == ACTIONED) {
+        // no actioned policies can destroy an object
+        return false;
     }
+    else if (policy == EXECUTED) {
+        // only the player or the world (0) can destroy an object with executive privileges
+        return (pid == o_pid) || (o_pid == 0);
+    }
+    else {
+        return false;
+    }
+}
+
+float Entity::calculate_damage(float dmg, float resistance) {
+    return ((10.0f / (10.0f + resistance)) * dmg);
+}
+
+bool Entity::get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, uint32_t o_pid) {
+    if (!can_be_hurt(policy, o_pid)) {
+        return false;
+    }
+    /*if (poke(x,y,z) != this) {
+        return false;
+    }*/
     // i have no resistance. take dmg directly to health
     health += dmg;
     if (health >= MAX_HEALTH) {
-        // become disabled, but don't actually remove
-        printf("I AM DEFEATED\n");
-        /*if (parent) {
-            ((SuperObject*)parent)->remove_entity(this);
-        }*/
+        health = MAX_HEALTH;
+        if (can_be_destroyed(policy, o_pid)) {
+            remove_self();
+        }
     }
+    return true;
 }
 
 bool Entity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
@@ -331,26 +254,6 @@ bool Entity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
 
 bool Entity::block_mouse_callback(Game* game, Action button, Entity* ent) {
     return false;
-}
-
-void Entity::step(Game* game) {
-    // do nothing
-}
-
-void Entity::get_mvp(fmat4 *dst) {
-    *dst = into_world_mat_smooth;
-}
-
-void Entity::render(fmat4* transform) {
-    // do nothing
-}
-
-void Entity::render_lights(fmat4* transform, fvec3 player_pos) {
-    // do nothing
-}
-
-void Entity::update_chunks(fvec3* start_pos) {
-    // do nothing
 }
 
 void Entity::calculate_moving_bounding_box() {
@@ -462,14 +365,14 @@ int Entity::load_selfs() {
     return 0;
 }
 
-void Entity::remove_selfs() {
+void Entity::save_selfs() {
     std::string path = this->get_save_path();
     if (path.compare("") == 0)
         return;
     IODataObject write(path);
     if (write.save())
         return;
-    remove_self(&write);
+    save_self(&write);
     write.close();
 }
 
@@ -488,7 +391,7 @@ int Entity::load_self(IODataObject* obj) {
     return 0;
 }
 
-void Entity::remove_self(IODataObject* obj) {
+void Entity::save_self(IODataObject* obj) {
     //obj->save_value(up);
     obj->save_value(pos);
     obj->save_value(angle);
@@ -500,37 +403,20 @@ void Entity::remove_self(IODataObject* obj) {
     obj->save_value(health);
 }
 
+Entity* Entity::find_top_level_parent() {
+    if (parent) {
+        Entity* src = this;
+        while (src->parent->parent) {
+            src = src->parent;
+        }
+        return src;
+    }
+    else {
+        return this;
+    }
+}
 
-void test_entity_coordinate_system() {
-    /*
-    Entity test;
-    
-    test.pos = fvec3(1, 2, 3);
-    // we are 2 by 3
-    test.lower_bound = fvec3(0, 0, 0);
-    test.upper_bound = fvec3(2, 1, 3);
-    // centered at 1, 1.5 (middle!)
-    test.center_pos = fvec3(1.0f, 0.5f, 1.5f);
-    test.turn_angle(fvec2(1.57f, 0.0f));
-    test.apply_rotation();
-
-    fvec3 test_point = fvec3(2, 0, 0);
-    fvec3 result;
-    test.transform_into_world_coordinates(&result, test_point.x, test_point.y, test_point.z);
-    printf("%f %f %f\n", result.x,result.y,result.z);
-    test.transform_into_my_coordinates(&result, result.x, result.y, result.z);
-    printf("%f %f %f\n", result.x,result.y,result.z);
-    
-    
-    test_point = fvec3(1.0f, 0.5f, 1.5f);
-    test.transform_into_world_coordinates(&result, test_point.x, test_point.y, test_point.z);
-    printf("%f %f %f\n", result.x,result.y,result.z);
-    test.transform_into_my_coordinates(&result, result.x, result.y, result.z);
-    printf("%f %f %f\n", result.x,result.y,result.z);
-    
-    test_point = fvec3(1.0f, 0.0f, 2.0f);
-    test.transform_into_world_coordinates(&result, test_point.x, test_point.y, test_point.z);
-    printf("%f %f %f\n", result.x,result.y,result.z);
-    test.transform_into_my_coordinates(&result, result.x, result.y, result.z);
-    printf("%f %f %f\n", result.x,result.y,result.z);*/
+void Entity::remove_self() {
+    parent->remove_entity(this);
+    delete_entity_from_memory(this);
 }

@@ -38,6 +38,7 @@ public:
     ItemBar(PlayerInventory* inv, int width, int height);
     ~ItemBar();
     CursorItem* get_current();
+    bool can_set_current();
     void set_current(CursorItem* item);
     void set_index(int new_index);
     void set_to_left();

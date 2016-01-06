@@ -24,6 +24,7 @@ ItemBarlet::~ItemBarlet() {
 
 void ItemBarlet::render_elements() {
     // first, fill with black box
+    // TODO we can use uirenderhelper.h instead...
     OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::COLOR);
     float vertex[6][3] = {
         {-1, -1, 0},

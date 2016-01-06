@@ -67,14 +67,12 @@ public:
     // --- Entity ---
     void recalculate_transform() override;
     Entity* poke(float x, float y, float z) override;
-    bool break_block(float x, float y, float z) override;
-    void get_hurt(float x, float y, float z, float dmg) override;
     bool block_keyboard_callback(Game* game, Action key, Entity* ent) override;
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     virtual void step(Game* game) override;
     virtual void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
-    virtual void update_chunks(fvec3* player_pos) override;
+    virtual void update_render(fvec3* player_pos) override;
     
     bool collides_with(Entity* other) override;
     void calculate_moving_bounding_box() override;
@@ -85,7 +83,7 @@ public:
     virtual std::string get_save_path() override;
 
     int load_self(IODataObject* obj) override;
-    void remove_self(IODataObject* obj) override;
+    void save_self(IODataObject* obj) override;
 };
 
 #endif /* defined(__Bawk__Superobject__) */

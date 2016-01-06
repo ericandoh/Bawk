@@ -43,7 +43,7 @@ public:
     bool set_blocks(Player* player, World* world, SuperObject* object) override;
     
     // --- CursorItem ---
-    bool clicked(Game* game, Action mouse, Entity* on) override;
+    bool clicked(Game* game, Action mouse) override;
     bool confirmed(Game* game) override;
     void step() override;
     void render_item() override;

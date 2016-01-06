@@ -64,8 +64,6 @@ public:
     // sets the block at (RWC) xyz
     void set_block(float x, float y, float z, block_type type);
     void set_block_integral(int x, int y, int z, block_type type);
-    // kill the block at (RWC) xyz, checking if it is a recipe
-    void kill_block(float x, float y, float z);
     // helper function to do appropriate action when some block is added
     virtual void handle_block_addition(int x, int y, int z, block_type type) = 0;
     // helper function to do appropriate action when some block is removed
@@ -85,18 +83,18 @@ public:
 
     // --- Entity ---
     virtual Entity* poke(float x, float y, float z) override;
-    virtual bool break_block(float x, float y, float z) override;
+    bool get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, uint32_t o_pid) override;
     virtual void step(Game* game) override;
     virtual void render(fmat4* transform) override;
     virtual void render_lights(fmat4* transform, fvec3 player_pos) override;
-    virtual void update_chunks(fvec3* player_pos) override;
+    virtual void update_render(fvec3* player_pos) override;
     void update_chunks_async(fvec3* player_pos);
     
     virtual int get_collision_level() override;
     virtual bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) override;
     
     virtual int load_self(IODataObject* obj) override;
-    virtual void remove_self(IODataObject* obj) override;
+    virtual void save_self(IODataObject* obj) override;
     
     
     void save_all_chunks();

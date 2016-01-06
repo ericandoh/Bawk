@@ -33,7 +33,7 @@ public:
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
-    void update_chunks(fvec3* player_pos) override;
+    void update_render(fvec3* player_pos) override;
     // void calculate_moving_bounding_box() override;
     
     // bool collides_with(Entity* other) override;
@@ -43,7 +43,7 @@ public:
     
     virtual std::string get_save_path() override;
     int load_self(IODataObject* obj) override;
-    void remove_self(IODataObject* obj) override;
+    void save_self(IODataObject* obj) override;
 };
 
 #endif /* defined(__Bawk__modelentityrender__) */

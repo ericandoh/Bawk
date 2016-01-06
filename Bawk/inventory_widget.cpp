@@ -152,11 +152,13 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
     }
     else if (button == Action::CLICK_SECONDARY) {
         // move item to bar
-        if (item) {
-            itembar->set_current(inventory->get_item_from(item->get_identifier()));
-        }
-        else {
-            itembar->set_current(0);
+        if (itembar->can_set_current()) {
+            if (item) {
+                itembar->set_current(inventory->get_item_from(item->get_identifier()));
+            }
+            else {
+                itembar->set_current(0);
+            }
         }
     }
     return true;

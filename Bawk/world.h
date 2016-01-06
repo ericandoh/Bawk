@@ -47,18 +47,15 @@ public:
     uint32_t assignID();
     
     int load_self();
-    void remove_self();
+    void save_self();
     void render(fmat4* transform, Player* player);
     void render_lights(fmat4* transform, fvec3 player_pos);
     void render_background(fmat4* transform, Player* player);
     void set_light_camera(Player* player);
     void set_light_camera_for_lighting(Player* player);
-    void update_chunks(fvec3* player_pos);
+    void update_render(fvec3* player_pos);
     
     void get_entity_at(float x, float y, float z, Entity** selected);
-    
-    // called by game to kill a block directly. then effects are propogated to the appropriate entities
-    bool break_block();
     
     void add_player(Player* player);
     void add_entity(Entity* entity);

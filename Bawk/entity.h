@@ -28,84 +28,66 @@
 #include <stdio.h>
 #include <string>
 #include "basic_types.h"
+#include "positionable.h"
 #include "block_loader.h"
-#include "game_actions.h"
-#include "rotation.h"
 #include "entity_type.h"
+#include "blockaction.h"
 
 class Game;
+class SuperObject;
 
-class Entity {
+enum BreakablePolicy {
+    ACTIONED, EXECUTED
+};
+
+class Entity: public Positionable {
 protected:
     // up/dir vectors, derived from angle.x/angle.y
     float get_speed(float force);
 public:
-    // ----- IDENTIFYING INFO -----
+    // --- INFO ---
     // identifying information for the entity
     uint32_t vid;
     uint32_t pid;
     
     // used by loader to see how to construct the entity...
     EntityType entity_class;
-    
-    // some permissions/flags
+
+    // --- MOTION ---
+    // whether to enable collision detection for this entity
     bool can_collide;
-    bool can_rotate;
-    
-    // ----- POSITIONING INFO -----
-    // position of the superobject, in RWC
-    fvec3 pos;
-    
-    // angle around dir
-    Rotation angle;
-    
-    // the bounding box over contents of all chunks, in OAC
-    // public for convenience of access
+    // flag set to TRUE when object moves
+    bool stable;
+    // BB of entire object in OAC
     bounding_box bounds;
-    // the center position of this entity. usually set to the middle point of the bounding box
-    fvec3 center_pos;
+    // BB of entire moving object in RWC
+    bounding_box moving_bounds;
     
     // temp variable that tells me my speed at a certain point in time
     fvec3 velocity;
     // temp variable that tells me my angular speed at a certain point in time
     fvec3 angular_velocity;
+    // how fast my velocity decays (think of it as friction)
     float velocity_decay;
     
-    // if the object has velocity/angular velocity, mark this so collision detector picks it up
-    bool stable;
-    
-    fmat4 into_world_mat;
-    fmat4 into_world_mat_smooth;
-    fmat4 into_my_mat;
-    fmat4 into_my_mat_smooth;
-    
-    // ----- MISC INFO -----
+    // ----- PROPERTIES -----
     // weight of the entity
     int weight;
     // height of the entity. 0 is full health (alive!)
     int health;
     // parent entity, if any
-    Entity* parent;
-    
-    // --- COLLISION DETECTION MOVING BB ---
-    bounding_box moving_bounds;
+    // entity must be someone capable of being a parent
+    SuperObject* parent;
     
     Entity();
-    // internal function to transform RWC xyz to OAC src
-    void transform_into_my_coordinates(fvec3* src, float x, float y, float z);
-    void transform_into_my_integer_coordinates(ivec3* src, int x, int y, int z);
-    void transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z);
-    // internal function to transform OAC xyz to RWC src
-    void transform_into_world_coordinates(fvec3* src, float x, float y, float z);
-    void transform_into_world_integer_coordinates(ivec3* src, int x, int y, int z);
-    void transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z);
     
-    void get_mvp(fmat4* dst);
+    // --- Positionable
+    virtual void recalculate_transform() override;
     
-    // movement methods
-    void set_pos(fvec3 p);
-    void set_angle(Rotation a);
-    virtual void recalculate_transform();
+    // --- DEBUG ---
+    void print_debug();
+    
+    // --- MOTION ---
     void move_forward(float force);
     void move_backward(float force);
     void move_forward_flat(float force);
@@ -127,28 +109,27 @@ public:
     void move_dist(fvec3 off);
     void turn_angle(fvec3 off);
     
-    void print_debug();
-    
+    // --- COLLISION ---
     // poke this object at RWC, true if this object says, "OUCH"
     virtual Entity* poke(float x, float y, float z);
-    // break whatever is at RWC coords in this object
-    virtual bool break_block(float x, float y, float z);
+    bool can_be_hurt(BreakablePolicy policy, uint32_t pid);
+    bool can_be_destroyed(BreakablePolicy policy, uint32_t pid);
+    float calculate_damage(float dmg, float resistance);
     // hit this object with some damage
-    virtual void get_hurt(float x, float y, float z, float dmg);
+    virtual bool get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy=ACTIONED, uint32_t pid=0);
     
+    // --- ACTION ---
     // callback methods for when actions are called on this item
     virtual bool block_keyboard_callback(Game* game, Action key, Entity* ent);
     virtual bool block_mouse_callback(Game* game, Action button, Entity* ent);
+    virtual void step(Game* game) EMPTY_FUNCTION;
     
-    virtual void step(Game* game);
-    virtual void render(fmat4* transform);
-    virtual void render_lights(fmat4* transform, fvec3 player_pos);
     // update how this is rendered depending on player position
-    virtual void update_chunks(fvec3* player_pos);
-
-    // this is in RWC!!!!!!!!!!
-    virtual void calculate_moving_bounding_box();
+    virtual void update_render(fvec3* player_pos) EMPTY_FUNCTION;
     
+    // --- MORE COLLISION DETECTION ---
+    // calculate the moving bounding box for this frame
+    virtual void calculate_moving_bounding_box();
     // for more exact collision detection
     virtual bool collides_with(Entity* other);
     // override this with your own int for up to what class of Entities you can handle collision
@@ -159,13 +140,15 @@ public:
     // behaviour to do after a collision
     virtual bool after_collision(Game* game);
     
+    // --- FILE SAVE ---
     virtual int load_selfs();
-    virtual void remove_selfs();
+    virtual void save_selfs();
     virtual std::string get_save_path();
     virtual int load_self(IODataObject* obj);
-    virtual void remove_self(IODataObject* obj);
+    virtual void save_self(IODataObject* obj);
+    
+    Entity* find_top_level_parent();
+    void remove_self();
 };
-
-void test_entity_coordinate_system();
 
 #endif /* defined(__Bawk__entity__) */

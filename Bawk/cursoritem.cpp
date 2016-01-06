@@ -17,7 +17,7 @@ void CursorItem::cleanup() { }
 void CursorItem::reset() { }
 
 // behaviour when this cursor item is clicked
-bool CursorItem::clicked(Game* game, Action mouse, Entity* on) {
+bool CursorItem::clicked(Game* game, Action mouse) {
     return false;
 }
 
