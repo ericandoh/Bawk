@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "basic_types.h"
 #include "game_actions.h"
+#include "block_orientation.h"
 
 struct cursor_item_identifier {
     bool is_blk;
@@ -38,10 +39,22 @@ struct cursor_item_identifier {
 
 class Game;
 class Entity;
+class SuperObject;
 
 // represents an item (either a single block or a template, pretty much)
 class CursorItem {
+    
+protected:
+    // --- Placement related ---
+    SuperObject* target;
+    bool show_item;
+    ivec3 pointing_pos;
+    BlockOrientation pointing_orientation;
+    
+    void update_pointing_position(Game* game, ivec3 dimensions);
+    
 public:
+    CursorItem();
     
     // methods to initialize/cleanup this entity
     virtual void init();
@@ -59,7 +72,7 @@ public:
     virtual bool handle_rotation();
     
     // behaviour to update at each step
-    virtual void step() {};
+    virtual void step(Game* game) EMPTY_FUNCTION;
     
     // render the item with transform in a small box or whatnot
     virtual void render_item() = 0;

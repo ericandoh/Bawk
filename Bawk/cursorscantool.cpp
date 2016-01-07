@@ -141,7 +141,7 @@ bool CursorScanTool::handle_movement(ivec3 dir) {
     return true;
 }
 
-void CursorScanTool::step() {
+void CursorScanTool::step(Game* game) {
     if (current_stage == ScanStages::SETTING_LOWER ||
         current_stage == ScanStages::SETTING_UPPER ||
         current_stage == ScanStages::EXTENDING) {

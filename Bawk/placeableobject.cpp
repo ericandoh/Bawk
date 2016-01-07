@@ -10,6 +10,7 @@
 #include "game.h"
 #include "gametemplate.h"
 #include "worldrender.h"
+#include "blocktracer.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 PlaceableObject::PlaceableObject() {
@@ -43,13 +44,4 @@ void PlaceableObject::calculate_mvp(ivec3 bounds) {
 
 void PlaceableObject::set_mvp() {
     set_camera_transform_matrix(&mvp);
-}
-
-bool PlaceableObject::set_blocks(Game* game) {
-    if (game->game_template) {
-        return set_blocks(game->player, game->world, game->game_template);
-    }
-    else {
-        return set_blocks(game->player, game->world, game->world->base_world);
-    }
 }

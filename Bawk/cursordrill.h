@@ -32,6 +32,7 @@ public:
     //virtual bool canceled(Game* game);
     //virtual bool handle_movement(ivec3 dir);
     //virtual bool handle_rotation();
+    //void step(Game* game) override;
     
     // render the item with transform in a small box or whatnot
     void render_item() override;

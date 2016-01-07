@@ -71,16 +71,16 @@ void main(void) {
         float visibility = 1.0;
         // if normal is zerod - we don't do shadowing
         vec4 shadow_coord = l_shadow_mvp * vec4(worldpos, 1);
-        float bias = 0.0002;
-        //float bias = 0;
-        //if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z - bias) {
-        //    visibility = 0.5;
-        //}
-        for (int i = 0; i < 4; i++) {
-            if (texture(g_shadow_map, shadow_coord.xy + poisson_disk[i]/700.0).x < shadow_coord.z-bias) {
-                visibility-=0.125;
-            }
+        //float bias = 0.0002;
+        float bias = 0;
+        if (texture(g_shadow_map, shadow_coord.xy).x < shadow_coord.z - bias) {
+            visibility = 0.5;
         }
+        //for (int i = 0; i < 4; i++) {
+        //    if (texture(g_shadow_map, shadow_coord.xy + poisson_disk[i]/700.0).x < shadow_coord.z-bias) {
+        //        visibility-=0.125;
+        //    }
+        //}
         
         //float visibility = 1.0 - texture(g_shadow_map, vec3(shadow_coord.xy, (shadow_coord.z - bias) / shadow_coord.w ));
         out_color.xyz = out_color.xyz * l_properties.y * visibility;

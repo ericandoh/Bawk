@@ -8,6 +8,39 @@
 
 #include "cursoritem.h"
 #include "entity.h"
+#include "blocktracer.h"
+#include "game.h"
+#include "gametemplate.h"
+
+CursorItem::CursorItem() {
+    target = 0;
+    show_item = false;
+    pointing_pos = ivec3(0,0,0);
+}
+
+void CursorItem::update_pointing_position(Game* game, ivec3 dimensions) {
+    if (get_pointing_position(&pointing_pos, &pointing_orientation, dimensions)) {
+        show_item = true;
+        if (game->game_template) {
+            target = game->game_template;
+        }
+        else {
+            Entity* at = BlockTracing::selected;
+            if (at->entity_class == EntityType::BASEWORLD ||
+                at->entity_class == EntityType::SUPEROBJECT ||
+                at->entity_class == EntityType::GAMETEMPLATE) {
+                target = (SuperObject*)at;
+            }
+            else {
+                target = at->parent;
+            }
+        }
+    }
+    else {
+        show_item = false;
+        target = 0;
+    }
+}
 
 // methods to initialize/cleanup this entity
 void CursorItem::init() { }

@@ -16,7 +16,6 @@
 
 class CursorModelObject: public PlaceableObject, public CursorItem, public ModelEntity {
     bool locked;
-    bool show_item;
 public:
     CursorModelObject(uint16_t mid);
     
@@ -30,7 +29,7 @@ public:
     bool canceled(Game* game) override;
     bool handle_movement(ivec3 dir) override;
     bool handle_rotation() override;
-    void step() override;
+    void step(Game* game) override;
     void render_item() override;
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;

@@ -17,7 +17,6 @@
 CursorBlock::CursorBlock(block_type type) {
     block = type;
     pos = fvec3(0,0,0);
-    show_item = false;
 }
 
 // --- PlaceableObject
@@ -35,9 +34,13 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
 }
 
 // --- CursorItem ---
+void CursorBlock::reset() {
+    show_item = false;
+}
+
 bool CursorBlock::clicked(Game* game, Action mouse) {
     if (mouse == CLICK_SECONDARY) {
-        return PlaceableObject::set_blocks(game);
+        return set_blocks(game->player, game->world, target);
     }
     return true;
 }
@@ -46,22 +49,13 @@ bool CursorBlock::confirmed(Game* game) {
     return false;
 }
 
-void CursorBlock::step() {
-    // track item
-    ivec3 locked_pos;
-    BlockOrientation orientation;
-    ivec3 upper(1, 1, 1);
-    if (get_pointing_position(&locked_pos, &orientation, upper)) {
-        show_item = true;
-        pos = fvec3(locked_pos.x, locked_pos.y, locked_pos.z);
-        block.orientation = orientation;
-        if (block.orientation == BlockOrientation::TOP || block.orientation == BlockOrientation::BOTTOM) {
-            BlockOrientation player_direction = get_player_direction();
-            block.orientation = player_direction;
-        }
-    }
-    else {
-        show_item = false;
+void CursorBlock::step(Game* game) {
+    update_pointing_position(game, ivec3(1,1,1));
+    pos = fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z);
+    block.orientation = pointing_orientation;
+    if (block.orientation == BlockOrientation::TOP || block.orientation == BlockOrientation::BOTTOM) {
+        BlockOrientation player_direction = get_player_direction();
+        block.orientation = player_direction;
     }
 }
 

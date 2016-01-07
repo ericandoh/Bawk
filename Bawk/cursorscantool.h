@@ -45,7 +45,7 @@ public:
     bool handle_movement(ivec3 dir) override;
     
     // behaviour to update at each step
-    void step() override;
+    void step(Game* game) override;
     
     // render the item with transform in a small box or whatnot
     void render_item() override;

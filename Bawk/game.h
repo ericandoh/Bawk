@@ -51,6 +51,7 @@ class Game : public Displayable {
     // block placement related objects
     
     ItemBar* bar;
+    CursorItem* default_item;
     MainInventoryWidget* inventory_ui;
     ParentWidget* story;
     

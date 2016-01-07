@@ -19,6 +19,7 @@ class SuperObject;
 
 class PlaceableObject {
 protected:
+    // --- Camera MVP related ---
     bool mvp_set;
     fmat4 mvp;
     void calculate_mvp(ivec3 bounds);
@@ -27,8 +28,6 @@ public:
     // if independent, creates a new entity whenever placed into another object
     bool independent;
     PlaceableObject();
-    // sets blocks into another superobject
-    bool set_blocks(Game* game);
     virtual bool set_blocks(Player* player, World* world, SuperObject* object) = 0;
 };
 

@@ -30,7 +30,6 @@ CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): PlaceableSuperObje
     locked = false;
     entity_class = EntityType::CURSORSUPEROBJECT;
     is_recipe = false;
-    show_item = false;
 }
 
 // --- CursorItem ---
@@ -49,6 +48,7 @@ void CursorSuperObject::cleanup() {
 
 void CursorSuperObject::reset() {
     locked = false;
+    show_item = false;
 }
 
 bool CursorSuperObject::clicked(Game* game, Action mouse) {
@@ -66,7 +66,7 @@ bool CursorSuperObject::confirmed(Game* game) {
         return false;
     }
     else {
-        if (PlaceableObject::set_blocks(game)) {
+        if (set_blocks(game->player, game->world, target)) {
             locked = false;
         }
         return true;
@@ -90,22 +90,15 @@ bool CursorSuperObject::handle_movement(ivec3 dir) {
     return true;
 }
 
-void CursorSuperObject::step() {
+void CursorSuperObject::step(Game* game) {
     // try locking this object into position
-    if (!locked ) {
-        ivec3 locked_pos;
-        BlockOrientation orientation;
+    if (!locked) {
         ivec3 upper;
         upper.x = bounds.upper.x - bounds.lower.x;
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
-        if (get_pointing_position(&locked_pos, &orientation, upper)) {
-            show_item = true;
-            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
-        }
-        else {
-            show_item = false;
-        }
+        update_pointing_position(game, upper);
+        pos = fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z);
     }
 }
 

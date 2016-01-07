@@ -11,10 +11,10 @@
 #include "blocktracer.h"
 #include "superobject.h"
 #include "player.h"
+#include "game.h"
 
 CursorModelObject::CursorModelObject(uint16_t mid): ModelEntity(mid) {
     locked = false;
-    show_item = false;
     entity_class = EntityType::CURSORMODELENTITY;
 }
 
@@ -40,6 +40,7 @@ bool CursorModelObject::set_blocks(Player* player, World* world, SuperObject* ob
 // --- CursorItem ---
 void CursorModelObject::reset() {
     locked = false;
+    show_item = false;
 }
 
 bool CursorModelObject::clicked(Game* game, Action mouse) {
@@ -57,7 +58,7 @@ bool CursorModelObject::confirmed(Game* game) {
         return false;
     }
     else {
-        if (PlaceableObject::set_blocks(game)) {
+        if (set_blocks(game->player, game->world, target)) {
             locked = false;
         }
         return true;
@@ -88,22 +89,14 @@ bool CursorModelObject::handle_rotation() {
     return true;
 }
 
-void CursorModelObject::step() {
+void CursorModelObject::step(Game* game) {
     if (!locked) {
-        // if locked, no need to track movement
-        ivec3 locked_pos;
-        BlockOrientation orientation;
         ivec3 upper;
         upper.x = bounds.upper.x - bounds.lower.x;
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
-        if (get_pointing_position(&locked_pos, &orientation, upper)) {
-            show_item = true;
-            set_pos(fvec3(locked_pos.x, locked_pos.y, locked_pos.z));
-        }
-        else {
-            show_item = false;
-        }
+        update_pointing_position(game, upper);
+        pos = fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z);
     }
 }
 

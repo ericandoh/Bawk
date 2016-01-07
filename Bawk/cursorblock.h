@@ -32,7 +32,6 @@
 // Represents a block that can be put down
 
 class CursorBlock: public PlaceableObject, public CursorItem {
-    bool show_item;
     void render_block(fmat4* transform);
 public:
     block_type block;
@@ -43,9 +42,11 @@ public:
     bool set_blocks(Player* player, World* world, SuperObject* object) override;
     
     // --- CursorItem ---
+    void reset() override;
+    
     bool clicked(Game* game, Action mouse) override;
     bool confirmed(Game* game) override;
-    void step() override;
+    void step(Game* game) override;
     void render_item() override;
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;

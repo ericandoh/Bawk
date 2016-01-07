@@ -18,6 +18,7 @@
 #include "gametemplate.h"
 #include "debug_action.h"
 #include "game_actions.h"
+#include "cursorselector.h"
 
 // deleteme
 #include "cursormodelobject.h"
@@ -134,6 +135,8 @@ int Game::init() {
     bar->set_current(new CursorModelObject(2));
     bar->set_index(5);
     bar->set_current(new CursorModelObject(3));
+    
+    default_item = new CursorSelector();
     
     return 0;
 }
@@ -265,7 +268,7 @@ void Game::frame() {
     
     world->step(this);
     if (bar->get_current()) {
-        bar->get_current()->step();
+        bar->get_current()->step(this);
     }
 }
 
@@ -469,8 +472,11 @@ void Game::mouse_button_callback(int button, int action, int mods) {
             }
             if (bar->get_current()) {
                 // using mouse
-                bar->get_current()->clicked(this, do_this);
+                if (bar->get_current()->clicked(this, do_this)) {
+                    return;
+                }
             }
+            default_item->clicked(this, do_this);
         }
         else {
             double mx, my;
