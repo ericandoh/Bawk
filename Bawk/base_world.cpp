@@ -341,7 +341,6 @@ void BaseWorld::step(Game* game) {
     for (auto &i: entities) {
         if (!i->stable) {
             //i->velocity = fvec3(0,0,0);
-            // TODO set a decay constant here
             i->velocity = i->velocity * i->velocity_decay;
             if (fabsf(i->velocity.x) < 0.02f) {
                 i->velocity.x = 0.0f;

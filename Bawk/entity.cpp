@@ -205,7 +205,7 @@ bool Entity::can_be_hurt(BreakablePolicy policy, uint32_t o_pid) {
     else if (policy == EXECUTED) {
         // if executed, only the player can hurt himself, unless he is the world (pid 0) in
         // which a world executed action can hurt anything
-        return (pid == o_pid) || (o_pid == 0);
+        return (pid == o_pid) || (o_pid == 0) || (pid == 0);
     }
     else {
         return false;
@@ -214,12 +214,12 @@ bool Entity::can_be_hurt(BreakablePolicy policy, uint32_t o_pid) {
 
 bool Entity::can_be_destroyed(BreakablePolicy policy, uint32_t o_pid) {
     if (policy == ACTIONED) {
-        // no actioned policies can destroy an object
-        return false;
+        // no actioned policies can destroy an object, unless this comes from the world
+        return pid == 0;
     }
     else if (policy == EXECUTED) {
         // only the player or the world (0) can destroy an object with executive privileges
-        return (pid == o_pid) || (o_pid == 0);
+        return (pid == o_pid) || (o_pid == 0) || (pid == 0);
     }
     else {
         return false;

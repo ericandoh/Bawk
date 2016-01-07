@@ -44,7 +44,6 @@ RenderableChunk::RenderableChunk() {
 RenderableChunk::RenderableChunk(block_type from[CX][CY][CZ]) {
     memset(blk, 0, sizeof blk);
     elements = 0;
-    // wait what - TODO
     block_counter = -1;
     slot = 0;
     lastused = get_current_time();
@@ -524,10 +523,6 @@ void RenderableChunk::render() {
     
     if (model_vertices.size() > 0) {
         // draw blocks that are models
-        // TODO set this in same list as regular block vertex array
-        // since blocked models will be static (nonmoving WRT our chunk)
-        // TODO deprecate the block_draw_mode(1) for blocks, instead just set the texture coordinates
-        // directly (that way we can support blocks that change orientation)
         OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
         int num_triangles = (int)model_vertices.size();
         

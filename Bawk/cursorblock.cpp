@@ -171,7 +171,6 @@ void CursorBlock::render_block(fmat4* transform) {
 
 void CursorBlock::render_light_in_world(fmat4* transform, fvec3 player_pos) {
     // if block has light, render it
-    // TODO
     if (show_item) {
         RenderableLight* light = get_block_light(block.type);
         light->render_light(transform, pos, player_pos);
