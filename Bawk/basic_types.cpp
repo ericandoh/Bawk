@@ -114,3 +114,15 @@ fvec3 get_random_color() {
                  (rand() % 255) / 255.0f);
     return result;
 }
+
+ivec3 add_ivec3(ivec3 a, ivec3 b) {
+    ivec3 result;
+    result.x = a.x + b.x;
+    result.y = a.y + b.y;
+    result.z = a.z + b.z;
+    return result;
+}
+
+int get_positive_mod(int a, int m) {
+    return ((a % m) + m) % m;
+}

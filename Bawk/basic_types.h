@@ -213,6 +213,11 @@ struct int_bounding_box {
         upper.y = std::max(upper.y, a.y);
         upper.z = std::max(upper.z, a.z);
     }
+    bool hits(ivec3 point) {
+        return (lower.x <= point.x) && (point.x < upper.x) &&
+        (lower.y <= point.y) && (point.y < upper.y) &&
+        (lower.z <= point.z) && (point.z < upper.z);
+    }
 };
 
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);
@@ -230,5 +235,9 @@ void printf_fvec4(fvec4 a);
 fvec3 get_nearest_half_or_whole(fvec3 a);
 
 fvec3 get_random_color();
+
+ivec3 add_ivec3(ivec3 a, ivec3 b);
+
+int get_positive_mod(int a, int m);
 
 #endif

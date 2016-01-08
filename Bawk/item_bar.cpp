@@ -85,3 +85,17 @@ void ItemBar::set_to_left() {
 void ItemBar::set_to_right() {
     set_index(index + 1);
 }
+
+void ItemBar::set_first_available(CursorItem* item) {
+    for (int i = STATIC_BAR_ELEMENTS; i < BAR_ITEMS; i++) {
+        if (!((ItemBarlet*)children[i])->get_cursor_item()) {
+            inventory->set_cursoritem_at(item, i);
+            ((ItemBarlet*)children[i])->set_cursor_item(item);
+            return;
+        }
+    }
+    // all bar elements are full, simply override the first one I guess
+    int i = STATIC_BAR_ELEMENTS;
+    inventory->set_cursoritem_at(item, i);
+    ((ItemBarlet*)children[i])->set_cursor_item(item);
+}

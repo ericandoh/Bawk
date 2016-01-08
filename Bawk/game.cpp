@@ -528,6 +528,10 @@ int Game::save_game_data() {
     return 0;
 }
 
+void Game::set_first_available(CursorItem* obj) {
+    bar->set_first_available(obj);
+}
+
 Game::~Game() {
     printf("Cleaning up game\n");
     player->unmount(world);

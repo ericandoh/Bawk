@@ -22,7 +22,6 @@ class CursorScanTool: public CursorItem {
     ivec3 lower, upper, extended;
     int_bounding_box box;
     int_bounding_box extending_box;
-    bool show_item;
     BlockOrientation player_orientation;
 public:
     // a tool to scan blocks. very useful!

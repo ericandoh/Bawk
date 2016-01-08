@@ -43,6 +43,8 @@ public:
     void set_index(int new_index);
     void set_to_left();
     void set_to_right();
+    
+    void set_first_available(CursorItem* item);
 };
 
 #endif /* defined(__Bawk__item_bar__) */

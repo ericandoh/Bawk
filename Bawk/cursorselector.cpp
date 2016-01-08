@@ -28,7 +28,9 @@ bool CursorSelector::clicked(Game* game, Action mouse) {
         return true;
     }
     selected = BlockTracing::selected;
-    if (selected->entity_class == EntityType::SUPEROBJECT) {
+    if (selected->entity_class == EntityType::SUPEROBJECT ||
+        selected->entity_class == EntityType::BASEWORLD ||
+        selected->entity_class == EntityType::GAMETEMPLATE) {
         is_block_selected = true;
         selected_pos = BlockTracing::pointed_pos;
     }

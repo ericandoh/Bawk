@@ -83,6 +83,8 @@ public:
     void mouse_move_callback(double xdiff, double ydiff) override;
     void mouse_button_callback(int button, int action, int mods) override;
     void scroll_callback(double xoffset, double yoffset) override;
+    
+    void set_first_available(CursorItem* obj);
     ~Game();
 };
 
