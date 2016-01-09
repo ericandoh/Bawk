@@ -240,4 +240,7 @@ ivec3 add_ivec3(ivec3 a, ivec3 b);
 
 int get_positive_mod(int a, int m);
 
+float convert_milli_to_sec(int ms);
+int convert_sec_to_milli(float sec);
+
 #endif

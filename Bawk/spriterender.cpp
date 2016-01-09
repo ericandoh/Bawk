@@ -87,7 +87,7 @@ void SpriteRender::render_rectangle(fmat4* transform, float width, float height,
     glDrawArrays(GL_TRIANGLES, 0, num_triangles);
 }
 
-void SpriteRender::step(Game* game) {
+void SpriteRender::step(Game* game, int ms) {
     if (ttl == 0 && duration > 0) {
         // TODO this sprite should die
         //((SuperObject*)parent)->remove_sprite(...);

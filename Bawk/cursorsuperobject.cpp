@@ -90,7 +90,7 @@ bool CursorSuperObject::handle_movement(ivec3 dir) {
     return true;
 }
 
-void CursorSuperObject::step(Game* game) {
+void CursorSuperObject::step(Game* game, int ms) {
     // try locking this object into position
     if (!locked) {
         ivec3 upper;

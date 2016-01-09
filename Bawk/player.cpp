@@ -94,8 +94,8 @@ ivec3 Player::get_rounded_forward() {
     }
 }
 
-void Player::step(Game* game) {
-    RenderablePlayer::step(game);
+void Player::step(Game* game, int ms) {
+    RenderablePlayer::step(game, ms);
 }
 
 void Player::set_mount(SuperObject* m, fvec3 rwc) {

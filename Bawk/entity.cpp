@@ -248,14 +248,6 @@ bool Entity::get_hurt(float x, float y, float z, float dmg, BreakablePolicy poli
     return true;
 }
 
-bool Entity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
-    return false;
-}
-
-bool Entity::block_mouse_callback(Game* game, Action button, Entity* ent) {
-    return false;
-}
-
 void Entity::calculate_moving_bounding_box() {
     // transform my bounds into RWC
     fvec3 lower_rwc, upper_rwc;

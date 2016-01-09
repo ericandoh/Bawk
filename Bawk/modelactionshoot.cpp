@@ -15,20 +15,31 @@
 #include "game_info_loader.h"
 
 class ModelShootActionMultiplexer: public ModelActionMultiplexer {
+    int time_elapsed;           // elapsed time since the last bullet was shot, in MS
 public:
-    uint16_t projectile_id;
-    float firing_speed;
+    uint16_t projectile_id;     // model ID of the bullet we shoot out
+    float firing_speed;         // speed this bullet is ejected out at
+    int firerate;                    // rate of fire (how frequently to shoot), in MS
     ModelShootActionMultiplexer();
-    bool model_callback_click_main(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_click_main(MODEL_FUNCTION_ARGS) override;
 };
 
 ModelShootActionMultiplexer::ModelShootActionMultiplexer() {
     // write constructor here
     projectile_id = 0;
     firing_speed = 5.0f;
+    firerate = 30;
+    
+    time_elapsed = 0;
 }
 
-bool ModelShootActionMultiplexer::model_callback_click_main(Game* game, Entity* owner, Entity* piece) {
+bool ModelShootActionMultiplexer::model_callback_click_main(MODEL_FUNCTION_ARGS) {
+    time_elapsed += ms;
+    if (time_elapsed < firerate) {
+        return true;
+    }
+    time_elapsed -= firerate;
+    
     printf("pew pew! from %f %f %f\n", piece->pos.x, piece->pos.y, piece->pos.z);
     // TODO this obviously needs to be changed
     ModelEntity* bullet = new ModelEntity(game->player->pid, game->player->assignID(), projectile_id);
@@ -51,5 +62,6 @@ ModelActionMultiplexer* get_shoot_model_multiplexer(Json::Value node) {
         mult->projectile_id = get_model_id_from_name(node["projectile"]);
     }
     json_read_float_safe(&mult->firing_speed, node, "pspeed");
+    json_read_int_safe(&mult->firerate, node, "firerate");
     return mult;
 }

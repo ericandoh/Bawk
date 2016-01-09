@@ -49,7 +49,7 @@ bool CursorBlock::confirmed(Game* game) {
     return false;
 }
 
-void CursorBlock::step(Game* game) {
+void CursorBlock::step(Game* game, int ms) {
     update_pointing_position(game, ivec3(1,1,1));
     pos = fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z);
     block.orientation = pointing_orientation;

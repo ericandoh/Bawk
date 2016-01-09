@@ -29,8 +29,9 @@ public:
     
     // --- Entity ---
     // Entity* poke(float x, float y, float z) override;
-    bool block_keyboard_callback(Game* game, Action key, Entity* ent) override;
+    bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) override;
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
+    void step(Game* game, int ms) override;
     void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
     void update_render(fvec3* player_pos) override;

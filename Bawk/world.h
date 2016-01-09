@@ -61,7 +61,7 @@ public:
     void add_entity(Entity* entity);
     void add_event(WorldEvent* event);
     
-    void step(Game* game);
+    void step(Game* game, int ms);
     
     bool will_collide_with_anything(Entity* superobject);
     SuperObject* create_superobject(Player* player);

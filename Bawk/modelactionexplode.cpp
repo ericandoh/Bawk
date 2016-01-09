@@ -20,7 +20,7 @@ public:
     float radius;
     float damage;
     ModelExplodeActionMultiplexer();
-    bool model_callback_collision(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_collision(MODEL_FUNCTION_ARGS) override;
 };
 
 ModelExplodeActionMultiplexer::ModelExplodeActionMultiplexer() {
@@ -28,7 +28,7 @@ ModelExplodeActionMultiplexer::ModelExplodeActionMultiplexer() {
     damage = 500.0f;
 }
 
-bool ModelExplodeActionMultiplexer::model_callback_collision(Game* game, Entity* owner, Entity* piece) {
+bool ModelExplodeActionMultiplexer::model_callback_collision(MODEL_FUNCTION_ARGS) {
     fvec3 pos = piece->pos + piece->center_pos;
     if (piece->parent) {
         piece->parent->transform_into_world_coordinates_smooth(&pos, pos.x, pos.y, pos.z);

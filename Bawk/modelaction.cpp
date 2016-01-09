@@ -24,10 +24,10 @@ namespace action_multiplexing {
 
 using namespace action_multiplexing;
 
-bool ModelActionMultiplexer::model_callback(Game* game, Entity* owner, Entity* piece, Action key) {
+bool ModelActionMultiplexer::model_callback(Game* game, Entity* owner, Entity* piece, Action key, int ms) {
     model_callback_func func = get_model_action_from(key);
     if (func) {
-        return (this->*func)(game, owner, piece);
+        return (this->*func)(game, owner, piece, ms);
     }
     return false;
 }

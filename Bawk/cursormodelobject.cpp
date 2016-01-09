@@ -89,7 +89,7 @@ bool CursorModelObject::handle_rotation() {
     return true;
 }
 
-void CursorModelObject::step(Game* game) {
+void CursorModelObject::step(Game* game, int ms) {
     if (!locked) {
         ivec3 upper;
         upper.x = bounds.upper.x - bounds.lower.x;

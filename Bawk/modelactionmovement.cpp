@@ -15,21 +15,35 @@
 
 class ModelEngineActionMultiplexer: public ModelActionMultiplexer {
 public:
-    bool model_callback_move_forward(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_move_backward(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_move_up(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_move_down(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_yaw_left(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_yaw_right(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_roll_left(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_roll_right(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_pitch_up(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_pitch_down(Game *game, Entity *owner, Entity *piece) override;
+    float forward_speed, backward_speed;
+    float vertical_speed;
+    float yaw_speed, roll_speed, pitch_speed;
+    ModelEngineActionMultiplexer();
+    bool model_callback_move_forward(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_move_backward(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_move_up(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_move_down(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_yaw_left(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_yaw_right(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_roll_left(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_roll_right(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_pitch_up(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_pitch_down(MODEL_FUNCTION_ARGS) override;
 };
 
-bool ModelEngineActionMultiplexer::model_callback_move_forward(Game* game, Entity* owner, Entity* piece) {
+ModelEngineActionMultiplexer::ModelEngineActionMultiplexer() {
+    // apply 500 force during 1 second
+    forward_speed = 500.0f / convert_sec_to_milli(1);
+    backward_speed = 100.0f / convert_sec_to_milli(1);
+    vertical_speed = 150.0f / convert_sec_to_milli(1);
+    yaw_speed = 100.0f / convert_sec_to_milli(1);
+    roll_speed = 70.0f / convert_sec_to_milli(1);
+    pitch_speed = 100.0f / convert_sec_to_milli(1);
+}
+
+bool ModelEngineActionMultiplexer::model_callback_move_forward(MODEL_FUNCTION_ARGS) {
     // piece->get_force() or some shizzle...and repeat for all below
-    owner->move_forward(20.0f);
+    owner->move_forward(forward_speed * ms);
     
     fvec3 rand_offset = fvec3(rand() % 100 - 50.0f,rand() % 100 - 50.0f,rand() % 100 - 50.0f) / 400.0f;
     fvec3 pos = piece->pos + piece->center_pos + rand_offset;
@@ -42,55 +56,60 @@ bool ModelEngineActionMultiplexer::model_callback_move_forward(Game* game, Entit
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_move_backward(Game* game, Entity* owner, Entity* piece) {
-    owner->move_backward(5.0f);
+bool ModelEngineActionMultiplexer::model_callback_move_backward(MODEL_FUNCTION_ARGS) {
+    owner->move_backward(backward_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_move_up(Game* game, Entity* owner, Entity* piece) {
-    owner->move_up(5.0f);
+bool ModelEngineActionMultiplexer::model_callback_move_up(MODEL_FUNCTION_ARGS) {
+    owner->move_up(vertical_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_move_down(Game* game, Entity* owner, Entity* piece) {
-    owner->move_down(5.0f);
+bool ModelEngineActionMultiplexer::model_callback_move_down(MODEL_FUNCTION_ARGS) {
+    owner->move_down(vertical_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_yaw_left(Game* game, Entity* owner, Entity* piece) {
-    owner->yaw_left(4.0f);
+bool ModelEngineActionMultiplexer::model_callback_yaw_left(MODEL_FUNCTION_ARGS) {
+    owner->yaw_left(yaw_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_yaw_right(Game* game, Entity* owner, Entity* piece) {
-    owner->yaw_right(4.0f);
+bool ModelEngineActionMultiplexer::model_callback_yaw_right(MODEL_FUNCTION_ARGS) {
+    owner->yaw_right(yaw_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_roll_left(Game* game, Entity* owner, Entity* piece) {
-    owner->roll_left(3.0f);
+bool ModelEngineActionMultiplexer::model_callback_roll_left(MODEL_FUNCTION_ARGS) {
+    owner->roll_left(roll_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_roll_right(Game* game, Entity* owner, Entity* piece) {
-    owner->roll_right(3.0f);
+bool ModelEngineActionMultiplexer::model_callback_roll_right(MODEL_FUNCTION_ARGS) {
+    owner->roll_right(roll_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_pitch_up(Game* game, Entity* owner, Entity* piece) {
-    owner->pitch_up(3.0f);
+bool ModelEngineActionMultiplexer::model_callback_pitch_up(MODEL_FUNCTION_ARGS) {
+    owner->pitch_up(pitch_speed * ms);
     return true;
 }
 
-bool ModelEngineActionMultiplexer::model_callback_pitch_down(Game* game, Entity* owner, Entity* piece) {
-    owner->pitch_down(3.0f);
+bool ModelEngineActionMultiplexer::model_callback_pitch_down(MODEL_FUNCTION_ARGS) {
+    owner->pitch_down(pitch_speed * ms);
     return true;
 }
 
 ModelActionMultiplexer* get_engine_model_multiplexer(Json::Value node) {
     ModelEngineActionMultiplexer* mult = new ModelEngineActionMultiplexer();
     
-    //json_read_float_safe(&mult->fillme, node, "value");
+    json_read_float_safe(&mult->forward_speed, node, "forward");
+    json_read_float_safe(&mult->backward_speed, node, "backward");
+    json_read_float_safe(&mult->vertical_speed, node, "vertical");
+    json_read_float_safe(&mult->yaw_speed, node, "yaw");
+    json_read_float_safe(&mult->roll_speed, node, "roll");
+    json_read_float_safe(&mult->pitch_speed, node, "pitch");
     
     return mult;
 }

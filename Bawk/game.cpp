@@ -43,6 +43,7 @@ int toggleable_keys[] = {SDLK_SPACE,
 std::map<int, Action> key_to_action;
 std::map<int, Action> mouse_to_action;
 std::map<int, bool> key_toggled;
+std::map<int, bool> mouse_toggled;
 
 // if the player moves more than 1 dimension away from previous location, update
 float CHUNK_UPDATE_TRIGGER_DISTANCE = 16.0f;
@@ -114,6 +115,9 @@ int Game::init() {
     
     for (unsigned int i = 0; i < sizeof(toggleable_keys); i++) {
         key_toggled[toggleable_keys[i]] = false;
+    }
+    for (auto &i: mouse_to_action) {
+        mouse_toggled[i.first] = false;
     }
     
     game_template = 0;
@@ -223,7 +227,7 @@ void Game::render_lights() {
 }
 
 // runs one frame of the game
-void Game::frame() {
+void Game::frame(int ms) {
     for (auto& key : key_toggled) {
         if (key.second) {
             Action do_this = key_to_action[key.first];
@@ -232,27 +236,28 @@ void Game::frame() {
             if (mount) {
                 // if mounted, always capture all key movements even if not valid
                 // this is because all the other below default options should be DISABLE when mounted
-                mount->block_keyboard_callback(this, do_this, mount);
+                mount->block_keyboard_callback(this, do_this, mount, ms);
             }
             else {
+                float speed = player->weight * convert_milli_to_sec(ms);
                 switch (do_this) {
                     case MOVE_UP:
-                        player->move_up_flat(5.0f);
+                        player->move_up_flat(speed);
                         break;
                     case MOVE_DOWN:
-                        player->move_down_flat(5.0f);
+                        player->move_down_flat(speed);
                         break;
                     case MOVE_LEFT:
-                        player->move_left(5.0f);
+                        player->move_left(speed);
                         break;
                     case MOVE_RIGHT:
-                        player->move_right(5.0f);
+                        player->move_right(speed);
                         break;
                     case MOVE_FORWARD:
-                        player->move_forward_flat(5.0f);
+                        player->move_forward_flat(speed);
                         break;
                     case MOVE_BACKWARD:
-                        player->move_backward_flat(5.0f);
+                        player->move_backward_flat(speed);
                         break;
                     default:
                         // do nothing
@@ -261,14 +266,33 @@ void Game::frame() {
             }
         }
     }
+    
+    for (auto &key: mouse_toggled) {
+        if (key.second) {
+            Action do_this = key_to_action[key.first];
+            SuperObject* mount = player->get_mount();
+            if (mount) {
+                if (mount->block_keyboard_callback(this, do_this, mount, ms)) {
+                    continue;
+                }
+            }
+            if (bar->get_current()) {
+                // using mouse
+                if (bar->get_current()->clicking(this, do_this, ms)) {
+                    continue;
+                }
+            }
+            default_item->clicking(this, do_this, ms);
+        }
+    }
     check_need_update();
     
     // get depth coordinates
     player->query_depth(world);
     
-    world->step(this);
+    world->step(this, ms);
     if (bar->get_current()) {
-        bar->get_current()->step(this);
+        bar->get_current()->step(this, ms);
     }
 }
 
@@ -434,7 +458,7 @@ void Game::key_callback(int key, int scancode, int action, int mods) {
         SuperObject* mount = player->get_mount();
         if (mount) {
             Action do_this = key_to_action[key];
-            if (mount->block_keyboard_callback(this, do_this, mount)) {
+            if (mount->block_keyboard_callback(this, do_this, mount, 0)) {
                 return;
             }
         }
@@ -456,14 +480,9 @@ void Game::mouse_move_callback(double xdiff, double ydiff) {
 void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == SDL_MOUSEBUTTONDOWN) {
         Action do_this = mouse_to_action[button];
+        mouse_toggled[do_this] = true;
+        
         if (in_game) {
-            // see if we're in any vehicle of any sort, then see if it'll accept the mouse button i send
-            SuperObject* mount = player->get_mount();
-            if (mount) {
-                if (mount->block_keyboard_callback(this, do_this, mount)) {
-                    return;
-                }
-            }
             if (BlockTracing::show_item) {
                 Entity* src = BlockTracing::selected->find_top_level_parent();
                 if (BlockTracing::selected->block_mouse_callback(this, do_this, src)) {
@@ -483,6 +502,11 @@ void Game::mouse_button_callback(int button, int action, int mods) {
             display_get_cursor_position(&mx, &my);
             story->onclick((int)mx, (int)my, do_this);
         }
+
+    }
+    else if (action == SDL_MOUSEBUTTONUP) {
+        Action do_this = mouse_to_action[button];
+        mouse_toggled[do_this] = false;
     }
 }
 

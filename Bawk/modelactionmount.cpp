@@ -12,11 +12,11 @@
 
 class ModelMountActionMultiplexer: public ModelActionMultiplexer {
 public:
-    bool model_callback_clicked_secondary(Game *game, Entity *owner, Entity *piece) override;
-    bool model_callback_mount(Game *game, Entity *owner, Entity *piece) override;
+    bool model_callback_clicked_secondary(MODEL_FUNCTION_ARGS) override;
+    bool model_callback_mount(MODEL_FUNCTION_ARGS) override;
 };
 
-bool ModelMountActionMultiplexer::model_callback_clicked_secondary(Game* game, Entity* owner, Entity* piece) {
+bool ModelMountActionMultiplexer::model_callback_clicked_secondary(MODEL_FUNCTION_ARGS) {
     if (owner && owner->entity_class == EntityType::SUPEROBJECT) {
         fvec3 piece_pos = piece->pos + piece->center_pos + fvec3(0.0f, 0.75f, 0.0f);
         if (piece->parent)
@@ -28,7 +28,7 @@ bool ModelMountActionMultiplexer::model_callback_clicked_secondary(Game* game, E
     return false;
 }
 
-bool ModelMountActionMultiplexer::model_callback_mount(Game* game, Entity* owner, Entity* piece) {
+bool ModelMountActionMultiplexer::model_callback_mount(MODEL_FUNCTION_ARGS) {
     game->player->unmount(game->world);
     return true;
 }

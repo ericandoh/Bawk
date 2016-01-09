@@ -24,7 +24,7 @@ public:
     //virtual void reset();
     
     // behaviour when this cursor item is clicked
-    bool clicked(Game* game, Action mouse) override;
+    bool clicking(Game* game, Action mouse, int ms) override;
     //virtual bool pushed(Game* game, Action key) { return false; };
     
     // behaviour when this cursor item is entered
@@ -32,7 +32,7 @@ public:
     //virtual bool canceled(Game* game);
     //virtual bool handle_movement(ivec3 dir);
     //virtual bool handle_rotation();
-    //void step(Game* game) override;
+    //void step(Game* game, int ms) override;
     
     // render the item with transform in a small box or whatnot
     void render_item() override;

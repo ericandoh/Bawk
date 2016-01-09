@@ -63,22 +63,27 @@ void ModelEntity::set_model(uint16_t m) {
 // --- Entity ---
 // Entity* ModelEntity::poke(float x, float y, float z) {}
 
-bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent) {
+bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) {
     if (multiplexer)
-        return multiplexer->model_callback(game, ent, this, key);
+        return multiplexer->model_callback(game, ent, this, key, ms);
     return false;
 }
 
 bool ModelEntity::block_mouse_callback(Game* game, Action button, Entity* ent) {
     if (multiplexer) {
         if (button == Action::CLICK_MAIN) {
-            return multiplexer->model_callback_clicked_main(game, ent, this);
+            return multiplexer->model_callback_clicked_main(game, ent, this, 0);
         }
         else if (button == Action::CLICK_SECONDARY) {
-            return multiplexer->model_callback_clicked_secondary(game, ent, this);
+            return multiplexer->model_callback_clicked_secondary(game, ent, this, 0);
         }
     }
     return false;
+}
+
+void ModelEntity::step(Game* game, int ms) {
+    if (multiplexer)
+        multiplexer->model_callback_step(game, this, this, ms);
 }
 
 void ModelEntity::render(fmat4* transform) {
@@ -118,7 +123,7 @@ void ModelEntity::update_render(fvec3* player_pos) {
 
 bool ModelEntity::after_collision(Game* game) {
     if (multiplexer)
-        multiplexer->model_callback_collision(game, this, this);
+        multiplexer->model_callback_collision(game, this, this, 0);
     return true;
 }
 

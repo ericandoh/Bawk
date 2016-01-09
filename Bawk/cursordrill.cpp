@@ -14,7 +14,7 @@ CursorDrill::CursorDrill() {
     dps = MAX_HEALTH / 3.0f;
 }
 
-bool CursorDrill::clicked(Game* game, Action mouse) {
+bool CursorDrill::clicking(Game* game, Action mouse, int ms) {
     if (!BlockTracing::show_item)
         return false;
     Entity* src = BlockTracing::selected;
@@ -29,11 +29,13 @@ bool CursorDrill::clicked(Game* game, Action mouse) {
         return false;
     }
     
+    float dmg = convert_milli_to_sec(ms) * dps;
+    
     // get the location in the object we want to hit
     src->get_hurt(BlockTracing::pointed_pos.x,
                   BlockTracing::pointed_pos.y,
                   BlockTracing::pointed_pos.z,
-                  500.0f, BreakablePolicy::EXECUTED, game->player->pid);
+                  dmg, BreakablePolicy::EXECUTED, game->player->pid);
     return true;
 }
 

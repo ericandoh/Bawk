@@ -120,9 +120,9 @@ public:
     
     // --- ACTION ---
     // callback methods for when actions are called on this item
-    virtual bool block_keyboard_callback(Game* game, Action key, Entity* ent);
-    virtual bool block_mouse_callback(Game* game, Action button, Entity* ent);
-    virtual void step(Game* game) EMPTY_FUNCTION;
+    virtual bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) EMPTY_BOOL_FUNCTION;
+    virtual bool block_mouse_callback(Game* game, Action button, Entity* ent) EMPTY_BOOL_FUNCTION;
+    virtual void step(Game* game, int ms) EMPTY_FUNCTION;
     
     // update how this is rendered depending on player position
     virtual void update_render(fvec3* player_pos) EMPTY_FUNCTION;

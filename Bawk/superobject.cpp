@@ -227,10 +227,10 @@ Entity* SuperObject::poke(float x, float y, float z) {
     return 0;
 }
 
-bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent) {
+bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) {
     bool any = false;
     for (Entity* entity: entities) {
-        any = entity->block_keyboard_callback(game, key, ent) || any;
+        any = entity->block_keyboard_callback(game, key, ent, ms) || any;
     }
     if (key_mapping.count(key)) {
         for (int i = 0; i < key_mapping[key].size(); i++) {
@@ -267,10 +267,10 @@ bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
     return false;
 }
 
-void SuperObject::step(Game* game) {
-    RenderableSuperObject::step(game);
+void SuperObject::step(Game* game, int ms) {
+    RenderableSuperObject::step(game, ms);
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->step(game);
+        entities[i]->step(game, ms);
     }
     /*if (stable) {
         float max_movement = 0.05f;

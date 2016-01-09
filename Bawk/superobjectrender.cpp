@@ -351,7 +351,7 @@ bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, Break
     return true;
 }
 
-void RenderableSuperObject::step(Game* game) {
+void RenderableSuperObject::step(Game* game, int ms) {
     manager.flush_chunks();
 }
 

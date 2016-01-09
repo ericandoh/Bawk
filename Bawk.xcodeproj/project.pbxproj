@@ -86,6 +86,7 @@
 		078E87A51C1BF98700A825EB /* spritegetter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A31C1BF98700A825EB /* spritegetter.cpp */; };
 		078E87A81C1C11A800A825EB /* json_reader_helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 078E87A61C1C11A800A825EB /* json_reader_helper.cpp */; };
 		07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07919A341C1F9E050047C7FE /* modelaction.cpp */; };
+		079AFDE41C406A45002F1235 /* modelactionturret.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 079AFDE21C406A45002F1235 /* modelactionturret.cpp */; };
 		07A4A5811C359CCB0060F28C /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07A4A5801C359CCB0060F28C /* SDL2.framework */; };
 		07A4A5841C35B0C60060F28C /* importsdl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07A4A5831C35B0C60060F28C /* importsdl.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
@@ -284,6 +285,8 @@
 		078E87A71C1C11A800A825EB /* json_reader_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json_reader_helper.h; sourceTree = "<group>"; };
 		07919A341C1F9E050047C7FE /* modelaction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelaction.cpp; sourceTree = "<group>"; };
 		07919A351C1F9E050047C7FE /* modelaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelaction.h; sourceTree = "<group>"; };
+		079AFDE21C406A45002F1235 /* modelactionturret.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelactionturret.cpp; sourceTree = "<group>"; };
+		079AFDE31C406A45002F1235 /* modelactionturret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionturret.h; sourceTree = "<group>"; };
 		07A4A5801C359CCB0060F28C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		07A4A5821C35AC570060F28C /* importsdl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = importsdl.h; sourceTree = "<group>"; };
 		07A4A5831C35B0C60060F28C /* importsdl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = importsdl.cpp; sourceTree = "<group>"; };
@@ -387,6 +390,8 @@
 				071BB7431C18B36800563D4A /* modelactionexplode.h */,
 				07919A341C1F9E050047C7FE /* modelaction.cpp */,
 				07919A351C1F9E050047C7FE /* modelaction.h */,
+				079AFDE21C406A45002F1235 /* modelactionturret.cpp */,
+				079AFDE31C406A45002F1235 /* modelactionturret.h */,
 			);
 			name = blockactions;
 			sourceTree = "<group>";
@@ -675,6 +680,7 @@
 				0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */,
 				071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */,
 				0704CF741BC997550050EE52 /* item_bar.cpp in Sources */,
+				079AFDE41C406A45002F1235 /* modelactionturret.cpp in Sources */,
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
 				076BEFF41BD213B900D68C8F /* scrolling_widget.cpp in Sources */,
 				0766EB001BBF7DBE00477144 /* stb_image_aug.c in Sources */,

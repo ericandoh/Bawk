@@ -63,6 +63,7 @@ public:
     
     // behaviour when this cursor item is clicked
     virtual bool clicked(Game* game, Action mouse);
+    virtual bool clicking(Game* game, Action mouse, int ms) EMPTY_BOOL_FUNCTION;
     virtual bool pushed(Game* game, Action key) EMPTY_BOOL_FUNCTION;
     
     // behaviour when this cursor item is entered
@@ -72,7 +73,7 @@ public:
     virtual bool handle_rotation();
     
     // behaviour to update at each step
-    virtual void step(Game* game) EMPTY_FUNCTION;
+    virtual void step(Game* game, int ms) EMPTY_FUNCTION;
     
     // render the item with transform in a small box or whatnot
     virtual void render_item() = 0;

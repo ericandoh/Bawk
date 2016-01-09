@@ -126,3 +126,12 @@ ivec3 add_ivec3(ivec3 a, ivec3 b) {
 int get_positive_mod(int a, int m) {
     return ((a % m) + m) % m;
 }
+
+float convert_milli_to_sec(int ms) {
+    return ms / 1000.0f;
+}
+
+int convert_sec_to_milli(float sec) {
+    return (int)(sec * 1000);
+}
+

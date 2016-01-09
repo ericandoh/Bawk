@@ -46,7 +46,7 @@ public:
     
     bool clicked(Game* game, Action mouse) override;
     bool confirmed(Game* game) override;
-    void step(Game* game) override;
+    void step(Game* game, int ms) override;
     void render_item() override;
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;

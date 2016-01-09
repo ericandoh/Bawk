@@ -122,8 +122,8 @@ bool sort_on_z(Entity* a, Entity* b) {
  for practice will work well enough
  
  */
-void BaseWorld::step(Game* game) {
-    SuperObject::step(game);
+void BaseWorld::step(Game* game, int ms) {
+    SuperObject::step(game, ms);
     
     // step on each entity, updating velocity/stable/etc if needed
     // step should also add the velocities to the position/angle/dir

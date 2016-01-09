@@ -10,6 +10,7 @@
 #define __Bawk__spriterender__
 
 #include <stdio.h>
+//#include "positionable.h"
 #include "entity.h"
 #include "lightrender.h"
 
@@ -55,6 +56,8 @@ class SpriteRender;
  - Multiplex in the base BlockAction class, define + copy behaviours for different engines of different strength/etc
  */
 
+class Game;
+
 class SpriteSteppable {
 public:
     virtual void step(Game* game, SpriteRender* render);
@@ -95,7 +98,7 @@ public:
     SpriteRender* copy();
     
     // --- Entity ---
-    void step(Game* game) override;
+    void step(Game* game, int ms) override; //override;
     void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
 

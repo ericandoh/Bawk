@@ -74,7 +74,7 @@ public:
     void render() override;
     void render_shadows() override;
     void render_lights() override;
-    void frame() override;
+    void frame(int ms) override;
     void switch_current_item(int to_index);
     
     void key_callback_default(int key);

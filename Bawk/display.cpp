@@ -43,7 +43,7 @@ const double FRAME_RATE=30.0;
 const double TIME_PER_FRAME = 1000.0f / FRAME_RATE;
 
 // if current time is bigger than this, run the frame()
-int need_refresh_time = 0;
+uint32_t previous_time = 0;
 
 // --- Rendering Buffers ---
 SDL_Window* window;
@@ -428,14 +428,15 @@ void render_debug() {
 int display_run()
 {
     should_exit = false;
-    need_refresh_time = get_current_time() + TIME_PER_FRAME;
+    previous_time = get_current_time();
     // render loop
     
     while (!should_exit) {
         // change to while to make it catch up to events
-        if (get_current_time() > need_refresh_time) {
-            need_refresh_time += TIME_PER_FRAME;
-            current_display->frame();
+        uint32_t current_time = get_current_time();
+        if (current_time > previous_time + TIME_PER_FRAME) {
+            current_display->frame(current_time - previous_time);
+            previous_time += TIME_PER_FRAME;
         }
         
         render_geometry();

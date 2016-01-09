@@ -7,3 +7,28 @@
 //
 
 #include "cursorweapon.h"
+#include "blocktracer.h"
+#include "game.h"
+
+CursorWeapon::CursorWeapon() {
+    dmg = 500.0f;
+}
+
+bool CursorWeapon::clicking(Game* game, Action mouse, int ms) {
+    if (!BlockTracing::show_item)
+        return false;
+    Entity* src = BlockTracing::selected;
+    if (!src)
+        return false;
+    
+    // get the location in the object we want to hit
+    src->get_hurt(BlockTracing::pointed_pos.x,
+                  BlockTracing::pointed_pos.y,
+                  BlockTracing::pointed_pos.z,
+                  dmg, BreakablePolicy::ACTIONED, game->player->pid);
+    return true;
+}
+
+cursor_item_identifier CursorWeapon::get_identifier() {
+    return cursor_item_identifier();
+}
