@@ -331,6 +331,10 @@ Entity* RenderableSuperObject::poke(float x, float y, float z) {
     return 0;
 }
 
+int get_breaking_stage(int life) {
+    return life * BREAKING_STAGES / MAX_HEALTH;
+}
+
 bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, uint32_t pid) {
     if (!can_be_hurt(policy, pid)) {
         return false;
@@ -340,12 +344,22 @@ bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, Break
     if (blk) {
         int resistance = get_block_resistance(blk->type);
         int actual_dmg = (int)calculate_damage(dmg, resistance);
+        int first_stage = get_breaking_stage(blk->life);
         blk->life += actual_dmg;
         if (blk->life >= MAX_HEALTH) {
             blk->life = MAX_HEALTH;
             if (can_be_destroyed(policy, pid)) {
                 set_block(x, y, z, block_type());
             }
+        }
+        if (get_breaking_stage(blk->life) != first_stage) {
+            // first transform to OAC
+            fvec3 oac;
+            transform_into_my_coordinates(&oac, x, y, z);
+            // now transform into cac, crc
+            ivec3 cac, crc;
+            transform_into_chunk_bounds(&cac, &crc, oac.x, oac.y, oac.z);
+            chunks[cac]->changed = true;
         }
     }
     return true;

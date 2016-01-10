@@ -28,7 +28,7 @@ ModelShootActionMultiplexer::ModelShootActionMultiplexer() {
     // write constructor here
     projectile_id = 0;
     firing_speed = 5.0f;
-    firerate = 30;
+    firerate = 1000;
     
     time_elapsed = 0;
 }

@@ -23,8 +23,6 @@
 #ifndef __Bawk__entity__
 #define __Bawk__entity__
 
-#define MAX_HEALTH 1024
-
 #include <stdio.h>
 #include <string>
 #include "basic_types.h"

@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>3A5ED5D8-E204-4218-98F5-10A8D7EA4F9C</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>Bawk</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>328E6FB5D6D5104B8F4684529AB2FAA35A66E315</key>
 		<string>github.com:ericandoh/Bawk.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Bawk.xcodeproj/project.xcworkspace</string>
+	<string>Bawk.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>328E6FB5D6D5104B8F4684529AB2FAA35A66E315</key>

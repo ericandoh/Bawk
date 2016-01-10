@@ -30,9 +30,13 @@
 #define CY 16
 #define CZ 16
 
+#define MAX_HEALTH 1024
+
 const unsigned int TILES_PER_TEXTURE = 16;
 
 const int CHUNK_RENDER_DIST = 5;
+
+const int BREAKING_STAGES = 3;
 
 const std::string EXAMPLE_CONSTANT = "this is a sample constant!";
 

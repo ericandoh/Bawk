@@ -36,14 +36,39 @@ void main(void) {
         int shaderflags = int(g_texcoord.z);
         vec2 imgcoord;
         float intensity;
+        float xcoord, ycoord;
         if (mod(shaderflags, 0x2) > 0) {
             // we have a top or bottom face (texture_coord.z = 1)
-            imgcoord = vec2((fract(gv_coord.x)/1.02+0.01 + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.z)/1.02+0.01 + g_texcoord.y) / 16.0);
+            xcoord = fract(gv_coord.x);
+            ycoord = fract(gv_coord.z);
             intensity = 1.0;
         } else {
             // we have a side face
-            imgcoord = vec2((fract(gv_coord.x + gv_coord.z)/1.02+0.01 + g_texcoord.x) / 16.0, 1.0 - (fract(gv_coord.y)/1.02+0.01 + g_texcoord.y) / 16.0);
+            xcoord = fract(gv_coord.x + gv_coord.z);
+            ycoord = fract(gv_coord.y);
             intensity = 0.85;
+        }
+        
+        imgcoord = vec2((xcoord/1.02+0.01 + g_texcoord.x) / 16.0, 1.0 - (ycoord/1.02+0.01 + g_texcoord.y) / 16.0);
+        if (mod(shaderflags / 0x2, 0x2) > 0) {
+            // we have a top or bottom face (texture_coord.z = 1)
+            vec2 shattercoord = vec2((xcoord/1.02+0.01) / 16.0, 1.0 - (ycoord/1.02+0.01 + 15) / 16.0);
+            vec4 shattercolor = texture(tile_texture, shattercoord);
+            if (shattercolor.a > g_alphacutoff) {
+                // use the shattered texture instead
+                color_out = intensity * g_intensity * shattercolor.xyz;
+                return;
+            }
+        }
+        if (mod(shaderflags / 0x4, 0x2) > 0) {
+            // we have a top or bottom face (texture_coord.z = 1)
+            vec2 shattercoord = vec2((xcoord/1.02+0.01 + 1) / 16.0, 1.0 - (ycoord/1.02+0.01 + 15) / 16.0);
+            vec4 shattercolor = texture(tile_texture, shattercoord);
+            if (shattercolor.a > g_alphacutoff) {
+                // use the shattered texture instead
+                color_out = intensity * g_intensity * shattercolor.xyz;
+                return;
+            }
         }
         vec4 color = texture(tile_texture, imgcoord);
         color.xyz *= intensity * g_intensity;

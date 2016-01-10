@@ -239,7 +239,7 @@ void Game::frame(int ms) {
                 mount->block_keyboard_callback(this, do_this, mount, ms);
             }
             else {
-                float speed = player->weight * convert_milli_to_sec(ms);
+                float speed = player->weight * 3.0f * convert_milli_to_sec(ms);
                 switch (do_this) {
                     case MOVE_UP:
                         player->move_up_flat(speed);
@@ -269,7 +269,7 @@ void Game::frame(int ms) {
     
     for (auto &key: mouse_toggled) {
         if (key.second) {
-            Action do_this = key_to_action[key.first];
+            Action do_this = mouse_to_action[key.first];
             SuperObject* mount = player->get_mount();
             if (mount) {
                 if (mount->block_keyboard_callback(this, do_this, mount, ms)) {
@@ -480,7 +480,7 @@ void Game::mouse_move_callback(double xdiff, double ydiff) {
 void Game::mouse_button_callback(int button, int action, int mods) {
     if (action == SDL_MOUSEBUTTONDOWN) {
         Action do_this = mouse_to_action[button];
-        mouse_toggled[do_this] = true;
+        mouse_toggled[button] = true;
         
         if (in_game) {
             if (BlockTracing::show_item) {
@@ -506,7 +506,7 @@ void Game::mouse_button_callback(int button, int action, int mods) {
     }
     else if (action == SDL_MOUSEBUTTONUP) {
         Action do_this = mouse_to_action[button];
-        mouse_toggled[do_this] = false;
+        mouse_toggled[button] = false;
     }
 }
 
