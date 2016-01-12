@@ -38,6 +38,9 @@ bool CursorSelector::clicked(Game* game, Action mouse) {
         is_block_selected = false;
     }
     selected = selected->find_top_level_parent();
+    if (selected->entity_class == EntityType::SUPEROBJECT) {
+        ((SuperObject*)selected)->selected = true;
+    }
     is_selected = true;
     return true;
 }

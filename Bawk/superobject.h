@@ -47,6 +47,7 @@ protected:
     std::unordered_map<ivec3, block_type> pos_to_active_block_mapping;
     int block_counter;
 public:
+    bool selected;
     // supersuperobject things
     std::vector<Entity*> entities;
     SuperObject();
@@ -57,6 +58,12 @@ public:
     virtual void remove_entity(Entity* entity);
     virtual std::string get_chunk_save_path(ivec3* pos);
     void copy_into(Player* player, SuperObject* target);
+    
+    // if we don't sort the x/y/z position list every time we can recycle that list to do this more efficiently (log time)
+    void get_entities_in_range(std::vector<Entity*> &children, bounding_box box, bool include_boundary=false);
+    // rough check to see if a bounding box hits any bounds of any chunks currently loaded in
+    bool hits_chunk_bounds_in_range(bounding_box box);
+    void check_collision_detection_children(Game* game);
     
     // --- RenderableSuperObject ---
     virtual void handle_block_addition(int x, int y, int z, block_type type) override;

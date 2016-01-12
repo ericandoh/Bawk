@@ -16,6 +16,7 @@
 GameTemplate::GameTemplate(World* w) {
     entity_class = EntityType::GAMETEMPLATE;
     world = w;
+    selected = true;
 }
 
 Rotation GameTemplate::get_vehicle_orientation() {
@@ -89,12 +90,12 @@ void GameTemplate::unpublish(World* world) {
     world->remove_entity(this);
 }
 
-void GameTemplate::render(fmat4* transform) {
+/*void GameTemplate::render(fmat4* transform) {
     int frequency = 50;
     float intensity = (cosf((world->age % frequency) * 2 * M_PI / frequency)) / 4.0f + 1.0f;
     OGLAttr::current_shader->set_shader_intensity(intensity);
     // do any special rendering you'd like if you want to make this shine
     PlaceableSuperObject::render(transform);
     OGLAttr::current_shader->set_shader_intensity(1.0f);
-}
+}*/
 

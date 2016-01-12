@@ -239,7 +239,7 @@ void Game::frame(int ms) {
                 mount->block_keyboard_callback(this, do_this, mount, ms);
             }
             else {
-                float speed = player->weight * 3.0f * convert_milli_to_sec(ms);
+                float speed = player->weight * 5.0f * convert_milli_to_sec(ms);
                 switch (do_this) {
                     case MOVE_UP:
                         player->move_up_flat(speed);

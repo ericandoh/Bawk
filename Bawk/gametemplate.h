@@ -38,7 +38,7 @@ public:
     GameTemplate(World* w);
     
     // --- SuperObject ---
-    void render(fmat4* transform) override;
+    // void render(fmat4* transform) override;
     
     // --- GameTemplate ---
     CursorSuperObject* create_from_template(Player* player, World* world);
