@@ -19,7 +19,6 @@ SuperObject::SuperObject() {
     pid = 0;
     entity_class = EntityType::SUPEROBJECT;
     block_counter = 0;
-    selected = false;
 }
 
 SuperObject::SuperObject(uint32_t p, uint32_t v) {
@@ -30,7 +29,6 @@ SuperObject::SuperObject(uint32_t p, uint32_t v) {
     can_rotate = true;
     block_counter = 0;
     velocity_decay = 0.9f;
-    selected = false;
 }
 
 // --- SuperObject ---

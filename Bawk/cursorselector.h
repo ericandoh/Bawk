@@ -17,7 +17,10 @@ class CursorSelector: public CursorItem {
     bool is_selected;
     bool is_block_selected;
     fvec3 selected_pos;
+    void unselect();
+    void select(Entity* ent);
 public:
+    CursorSelector();
     
     // methods to initialize/cleanup this entity
     void init() override;

@@ -24,6 +24,7 @@
 		07141EC61C31ED03009CD608 /* texture_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07141EC41C31ED03009CD608 /* texture_allocator.cpp */; };
 		07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */; };
 		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
+		0715FFB31C45C6A9008349F7 /* gameplay.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0715FFB21C45C6A0008349F7 /* gameplay.json */; };
 		0716ADC21C37192900344A8C /* chunkloadmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0716ADC01C37192900344A8C /* chunkloadmanager.cpp */; };
 		0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718EAC41C2A81EC0084826F /* opengl_debug.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
@@ -109,6 +110,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				0715FFB31C45C6A9008349F7 /* gameplay.json in CopyFiles */,
 				07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */,
 				0710265F1C275EBD00BBC711 /* shadows_frag_shader.glsl in CopyFiles */,
 				07CCD6571BF1D309001C50CF /* light_frag_shader.glsl in CopyFiles */,
@@ -156,6 +158,7 @@
 		07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shadows_vertex_shader.glsl; sourceTree = "<group>"; };
 		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
 		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
+		0715FFB21C45C6A0008349F7 /* gameplay.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = gameplay.json; sourceTree = "<group>"; };
 		0716ADC01C37192900344A8C /* chunkloadmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkloadmanager.cpp; sourceTree = "<group>"; };
 		0716ADC11C37192900344A8C /* chunkloadmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkloadmanager.h; sourceTree = "<group>"; };
 		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
@@ -346,6 +349,15 @@
 			name = ui;
 			sourceTree = "<group>";
 		};
+		0715FFB11C45BE71008349F7 /* worldgen */ = {
+			isa = PBXGroup;
+			children = (
+				0774A9771BDEF1B80069489D /* world_generator.cpp */,
+				0774A9781BDEF1B80069489D /* world_generator.h */,
+			);
+			name = worldgen;
+			sourceTree = "<group>";
+		};
 		071B468A1BF3C210000CB782 /* building */ = {
 			isa = PBXGroup;
 			children = (
@@ -412,6 +424,7 @@
 				0766EAFB1BBF7DBE00477144 /* SOIL.c */,
 				0766EAFC1BBF7DBE00477144 /* stb_image_aug.c */,
 				071A040C1BD9875C003BF218 /* gameinfo.json */,
+				0715FFB21C45C6A0008349F7 /* gameplay.json */,
 				0766EAF41BBF7CDA00477144 /* tiles.png */,
 				0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */,
 				07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */,
@@ -447,6 +460,7 @@
 				078E879F1C1BC88100A825EB /* sprites */,
 				075C67441BBA426000CB87DE /* render */,
 				071BB7351C18A99D00563D4A /* blockactions */,
+				0715FFB11C45BE71008349F7 /* worldgen */,
 				075C673D1BBA3ED700CB87DE /* entities */,
 				071B468A1BF3C210000CB782 /* building */,
 				075C67381BBA34C700CB87DE /* game */,
@@ -495,8 +509,6 @@
 				0766EB081BBF9CC900477144 /* base_world.h */,
 				076BEFE61BD1FE0E00D68C8F /* inventory.cpp */,
 				076BEFE71BD1FE0E00D68C8F /* inventory.h */,
-				0774A9771BDEF1B80069489D /* world_generator.cpp */,
-				0774A9781BDEF1B80069489D /* world_generator.h */,
 				07FA18381BE5ACAB00C7319C /* worldevent.cpp */,
 				07FA18391BE5ACAB00C7319C /* worldevent.h */,
 				072243341C177F0900B60091 /* blockinfo.cpp */,

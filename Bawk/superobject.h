@@ -47,7 +47,6 @@ protected:
     std::unordered_map<ivec3, block_type> pos_to_active_block_mapping;
     int block_counter;
 public:
-    bool selected;
     // supersuperobject things
     std::vector<Entity*> entities;
     SuperObject();

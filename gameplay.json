@@ -1,0 +1,21 @@
+{
+    "version": 4,
+    "modes": {
+        "regular": {
+            "lvl": 3,
+            "enemyid": 1,
+            "sequence": [
+            {"action": "spawn", "mount": "none", "mob": "boxmob", "count": 3, "end": "killed"},
+            {"action": "spawn", "mount": "object", "mob": "boxmob", "count": 2, "end": "killed"},
+            {"action": "clear", "end": "timed", "duration": 3}
+            ]
+        },
+        "fort1": {
+            "lvl": 5,
+            "enemyid": 2,
+            "sequence": [
+            {"action": "clear", "end": "timed", "duration": 3}
+            ]
+        }
+    }
+}

@@ -110,6 +110,8 @@ int Game::init() {
     
     key_to_action[SDLK_y] = MOUNTING;
     
+    key_to_action[SDLK_DELETE] = DELETE;
+    
     mouse_to_action[SDL_BUTTON_LEFT] = CLICK_MAIN;
     mouse_to_action[SDL_BUTTON_RIGHT] = CLICK_SECONDARY;
     

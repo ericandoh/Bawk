@@ -27,6 +27,7 @@ Entity::Entity() {
     weight = 0;
     // 0 is full health
     health = 0;
+    selected = false;
     
     // start out with no parent
     // damn that's depresssing

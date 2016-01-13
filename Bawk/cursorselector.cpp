@@ -10,45 +10,65 @@
 #include "blocktracer.h"
 #include "superobject.h"
 
-// methods to initialize/cleanup this entity
-void CursorSelector::init() {
+CursorSelector::CursorSelector() {
+    selected = 0;
     is_selected = false;
     is_block_selected = false;
 }
 
+// methods to initialize/cleanup this entity
+void CursorSelector::init() {
+    unselect();
+}
+
 void CursorSelector::reset() {
+    unselect();
+}
+
+void CursorSelector::unselect() {
+    if (selected) {
+        selected->selected = false;
+    }
     is_selected = false;
     is_block_selected = false;
+    selected = 0;
+}
+
+void CursorSelector::select(Entity* ent) {
+    unselect();
+    selected = ent;
+    if (ent->entity_class != EntityType::BASEWORLD) {
+        ent->selected = true;
+    }
 }
 
 // behaviour when this cursor item is clicked
 bool CursorSelector::clicked(Game* game, Action mouse) {
     if (!BlockTracing::show_item) {
-        is_selected = false;
+        unselect();
         return true;
     }
-    selected = BlockTracing::selected;
-    if (selected->entity_class == EntityType::SUPEROBJECT ||
-        selected->entity_class == EntityType::BASEWORLD ||
-        selected->entity_class == EntityType::GAMETEMPLATE) {
+    Entity* ent = BlockTracing::selected;
+    if (ent->entity_class == EntityType::SUPEROBJECT ||
+        ent->entity_class == EntityType::BASEWORLD ||
+        ent->entity_class == EntityType::GAMETEMPLATE) {
         is_block_selected = true;
         selected_pos = BlockTracing::pointed_pos;
     }
     else {
         is_block_selected = false;
     }
-    selected = selected->find_top_level_parent();
-    if (selected->entity_class == EntityType::SUPEROBJECT) {
-        ((SuperObject*)selected)->selected = true;
-    }
-    is_selected = true;
+    ent = ent->find_top_level_parent();
+    select(ent);
     return true;
 }
 
 bool CursorSelector::pushed(Game* game, Action key) {
     if (key == Action::DELETE) {
         if (is_selected && !is_block_selected) {
-            selected->remove_self();
+            Entity* deselect = selected;
+            unselect();
+            deselect->remove_self();
         }
     }
     return true;
@@ -63,7 +83,7 @@ bool CursorSelector::confirmed(Game* game) {
 }
 
 bool CursorSelector::canceled(Game* game) {
-    reset();
+    unselect();
     return true;
 }
 

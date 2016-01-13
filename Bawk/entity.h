@@ -73,6 +73,8 @@ public:
     int weight;
     // height of the entity. 0 is full health (alive!)
     int health;
+    // if this is selected, modify how we render it
+    bool selected;
     // parent entity, if any
     // entity must be someone capable of being a parent
     SuperObject* parent;
