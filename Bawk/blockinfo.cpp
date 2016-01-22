@@ -26,3 +26,15 @@ void BlockInfo::set_callback_checks() {
     has_mouse_callback = !mouse_callbacks.empty();
     has_keyboard_callback = !keyboard_callbacks.empty();
 }
+
+uint16_t BlockInfo::get_block_texture(BlockOrientation orientation, BlockOrientation face) {
+    if (texture < 0) {
+        // use the array instead
+        BlockOrientation actual_face = get_translated_orientation(orientation, face);
+        return textures[actual_face];
+    }
+    else {
+        return texture;
+    }
+    return 0;
+}

@@ -14,6 +14,10 @@ CursorWeapon::CursorWeapon() {
     dmg = 500.0f;
 }
 
+bool CursorWeapon::clicked(Game* game, Action mouse) {
+    return true;
+}
+
 bool CursorWeapon::clicking(Game* game, Action mouse, int ms) {
     if (!BlockTracing::show_item)
         return false;

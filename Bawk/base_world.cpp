@@ -12,11 +12,14 @@
 #include <vector>
 #include <unordered_map>
 
+#include "game_info_loader.h"
+
 #define GROUND_DEPTH 4
 
 BaseWorld::BaseWorld() {
     pid = 0;
     vid = 0;
+    sector_generator_id = 0;
     entity_class = EntityType::BASEWORLD;
     get_empty_chunk(air);
     get_empty_chunk(ground);
@@ -35,7 +38,21 @@ int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
     if (!SuperObject::get_chunk(to_arr, x, y, z)) {
         return 0;
     }
-    fill_chunk_at(ivec3(x, y, z), to_arr);
+    ivec3 chunk_pos(x,y,z);
+    ivec3 sector_pos = get_sector_generator(sector_generator_id)->transform_into_sector_pos(chunk_pos);
+    if (sector_loaded_map.count(sector_pos)) {
+        // sector has already been loaded, but the chunk should be empty...
+        return 0;
+    }
+    else {
+        sector_loaded_map[sector_pos] = 1;
+        if (get_sector_generator(sector_generator_id)->try_create_sector(ivec3(x, y, z), this)) {
+            // try loading it again
+            if (!SuperObject::get_chunk(to_arr, x, y, z)) {
+                return 0;
+            }
+        }
+    }
     return 0;
 }
 
@@ -93,6 +110,34 @@ bool BaseWorld::collides_with(Entity* other) {
     }
     else {
         return SuperObject::collides_with(other, &other_rwc_bounds, &other_rwc_bounds, my_collision_level, other_collision_level);
+    }
+}
+
+
+int BaseWorld::load_self(IODataObject* obj) {
+    if (SuperObject::load_self(obj))
+        return 1;
+    
+    sector_generator_id = obj->read_value<uint16_t>();
+    
+    sector_loaded_map.clear();
+    int sector_count = obj->read_value<int>();
+    for (int i = 0; i < sector_count; i++) {
+        ivec3 sector = obj->read_value<ivec3>();
+        sector_loaded_map[sector] = 1;
+    }
+    return 0;
+}
+
+void BaseWorld::save_self(IODataObject* obj) {
+    SuperObject::save_self(obj);
+    
+    obj->save_value(sector_generator_id);
+    
+    int sector_count = (int)sector_loaded_map.size();
+    obj->save_value(sector_count);
+    for (auto &i: sector_loaded_map) {
+        obj->save_value(i.first);
     }
 }
 

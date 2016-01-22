@@ -435,8 +435,9 @@ int display_run()
         // change to while to make it catch up to events
         uint32_t current_time = get_current_time();
         if (current_time > previous_time + TIME_PER_FRAME) {
-            current_display->frame(current_time - previous_time);
-            previous_time += TIME_PER_FRAME;
+            uint32_t diff_time = std::min((int)(current_time - previous_time), 100);
+            current_display->frame(diff_time);
+            previous_time += diff_time;
         }
         
         render_geometry();

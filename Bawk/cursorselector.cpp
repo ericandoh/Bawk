@@ -40,6 +40,7 @@ void CursorSelector::select(Entity* ent) {
     if (ent->entity_class != EntityType::BASEWORLD) {
         ent->selected = true;
     }
+    is_selected = true;
 }
 
 // behaviour when this cursor item is clicked
@@ -65,7 +66,7 @@ bool CursorSelector::clicked(Game* game, Action mouse) {
 
 bool CursorSelector::pushed(Game* game, Action key) {
     if (key == Action::DELETE) {
-        if (is_selected && !is_block_selected) {
+        if (is_selected && !is_block_selected && selected->entity_class != EntityType::BASEWORLD) {
             Entity* deselect = selected;
             unselect();
             deselect->remove_self();
@@ -83,8 +84,11 @@ bool CursorSelector::confirmed(Game* game) {
 }
 
 bool CursorSelector::canceled(Game* game) {
-    unselect();
-    return true;
+    if (is_selected) {
+        unselect();
+        return true;
+    }
+    return false;
 }
 
 // render the item with transform in a small box or whatnot

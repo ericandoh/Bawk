@@ -28,6 +28,9 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
             return false;
         }
         object->set_block_integral(pos.x, pos.y, pos.z, block);
+        printf("Placing block at: ");
+        printf_fvec3(pos);
+        printf("\n");
         return true;
     }
     return false;
@@ -40,9 +43,10 @@ void CursorBlock::reset() {
 
 bool CursorBlock::clicked(Game* game, Action mouse) {
     if (mouse == CLICK_SECONDARY) {
-        return set_blocks(game->player, game->world, target);
+        set_blocks(game->player, game->world, target);
+        return true;
     }
-    return true;
+    return false;
 }
 
 bool CursorBlock::confirmed(Game* game) {
@@ -166,7 +170,7 @@ void CursorBlock::render_block(fmat4* transform) {
 void CursorBlock::render_light_in_world(fmat4* transform, fvec3 player_pos) {
     // if block has light, render it
     if (show_item) {
-        RenderableLight* light = get_block_light(block.type);
+        RenderableLight* light = &(get_block_info(block.type)->light);
         light->render_light(transform, pos, player_pos);
     }
 }

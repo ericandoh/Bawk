@@ -32,7 +32,6 @@ ModelEntity::ModelEntity(uint32_t p, uint32_t v) {
     // some permissions/flags
     can_collide = true;
     can_rotate = true;
-    load_selfs();
 }
 
 ModelEntity::ModelEntity(uint32_t p, uint32_t v, uint16_t mid) {

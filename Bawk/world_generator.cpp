@@ -88,19 +88,6 @@ void setup_world_generator(world_gen_mode_info* inf, int s) {
     info.biome_noise_info[4] = BiomeNoiseGenerationInfo(20.0f, 0.7f);*/
 }
 
-int choose_random(int average, int variance) {
-    int result = average;
-    for (int i = 0; i < variance; i++) {
-        if (rand() % 2 == 0) {
-            result++;
-        }
-        else {
-            result--;
-        }
-    }
-    return result;
-}
-
 float get_distance(ivec3 a, ivec3 b) {
     // fuck glm and its fucking
     return sqrtf( (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y) + (a.z - b.z)*(a.z - b.z) );
@@ -161,7 +148,7 @@ void generate_biome_points(ivec3 sector_pos) {
     }
 }
 
-int pick_biome_from_weights(std::map<int, float> &weights) {
+int pick_biome_from_weights_deprecated(std::map<int, float> &weights) {
     float total_total = 0;
     for (auto &i: weights) {
         total_total += i.second;
@@ -213,7 +200,7 @@ void generate_island_points(ivec3 sector_pos) {
             }
         }
         int use_index = indices[index_of_index];
-        state.island_biome_points[sector_pos][use_index] = pick_biome_from_weights(info->biome_frequencies);
+        state.island_biome_points[sector_pos][use_index] = pick_biome_from_weights_deprecated(info->biome_frequencies);
         
         if (i == 0) {
             first_center = state.biome_points[sector_pos][use_index];
@@ -352,9 +339,9 @@ bool get_heights_at(int* lower, int* upper, ivec3 pos, std::map<int, float> &wei
             }
             
             lstrength += (info->lower_strength) * frac_weight;
-            ustrength += (get_biome_strength(picked_biomes[i])) * frac_weight;
+            ustrength += (get_biome(picked_biomes[i])->strength) * frac_weight;
             lpers += (info->lower_persistence) * frac_weight;
-            upers += (get_biome_persistence(picked_biomes[i])) * frac_weight;
+            upers += (get_biome(picked_biomes[i])->persistence) * frac_weight;
         }
     }
     if (fraction_island > 0.01) {
@@ -491,9 +478,9 @@ void fill_chunk_at(ivec3 chunk_pos, block_type to_arr[CX][CY][CZ]) {
             if (bottom >= top || bottom > CY - 1 || top < 1)
                 continue;
             for (int y = bottom; y < top; y++) {
-                uint16_t type = pick_biome_from_weights(height->weights[x][z]);
+                uint16_t type = pick_biome_from_weights_deprecated(height->weights[x][z]);
                 if (type) {
-                    to_arr[x][y][z] = get_random_block_from_biome(type, upper - y-chunk_pos.y*CY - 1);
+                    to_arr[x][y][z] = get_biome(type)->get_random_block(upper - y-chunk_pos.y*CY - 1);
                 }
             }
         }
@@ -537,5 +524,5 @@ void test_world_generator() {
     weights[11] = 0.9f;
     weights[12] = 0.1f;
     for (int i = 0; i < 15; i++)
-        printf("%d\n", pick_biome_from_weights(weights));
+        printf("%d\n", pick_biome_from_weights_deprecated(weights));
 }

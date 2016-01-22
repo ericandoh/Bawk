@@ -10,5 +10,8 @@
 #define __Bawk__modelactionturret__
 
 #include <stdio.h>
+#include "modelaction.h"
+
+ModelActionMultiplexer* get_turret_model_multiplexer(Json::Value node);
 
 #endif /* defined(__Bawk__modelactionturret__) */

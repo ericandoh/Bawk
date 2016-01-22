@@ -35,7 +35,7 @@ GBuffer::~GBuffer()
     if (m_depthTexture != 0) {
         glDeleteTextures(1, &m_depthTexture);
     }
-    check_for_error();
+    //check_for_error();
 }
 
 bool GBuffer::init(unsigned int wwidth, unsigned int wheight) {

@@ -356,6 +356,9 @@ void Game::key_callback_default(int key) {
             delete game_template;
             game_template = 0;
         }
+        else if (default_item->canceled(this)) {
+            // try to cancel selection if any
+        }
         else {
             printf("Escape pressed with no context. Exitting\n");
             exit_game();
@@ -434,6 +437,9 @@ void Game::key_callback_default(int key) {
     else if (key == SDLK_0) {
         switch_current_item(9);
     }
+    else if (key == SDLK_BACKSLASH) {
+        default_item->pushed(this, Action::DELETE);
+    }
 }
 
 // Calls an action depending on key pressed
@@ -497,7 +503,9 @@ void Game::mouse_button_callback(int button, int action, int mods) {
                     return;
                 }
             }
-            default_item->clicked(this, do_this);
+            if (!player->get_mount()) {
+                default_item->clicked(this, do_this);
+            }
         }
         else {
             double mx, my;

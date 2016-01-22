@@ -533,7 +533,7 @@ void SuperObject::handle_block_addition(int x, int y, int z, block_type type) {
             reverse_key_mapping[rounded_oac].push_back(act);
         }
     }
-    weight += get_block_weight(type.type);
+    weight += get_block_info(type.type)->weight;
     health += type.life;
     block_counter++;
 }
@@ -558,7 +558,7 @@ void SuperObject::handle_block_removal(int x, int y, int z, block_type type) {
     }
     // remove stats for current block
     // center pos is set outside separately
-    weight -= get_block_weight(type.type);
+    weight -= get_block_info(type.type)->weight;
     health -= type.life;
     block_counter--;
 }
@@ -793,6 +793,10 @@ int SuperObject::load_self(IODataObject* obj) {
         Entity* entity = get_entity_from(pid, vid, entity_class);
         if (entity) {
             entity->parent = this;
+            if (entity->load_self(obj)) {
+                // this entity had an error while loading, don't add it
+                continue;
+            }
             entity->recalculate_transform();
             entities.push_back(entity);
         }
@@ -832,18 +836,21 @@ int SuperObject::load_self(IODataObject* obj) {
 void SuperObject::save_self(IODataObject* obj) {
     RenderableSuperObject::save_self(obj);
     
-    for (int i = 0; i < entities.size(); i++) {
-        entities[i]->save_selfs();
-    }
     int entities_count = (int)entities.size();
-    // TODO handle that player/baseworld? is removed/saved here
     obj->save_value(entities_count);
     for (int i = 0; i < (int)entities.size(); i++) {
-        if (entities[i]->entity_class == EntityType::PLAYER)
+        if (entities[i]->entity_class == EntityType::PLAYER) {
+            // don't save player as part of the world
             continue;
-        obj->save_value(entities[i]->pid);
-        obj->save_value(entities[i]->vid);
-        obj->save_value(entities[i]->entity_class);
+        }
+        else {
+            // but save all objects in the world, including those the player might
+            // have left behind
+            obj->save_value(entities[i]->pid);
+            obj->save_value(entities[i]->vid);
+            obj->save_value(entities[i]->entity_class);
+            entities[i]->save_self(obj);
+        }
     }
     
     // save only the reverse key mapping

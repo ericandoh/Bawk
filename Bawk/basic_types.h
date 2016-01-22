@@ -229,6 +229,7 @@ ivec3 get_ivec3_maximum(ivec3 a, ivec3 b);
 
 float get_fvec3_distance(fvec3 src);
 
+void printf_ivec3(ivec3 a);
 void printf_fvec3(fvec3 a);
 void printf_fvec4(fvec4 a);
 
@@ -237,10 +238,18 @@ fvec3 get_nearest_half_or_whole(fvec3 a);
 fvec3 get_random_color();
 
 ivec3 add_ivec3(ivec3 a, ivec3 b);
+ivec3 sub_ivec3(ivec3 a, ivec3 b);
+
+float get_ivec3_distance(ivec3 src);
 
 int get_positive_mod(int a, int m);
 
 float convert_milli_to_sec(int ms);
 int convert_sec_to_milli(float sec);
+
+// --- Random related ---
+int choose_random(int average, int variance);
+float choose_random(float average, float variance);
+float choose_random_one();
 
 #endif

@@ -118,7 +118,7 @@ bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) 
         return true;
     
     // Recipe Models are also always blocked, because they dont need to be rendered
-    if (get_block_is_model(blk[x1][y1][z1].type))
+    if (get_block_info(blk[x1][y1][z1].type)->is_model)
         return true;
     
     block_type* next = get(x2, y2, z2);
@@ -127,19 +127,19 @@ bool RenderableChunk::isblocked(int x1, int y1, int z1, int x2, int y2, int z2) 
         next_type = next->type;
     }
     // Things next to models however, are rendered (models are sexy!)
-    if (get_block_is_model(next_type))
+    if (get_block_info(next_type)->is_model)
         return false;
     
     // Leaves do not block any other block, including themselves
-    if(get_block_transparency(next_type) == 1)
+    if(get_block_info(next_type)->transparency == 1)
         return false;
     
     // Non-transparent blocks always block line of sight
-    if(!get_block_transparency(next_type))
+    if(!get_block_info(next_type)->transparency)
         return true;
     
     // Otherwise, LOS is only blocked by blocks if the same transparency type
-    return get_block_transparency(next_type) == get_block_transparency(blk[x1][y1][z1].type);
+    return get_block_info(next_type)->transparency == get_block_info(blk[x1][y1][z1].type)->transparency;
 }
 
 
@@ -261,11 +261,11 @@ void RenderableChunk::update() {
     for(int x = CX - 1; x >= 0; x--) {
         for(int y = 0; y < CY; y++) {
             for(int z = 0; z < CZ; z++) {
-                if (get_block_is_model(blk[x][y][z].type)) {
+                if (get_block_info(blk[x][y][z].type)->is_model) {
                     // add to
                     fill_game_models(model_vertices, model_normals, model_uvs, blk[x][y][z], x, y, z);
                 }
-                RenderableLight* light = get_block_light(blk[x][y][z].type);
+                RenderableLight* light = &(get_block_info(blk[x][y][z].type)->light);
                 if (light->should_render()) {
                     LightAndPosition light_and_pos;
                     light_and_pos.light = light;

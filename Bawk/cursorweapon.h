@@ -17,6 +17,7 @@ class CursorWeapon: public CursorItem {
 public:
     CursorWeapon();
     
+    bool clicked(Game* game, Action mouse) override;
     bool clicking(Game* game, Action mouse, int ms) override;
     
     //void step(Game* game, int ms) override;

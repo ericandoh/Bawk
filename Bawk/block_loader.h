@@ -58,6 +58,8 @@ std::string get_path_to_game_json();
 
 void delete_at_path(std::string path);
 
+int validate_read_write_path(std::string path);
+
 class IODataObject {
     std::ifstream infile;
     std::ofstream outfile;

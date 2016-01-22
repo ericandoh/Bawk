@@ -38,6 +38,7 @@
 		071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB73C1C18B12900563D4A /* modelactionmovement.cpp */; };
 		071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7421C18B36800563D4A /* modelactionexplode.cpp */; };
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
+		071EB8141C480519004885D7 /* sectorgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071EB8121C480519004885D7 /* sectorgenerator.cpp */; };
 		071F632B1C2C5E7100609129 /* directionallightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071F63291C2C5E7100609129 /* directionallightrender.cpp */; };
 		071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071FA6B91C10D19700884B70 /* lightrender.cpp */; };
 		0720107F1C365988003FE723 /* readwritelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0720107D1C365988003FE723 /* readwritelock.cpp */; };
@@ -90,6 +91,7 @@
 		079AFDE41C406A45002F1235 /* modelactionturret.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 079AFDE21C406A45002F1235 /* modelactionturret.cpp */; };
 		07A4A5811C359CCB0060F28C /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07A4A5801C359CCB0060F28C /* SDL2.framework */; };
 		07A4A5841C35B0C60060F28C /* importsdl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07A4A5831C35B0C60060F28C /* importsdl.cpp */; };
+		07B0F9C21C529C6E0001A206 /* biomegenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07B0F9C01C529C6E0001A206 /* biomegenerator.cpp */; };
 		07C4260E1BBB18AB0045D796 /* frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260C1BBB18AB0045D796 /* frag_shader.glsl */; };
 		07C4260F1BBB18AB0045D796 /* vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */; };
 		07C426391BBCB37E0045D796 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C426371BBCB37E0045D796 /* program.cpp */; };
@@ -185,6 +187,8 @@
 		071BB7431C18B36800563D4A /* modelactionexplode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionexplode.h; sourceTree = "<group>"; };
 		071C5C121BF7FE9C0087F398 /* rotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation.cpp; sourceTree = "<group>"; };
 		071C5C131BF7FE9C0087F398 /* rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation.h; sourceTree = "<group>"; };
+		071EB8121C480519004885D7 /* sectorgenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sectorgenerator.cpp; sourceTree = "<group>"; };
+		071EB8131C480519004885D7 /* sectorgenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sectorgenerator.h; sourceTree = "<group>"; };
 		071F63291C2C5E7100609129 /* directionallightrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = directionallightrender.cpp; sourceTree = "<group>"; };
 		071F632A1C2C5E7100609129 /* directionallightrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = directionallightrender.h; sourceTree = "<group>"; };
 		071FA6B91C10D19700884B70 /* lightrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lightrender.cpp; sourceTree = "<group>"; };
@@ -293,6 +297,8 @@
 		07A4A5801C359CCB0060F28C /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		07A4A5821C35AC570060F28C /* importsdl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = importsdl.h; sourceTree = "<group>"; };
 		07A4A5831C35B0C60060F28C /* importsdl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = importsdl.cpp; sourceTree = "<group>"; };
+		07B0F9C01C529C6E0001A206 /* biomegenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = biomegenerator.cpp; sourceTree = "<group>"; };
+		07B0F9C11C529C6E0001A206 /* biomegenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = biomegenerator.h; sourceTree = "<group>"; };
 		07C4260C1BBB18AB0045D796 /* frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = frag_shader.glsl; path = Bawk/frag_shader.glsl; sourceTree = "<group>"; };
 		07C4260D1BBB18AB0045D796 /* vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = vertex_shader.glsl; path = Bawk/vertex_shader.glsl; sourceTree = "<group>"; };
 		07C426101BBB2B110045D796 /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
@@ -352,8 +358,13 @@
 		0715FFB11C45BE71008349F7 /* worldgen */ = {
 			isa = PBXGroup;
 			children = (
+				07FA18371BE598CA00C7319C /* world_generator_structures.h */,
 				0774A9771BDEF1B80069489D /* world_generator.cpp */,
 				0774A9781BDEF1B80069489D /* world_generator.h */,
+				071EB8121C480519004885D7 /* sectorgenerator.cpp */,
+				071EB8131C480519004885D7 /* sectorgenerator.h */,
+				07B0F9C01C529C6E0001A206 /* biomegenerator.cpp */,
+				07B0F9C11C529C6E0001A206 /* biomegenerator.h */,
 			);
 			name = worldgen;
 			sourceTree = "<group>";
@@ -561,7 +572,6 @@
 				071A04041BD96349003BF218 /* game_info_loader.h */,
 				0774A9741BDEC85A0069489D /* entity_loader.cpp */,
 				0774A9751BDEC85A0069489D /* entity_loader.h */,
-				07FA18371BE598CA00C7319C /* world_generator_structures.h */,
 				072A0A281C0BCA3B009304E5 /* entity_type.h */,
 				0713FF521C0FD88B0069FDAF /* entity_type.cpp */,
 				078E87A61C1C11A800A825EB /* json_reader_helper.cpp */,
@@ -727,9 +737,11 @@
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
 				078E87A51C1BF98700A825EB /* spritegetter.cpp in Sources */,
+				07B0F9C21C529C6E0001A206 /* biomegenerator.cpp in Sources */,
 				078E87A81C1C11A800A825EB /* json_reader_helper.cpp in Sources */,
 				072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
+				071EB8141C480519004885D7 /* sectorgenerator.cpp in Sources */,
 				071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */,
 				071B46861BF3C1D8000CB782 /* cursoritem.cpp in Sources */,
 				0766EAEE1BBF74FD00477144 /* block.cpp in Sources */,

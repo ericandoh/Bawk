@@ -17,17 +17,14 @@
 
 #include "block_loader.h"
 #include "cursorsuperobject.h"
-
-#include "world_generator.h"
-#include "world_generator_structures.h"
-
 #include "modelrender.h"
-#include "blockinfo.h"
 
 #include "spriterender.h"
 #include "spritegetter.h"
 
 #include "modelaction.h"
+
+#include "json_reader_helper.h"
 
 // TODO deprecate this
 struct model_game_info {
@@ -66,8 +63,8 @@ public:
     std::map<uint16_t, model_game_info> block_model_info;
     std::vector<sprite_game_info> sprite_info;
     std::vector<recipe_game_info> recipe_info;
-    std::vector<biome_game_info> biome_info;
-    std::vector<world_gen_mode_info> world_gen_modes;
+    std::vector<BiomeGenerator> biome_info;
+    std::vector<SectorGenerator> world_gen_modes;
     
     GameInfoDataObject();
     ~GameInfoDataObject();
@@ -634,7 +631,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
             if (biome_node.type() != Json::objectValue) {
                 continue;
             }
-            biome_game_info binfo;
+            BiomeGenerator binfo;
             if (biome_node.isMember("name") && biome_node["name"].type() == Json::stringValue) {
                 binfo.name = biome_node["name"].asString();
             }
@@ -688,7 +685,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
                     binfo.structures.push_back(struct_layer);
                 }
             }
-            if (biome_node.isMember("events") && biome_node["events"].type() == Json::arrayValue) {
+            /*if (biome_node.isMember("events") && biome_node["events"].type() == Json::arrayValue) {
                 int event_size = biome_node["events"].size();
                 for (int j = 0; j < event_size; j++) {
                     Json::Value event_root = biome_node["events"][j];
@@ -726,7 +723,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
                     }
                     binfo.events.push_back(evt_layer);
                 }
-            }
+            }*/
             game_data_object->biome_info.push_back(binfo);
         }
     }
@@ -739,7 +736,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
             if (mode_node.type() != Json::objectValue) {
                 continue;
             }
-            world_gen_mode_info winfo;
+            SectorGenerator winfo;
             if (mode_node.isMember("name") && mode_node["name"].type() == Json::stringValue) {
                 winfo.name = mode_node["name"].asString();
             }
@@ -756,28 +753,33 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
             if (mode_node.isMember("sector") && mode_node["sector"].type() == Json::arrayValue && mode_node["sector"].size() == 2) {
                 if (mode_node["sector"][0].type() == Json::intValue &&
                     mode_node["sector"][1].type() == Json::intValue) {
-                    winfo.xsectorsize = mode_node["sector"][0].asInt();
-                    winfo.zsectorsize = mode_node["sector"][1].asInt();
+                    winfo.sector_xwidth = mode_node["sector"][0].asInt();
+                    winfo.sector_zwidth = mode_node["sector"][1].asInt();
                 }
             }
             if (mode_node.isMember("biomecount") && mode_node["biomecount"].type() == Json::arrayValue) {
                 if (mode_node["biomecount"].size() >= 1 && mode_node["biomecount"][0].type() == Json::intValue) {
-                    winfo.biomepointavg = mode_node["biomecount"][0].asInt();
+                    winfo.biome_count_avg = mode_node["biomecount"][0].asInt();
                 }
                 if (mode_node["biomecount"].size() >= 2 && mode_node["biomecount"][1].type() == Json::intValue) {
-                    winfo.biomepointvar = mode_node["biomecount"][1].asInt();
+                    winfo.biome_count_var = mode_node["biomecount"][1].asInt();
                 }
             }
             if (mode_node.isMember("islandcount") && mode_node["islandcount"].type() == Json::arrayValue) {
                 if (mode_node["islandcount"].size() >= 1 && mode_node["islandcount"][0].type() == Json::intValue) {
-                    winfo.islandpointavg = mode_node["islandcount"][0].asInt();
+                    winfo.island_count_avg = mode_node["islandcount"][0].asInt();
                 }
                 if (mode_node["islandcount"].size() >= 2 && mode_node["islandcount"][1].type() == Json::intValue) {
-                    winfo.islandpointvar = mode_node["islandcount"][1].asInt();
+                    winfo.island_count_var = mode_node["islandcount"][1].asInt();
                 }
             }
-            if (mode_node.isMember("separation") && (mode_node["separation"].type() == Json::realValue || mode_node["separation"].type() == Json::intValue)) {
-                winfo.separation = mode_node["separation"].asFloat();
+            if (mode_node.isMember("fillcount") && mode_node["fillcount"].type() == Json::arrayValue) {
+                if (mode_node["fillcount"].size() >= 1) {
+                    winfo.fill_perc_avg = json_read_float_or_zero(mode_node["fillcount"][0]);
+                }
+                if (mode_node["fillcount"].size() >= 2) {
+                    winfo.fill_perc_var = json_read_float_or_zero(mode_node["fillcount"][1]);
+                }
             }
             if (mode_node.isMember("fatness") && (mode_node["fatness"].type() == Json::realValue || mode_node["fatness"].type() == Json::intValue)) {
                 winfo.fatness = mode_node["fatness"].asFloat();
@@ -794,11 +796,11 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
             if (mode_node.isMember("lowerpersistence") && (mode_node["lowerpersistence"].type() == Json::realValue || mode_node["lowerpersistence"].type() == Json::intValue)) {
                 winfo.lower_persistence = mode_node["lowerpersistence"].asFloat();
             }
+            winfo.seed = 101;
             game_data_object->world_gen_modes.push_back(winfo);
         }
     }
     // TODO change this so this takes by name instead ("default")
-    setup_world_generator(&(game_data_object->world_gen_modes[0]), 101);
     
     return 0;
 }
@@ -860,48 +862,11 @@ void free_game_info() {
     delete game_data_object;
 }
 
-uint16_t get_block_texture(block_type blk, BlockOrientation face) {
-    uint16_t block_id = blk.type;
-    if (block_id >= game_data_object->block_info.size()) {
-        return block_id;
-    }
-    int texture = game_data_object->block_info[block_id].texture;
-    if (texture < 0) {
-        // use the array instead
-        BlockOrientation actual_face = get_translated_orientation(blk.orientation, face);
-        return game_data_object->block_info[block_id].textures[actual_face];
-    }
-    else {
-        return texture;
-    }
-    return 0;
-}
-
-bool get_block_is_model(uint16_t block_id) {
-    return game_data_object->block_info[block_id].is_model;
-}
-
-RenderableLight* get_block_light(uint16_t block_id) {
-    return &(game_data_object->block_info[block_id].light);
-}
-
-int get_block_resistance(uint16_t block_id) {
-    return game_data_object->block_info[block_id].resistance;
-}
-
-int get_block_transparency(uint16_t block_id) {
-    return game_data_object->block_info[block_id].transparency;
-}
-
-int get_block_weight(uint16_t block_id) {
-    return game_data_object->block_info[block_id].weight;
-}
-
-int get_block_independence(uint16_t block_id) {
-    return game_data_object->block_info[block_id].vehicle;
-}
-
 BlockInfo* get_block_info(uint16_t block_id) {
+    if (block_id >= game_data_object->block_info.size()) {
+        // TODO return invalid block
+        return &(game_data_object->block_info[0]);
+    }
     return &(game_data_object->block_info[block_id]);
 }
 
@@ -974,37 +939,12 @@ void fill_game_models(std::vector<fvec3> &model_vertices,
     model_uvs.insert(model_uvs.end(), uvs.begin(), uvs.end());
 }
 
-float get_biome_strength(uint16_t biome) {
-    // TOFU this could be unsafe array-size wise! we're being really trusting here
-    return game_data_object->biome_info[biome].strength;
+BiomeGenerator* get_biome(uint16_t biome) {
+    return &(game_data_object->biome_info[biome]);
 }
 
-float get_biome_persistence(uint16_t biome) {
-    // TOFU this could be unsafe array-size wise! we're being really trusting here
-    return game_data_object->biome_info[biome].persistence;
-}
-
-uint16_t get_random_block_from_biome(uint16_t biome, int depth) {
-    float total_frequency = 0;
-    for (auto &i: game_data_object->biome_info[biome].blocks) {
-        if (depth >= i.lower && depth <= i.upper) {
-            total_frequency += i.frequency;
-        }
-    }
-    
-    int precision = 10000;
-    float rv = (rand() % precision) * 1.0 / precision;
-    float total = 0;
-    for (auto &i: game_data_object->biome_info[biome].blocks) {
-        if (depth >= i.lower && depth <= i.upper) {
-            total += i.frequency;
-            if (rv < total / total_frequency) {
-                return i.type;
-            }
-        }
-    }
-    return 0;
-    
+SectorGenerator* get_sector_generator(uint16_t sid) {
+    return &(game_data_object->world_gen_modes[sid]);
 }
 
 void add_struct_in_biome_randomly(uint16_t biome, ivec3 pos,

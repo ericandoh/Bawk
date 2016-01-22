@@ -48,11 +48,6 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, EntityType entity_class) {
         return 0;
     }
     
-    if (val->load_selfs()) {
-        // nonzero error encountered while loading
-        printf("Couldn't load entity (%d,%d) of class %d\n", pid, vid, entity_class);
-        return 0;
-    }
     return val;
 }
 

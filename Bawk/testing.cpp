@@ -8,10 +8,7 @@
 
 #include "testing.h"
 // clear imports every once in a while
-#include "entity.h"
-#include <glm/gtc/matrix_transform.hpp>
-#include "basic_types.h"
-#include "block_orientation.h"
+#include "sectorgenerator.h"
 
 void do_shit();
 
@@ -31,7 +28,7 @@ void do_shit() {
 
 // COPY DUMP CONTENTS VVV
 void do_shit() {
-    // copy me
+    test_sector_generator();
 }
 
 /*
@@ -203,7 +200,7 @@ Dumps
  
  void do_shit() {
  load_game_info();
- printf("Block 1's resistance: %d\n", get_block_resistance(2));
+ printf("Block 1's resistance: %d\n", get_block_info(2)->resistance);
  free_game_info();
  }
  

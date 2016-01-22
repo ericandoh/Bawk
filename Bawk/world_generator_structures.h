@@ -41,40 +41,5 @@ struct world_gen_mode_info {
     }
 };
 
-struct block_layer_info {
-    uint16_t type;
-    int lower, upper;
-    float frequency;
-    block_layer_info() {
-        type = 0;
-        lower = INT_MIN;
-        upper = INT_MAX;
-        frequency = 0;
-    }
-};
-
-struct event_layer_info {
-    block_layer_info layer;
-    std::string name;
-    std::unordered_map<std::string, float> event_parameters;
-    event_layer_info() {
-        layer = block_layer_info();
-    }
-};
-
-struct biome_game_info {
-    std::string name;
-    float strength;
-    float persistence;
-    std::vector<block_layer_info> blocks;
-    std::vector<block_layer_info> structures;
-    std::vector<event_layer_info> events;
-    biome_game_info() {
-        name = "empty";
-        strength = 0;
-        persistence = 0;
-    }
-};
-
 
 #endif

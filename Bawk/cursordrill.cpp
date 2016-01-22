@@ -14,6 +14,10 @@ CursorDrill::CursorDrill() {
     dps = MAX_HEALTH / 3.0f;
 }
 
+bool CursorDrill::clicked(Game* game, Action mouse) {
+    return true;
+}
+
 bool CursorDrill::clicking(Game* game, Action mouse, int ms) {
     if (!BlockTracing::show_item)
         return false;

@@ -25,11 +25,16 @@
 
 #include <stdio.h>
 #include <string>
+#include <unordered_map>
 #include "superobject.h"
 
 class BaseWorld: public SuperObject {
     block_type air[CX][CY][CZ];
     block_type ground[CX][CY][CZ];
+    
+    uint16_t sector_generator_id;
+    std::unordered_map<ivec3, int> sector_loaded_map;
+    
 public:
     BaseWorld();
     // --- SuperObject ---
@@ -41,6 +46,9 @@ public:
     // --- Entity ---
     void step(Game* game, int ms) override;
     bool collides_with(Entity* other) override;
+    
+    int load_self(IODataObject* obj) override;
+    void save_self(IODataObject* obj) override;
 };
 
 #endif /* defined(__Bawk__base_world__) */

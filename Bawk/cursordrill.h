@@ -24,6 +24,7 @@ public:
     //virtual void reset();
     
     // behaviour when this cursor item is clicked
+    bool clicked(Game* game, Action mouse) override;
     bool clicking(Game* game, Action mouse, int ms) override;
     //virtual bool pushed(Game* game, Action key) { return false; };
     

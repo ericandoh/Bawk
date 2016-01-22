@@ -69,6 +69,9 @@ bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b) {
     return result;
 }
 
+void printf_ivec3(ivec3 a) {
+    printf("%d %d %d", a.x, a.y, a.z);
+}
 
 void printf_fvec3(fvec3 a) {
     printf("%f %f %f", a.x, a.y, a.z);
@@ -123,6 +126,18 @@ ivec3 add_ivec3(ivec3 a, ivec3 b) {
     return result;
 }
 
+ivec3 sub_ivec3(ivec3 a, ivec3 b) {
+    ivec3 result;
+    result.x = a.x - b.x;
+    result.y = a.y - b.y;
+    result.z = a.z - b.z;
+    return result;
+}
+
+float get_ivec3_distance(ivec3 src) {
+    return sqrtf(src.x * src.x + src.y * src.y + src.z * src.z);
+}
+
 int get_positive_mod(int a, int m) {
     return ((a % m) + m) % m;
 }
@@ -135,3 +150,34 @@ int convert_sec_to_milli(float sec) {
     return (int)(sec * 1000);
 }
 
+int choose_random(int average, int variance) {
+    int result = average;
+    for (int i = 0; i < variance; i++) {
+        if (rand() % 2 == 0) {
+            result++;
+        }
+        else {
+            result--;
+        }
+    }
+    return result;
+}
+
+float choose_random(float average, float variance) {
+    float result = average;
+    int precision = 6;
+    float var_per_precision = variance / precision;
+    for (int i = 0; i < precision; i++) {
+        if (rand() % 2 == 0) {
+            result += var_per_precision;
+        }
+        else {
+            result -= var_per_precision;
+        }
+    }
+    return result;
+}
+
+float choose_random_one() {
+    return (float)(((double) rand() / (RAND_MAX)));
+}

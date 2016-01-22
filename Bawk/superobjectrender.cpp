@@ -342,7 +342,7 @@ bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, Break
     // hit block with the damage, if it is over threshold remove it
     block_type* blk = get_block(x, y, z);
     if (blk) {
-        int resistance = get_block_resistance(blk->type);
+        int resistance = get_block_info(blk->type)->resistance;
         int actual_dmg = (int)calculate_damage(dmg, resistance);
         int first_stage = get_breaking_stage(blk->life);
         blk->life += actual_dmg;

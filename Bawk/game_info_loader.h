@@ -32,6 +32,11 @@
 #include "lightrender.h"
 #include "settings.h"
 
+#include "blockinfo.h"
+#include "biomegenerator.h"
+#include "sectorgenerator.h"
+
+
 class CursorItem;
 class RenderableModel;
 class SpriteRender;
@@ -40,43 +45,43 @@ namespace Json {
     class Value;
 }
 
+// --- init/clean ---
 int load_game_info();
 void free_game_info();
 
-uint16_t get_block_texture(block_type blk, BlockOrientation face);
-// deprecate below
-bool get_block_is_model(uint16_t block_id);
-RenderableLight* get_block_light(uint16_t block_id);
-int get_block_resistance(uint16_t block_id);
-int get_block_transparency(uint16_t block_id);
-int get_block_weight(uint16_t block_id);
-int get_block_independence(uint16_t block_id);
+// --- block info ---
+BlockInfo* get_block_info(uint16_t block_id);
 
-RenderableModel* get_game_model(uint16_t model_id);
-
+// deprecate below, or move to a BlockInfo class...
 bool call_block_mouse_callback_from(block_type* block_id, Game* game, Entity* ent, ivec3 pos, Action a);
 void get_block_keyboard_callback_from(block_type block_id, std::map<Action, block_callback_func> &funcs);
 
 bool has_block_mouse_action(block_type block_id);
 bool has_block_keyboard_action(block_type block_id);
 
-SpriteRender* get_sprite_renderable(uint16_t sid);
-
-uint16_t get_model_id_from_name(Json::Value node);
-
-CursorItem* get_recipe_cursoritem_from(uint16_t vid);
-
-// some world generation methods below
-
+// adds block mesh to chunk VBO
 void fill_game_models(std::vector<fvec3> &model_vertices,
                       std::vector<fvec3> &model_normals,
                       std::vector<fvec3> &model_uvs,
                       block_type block,
                       int x, int y, int z);
 
-float get_biome_strength(uint16_t biome);
-float get_biome_persistence(uint16_t biome);
-uint16_t get_random_block_from_biome(uint16_t biome, int depth);
+// --- model info ---
+RenderableModel* get_game_model(uint16_t model_id);
+uint16_t get_model_id_from_name(Json::Value node);
+
+// --- sprite info ---
+SpriteRender* get_sprite_renderable(uint16_t sid);
+
+// --- recipe info ---
+CursorItem* get_recipe_cursoritem_from(uint16_t vid);
+
+// --- world generation ---
+
+SectorGenerator* get_sector_generator(uint16_t sid);
+BiomeGenerator* get_biome(uint16_t biome);
+
+// TODO deprecate the below 2 methods...by moving them to biome generators
 void add_struct_in_biome_randomly(uint16_t biome, ivec3 pos,
                                   std::vector<uint16_t> &sids,
                                   std::vector<ivec3> &dimensions,

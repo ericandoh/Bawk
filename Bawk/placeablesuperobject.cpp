@@ -81,7 +81,7 @@ void PlaceableSuperObject::handle_block_addition(int x, int y, int z, block_type
     // TODO deprecate this - all vehicle mounts SHOULD be models
     // (you cant really ride a block!)
     SuperObject::handle_block_addition(x, y, z, type);
-    if (get_block_independence(type.type)) {
+    if (get_block_info(type.type)->vehicle) {
         makes_vehicle++;
     }
 }
@@ -90,7 +90,7 @@ void PlaceableSuperObject::handle_block_removal(int x, int y, int z, block_type 
     // TODO deprecate this - all vehicle mounts SHOULD be models
     // (you cant really ride a block!)
     SuperObject::handle_block_removal(x, y, z, type);
-    if (get_block_independence(type.type)) {
+    if (get_block_info(type.type)->vehicle) {
         makes_vehicle--;
     }
 }

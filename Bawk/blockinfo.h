@@ -34,6 +34,9 @@ public:
     
     BlockInfo();
     void set_callback_checks();
+    
+    // --- accessor methods ---
+    uint16_t get_block_texture(BlockOrientation orientation, BlockOrientation face);
 };
 
 #endif /* defined(__Bawk__blockinfo__) */
