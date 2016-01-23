@@ -840,6 +840,13 @@ void SuperObject::save_self(IODataObject* obj) {
     RenderableSuperObject::save_self(obj);
     
     int entities_count = (int)entities.size();
+    for (int i = 0; i < (int)entities.size(); i++) {
+        if (entities[i]->entity_class == EntityType::PLAYER) {
+            // don't save player as part of the world
+            entities_count--;
+        }
+    }
+    
     obj->save_value(entities_count);
     for (int i = 0; i < (int)entities.size(); i++) {
         if (entities[i]->entity_class == EntityType::PLAYER) {

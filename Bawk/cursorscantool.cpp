@@ -117,6 +117,8 @@ bool CursorScanTool::confirmed(Game* game) {
         object->center_pos = fvec3((box.lower.x + box.upper.x) / 2.0f,
                                    (box.lower.y + box.upper.y) / 2.0f,
                                    (box.lower.z + box.upper.z) / 2.0f);
+        object->recalculate_transform();
+        object->transform_into_my_coordinates(&object->center_pos, object->center_pos.x, object->center_pos.y, object->center_pos.z);
         
         for (int x = box.lower.x; x < box.upper.x; x++) {
             for (int y = box.lower.y; y < box.upper.y; y++) {

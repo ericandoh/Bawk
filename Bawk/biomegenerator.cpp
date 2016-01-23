@@ -38,7 +38,8 @@ uint16_t BiomeGenerator::get_random_block(int depth) {
     return 0;
 }
 
-void BiomeGenerator::add_structures(SectorGenerator* parent, bounding_box range, uint16_t unique_id) {
+void BiomeGenerator::add_structures(SectorGenerationInfo* sector_info,
+                                    BiomeGenerationInfo* biome_info) {
     // find # of structures to add depending on the bounding box
     // pick points that won't overlap
     // add structures

@@ -117,6 +117,7 @@ int BaseWorld::load_self(IODataObject* obj) {
         return 1;
     
     sector_generator_id = obj->read_value<uint16_t>();
+    int blah = obj->read_value<int>();
     
     sector_loaded_map.clear();
     int sector_count = obj->read_value<int>();
@@ -131,6 +132,9 @@ void BaseWorld::save_self(IODataObject* obj) {
     SuperObject::save_self(obj);
     
     obj->save_value(sector_generator_id);
+    
+    int x = 6;
+    obj->save_value(x);
     
     int sector_count = (int)sector_loaded_map.size();
     obj->save_value(sector_count);

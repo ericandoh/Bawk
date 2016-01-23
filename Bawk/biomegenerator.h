@@ -26,7 +26,12 @@ struct block_layer_info {
     }
 };
 
-class SectorGenerator;
+class SectorGenerationInfo;
+
+class BiomeGenerationInfo {
+    uint16_t unique_id;
+    bounding_box range;
+};
 
 class BiomeGenerator {
 public:
@@ -41,7 +46,8 @@ public:
     BiomeGenerator();
     
     uint16_t get_random_block(int depth);
-    virtual void add_structures(SectorGenerator* parent, bounding_box range, uint16_t unique_id);
+    virtual void add_structures(SectorGenerationInfo* sector_info,
+                                BiomeGenerationInfo* biome_info);
 };
 
 

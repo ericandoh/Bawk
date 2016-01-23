@@ -19,6 +19,10 @@ GameTemplate::GameTemplate(World* w) {
     selected = true;
 }
 
+RenderableChunk* GameTemplate::get_chunk(int x, int y, int z) {
+    return 0;
+}
+
 Rotation GameTemplate::get_vehicle_orientation() {
     Rotation result = Rotation();
     for (Entity* ent: entities) {

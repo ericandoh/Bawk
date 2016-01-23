@@ -39,6 +39,7 @@ public:
     
     // --- SuperObject ---
     // void render(fmat4* transform) override;
+    RenderableChunk* get_chunk(int x, int y, int z) override;
     
     // --- GameTemplate ---
     CursorSuperObject* create_from_template(Player* player, World* world);
