@@ -34,24 +34,22 @@ BaseWorld::BaseWorld() {
 }
 
 // --- SuperObject ---
-int BaseWorld::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
-    if (!SuperObject::get_chunk(to_arr, x, y, z)) {
-        return 0;
-    }
+RenderableChunk* BaseWorld::get_chunk(int x, int y, int z) {
+    // has sector for this chunk been already made?
     ivec3 chunk_pos(x,y,z);
     ivec3 sector_pos = get_sector_generator(sector_generator_id)->transform_into_sector_pos(chunk_pos);
     if (sector_loaded_map.count(sector_pos)) {
-        // sector has already been loaded, but the chunk should be empty...
-        return 0;
+        // sector has already been loaded, simply fetch the chunk from memory
+        return SuperObject::get_chunk(x, y, z);
     }
     else {
         sector_loaded_map[sector_pos] = 1;
         if (get_sector_generator(sector_generator_id)->try_create_sector(ivec3(x, y, z), this)) {
-            // try loading it again
-            if (!SuperObject::get_chunk(to_arr, x, y, z)) {
-                return 0;
-            }
+            // now simply fetch it from memory since sector generator writes to memory
+            return SuperObject::get_chunk(x, y, z);
         }
+        // else, we failed to generate the sector
+        printf("Failed to create sector\n");
     }
     return 0;
 }

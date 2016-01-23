@@ -14,6 +14,22 @@
 #include "superobject.h"
 #include "game_info_loader.h"
 
+struct ChunkData {
+    block_type blks[CX][CY][CZ];
+};
+
+SectorGenerationInfo::SectorGenerationInfo() {
+    
+}
+
+SectorGenerationInfo::~SectorGenerationInfo() {
+    for (auto &i: sector_chunks) {
+        delete i.second;
+    }
+    sector_chunks.clear();
+    biome_map.clear();
+}
+
 SectorGenerator::SectorGenerator() {
     // these will later be overwritten by a JSON reader
     name = "";
@@ -88,13 +104,17 @@ struct BiomePoint {
     ivec3 position;
     // biome id
     int bid;
+    // unique id per biome
+    int unique_id;
     BiomePoint() {
         position = ivec3(0,0,0);
         bid = 0;
+        unique_id = 0;
     }
     BiomePoint(ivec3 p) {
         position = p;
         bid = 0;
+        unique_id = 0;
     }
 };
 
@@ -137,23 +157,6 @@ static float noise2d(float x, float z, int seed, int octaves, float persistence,
     }
     return std::abs(sum / total_strength * base_strength);
 }
-
-struct biome_position_info {
-    int lower, upper;
-    int biomes[2];
-    float biome_weights[2];
-    biome_position_info() {
-        lower = upper = 0;
-        biomes[0] = 0;
-        biomes[1] = 0;
-        biome_weights[0] = 1.0f;
-        biome_weights[1] = 0;
-    }
-};
-
-struct ChunkData {
-    block_type blks[CX][CY][CZ];
-};
 
 void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
     
@@ -340,14 +343,15 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
     // give each point in each island a biome
     for (int i = 0; i < island_points.size(); i++) {
         biome_points[island_points[i]].bid = pick_biome_from_weights(biome_frequencies);
+        biome_points[island_points[i]].unique_id = i + 1;
     }
     
     // now go through every point on the map and fill in the chunks with the appropriate values
     // also, record for each biome the bounding box of it, and also fill in a biome map
-    std::vector<std::vector<biome_position_info>> biome_map;
-    biome_map.resize(sector_xwidth);
+    SectorGenerationInfo* sector_info = new SectorGenerationInfo();
+    sector_info->biome_map.resize(sector_xwidth);
     for (int i = 0; i < sector_xwidth; i++) {
-        biome_map[i].resize(sector_zwidth);
+        sector_info->biome_map[i].resize(sector_zwidth);
     }
     
     std::vector<BiomePoint> all_points;
@@ -381,20 +385,21 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
             int bid_choice = all_points[choice].bid;
             int bid_second_choice = all_points[second_choice].bid;
             // now put in the choice into the struct
-            biome_map[i][j].biomes[0] = bid_choice;
+            sector_info->biome_map[i][j].biomes[0] = bid_choice;
+            sector_info->biome_map[i][j].biome_unique_id = all_points[choice].unique_id;
             if (second_shortest_dst < shortest_dst + melt_distance && bid_choice != bid_second_choice) {
-                biome_map[i][j].biomes[1] = bid_second_choice;
+                sector_info->biome_map[i][j].biomes[1] = bid_second_choice;
                 // weight goes from 0.0 (equal distance) to 1.0 (edge)
                 float weight = (second_shortest_dst - shortest_dst) / melt_distance;
                 // 0.5 - 1
-                biome_map[i][j].biome_weights[0] = 0.5f + weight / 2.0f;
+                sector_info->biome_map[i][j].biome_weights[0] = 0.5f + weight / 2.0f;
                 // 0.5 - 0
-                biome_map[i][j].biome_weights[1] = 0.5f - weight / 2.0f;
+                sector_info->biome_map[i][j].biome_weights[1] = 0.5f - weight / 2.0f;
             }
             else {
-                biome_map[i][j].biomes[1] = bid_choice;
-                biome_map[i][j].biome_weights[0] = 1.0f;
-                biome_map[i][j].biome_weights[1] = 0.0f;
+                sector_info->biome_map[i][j].biomes[1] = bid_choice;
+                sector_info->biome_map[i][j].biome_weights[0] = 1.0f;
+                sector_info->biome_map[i][j].biome_weights[1] = 0.0f;
             }
         }
     }
@@ -404,7 +409,7 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
     float current_fatness;
     for (int x = 0; x < sector_xwidth; x++) {
         for (int z = 0; z < sector_zwidth; z++) {
-            biome_position_info info = biome_map[x][z];
+            biome_position_info info = sector_info->biome_map[x][z];
             // calculate heightmap
             
             float fat;
@@ -427,42 +432,39 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
                                        seed + 1, octaves, persistence, strength);// * fraction_island;
                 rupper += current_fatness;
                 
-                biome_map[x][z].lower = (int)roundf(rlower);
-                biome_map[x][z].upper = (int)roundf(rupper) + 1;
+                sector_info->biome_map[x][z].lower = (int)roundf(rlower);
+                sector_info->biome_map[x][z].upper = (int)roundf(rupper) + 1;
                 
             }
             else {
-                biome_map[x][z].lower = 0;
-                biome_map[x][z].upper = 0;
+                sector_info->biome_map[x][z].lower = 0;
+                sector_info->biome_map[x][z].upper = 0;
             }
             
             // also tell each instance of biome about the bounds we have here
         }
     }
     
-    std::unordered_map<ivec3, ChunkData*> sector_chunks;
+    //std::unordered_map<ivec3, ChunkData*> sector_chunks;
     
     for (int x = 0; x < sector_xwidth; x++) {
         for (int z = 0; z < sector_zwidth; z++) {
-            biome_position_info info = biome_map[x][z];
-            if (x + bounds.lower.x == -69 && z + bounds.lower.z == -52) {
-                ;
-            }
+            biome_position_info info = sector_info->biome_map[x][z];
             for (int y = info.lower; y < info.upper; y++) {
                 ivec3 cac, crc;
                 obj->transform_into_chunk_bounds(&cac, &crc,
                                                  x + bounds.lower.x,
                                                  y,
                                                  z + bounds.lower.z);
-                if (sector_chunks.count(cac)) {
+                if (sector_info->sector_chunks.count(cac)) {
                     // this chunk already made
                 }
                 else {
-                    sector_chunks[cac] = new ChunkData();
+                    sector_info->sector_chunks[cac] = new ChunkData();
                     // clear blks
-                    get_empty_chunk(sector_chunks[cac]->blks);
+                    get_empty_chunk(sector_info->sector_chunks[cac]->blks);
                 }
-                ChunkData* ref = sector_chunks[cac];
+                ChunkData* ref = sector_info->sector_chunks[cac];
                 int biome_chosen;
                 float choice = choose_random_one();
                 if (choice < info.biome_weights[0]) {
@@ -486,7 +488,7 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
     validate_read_write_path(obj->get_chunk_save_path(&zero));
     
     // finish and save all chunks to disk
-    for (auto &i: sector_chunks) {
+    for (auto &i: sector_info->sector_chunks) {
         ivec3 pos = i.first;
         IODataObject writer(obj->get_chunk_save_path(&pos));
         if (writer.save(false)) {
@@ -497,7 +499,7 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
         writer.close();
     }
     
-    
+    delete sector_info;
     
     /*
     char test_arr[sector_xwidth + margin_x * 2][sector_zwidth + margin_z * 2];

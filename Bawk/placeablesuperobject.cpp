@@ -72,11 +72,6 @@ void PlaceableSuperObject::remove_entity(Entity* entity) {
     }
 }
 
-int PlaceableSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
-    get_empty_chunk(to_arr);
-    return 0;
-}
-
 void PlaceableSuperObject::handle_block_addition(int x, int y, int z, block_type type) {
     // TODO deprecate this - all vehicle mounts SHOULD be models
     // (you cant really ride a block!)

@@ -563,14 +563,17 @@ void SuperObject::handle_block_removal(int x, int y, int z, block_type type) {
     block_counter--;
 }
 
-int SuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
+RenderableChunk* SuperObject::get_chunk(int x, int y, int z) {
+    block_type to_arr[CX][CY][CZ];
     ivec3 pos = ivec3(x, y, z);
     IODataObject reader(get_chunk_save_path(&pos));
     if (reader.read(false))
-        return 1;
+        return 0;
     reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
     reader.close();
-    return 0;
+    
+    RenderableChunk* chunk = new RenderableChunk(to_arr);
+    return chunk;
 }
 
 int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {

@@ -149,14 +149,6 @@ cursor_item_identifier CursorSuperObject::get_identifier() {
 }
 
 // --- SuperObject ---
-int CursorSuperObject::get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) {
-    if (!SuperObject::get_chunk(to_arr, x, y, z)) {
-        return 0;
-    }
-    get_empty_chunk(to_arr);
-    return 0;
-}
-
 std::string CursorSuperObject::get_save_path() {
     return get_path_to_template(pid, vid);
 }

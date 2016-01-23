@@ -631,7 +631,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
             if (biome_node.type() != Json::objectValue) {
                 continue;
             }
-            BiomeGenerator binfo;
+            BiomeGenerator binfo = BiomeGenerator();
             if (biome_node.isMember("name") && biome_node["name"].type() == Json::stringValue) {
                 binfo.name = biome_node["name"].asString();
             }

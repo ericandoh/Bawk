@@ -37,15 +37,6 @@ void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
     cac->z = (zr - crc->z) / CZ;
 }
 
-RenderableChunk* RenderableSuperObject::obtain_chunk(int x, int y, int z) {
-    block_type raw_chunk[CX][CY][CZ];
-    if (get_chunk(raw_chunk, x, y, z)) {
-        // failed to load chunk
-        return 0;
-    }
-    return new RenderableChunk(raw_chunk);
-}
-
 void RenderableSuperObject::setup_chunk(RenderableChunk* chunk, int x, int y, int z) {
     
     // we load data from disk so this should be consistent, but just to be safe do a check
@@ -97,10 +88,11 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
         return 0;
     }
     
-    RenderableChunk* chunk = obtain_chunk(x, y, z);
+    RenderableChunk* chunk = get_chunk(x, y, z);
     if (chunk) {
         chunks[ivec3(x, y, z)] = chunk;
         setup_chunk(chunk, x, y, z);
+        return 0;
     }
     return 1;
 }
@@ -172,10 +164,8 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         update_dimensions_from_chunk(cac);
     }
     else {
-        // loading the chunk failed, probably because this is out of bounds
-        // make a new chunk here
-        // this should only be called while creating vehicles from blocks while
-        // finishing up a template
+        // the only appropriate time and place to make a new empty chunk!
+        // the chunk doesn't exist, so we'll make one lol
         
         block_type raw_chunk[CX][CY][CZ];
         get_empty_chunk(raw_chunk);
@@ -190,46 +180,8 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         if (type.type) {
             handle_block_addition(rounded_oac.x, rounded_oac.y, rounded_oac.z, type);
         }
-        // we load data from disk so this should be consistent, but just to be safe do a check
-        update_dimensions_from_chunk(ivec3(x, y, z));
         
-        ivec3 left(cac.x - 1, cac.y, cac.z);
-        ivec3 right(cac.x + 1, cac.y, cac.z);
-        ivec3 below(cac.x, cac.y - 1, cac.z);
-        ivec3 above(cac.x, cac.y + 1, cac.z);
-        ivec3 front(cac.x, cac.y, cac.z - 1);
-        ivec3 back(cac.x, cac.y, cac.z + 1);
-        
-        if (chunks.count(left)) {
-            chunk->left = chunks[left];
-            chunks[left]->right = chunk;
-            chunk->left->changed = true;
-        }
-        if (chunks.count(right)) {
-            chunk->right = chunks[right];
-            chunks[right]->left = chunk;
-            chunk->right->changed = true;
-        }
-        if (chunks.count(below)) {
-            chunk->below = chunks[below];
-            chunks[below]->above = chunk;
-            chunk->below->changed = true;
-        }
-        if (chunks.count(above)) {
-            chunk->above = chunks[above];
-            chunks[above]->below = chunk;
-            chunk->above->changed = true;
-        }
-        if (chunks.count(front)) {
-            chunk->front = chunks[front];
-            chunks[front]->back = chunk;
-            chunk->front->changed = true;
-        }
-        if (chunks.count(back)) {
-            chunk->back = chunks[back];
-            chunks[back]->front = chunk;
-            chunk->back->changed = true;
-        }
+        setup_chunk(chunk, cac.x, cac.y, cac.z);
     }
 }
 

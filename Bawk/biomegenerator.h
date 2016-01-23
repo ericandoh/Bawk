@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include "basic_types.h"
 
 struct block_layer_info {
     uint16_t type;
@@ -24,6 +25,8 @@ struct block_layer_info {
         frequency = 0;
     }
 };
+
+class SectorGenerator;
 
 class BiomeGenerator {
 public:
@@ -38,6 +41,7 @@ public:
     BiomeGenerator();
     
     uint16_t get_random_block(int depth);
+    virtual void add_structures(SectorGenerator* parent, bounding_box range, uint16_t unique_id);
 };
 
 

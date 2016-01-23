@@ -38,7 +38,8 @@ class BaseWorld: public SuperObject {
 public:
     BaseWorld();
     // --- SuperObject ---
-    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
+    RenderableChunk* get_chunk(int x, int y, int z) override;
+    
     bool within_dimensions_chunk(int x, int y, int z) override;
     bool intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos) override;
     void update_dimensions_from_chunk(ivec3 chunk_pos) override;

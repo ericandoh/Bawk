@@ -51,8 +51,6 @@ public:
     RenderableSuperObject();
     
     // --- RenderableSuperObject ---
-    // public for access to chunkloadmanager
-    RenderableChunk* obtain_chunk(int x, int y, int z);
     void setup_chunk(RenderableChunk* chunk, int x, int y, int z);
     // internal function to transform OAC xyz to CAC cac, CRC crc
     void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, float x, float y, float z);
@@ -70,7 +68,7 @@ public:
     virtual void handle_block_removal(int x, int y, int z, block_type type) = 0;
     
     // this should be overriden to provide chunk data at (CAC) xyz
-    virtual int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) = 0;
+    virtual RenderableChunk* get_chunk(int x, int y, int z) = 0;
     // this should be overriden to save chunk data at (CAC) xyz
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) = 0;
     

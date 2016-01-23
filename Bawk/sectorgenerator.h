@@ -12,9 +12,34 @@
 #include <stdio.h>
 #include <string>
 #include <map>
+#include <unordered_map>
+#include <vector>
 #include "basic_types.h"
 
 class SuperObject;
+struct ChunkData;
+
+struct biome_position_info {
+    int lower, upper;
+    int biomes[2];
+    float biome_weights[2];
+    int biome_unique_id;
+    biome_position_info() {
+        lower = upper = 0;
+        biomes[0] = 0;
+        biomes[1] = 0;
+        biome_unique_id = 0;
+        biome_weights[0] = 1.0f;
+        biome_weights[1] = 0;
+    }
+};
+
+struct SectorGenerationInfo {
+    std::unordered_map<ivec3, ChunkData*> sector_chunks;
+    std::vector<std::vector<biome_position_info>> biome_map;
+    SectorGenerationInfo();
+    ~SectorGenerationInfo();
+};
 
 class SectorGenerator {
 protected:
@@ -23,7 +48,6 @@ protected:
 public:
     // --- PROPERTIES ---
     std::string name;
-    
     std::map<int, float> biome_frequencies;
     
     // width/height of the sector, this should be CHUNK-ALIGNED!!! (else unknown stuff will happen)

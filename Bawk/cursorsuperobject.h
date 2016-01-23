@@ -58,7 +58,6 @@ public:
     // --- PlaceableSuperObject ---
     
     // --- SuperObject ---
-    int get_chunk(block_type to_arr[CX][CY][CZ], int x, int y, int z) override;
     std::string get_save_path() override;
     std::string get_chunk_save_path(ivec3* pos) override;
     int load_self(IODataObject* obj) override;

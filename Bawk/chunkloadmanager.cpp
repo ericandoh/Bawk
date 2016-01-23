@@ -37,7 +37,7 @@ int load_chunks_async(void* ptr) {
                     // chunk already exists + is loaded in
                     continue;
                 }
-                RenderableChunk* chunk = manager->obj->obtain_chunk(x, y, z);
+                RenderableChunk* chunk = manager->obj->get_chunk(x, y, z);
                 
                 if (chunk) {
                     LoadedChunkInfo info = LoadedChunkInfo();
