@@ -412,8 +412,8 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
             }
         }
     }
-    
     int_bounding_box bounds = transform_into_bounds(sector_pos);
+    sector_info->sector_bounds = bounds;
     float strength, persistence;
     float current_fatness;
     for (int x = 0; x < sector_xwidth; x++) {
@@ -482,6 +482,11 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
         BiomeGenerator* generator = get_biome(biome_chosen);
         generator->add_structures(sector_info, &island_biome_points[i]->info);
         //island_biome_points[i]->info.range.print_self();
+    }
+    for (int i = 0; i < island_biome_points.size(); i++) {
+        int biome_chosen = island_biome_points[i]->bid;
+        BiomeGenerator* generator = get_biome(biome_chosen);
+        generator->reset();
     }
     
     printf("Finished generating sector ");

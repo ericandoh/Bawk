@@ -122,7 +122,12 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
                                                                  (int)(chunk_pos.z*CZ+z));
                         // TODO change block orientation too?
                         printf("Setting %d %d %d\n", world_coord.x, world_coord.y, world_coord.z);
-                        block.owner = player->getID();
+                        if (player) {
+                            block.owner = player->getID();
+                        }
+                        else {
+                            block.owner = 0;
+                        }
                         target->set_block_integral(world_coord.x, world_coord.y, world_coord.z, block);
                     }
                 }

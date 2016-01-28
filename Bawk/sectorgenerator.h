@@ -39,6 +39,7 @@ struct SectorGenerationInfo {
     //std::unordered_map<ivec3, ChunkData*> sector_chunks;
     SuperObject* target;
     std::vector<std::vector<biome_position_info>> biome_map;
+    int_bounding_box sector_bounds;
     SectorGenerationInfo(SuperObject* t);
     ~SectorGenerationInfo();
 };

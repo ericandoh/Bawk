@@ -37,7 +37,7 @@
 #include "sectorgenerator.h"
 
 
-class CursorItem;
+class CursorSuperObject;
 class RenderableModel;
 class SpriteRender;
 
@@ -74,7 +74,7 @@ uint16_t get_model_id_from_name(Json::Value node);
 SpriteRender* get_sprite_renderable(uint16_t sid);
 
 // --- recipe info ---
-CursorItem* get_recipe_cursoritem_from(uint16_t vid);
+CursorSuperObject* get_recipe_cursoritem_from(uint16_t vid);
 
 // --- world generation ---
 

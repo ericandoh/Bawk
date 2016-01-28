@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <map>
 #include "basic_types.h"
 
 struct block_layer_info {
@@ -37,9 +38,11 @@ struct BiomeGenerationInfo {
     }
 };
 
+class CursorSuperObject;
+
 class BiomeGenerator {
 public:
-    
+    uint16_t biome_id;
     std::string name;
     float strength;
     float persistence;
@@ -47,12 +50,16 @@ public:
     std::vector<block_layer_info> structures;
     //std::vector<event_layer_info> events;
     
+    std::map<int, CursorSuperObject*> structure_models;
+    
     BiomeGenerator();
     
     uint16_t get_random_block(int depth);
     uint16_t get_random_struct(int* depth);
     virtual void add_structures(SectorGenerationInfo* sector_info,
                                 BiomeGenerationInfo* biome_info);
+    
+    void reset();
 };
 
 

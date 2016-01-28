@@ -632,6 +632,7 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
                 continue;
             }
             BiomeGenerator binfo = BiomeGenerator();
+            binfo.biome_id = i;
             if (biome_node.isMember("name") && biome_node["name"].type() == Json::stringValue) {
                 binfo.name = biome_node["name"].asString();
             }
@@ -897,7 +898,7 @@ SpriteRender* get_sprite_renderable(uint16_t sid) {
     return &(game_data_object->sprite_info[sid].sprite);
 }
 
-CursorItem* get_recipe_cursoritem_from(uint16_t vid) {
+CursorSuperObject* get_recipe_cursoritem_from(uint16_t vid) {
     if (game_data_object->recipe_info[vid].from_file) {
         // make a superobject loaded from file path
         // game_data_object->recipe_info[vid].file_path;

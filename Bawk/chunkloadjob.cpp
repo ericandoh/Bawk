@@ -67,6 +67,10 @@ void ChunkLoadJob::run() {
                     // chunk already exists + is loaded in
                     continue;
                 }
+                if (is_finished()) {
+                    // periodically do this to stop the thread prematurely if we need
+                    return;
+                }
                 RenderableChunk* chunk = target->get_chunk(x, y, z);
                 
                 if (chunk) {
