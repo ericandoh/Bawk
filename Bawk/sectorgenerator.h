@@ -36,11 +36,11 @@ struct biome_position_info {
 };
 
 struct SectorGenerationInfo {
-    std::unordered_map<ivec3, ChunkData*> sector_chunks;
+    //std::unordered_map<ivec3, ChunkData*> sector_chunks;
+    SuperObject* target;
     std::vector<std::vector<biome_position_info>> biome_map;
-    SectorGenerationInfo();
+    SectorGenerationInfo(SuperObject* t);
     ~SectorGenerationInfo();
-    void set_block(ivec3 pos, block_type blk);
 };
 
 class SectorGenerator {

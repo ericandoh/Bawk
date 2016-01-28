@@ -48,7 +48,7 @@ class RenderableChunk {
     int block_counter;          // number of blocks in this chunk
     int slot;                   // which slot it is using for the VBO?
     int resource_slot;
-    double lastused;
+    uint32_t lastused;
     // internal function used to optimize rendering of blocks
     bool isblocked(int x1, int y1, int z1, int x2, int y2, int z2);
 public:

@@ -50,6 +50,8 @@ public:
     void setup_chunk(RenderableChunk* chunk, int x, int y, int z);
     // internal function to transform OAC xyz to CAC cac, CRC crc
     void transform_into_chunk_bounds(ivec3* cac, ivec3* crc, float x, float y, float z);
+    // creates an empty chunk at x, y, z
+    void create_chunk(int x, int y, int z);
     void delete_chunk(int x, int y, int z);
     
     // gets the block at (RWC) xyz
@@ -63,7 +65,7 @@ public:
     // helper function to do appropriate action when some block is removed
     virtual void handle_block_removal(int x, int y, int z, block_type type) = 0;
     
-    // this should be overriden to provide chunk data at (CAC) xyz
+    // this should be overriden to provide chunk data at (CAC) xyz, if the chunk doesnt exist return NULL
     virtual RenderableChunk* get_chunk(int x, int y, int z) = 0;
     // this should be overriden to save chunk data at (CAC) xyz
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) = 0;

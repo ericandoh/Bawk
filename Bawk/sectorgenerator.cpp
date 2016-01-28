@@ -20,53 +20,12 @@ struct ChunkData {
     block_type blks[CX][CY][CZ];
 };
 
-SectorGenerationInfo::SectorGenerationInfo() {
-    
+SectorGenerationInfo::SectorGenerationInfo(SuperObject* t) {
+    target = t;
 }
 
 SectorGenerationInfo::~SectorGenerationInfo() {
-    for (auto &i: sector_chunks) {
-        delete i.second;
-    }
-    sector_chunks.clear();
     biome_map.clear();
-}
-
-// --- RenderableSuperObject
-void transform_into_chunk_bounds_bad_programming_practice(ivec3* cac,
-                                                        ivec3* crc,
-                                                        float x, float y, float z) {
-    int xr = int(floorf(x));
-    int yr = int(floorf(y));
-    int zr = int(floorf(z));
-    // chunk relative coordinates
-    crc->x = (xr % CX + CX) % CX;
-    crc->y = (yr % CY + CY) % CY;
-    crc->z = (zr % CZ + CZ) % CZ;
-    
-    // chunk aligned coordinates
-    cac->x = (xr - crc->x) / CX;
-    cac->y = (yr - crc->y) / CY;
-    cac->z = (zr - crc->z) / CZ;
-}
-
-void SectorGenerationInfo::set_block(ivec3 pos, block_type blk) {
-    ivec3 cac, crc;
-    transform_into_chunk_bounds_bad_programming_practice(&cac, &crc,
-                                                         pos.x,// + bounds.lower.x,
-                                                         pos.y,
-                                                         pos.z);// + bounds.lower.z);
-    if (sector_chunks.count(cac)) {
-        // this chunk already made
-    }
-    else {
-        sector_chunks[cac] = new ChunkData();
-        // clear blks
-        get_empty_chunk(sector_chunks[cac]->blks);
-    }
-    ChunkData* ref = sector_chunks[cac];
-    
-    ref->blks[crc.x][crc.y][crc.z] = blk;
 }
 
 SectorGenerator::SectorGenerator() {
@@ -393,7 +352,7 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
     
     // now go through every point on the map and fill in the chunks with the appropriate values
     // also, record for each biome the bounding box of it, and also fill in a biome map
-    SectorGenerationInfo* sector_info = new SectorGenerationInfo();
+    SectorGenerationInfo* sector_info = new SectorGenerationInfo(obj);
     sector_info->biome_map.resize(sector_xwidth);
     for (int i = 0; i < sector_xwidth; i++) {
         sector_info->biome_map[i].resize(sector_zwidth);
@@ -501,20 +460,6 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
         for (int z = 0; z < sector_zwidth; z++) {
             biome_position_info info = sector_info->biome_map[x][z];
             for (int y = info.lower; y < info.upper; y++) {
-                ivec3 cac, crc;
-                obj->transform_into_chunk_bounds(&cac, &crc,
-                                                 x + bounds.lower.x,
-                                                 y,
-                                                 z + bounds.lower.z);
-                if (sector_info->sector_chunks.count(cac)) {
-                    // this chunk already made
-                }
-                else {
-                    sector_info->sector_chunks[cac] = new ChunkData();
-                    // clear blks
-                    get_empty_chunk(sector_info->sector_chunks[cac]->blks);
-                }
-                ChunkData* ref = sector_info->sector_chunks[cac];
                 int biome_chosen;
                 float choice = choose_random_one();
                 if (choice < info.biome_weights[0]) {
@@ -523,15 +468,19 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
                 else {
                     biome_chosen = info.biomes[1];
                 }
-                ref->blks[crc.x][crc.y][crc.z] = get_biome(biome_chosen)->get_random_block(info.upper - 1 - y);
+                block_type blk = get_biome(biome_chosen)->get_random_block(info.upper - 1 - y);
+                sector_info->target->set_block_integral(x + bounds.lower.x,
+                                                        y,
+                                                        z + bounds.lower.z, blk);
             }
         }
     }
     // using the bounding box of each biome, iterate through each biome and then fill in details in that biome
     // using the biomemap from above to see exactly where we have said biomes
     for (int i = 0; i < island_biome_points.size(); i++) {
-        int biome_chosen = island_biome_points[i]->info.unique_id;
-        get_biome(biome_chosen)->add_structures(sector_info, &island_biome_points[i]->info);
+        int biome_chosen = island_biome_points[i]->bid;
+        BiomeGenerator* generator = get_biome(biome_chosen);
+        generator->add_structures(sector_info, &island_biome_points[i]->info);
         //island_biome_points[i]->info.range.print_self();
     }
     
@@ -543,17 +492,14 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
     validate_read_write_path(obj->get_chunk_save_path(&zero));
     
     // finish and save all chunks to disk
-    for (auto &i: sector_info->sector_chunks) {
-        ivec3 pos = i.first;
-        IODataObject writer(obj->get_chunk_save_path(&pos));
-        if (writer.save(false)) {
-            // failed to save chunk!!
-            continue;
-        }
-        writer.save_pointer(&(i.second->blks[0][0][0]), sizeof(i.second->blks[0][0][0])*CX*CY*CZ);
-        writer.close();
+    sector_info->target->save_all_chunks();
+    // to save memory, free all chunk data currently in memory...
+    // note this will also flush chunks that might be loaded in for the player,
+    // BUT we can call an update
+    for (auto &i: sector_info->target->chunks) {
+        delete i.second;
     }
-    
+    sector_info->target->chunks.clear();
     delete sector_info;
     
     /*

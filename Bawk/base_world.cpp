@@ -42,15 +42,7 @@ RenderableChunk* BaseWorld::get_chunk(int x, int y, int z) {
         // sector has already been loaded, simply fetch the chunk from memory
         return SuperObject::get_chunk(x, y, z);
     }
-    else {
-        sector_loaded_map[sector_pos] = 1;
-        if (get_sector_generator(sector_generator_id)->try_create_sector(ivec3(x, y, z), this)) {
-            // now simply fetch it from memory since sector generator writes to memory
-            return SuperObject::get_chunk(x, y, z);
-        }
-        // else, we failed to generate the sector
-        printf("Failed to create sector\n");
-    }
+    // if sector's not loaded, that's it people
     return 0;
 }
 
@@ -69,6 +61,19 @@ bool BaseWorld::intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos) {
     }
     bool result = chunks[chunkpos]->intersects_my_bounds(lower, upper);
     return result;
+}
+
+void BaseWorld::update_render(fvec3* player_pos) {
+    // see if we need to create sector
+    ivec3 cac, crc;
+    transform_into_chunk_bounds(&cac, &crc, player_pos->x, player_pos->y, player_pos->z);
+    ivec3 sector_pos = get_sector_generator(sector_generator_id)->transform_into_sector_pos(cac);
+    if (!sector_loaded_map.count(sector_pos) &&
+        get_sector_generator(sector_generator_id)->try_create_sector(cac, this)) {
+        // now simply fetch it from memory since sector generator writes to memory
+        sector_loaded_map[sector_pos] = 1;
+    }
+    SuperObject::update_render(player_pos);
 }
 
 // --- Entity ---

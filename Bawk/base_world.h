@@ -44,6 +44,8 @@ public:
     bool intersects_chunk(ivec3 lower, ivec3 upper, ivec3 chunkpos) override;
     void update_dimensions_from_chunk(ivec3 chunk_pos) override;
     
+    void update_render(fvec3* player_pos) override;
+    
     // --- Entity ---
     void step(Game* game, int ms) override;
     bool collides_with(Entity* other) override;

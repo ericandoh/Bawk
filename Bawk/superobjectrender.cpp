@@ -99,6 +99,14 @@ int RenderableSuperObject::load_chunk(int x, int y, int z) {
     return 1;
 }
 
+void RenderableSuperObject::create_chunk(int x, int y, int z) {
+    block_type raw_chunk[CX][CY][CZ];
+    get_empty_chunk(raw_chunk);
+    RenderableChunk* chunk = new RenderableChunk(raw_chunk);
+    chunks[ivec3(x,y,z)] = chunk;
+    setup_chunk(chunk, x, y, z);
+}
+
 void RenderableSuperObject::delete_chunk(int x, int y, int z) {
     ivec3 chunk_pos(x,y,z);
     if (!chunks.count(chunk_pos)) {
@@ -158,33 +166,24 @@ void RenderableSuperObject::set_block(float x, float y, float z, block_type type
         if (current && current->type) {
             handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, *current);
         }
-        chunks[cac]->set(crc.x, crc.y, crc.z, type);
-        if (type.type) {
-            handle_block_addition(rounded_oac.x, rounded_oac.y, rounded_oac.z, type);
-        }
-        // update the dimension vectors
-        update_dimensions_from_chunk(cac);
     }
     else {
-        // the only appropriate time and place to make a new empty chunk!
-        // the chunk doesn't exist, so we'll make one lol
+        // create a new, empty chunk
+        create_chunk(cac.x, cac.y, cac.z);
         
-        block_type raw_chunk[CX][CY][CZ];
-        get_empty_chunk(raw_chunk);
-        RenderableChunk* chunk = new RenderableChunk(raw_chunk);
-        chunks[cac] = chunk;
+        // unnecessary, create chunk will make an empty chunk
+        //block_type* current = chunks[cac]->get(crc.x, crc.y, crc.z);
+        //if (current && current->type) {
+        //    handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, *current);
+        //}
         
-        block_type* current = chunks[cac]->get(crc.x, crc.y, crc.z);
-        if (current && current->type) {
-            handle_block_removal(rounded_oac.x, rounded_oac.y, rounded_oac.z, *current);
-        }
-        chunks[cac]->set(crc.x, crc.y, crc.z, type);
-        if (type.type) {
-            handle_block_addition(rounded_oac.x, rounded_oac.y, rounded_oac.z, type);
-        }
-        
-        setup_chunk(chunk, cac.x, cac.y, cac.z);
     }
+    chunks[cac]->set(crc.x, crc.y, crc.z, type);
+    if (type.type) {
+        handle_block_addition(rounded_oac.x, rounded_oac.y, rounded_oac.z, type);
+    }
+    // update the dimension vectors
+    update_dimensions_from_chunk(cac);
 }
 
 void RenderableSuperObject::set_block_integral(int x, int y, int z, block_type type) {
@@ -269,7 +268,7 @@ void RenderableSuperObject::save_all_chunks() {
     for (auto kv : chunks) {
         counter++;
         save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
-        kv.second->cleanup();
+        //kv.second->cleanup();
     }
     printf("Saved %d chunks\n", counter);
 }
