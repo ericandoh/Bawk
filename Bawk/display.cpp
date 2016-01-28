@@ -25,6 +25,8 @@
 #include "importsdl.h"
 #include "importopengl.h"
 
+#include "threadmanager.h"
+
 // --- Screen Dimensions ---
 // physical px width on screen
 int window_width = 720;
@@ -202,6 +204,8 @@ int init_display() {
         return 1;
     }
     check_for_error();
+    
+    init_threader();
     
     return 0;
 }
@@ -438,6 +442,7 @@ int display_run()
             uint32_t diff_time = std::min((int)(current_time - previous_time), 100);
             current_display->frame(diff_time);
             previous_time += diff_time;
+            step_threader();
         }
         
         render_geometry();
@@ -476,6 +481,8 @@ int display_run()
             }
         }
     }
+    
+    close_all_threads();
     
     if (!should_exit) {
         // this was called by a call to exit window. close the program

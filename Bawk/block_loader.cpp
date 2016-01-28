@@ -246,7 +246,13 @@ int IODataObject::save(bool needs_validation) {
                  std::ios::out | std::ios::trunc | std::ios::binary);
     
     if (!outfile.is_open()) {
-        return 1;
+        // try validating the path
+        validate_read_write_path(path);
+        outfile.open(path,
+                     std::ios::out | std::ios::trunc | std::ios::binary);
+        if (!outfile.is_open()) {
+            return 1;
+        }
     }
     i = 0;
     mode = SaveMode::WRITE;

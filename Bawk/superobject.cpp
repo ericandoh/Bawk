@@ -12,6 +12,7 @@
 #include "game.h"
 #include "blocktracer.h"
 #include "entity_loader.h"
+#include "importsdl.h"
 
 SuperObject::SuperObject() {
     // this constructor should be only called to construct a world

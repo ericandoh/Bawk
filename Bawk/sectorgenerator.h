@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <vector>
 #include "basic_types.h"
+#include "block.h"
 
 class SuperObject;
 struct ChunkData;
@@ -39,6 +40,7 @@ struct SectorGenerationInfo {
     std::vector<std::vector<biome_position_info>> biome_map;
     SectorGenerationInfo();
     ~SectorGenerationInfo();
+    void set_block(ivec3 pos, block_type blk);
 };
 
 class SectorGenerator {

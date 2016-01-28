@@ -24,8 +24,6 @@
 #include "entity.h"
 #include "block.h"
 
-#include "chunkloadmanager.h"
-
 struct chunk_bounds {
     ivec3 lower_bound, upper_bound;
 };
@@ -37,8 +35,6 @@ class RenderableSuperObject: public Entity {
 protected:
     // mapping from CAC position to the actual physical bound of that chunk, for ALL chunks
     chunk_bound_map chunk_bounds;
-    
-    ChunkLoadManager manager;
     
     // internal function that will make calls to load and save a chunk given CAC xyz
     int load_chunk(int x, int y, int z);

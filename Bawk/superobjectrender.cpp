@@ -12,11 +12,13 @@
 #include "superobjectrender.h"
 #include "game_info_loader.h"
 
+#include "threadmanager.h"
+#include "chunkloadjob.h"
+
 #include "importsdl.h"
 
 RenderableSuperObject::RenderableSuperObject(): Entity() {
     // nothing special needed here
-    manager = ChunkLoadManager();
 }
 
 // --- RenderableSuperObject
@@ -318,7 +320,7 @@ bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, Break
 }
 
 void RenderableSuperObject::step(Game* game, int ms) {
-    manager.flush_chunks();
+    Entity::step(game, ms);
 }
 
 void RenderableSuperObject::render(fmat4* transform) {
@@ -376,7 +378,7 @@ void RenderableSuperObject::render_lights(fmat4* transform, fvec3 player_pos) {
 }
 
 void RenderableSuperObject::update_render(fvec3* player_pos) {
-    manager.start_update(this, *player_pos);
+    add_thread_job(new ChunkLoadJob((pid << 8) + vid, this, *player_pos));
 }
 
 int RenderableSuperObject::get_collision_level() {

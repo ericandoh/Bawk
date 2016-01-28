@@ -218,6 +218,9 @@ struct int_bounding_box {
         (lower.y <= point.y) && (point.y < upper.y) &&
         (lower.z <= point.z) && (point.z < upper.z);
     }
+    void print_self() {
+        printf("(%d,%d,%d) to (%d,%d,%d)\n", lower.x, lower.y, lower.z, upper.x, upper.y, upper.z);
+    }
 };
 
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b);
