@@ -77,6 +77,8 @@
 		076819831C5A824200D9218F /* threadmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076819811C5A824200D9218F /* threadmanager.cpp */; };
 		076819861C5A824A00D9218F /* threadjob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076819841C5A824A00D9218F /* threadjob.cpp */; };
 		076819891C5A8E2600D9218F /* chunkloadjob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076819871C5A8E2600D9218F /* chunkloadjob.cpp */; };
+		0768198C1C5AC25100D9218F /* textrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0768198A1C5AC25100D9218F /* textrender.cpp */; };
+		0768198F1C5ADA8200D9218F /* fonts.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0768198E1C5AD61B00D9218F /* fonts.png */; };
 		076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFD91BD184DF00D68C8F /* blockrender.cpp */; };
 		076BEFE21BD19E9F00D68C8F /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE01BD19E9F00D68C8F /* entity.cpp */; };
 		076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076BEFE61BD1FE0E00D68C8F /* inventory.cpp */; };
@@ -114,6 +116,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				0768198F1C5ADA8200D9218F /* fonts.png in CopyFiles */,
 				0715FFB31C45C6A9008349F7 /* gameplay.json in CopyFiles */,
 				07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */,
 				0710265F1C275EBD00BBC711 /* shadows_frag_shader.glsl in CopyFiles */,
@@ -271,6 +274,9 @@
 		076819851C5A824A00D9218F /* threadjob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = threadjob.h; sourceTree = "<group>"; };
 		076819871C5A8E2600D9218F /* chunkloadjob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkloadjob.cpp; sourceTree = "<group>"; };
 		076819881C5A8E2600D9218F /* chunkloadjob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunkloadjob.h; sourceTree = "<group>"; };
+		0768198A1C5AC25100D9218F /* textrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = textrender.cpp; sourceTree = "<group>"; };
+		0768198B1C5AC25100D9218F /* textrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = textrender.h; sourceTree = "<group>"; };
+		0768198E1C5AD61B00D9218F /* fonts.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fonts.png; sourceTree = "<group>"; };
 		076BEFD91BD184DF00D68C8F /* blockrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = blockrender.cpp; sourceTree = "<group>"; };
 		076BEFDA1BD184DF00D68C8F /* blockrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blockrender.h; sourceTree = "<group>"; };
 		076BEFE01BD19E9F00D68C8F /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity.cpp; sourceTree = "<group>"; };
@@ -443,6 +449,7 @@
 				071A040C1BD9875C003BF218 /* gameinfo.json */,
 				0715FFB21C45C6A0008349F7 /* gameplay.json */,
 				0766EAF41BBF7CDA00477144 /* tiles.png */,
+				0768198E1C5AD61B00D9218F /* fonts.png */,
 				0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */,
 				07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */,
 				07FE042E1BEA79D5001B26D9 /* frag_shader_old.glsl */,
@@ -603,6 +610,8 @@
 				07141EC51C31ED03009CD608 /* texture_allocator.h */,
 				07A4A5821C35AC570060F28C /* importsdl.h */,
 				07A4A5831C35B0C60060F28C /* importsdl.cpp */,
+				0768198A1C5AC25100D9218F /* textrender.cpp */,
+				0768198B1C5AC25100D9218F /* textrender.h */,
 			);
 			name = display;
 			sourceTree = "<group>";
@@ -754,6 +763,7 @@
 				07F858481C2397AB005ACAA9 /* worldweather.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,
+				0768198C1C5AC25100D9218F /* textrender.cpp in Sources */,
 				0710EE2D1C3D9EBF0007F5C4 /* cursorweapon.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,

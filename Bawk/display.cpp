@@ -26,6 +26,7 @@
 #include "importopengl.h"
 
 #include "threadmanager.h"
+#include "textrender.h"
 
 // --- Screen Dimensions ---
 // physical px width on screen
@@ -206,6 +207,7 @@ int init_display() {
     check_for_error();
     
     init_threader();
+    init_string_resources();
     
     return 0;
 }

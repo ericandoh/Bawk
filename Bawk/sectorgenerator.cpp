@@ -560,10 +560,41 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
      */
 }
 
+#define TEST_NOISE_SAMPLE 50
+
+void test_noise_generator(float persistence, float strength) {
+    int seed = 100;
+    int octaves = 5;
+    int sample_height_map[TEST_NOISE_SAMPLE];
+    int min_height = INT_MAX;
+    for (int i = 0; i < TEST_NOISE_SAMPLE; i++) {
+        float height = noise2d(i, 0,
+                               seed, octaves, persistence, strength);
+        sample_height_map[i] = (int)roundf(height);
+        if (height < min_height) {
+            min_height = height;
+        }
+    }
+    for (int i = 0; i < TEST_NOISE_SAMPLE; i++) {
+        int spaces = min_height + sample_height_map[i] + 1;
+        for (int j = 0; j < spaces; j++) {
+            printf(" ");
+        }
+        printf("|\n");
+    }
+}
 
 void test_sector_generator() {
-    SectorGenerator generator = SectorGenerator();
-    generator.generate_sector(ivec3(0,0,0), 0);
+    //SectorGenerator generator = SectorGenerator();
+    //generator.generate_sector(ivec3(0,0,0), 0);
+    printf("forest\n");
+    test_noise_generator(0.6f, 15.0f);
+    printf("snow\n");
+    test_noise_generator(0.7f, 40.0f);
+    printf("desert\n");
+    test_noise_generator(0.9f, 7.0f);
+    printf("experimental\n");
+    test_noise_generator(0.9f, 40.0f);
 }
 
 /*

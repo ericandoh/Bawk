@@ -11,6 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "worldrender.h"
 
+#include "textrender.h"
+
 ItemBarlet::ItemBarlet(int x, int y, int width, int height): BaseWidget(x, y, width, height) {
     entity = 0;
     current = false;
@@ -73,6 +75,9 @@ void ItemBarlet::render_elements() {
     OGLAttr::current_shader->set_texture_coord_attribute(GL_FLOAT);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    // TODO delete this...
+    //render_string("'=", x, y + height, 32);
+    //glViewport(x, y, width, height);
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_POLYGON_OFFSET_FILL);

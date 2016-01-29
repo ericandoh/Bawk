@@ -28,6 +28,7 @@
 #include "importopengl.h"
 
 GLuint load_tiles();
+GLuint load_texts();
 void save_tile();
 
 #endif /* defined(__Bawk__texture_loader__) */
