@@ -34,7 +34,7 @@
 
 const unsigned int TILES_PER_TEXTURE = 16;
 
-const int CHUNK_RENDER_DIST = 5;
+const int CHUNK_RENDER_DIST = 7;
 
 const int BREAKING_STAGES = 3;
 

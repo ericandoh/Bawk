@@ -24,6 +24,8 @@
 
 #include "modelaction.h"
 
+#include "terraingenerator.h"
+
 #include "json_reader_helper.h"
 
 // TODO deprecate this
@@ -641,6 +643,19 @@ int GameInfoDataObject::read_world_gen(Json::Value root) {
             }
             if (biome_node.isMember("persistence") && (biome_node["persistence"].type() == Json::realValue || biome_node["persistence"].type() == Json::intValue)) {
                 binfo.persistence = biome_node["persistence"].asFloat();
+            }
+            if (biome_node.isMember("terrain") && biome_node["terrain"].type() == Json::arrayValue) {
+                int terrain_size = biome_node["terrain"].size();
+                for (int j = 0; j < terrain_size; j++) {
+                    Json::Value terrain_root = biome_node["terrain"][j];
+                    if (terrain_root.type() == Json::stringValue) {
+                        TerrainGenerators::TerrainGeneratorTypes terrain_type = get_terrain_generator_type_from(terrain_root.asString());
+                        TerrainGenerator* generator = get_terrain_generator(terrain_type);
+                        if (generator) {
+                            binfo.valid_generators.push_back(generator);
+                        }
+                    }
+                }
             }
             if (biome_node.isMember("blocks") && biome_node["blocks"].type() == Json::arrayValue) {
                 int block_size = biome_node["blocks"].size();

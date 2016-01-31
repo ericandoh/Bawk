@@ -18,6 +18,14 @@ BiomeGenerator::BiomeGenerator() {
     persistence = 0;
 }
 
+TerrainGenerator* BiomeGenerator::get_random_generator() {
+    if (valid_generators.size() == 0) {
+        return 0;
+    }
+    int index = rand() % valid_generators.size();
+    return valid_generators[index];
+}
+
 uint16_t BiomeGenerator::get_random_block(int depth) {
     float total_frequency = 0;
     for (auto &i: blocks) {
@@ -61,7 +69,12 @@ void BiomeGenerator::add_structures(SectorGenerationInfo* sector_info,
     for (int x = box.lower.x; x < box.upper.x; x++) {
         for (int z = box.lower.z; z < box.upper.z; z++) {
             // if the biome at this index isn't equal to ours, skip
-            if (sector_info->biome_map[x][z].biomes[0] != biome_id) {
+            // if (sector_info->biome_map[x][z].biomes[0] != biome_info) {...
+            if (sector_info->biome_map[x][z].biomes[0]->bid != biome_id) {
+                continue;
+            }
+            if (sector_info->biome_map[x][z].biomes[0]->unique_id != biome_info->unique_id) {
+                // this isn't our biome
                 continue;
             }
             if (sector_info->biome_map[x][z].biome_weights[0] < 0.7f) {

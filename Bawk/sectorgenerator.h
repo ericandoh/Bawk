@@ -19,17 +19,16 @@
 
 class SuperObject;
 struct ChunkData;
+struct BiomeGenerationInfo;
 
 struct biome_position_info {
     int lower, upper;
-    int biomes[2];
+    BiomeGenerationInfo* biomes[2];
     float biome_weights[2];
-    int biome_unique_id;
     biome_position_info() {
         lower = upper = 0;
         biomes[0] = 0;
         biomes[1] = 0;
-        biome_unique_id = 0;
         biome_weights[0] = 1.0f;
         biome_weights[1] = 0;
     }

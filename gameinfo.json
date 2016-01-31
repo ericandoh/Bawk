@@ -220,10 +220,10 @@
                   {
                   "name": "default",
                   "biomes": {"forest": 5, "snow": 2, "desert": 3},
-                  "sector": [512, 512],
+                  "sector": [1024, 1024],
                   "biomecount": [10, 1],
                   "islandcount": [3, 1],
-                  "fillcount": [0.3, 0.1],
+                  "fillcount": [0.7, 0.1],
                   "separation": 10,
                   "fatness": 4,
                   "melt": 8,
