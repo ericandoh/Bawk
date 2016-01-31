@@ -8,7 +8,8 @@
 
 #include "testing.h"
 // clear imports every once in a while
-#include "sectorgenerator.h"
+//#include "sectorgenerator.h"
+#include "terraingenerator.h"
 
 void do_shit();
 
@@ -28,7 +29,8 @@ void do_shit() {
 
 // COPY DUMP CONTENTS VVV
 void do_shit() {
-    test_sector_generator();
+    //test_sector_generator();
+    test_terrain_generator();
 }
 
 /*

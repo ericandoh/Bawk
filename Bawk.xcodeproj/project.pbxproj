@@ -103,6 +103,7 @@
 		07CCD6571BF1D309001C50CF /* light_frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3F91BED27860088744F /* light_frag_shader.glsl */; };
 		07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3FA1BED27860088744F /* light_vertex_shader.glsl */; };
 		07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */; };
+		07EADB0E1C5C551D009DDACA /* terraingenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EADB0C1C5C551D009DDACA /* terraingenerator.cpp */; };
 		07F6906F1BD388F900818867 /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F6906D1BD388F900818867 /* testing.cpp */; };
 		07F858481C2397AB005ACAA9 /* worldweather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F858461C2397AB005ACAA9 /* worldweather.cpp */; };
 		07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07FA18381BE5ACAB00C7319C /* worldevent.cpp */; };
@@ -320,6 +321,8 @@
 		07C4263A1BBCC5700045D796 /* chunkrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkrender.cpp; sourceTree = "<group>"; };
 		07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gbuffer.cpp; sourceTree = "<group>"; };
 		07E11BC61BEBFDB700C0F98C /* gbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gbuffer.h; sourceTree = "<group>"; };
+		07EADB0C1C5C551D009DDACA /* terraingenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = terraingenerator.cpp; sourceTree = "<group>"; };
+		07EADB0D1C5C551D009DDACA /* terraingenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = terraingenerator.h; sourceTree = "<group>"; };
 		07F6906D1BD388F900818867 /* testing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testing.cpp; sourceTree = "<group>"; };
 		07F6906E1BD388F900818867 /* testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
 		07F858461C2397AB005ACAA9 /* worldweather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = worldweather.cpp; sourceTree = "<group>"; };
@@ -377,6 +380,8 @@
 				071EB8131C480519004885D7 /* sectorgenerator.h */,
 				07B0F9C01C529C6E0001A206 /* biomegenerator.cpp */,
 				07B0F9C11C529C6E0001A206 /* biomegenerator.h */,
+				07EADB0C1C5C551D009DDACA /* terraingenerator.cpp */,
+				07EADB0D1C5C551D009DDACA /* terraingenerator.h */,
 			);
 			name = worldgen;
 			sourceTree = "<group>";
@@ -790,6 +795,7 @@
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */,
 				075C674C1BBA4AD600CB87DE /* playerrender.cpp in Sources */,
+				07EADB0E1C5C551D009DDACA /* terraingenerator.cpp in Sources */,
 				07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */,
 				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
 				0766EAF81BBF7D1300477144 /* texture_loader.cpp in Sources */,
