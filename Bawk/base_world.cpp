@@ -8,7 +8,6 @@
 
 #include "base_world.h"
 #include "block_loader.h"
-#include "world_generator.h"
 #include <vector>
 #include <unordered_map>
 
