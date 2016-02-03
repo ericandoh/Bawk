@@ -36,7 +36,6 @@ public:
     RenderablePlayer();
     
     // --- RenderablePlayer ---
-    fvec3 get_rwc_pos();
     void set_camera();
     void query_depth(World* world);
     // render the player, and renders cursor/some UI elements which shouldnt be here....

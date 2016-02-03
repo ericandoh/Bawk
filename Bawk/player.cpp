@@ -105,7 +105,7 @@ void Player::set_mount(SuperObject* m, fvec3 rwc) {
         // unmount first
         mount->remove_entity(this);
     }
-    printf_fvec3(get_rwc_pos());
+    printf_fvec3(get_center_pos());
     printf("\n");
     mount = m;
     // no moving around while mounted!
@@ -116,14 +116,14 @@ void Player::set_mount(SuperObject* m, fvec3 rwc) {
     //m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
     //set_pos(pos - this->center_pos);
     can_collide = false;
-    printf_fvec3(get_rwc_pos());
+    printf_fvec3(get_center_pos());
 }
 
 bool Player::unmount(World* world) {
     if (!mount) {
         return true;
     }
-    printf_fvec3(get_rwc_pos());
+    printf_fvec3(get_center_pos());
     printf("\n");
     mount->remove_entity(this);
     // try setting pos to about 2 blocks above current position
@@ -139,7 +139,7 @@ bool Player::unmount(World* world) {
     can_collide = true;
     angle.set_to_point(angle.forward, fvec3(0,1,0));
     recalculate_transform();
-    printf_fvec3(get_rwc_pos());
+    printf_fvec3(get_center_pos());
     world->add_entity(this);
     return true;
 }

@@ -81,12 +81,4 @@ CursorSuperObject* get_recipe_cursoritem_from(uint16_t vid);
 SectorGenerator* get_sector_generator(uint16_t sid);
 BiomeGenerator* get_biome(uint16_t biome);
 
-// TODO deprecate the below 2 methods...by moving them to biome generators
-void add_struct_in_biome_randomly(uint16_t biome, ivec3 pos,
-                                  std::vector<uint16_t> &sids,
-                                  std::vector<ivec3> &dimensions,
-                                  std::vector<ivec3> &positions);
-// adds the recipe ID
-void add_recipe_block_to_chunk(block_type to_arr[CX][CY][CZ], uint16_t recipe,
-                               ivec3 chunk_pos, ivec3 recipe_pos);
 #endif /* defined(__Bawk__game_info_loader__) */

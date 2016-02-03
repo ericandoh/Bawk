@@ -101,7 +101,7 @@
         "1": {
             "name": "engine",
             "resistance": 2,
-            "texture": "simplebox.obj",
+            "texture": "fan.obj",
             "weight": 30,
             "action": {"name": "engine"}
         },
@@ -205,6 +205,10 @@
                        {"id": "cactus", "position": [0, 2, 0]}]
         },
         "3": {
+            "name": "simpletest",
+            "blocks": "vehicles/simple"
+        },
+        "4": {
             "name": "allsupportedfeatures",
             "blocks": [{"id": "stone", "orientation": 5, "position": [0, 0, 0]},
                        {"id": 3, "orientation": "top", "position": [0, 0, 1]}],

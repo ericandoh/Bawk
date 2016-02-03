@@ -50,7 +50,7 @@ void DirectionalRenderableLight::set_camera(Player* player) {
         center_pos = BlockTracing::pointed_pos;
     }
     else {
-        center_pos = player->get_rwc_pos() + player->angle.dir * 10.0f;
+        center_pos = player->get_center_pos() + player->angle.dir * 10.0f;
     }
     
     int width, height;

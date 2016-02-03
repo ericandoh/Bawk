@@ -29,6 +29,7 @@
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
 		071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 071A040C1BD9875C003BF218 /* gameinfo.json */; };
+		071AEC0F1C6073AC001F03D8 /* modelmobai.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071AEC0D1C6073AC001F03D8 /* modelmobai.cpp */; };
 		071B46861BF3C1D8000CB782 /* cursoritem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B46841BF3C1D8000CB782 /* cursoritem.cpp */; };
 		071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B46871BF3C1F4000CB782 /* placeableobject.cpp */; };
 		071B468D1BF3C265000CB782 /* placeablesuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071B468B1BF3C265000CB782 /* placeablesuperobject.cpp */; };
@@ -174,6 +175,8 @@
 		071A04091BD98454003BF218 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
 		071A040A1BD98454003BF218 /* jsoncpp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jsoncpp.cpp; sourceTree = "<group>"; };
 		071A040C1BD9875C003BF218 /* gameinfo.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = gameinfo.json; sourceTree = "<group>"; };
+		071AEC0D1C6073AC001F03D8 /* modelmobai.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelmobai.cpp; sourceTree = "<group>"; };
+		071AEC0E1C6073AC001F03D8 /* modelmobai.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelmobai.h; sourceTree = "<group>"; };
 		071B46841BF3C1D8000CB782 /* cursoritem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursoritem.cpp; sourceTree = "<group>"; };
 		071B46851BF3C1D8000CB782 /* cursoritem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursoritem.h; sourceTree = "<group>"; };
 		071B46871BF3C1F4000CB782 /* placeableobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = placeableobject.cpp; sourceTree = "<group>"; };
@@ -427,6 +430,8 @@
 				07919A351C1F9E050047C7FE /* modelaction.h */,
 				079AFDE21C406A45002F1235 /* modelactionturret.cpp */,
 				079AFDE31C406A45002F1235 /* modelactionturret.h */,
+				071AEC0D1C6073AC001F03D8 /* modelmobai.cpp */,
+				071AEC0E1C6073AC001F03D8 /* modelmobai.h */,
 			);
 			name = blockactions;
 			sourceTree = "<group>";
@@ -743,6 +748,7 @@
 				076BEFE21BD19E9F00D68C8F /* entity.cpp in Sources */,
 				072A0A231C0B8ED4009304E5 /* modelentityrender.cpp in Sources */,
 				077098981BDC0640002F295D /* blocktracer.cpp in Sources */,
+				071AEC0F1C6073AC001F03D8 /* modelmobai.cpp in Sources */,
 				072243361C177F0900B60091 /* blockinfo.cpp in Sources */,
 				0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */,
 				071BB7381C18B08F00563D4A /* modelactionmount.cpp in Sources */,

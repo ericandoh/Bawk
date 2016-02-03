@@ -119,6 +119,14 @@ struct bounding_box {
         lower = l;
         upper = u;
     }
+    bounding_box(fvec3 c, float radius) {
+        lower = fvec3(c.x - radius / 2.0f,
+                      c.y - radius / 2.0f,
+                      c.z - radius / 2.0f);
+        upper = fvec3(c.x + radius / 2.0f,
+                      c.y + radius / 2.0f,
+                      c.z + radius / 2.0f);
+    }
     bool hits(fvec3 point) {
         return (lower.x <= point.x) && (point.x <= upper.x) &&
         (lower.y <= point.y) && (point.y <= upper.y) &&

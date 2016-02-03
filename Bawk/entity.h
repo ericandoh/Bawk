@@ -87,6 +87,11 @@ public:
     // --- DEBUG ---
     void print_debug();
     
+    // --- POSITION ---
+    fvec3 get_center_pos();
+    void transform_into_base_rotation(Rotation* r);
+    void get_direction(Rotation* r);
+    
     // --- MOTION ---
     void move_forward(float force);
     void move_backward(float force);
@@ -142,6 +147,7 @@ public:
     
     // --- FILE SAVE ---
     virtual int load_selfs();
+    int load_selfs(std::string path);
     virtual void save_selfs();
     virtual std::string get_save_path();
     virtual int load_self(IODataObject* obj);

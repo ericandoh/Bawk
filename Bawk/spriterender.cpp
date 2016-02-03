@@ -38,9 +38,11 @@ float SpriteRender::get_perc_age() {
 
 void SpriteRender::set_relative_transform() {
     // set this sprite's angle to point toward player
-    fvec3 dir = pos - player->get_rwc_pos();
+    fvec3 dir = pos - player->get_center_pos();
     dir = glm::normalize(dir);
-    fvec3 up = glm::cross(player->angle.right, dir);
+    Rotation lookdir;
+    player->get_direction(&lookdir);
+    fvec3 up = glm::cross(lookdir.right, dir);
     up = glm::normalize(up);
     
     Rotation pointing = Rotation();

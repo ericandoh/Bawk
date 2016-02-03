@@ -598,12 +598,11 @@ int GameInfoDataObject::read_recipes(Json::Value root) {
             info->upper = ivec3(max_pos.x + 1, max_pos.y + 1, max_pos.z + 1);
             info->from_file = false;
         }
-        // TODO support reading in models/other recipes
         if (recipe.isMember("blocks") && recipe["blocks"].type() == Json::stringValue) {
             if (recipe["blockfile"].asString().compare("auto") == 0) {
-                // using the texture block model obj data, automatically fill in blocks where the model has points
+                // TOFU using the texture block model obj data, automatically fill in blocks where the model has points
                 // then assign a center block as the center of the object
-                printf("frog\n");
+                printf("this feature is so far out from development so don't even trip bro\n");
             }
             else {
                 // this is the name of a file.
@@ -916,9 +915,10 @@ SpriteRender* get_sprite_renderable(uint16_t sid) {
 CursorSuperObject* get_recipe_cursoritem_from(uint16_t vid) {
     if (game_data_object->recipe_info[vid].from_file) {
         // make a superobject loaded from file path
-        // game_data_object->recipe_info[vid].file_path;
-        // TODO
-        return 0;
+        CursorSuperObject* object = new CursorSuperObject(vid);
+        std::string path = game_data_object->recipe_info[vid].file_path;
+        object->init(path);
+        return object;
     }
     else {
         // construct a CursorSuperObject holding recipe contents
@@ -962,66 +962,3 @@ BiomeGenerator* get_biome(uint16_t biome) {
 SectorGenerator* get_sector_generator(uint16_t sid) {
     return &(game_data_object->world_gen_modes[sid]);
 }
-
-void add_struct_in_biome_randomly(uint16_t biome, ivec3 pos,
-                                  std::vector<uint16_t> &sids,
-                                  std::vector<ivec3> &dimensions,
-                                  std::vector<ivec3> &positions) {
-    int precision = 10000;
-    for (int i = 0; i < game_data_object->biome_info[biome].structures.size(); i++) {
-        float rv = (rand() % precision) * 1.0 / precision;
-        block_layer_info current = game_data_object->biome_info[biome].structures[i];
-        if (rv < current.frequency) {
-            sids.push_back(current.type);
-            // this is a recipe
-            ivec3 pos_off;
-            dimensions.push_back(game_data_object->recipe_info[current.type].upper);
-            pos_off.x = game_data_object->recipe_info[current.type].upper.x / 2;
-            pos_off.y = game_data_object->recipe_info[current.type].upper.y / 2;
-            pos_off.z = game_data_object->recipe_info[current.type].upper.z / 2;
-            int height = current.lower;
-            if (current.upper > current.lower) {
-                height = current.lower + (rand() % (current.upper - current.lower));
-            }
-            ivec3 struct_pos = ivec3(pos.x - pos_off.x, pos.y - height - 1, pos.z - pos_off.z);
-            positions.push_back(struct_pos);
-        }
-    }
-}
-
-bool is_within_chunk(ivec3 pos) {
-    return pos.x >= 0 && pos.x < CX
-    && pos.y >= 0 && pos.y < CY
-    && pos.z >= 0 && pos.z < CZ;
-}
-
-void add_recipe_block_to_chunk(block_type to_arr[CX][CY][CZ], uint16_t recipe,
-                               ivec3 chunk_pos, ivec3 recipe_pos) {
-    // get vector of blocks at the position
-    // offset it by the position of the structure
-    // then see if that position is within our chunk
-    // if so, then scale it into CRC and then set it in our array
-    // TODO handle for when the recipe also has models/other recipe blocks in it...
-    /*if (recipe < recipe_mask) {
-        ivec3 aligned_pos = ivec3(recipe_pos.x - chunk_pos.x*CX,
-                                  recipe_pos.y - chunk_pos.y*CY,
-                                  recipe_pos.z - chunk_pos.z*CZ);
-        if (is_within_chunk(aligned_pos)) {
-            to_arr[aligned_pos.x][aligned_pos.y][aligned_pos.z] = block_type(recipe);
-        }
-    }*/
-    int recipe_block_count = (int)game_data_object->recipe_info[recipe].blks.size();
-    for (int i = 0; i < recipe_block_count; i++) {
-        ivec3 offset = game_data_object->recipe_info[recipe].positions[i];
-        ivec3 aligned_pos = ivec3(recipe_pos.x - chunk_pos.x*CX + offset.x,
-                                  recipe_pos.y - chunk_pos.y*CY + offset.y,
-                                  recipe_pos.z - chunk_pos.z*CZ + offset.z);
-        if (is_within_chunk(aligned_pos)) {
-            uint16_t block = game_data_object->recipe_info[recipe].blks[i];
-            to_arr[aligned_pos.x][aligned_pos.y][aligned_pos.z] = block_type(block);
-        }
-        
-    }
-}
-
-

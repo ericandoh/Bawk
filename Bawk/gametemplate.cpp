@@ -48,6 +48,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     // package our blocks into a cursorsuperobject
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
+    printf("publishing template %d\n", object->vid);
     if (makes_vehicle) {
         // set angle depending on where we've been pointing, and set pos differently
         Rotation vehicle_pointing = get_vehicle_orientation();

@@ -41,6 +41,7 @@ public:
     
     // --- CursorItem ---
     void init() override;
+    void init(std::string path);
     void cleanup() override;
     void reset() override;
     bool clicked(Game* game, Action mouse) override;

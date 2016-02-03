@@ -41,6 +41,32 @@ void CursorSuperObject::init() {
     }
 }
 
+void CursorSuperObject::init(std::string path) {
+    this->load_selfs(get_metadata_path(path));
+    // load in all chunks
+    for (auto &i: chunk_bounds) {
+        ivec3 pos = i.first;
+        if (chunks.count(pos)) {
+            // chunk is already loaded
+            continue;
+        }
+        // TODO this is ugly code, how can we repackage this? this is copied from
+        // parts of load_chunk/get_chunk
+        block_type to_arr[CX][CY][CZ];
+        IODataObject reader(get_chunk_path(path, &pos));
+        if (reader.read(false))
+            continue;
+        reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
+        reader.close();
+        
+        RenderableChunk* chunk = new RenderableChunk(to_arr);
+        if (chunk) {
+            chunks[pos] = chunk;
+            setup_chunk(chunk, pos.x, pos.y, pos.z);
+        }
+    }
+}
+
 void CursorSuperObject::cleanup() {
     // do nothing top kek
     delete this;

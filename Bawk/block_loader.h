@@ -33,6 +33,9 @@
 // set these to toggle under which name things get saved
 void set_current_world_name(std::string world_name);
 
+std::string get_metadata_path(std::string base_path);
+std::string get_chunk_path(std::string prefix_path, ivec3* chunk_pos);
+
 // where the world will be stored
 std::string get_path_to_world_folder();
 std::string get_path_to_world();

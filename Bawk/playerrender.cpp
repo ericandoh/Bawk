@@ -27,24 +27,14 @@ RenderablePlayer::RenderablePlayer() {
     Entity::recalculate_dir();
 }*/
 
-fvec3 RenderablePlayer::get_rwc_pos() {
-    if (parent) {
-        fvec3 result;
-        parent->transform_into_world_coordinates_smooth(&result,
-                                                        pos.x + center_pos.x,
-                                                        pos.y + center_pos.y,
-                                                        pos.z + center_pos.z);
-        return result;
-    }
-    return pos;
-}
-
 void RenderablePlayer::set_camera() {
     int width, height;
     get_window_size(&width, &height);
-    fvec3 offpos = get_rwc_pos();
+    fvec3 offpos = get_center_pos();
     // TODO angle.dir is not relative...
-    view = glm::lookAt(offpos, offpos + angle.dir, angle.up);
+    Rotation lookdir;
+    get_direction(&lookdir);
+    view = glm::lookAt(offpos, offpos + lookdir.dir, lookdir.up);
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;
     set_camera_transform_matrix(&mvp);
@@ -69,8 +59,10 @@ void RenderablePlayer::query_depth(World* world) {
     
     
     // call to save mx, my, mz, and face here to a global var
-    fvec3 offpos = get_rwc_pos();
-    set_look_at(offpos, angle.dir, world);
+    fvec3 offpos = get_center_pos();
+    Rotation lookdir;
+    get_direction(&lookdir);
+    set_look_at(offpos, lookdir.dir, world);
 }
 
 void RenderablePlayer::render() {

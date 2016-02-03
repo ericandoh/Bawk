@@ -47,6 +47,34 @@ void Entity::recalculate_transform() {
     }
 }
 
+fvec3 Entity::get_center_pos() {
+    if (parent) {
+        fvec3 result;
+        parent->transform_into_world_coordinates_smooth(&result,
+                                                        pos.x + center_pos.x,
+                                                        pos.y + center_pos.y,
+                                                        pos.z + center_pos.z);
+        return result;
+    }
+    return pos;
+}
+
+void Entity::transform_into_base_rotation(Rotation* r) {
+    if (can_rotate) {
+        angle.transform_into_world_rotation(r, *r);
+    }
+    if (parent) {
+        parent->transform_into_base_rotation(r);
+    }
+}
+
+void Entity::get_direction(Rotation* r) {
+    *r = angle;
+    if (parent) {
+        parent->transform_into_base_rotation(r);
+    }
+}
+
 float Entity::get_speed(float force) {
     // if we have negative/zero weight, treat as us having 1 weight
     if (weight <= 0) {
@@ -345,6 +373,10 @@ std::string Entity::get_save_path() {
 
 int Entity::load_selfs() {
     std::string path = this->get_save_path();
+    return load_selfs(path);
+}
+
+int Entity::load_selfs(std::string path) {
     if (path.compare("") == 0)
         return 1;
     IODataObject read(path);
