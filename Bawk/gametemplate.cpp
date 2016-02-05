@@ -31,7 +31,7 @@ Rotation GameTemplate::get_vehicle_orientation() {
             if (model_ent->model->vehicle) {
                 // TODO handle if we have multiple vehicle blocks - maybe average the rotations?
                 // then round out the rotation to nearest axis at end?
-                result = ent->angle;
+                result = ent->get_world_rotation();
             }
         }
     }
@@ -49,6 +49,7 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     CursorSuperObject* object = new CursorSuperObject(player->getID(),
                                                       player->assignID());// all templates are made on the bar
     printf("publishing template %d\n", object->vid);
+    // TODO giraffes (center chunk and set position to box.lower + box.upper)
     if (makes_vehicle) {
         // set angle depending on where we've been pointing, and set pos differently
         Rotation vehicle_pointing = get_vehicle_orientation();
@@ -58,18 +59,20 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
         
         // find bounds rotated into my rotation, from the world, rotating around rwc center pos
         bounding_box oac_bounding_box;
-        oac_bounding_box.lower = vehicle_pointing.transform_into_my_coordinates(bounds.lower - rwc_center_pos);
-        oac_bounding_box.upper = vehicle_pointing.transform_into_my_coordinates(bounds.upper - rwc_center_pos);
+        oac_bounding_box.lower = vehicle_pointing.transform_point_into_my_rotation(bounds.lower - rwc_center_pos);
+        oac_bounding_box.upper = vehicle_pointing.transform_point_into_my_rotation(bounds.upper - rwc_center_pos);
         oac_bounding_box.refit_for_rotation();
-        object->center_pos = -oac_bounding_box.lower;
-        object->pos = rwc_center_pos + oac_bounding_box.lower;
-        object->angle = vehicle_pointing;
+        //object->center_pos = -oac_bounding_box.lower;
+        //object->pos = rwc_center_pos + oac_bounding_box.lower;
+        //object->angle = vehicle_pointing;
+        //rwc_center_pos + oac_bounding_box.lower
+        object->set_pos_and_angle(rwc_center_pos + oac_bounding_box.lower, vehicle_pointing);
     }
     else {
-        object->pos = bounds.lower;
-        object->center_pos = calculate_center_position(BlockOrientation::FRONT);
+        //object->pos = bounds.lower;
+        //object->center_pos = calculate_center_position(BlockOrientation::FRONT);
+        object->set_pos(bounds.lower);
     }
-    object->recalculate_transform();
     
     if (set_blocks(player, world, object)) {
         // save the object to disk

@@ -62,6 +62,7 @@
     {1,-1,1},
 };*/
 
+// TODO consider moving this to basicrender.cpp
 GLbyte light_render_box[36][3] = {
     {-1,-1,-1},
      {-1,-1, 1},

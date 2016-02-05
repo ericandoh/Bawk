@@ -13,45 +13,7 @@
 
 #include "cursorsuperobject.h"
 #include "game.h"
-
-GLfloat scan_tool_box[36][3] = {
-    {-1,-1,-1},
-    {-1,-1, 1},
-    {-1, 1, 1},
-    {1, 1,-1},
-    {-1,-1,-1},
-    {-1, 1,-1},
-    {1,-1, 1},
-    {-1,-1,-1},
-    {1,-1,-1},
-    {1, 1,-1},
-    {1,-1,-1},
-    {-1,-1,-1},
-    {-1,-1,-1},
-    {-1, 1, 1},
-    {-1, 1,-1},
-    {1,-1, 1},
-    {-1,-1, 1},
-    {-1,-1,-1},
-    {-1, 1, 1},
-    {-1,-1, 1},
-    {1,-1, 1},
-    {1, 1, 1},
-    {1,-1,-1},
-    {1, 1,-1},
-    {1,-1,-1},
-    {1, 1, 1},
-    {1,-1, 1},
-    {1, 1, 1},
-    {1, 1,-1},
-    {-1, 1,-1},
-    {1, 1, 1},
-    {-1, 1,-1},
-    {-1, 1, 1},
-    {1, 1, 1},
-    {-1, 1, 1},
-    {1,-1, 1}
-};
+#include "basicrender.h"
 
 const fvec3 SELECTING_COLOR = fvec3(0.5f, 0.0f, 0.0f);
 const fvec3 SELECTED_COLOR = fvec3(0.0f, 0.5f, 0.0f);
@@ -108,18 +70,11 @@ bool CursorScanTool::pushed(Game* game, Action key) {
 bool CursorScanTool::confirmed(Game* game) {
     if (current_stage == ScanStages::SELECTED) {
         // copies the area selected into the first cursorobject that is available
-        // TODO copy
-        
+        // TODO copy entities as well
         CursorSuperObject* object = new CursorSuperObject(game->player->getID(),
                                                           game->player->assignID());// all templates are made on the bar
-        
-        object->pos = box.lower;
-        object->center_pos = fvec3((box.lower.x + box.upper.x) / 2.0f,
-                                   (box.lower.y + box.upper.y) / 2.0f,
-                                   (box.lower.z + box.upper.z) / 2.0f);
-        object->recalculate_transform();
-        object->transform_into_my_coordinates(&object->center_pos, object->center_pos.x, object->center_pos.y, object->center_pos.z);
-        
+        // TODO giraffes (center chunk and set position to box.lower + box.upper)
+        object->set_pos(box.lower);
         for (int x = box.lower.x; x < box.upper.x; x++) {
             for (int y = box.lower.y; y < box.upper.y; y++) {
                 for (int z = box.lower.z; z < box.upper.z; z++) {
@@ -282,39 +237,11 @@ void CursorScanTool::render_item() {
     UIHelper::draw_square_voxel(255);
 }
 
-void render_colored_box(fmat4* transform, int_bounding_box box, fvec3 color, float offset=0.125f) {
-    
-    GLfloat box_texture[36][3];
-    for (int i = 0; i < 36; i++) {
-        box_texture[i][0] = color.x;
-        box_texture[i][1] = color.y;
-        box_texture[i][2] = color.z;
-    }
-    
-    // apply rest of xformations
-    // move box such that center pos will be in right place
-    fvec3 center_pos = box.get_center_pos();
-    fmat4 view = glm::translate(fmat4(1), center_pos);
-    // scale box to dimensions
-    ivec3 dimensions = box.get_dimensions();
-    // add offset so our box "floats" above the actual blocks
-    view = glm::scale(view, fvec3(dimensions.x / 2.0f + offset,
-                                  dimensions.y / 2.0f + offset,
-                                  dimensions.z / 2.0f + offset));
-    
-    view = *transform * view;
-    
-    OGLAttr::current_shader->set_transform_matrix(&view);
-    OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::COLOR_TRANSPARENT);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof scan_tool_box, scan_tool_box, GL_DYNAMIC_DRAW);
-    OGLAttr::current_shader->set_coord_attribute(GL_FLOAT);
-    
-    glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_texture_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof box_texture, box_texture, GL_DYNAMIC_DRAW);
-    OGLAttr::current_shader->set_texture_coord_attribute(GL_FLOAT);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+void render_colored_box(fmat4* transform, int_bounding_box box, fvec3 color, float offset=0.0625f) {
+    bounding_box box_with_offsets;
+    box_with_offsets.lower = get_fvec3_from_ivec3(box.lower) + offset;
+    box_with_offsets.upper = get_fvec3_from_ivec3(box.upper) + offset;
+    draw_colored_cube(transform, &box_with_offsets, color, true);
 }
 
 void CursorScanTool::render_in_world(fmat4* transform) {

@@ -85,7 +85,7 @@ void ChunkLoadJob::run() {
             }
         }
     }
-
+    printf("Thread job finished successfully %d\n", thread_id);
     mark_finished();
 }
 

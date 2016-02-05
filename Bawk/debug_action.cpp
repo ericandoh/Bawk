@@ -17,4 +17,6 @@ void debug_action(Game* game) {
     save_tile();
     printf("debuggin\n");
     
+    game->player->set_pos(game->player->get_world_pos() + fvec3(0, 20, 0));
+    
 }

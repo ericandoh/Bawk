@@ -18,10 +18,9 @@ public:
 
 bool ModelMountActionMultiplexer::model_callback_clicked_secondary(MODEL_FUNCTION_ARGS) {
     if (owner && owner->entity_class == EntityType::SUPEROBJECT) {
-        fvec3 piece_pos = piece->pos + piece->center_pos + fvec3(0.0f, 0.75f, 0.0f);
-        if (piece->parent)
-            piece->parent->transform_into_world_coordinates(&piece_pos, piece_pos.x, piece_pos.y, piece_pos.z);
-        piece_pos = piece_pos - game->player->center_pos;
+        fvec3 piece_pos = piece->get_center_offset() + fvec3(0.0f, 0.75f, 0.0f);
+        //if (piece->parent)
+        piece->transform_into_world_coordinates(&piece_pos, piece_pos.x, piece_pos.y, piece_pos.z);
         game->player->set_mount((SuperObject*)owner, piece_pos);
         return true;
     }

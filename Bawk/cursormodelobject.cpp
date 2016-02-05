@@ -25,9 +25,7 @@ bool CursorModelObject::set_blocks(Player* player, World* world, SuperObject* ob
     ModelEntity* model = new ModelEntity(player->pid, player->assignID(), model_id);
     // TOFU for unitary models, set orientation of this model object to match
     //BlockOrientation player_direction = get_player_direction();
-    model->pos = pos;
-    model->angle = angle;
-    model->recalculate_transform();
+    model->set_pos_and_angle(pos, angle);
     
     // assume cursorobject is in the world - that is, there is no need to
     // transform pos/angle into RWC (world coordinates) because they already are
@@ -77,10 +75,9 @@ bool CursorModelObject::handle_movement(ivec3 dir) {
     if (!locked) {
         return false;
     }
-    pos.x += dir.x;
-    pos.y += dir.y;
-    pos.z += dir.z;
-    recalculate_transform();
+    set_pos(fvec3(pos.x + dir.x,
+                  pos.y + dir.y,
+                  pos.z + dir.z));
     return true;
 }
 

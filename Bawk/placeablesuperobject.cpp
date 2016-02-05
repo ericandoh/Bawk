@@ -37,10 +37,9 @@ PlaceableSuperObject::PlaceableSuperObject(uint32_t p, uint32_t s): SuperObject(
 
 // --- PlaceableSuperObject ---
 void PlaceableSuperObject::move_template(ivec3 dir) {
-    pos.x += dir.x;
-    pos.y += dir.y;
-    pos.z += dir.z;
-    recalculate_transform();
+    set_pos(fvec3(pos.x + dir.x,
+                  pos.y + dir.y,
+                  pos.z + dir.z));
 }
 
 void PlaceableSuperObject::rotate_template() {
@@ -124,21 +123,21 @@ fvec3 PlaceableSuperObject::calculate_center_position(BlockOrientation pointing)
     if (pointing_in == 0) {
         // use z
         int rounded_val = roundf(aligned_upper.z);
-        if (rounded_val % 2 == 1) {
+        if (get_positive_mod(rounded_val, 2) == 1) {
             align_to_half = true;
         }
     }
     else if (pointing_in == 1) {
         // use y
         int rounded_val = roundf(aligned_upper.y);
-        if (rounded_val % 2 == 1) {
+        if (get_positive_mod(rounded_val, 2) == 1) {
             align_to_half = true;
         }
     }
     else {
         // use x
         int rounded_val = roundf(aligned_upper.x);
-        if (rounded_val % 2 == 1) {
+        if (get_positive_mod(rounded_val, 2) == 1) {
             align_to_half = true;
         }
     }
@@ -167,12 +166,7 @@ bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject*
     if (create_entity) {
         // all placeables will be positioned at 0 so we can simply transpose as so
         target = new SuperObject(player->getID(), player->assignID());
-        target->pos = fvec3(this->pos.x + this->bounds.lower.x,
-                            this->pos.y + this->bounds.lower.y,
-                            this->pos.z + this->bounds.lower.z);
-        target->center_pos = calculate_center_position(BlockOrientation::FRONT);
-        target->angle = angle;
-        target->recalculate_transform();
+        target->set_pos_and_angle(get_world_pos() - get_center_offset(), get_world_rotation());
     }
     this->copy_into(player, target);
     if (create_entity) {

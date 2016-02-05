@@ -10,14 +10,16 @@
 
 #include "rotation.h"
 
+#define ANGLE_THRESHOLD 0.001f
+
 Rotation::Rotation() {
-    up = fvec3(0,1,0);
-    dir = fvec3(1,0,0);
-    right = fvec3(0,0,1);
-    rotation_state = fvec4(1,0,0,0);
-    quaternion = glm::angleAxis(0.0f, fvec3(0,1,0));
-    apply_angles(fvec3(0,0,0));
+    quaternion = glm::angleAxis(0.0f, fvec3(1,0,0));
     free_y = true;
+}
+
+
+void Rotation::set_free_y(bool fy) {
+    free_y = fy;
 }
 
 void Rotation::add_my_rotation(fmat4* mat) {
@@ -34,14 +36,6 @@ void Rotation::add_world_rotation(fmat4* mat) {
 }
 
 void Rotation::add_my_rotation_rounded(fmat4* mat) {
-    // extract info from my current quaternion
-    /*fvec3 rot_axis;
-    float half_rotation_angle = acosf(quaternion.w);
-    float rotation_angle_rounded = roundf(half_rotation_angle / HALF_PI * 2)*HALF_PI;
-    rot_axis.x = quaternion.x / sinf(half_rotation_angle);
-    rot_axis.y = quaternion.y / sinf(half_rotation_angle);
-    rot_axis.z = quaternion.z / sinf(half_rotation_angle);
-    glm::quat rounded = glm::angleAxis(rotation_angle_rounded, rot_axis);*/
     glm::quat inverse;
     inverse.w = -rounded_quaternion.w;
     inverse.x = rounded_quaternion.x;
@@ -51,15 +45,12 @@ void Rotation::add_my_rotation_rounded(fmat4* mat) {
 }
 
 void Rotation::add_world_rotation_rounded(fmat4* mat) {
-    // extract info from my current quaternion
-    /*fvec3 rot_axis;
-    float half_rotation_angle = acosf(quaternion.w);
-    float rotation_angle_rounded = roundf(half_rotation_angle / HALF_PI * 2)*HALF_PI;
-    rot_axis.x = quaternion.x / sinf(half_rotation_angle);
-    rot_axis.y = quaternion.y / sinf(half_rotation_angle);
-    rot_axis.z = quaternion.z / sinf(half_rotation_angle);
-    glm::quat rounded = glm::angleAxis(-rotation_angle_rounded, rot_axis);*/
     *mat = *mat * glm::mat4_cast(rounded_quaternion);
+}
+
+void Rotation::set_angle(glm::quat angle) {
+    quaternion = angle;
+    recalculate_rounded();
 }
 
 fvec3 get_scaled_angle(fvec3 angle) {
@@ -74,27 +65,6 @@ fvec3 get_rounded_angle(fvec3 angle) {
                  roundf(angle.z / HALF_PI) * HALF_PI);
 }
 
-fvec3 get_closest_rounded_vector(fvec3 from) {
-    if (fabsf(from.x) > fabsf(from.y)) {
-        if (fabsf(from.x) > fabsf(from.z)) {
-            // use x
-            return fvec3(roundf(from.x),0,0);
-        }
-        else {
-            // use z
-            return fvec3(0,0,roundf(from.z));
-        }
-    }
-    else if (fabsf(from.z) > fabsf(from.y)) {
-        // use z
-        return fvec3(0,0,roundf(from.z));
-    }
-    else {
-        // use y
-        return fvec3(0,roundf(from.y),0);
-    }
-}
-
 void Rotation::apply_angle(float angle, fvec3 axis) {
     // rotate our quaternion around the axis, by angle amount
     //axis = glm::normalize(axis);
@@ -102,62 +72,43 @@ void Rotation::apply_angle(float angle, fvec3 axis) {
     quaternion = glm::cross(temp, quaternion);
     //quaternion = glm::rotate(quaternion, angle, axis);
     quaternion = glm::normalize(quaternion);
-    set_angle(quaternion);
 }
 
 void Rotation::apply_angles(fvec3 angular_velocity) {
-    rotation_state.x = quaternion.x;
-    rotation_state.y = quaternion.y;
-    rotation_state.z = quaternion.z;
-    rotation_state.w = quaternion.w;
-    
     fvec3 sangular = get_scaled_angle(angular_velocity);
     
     // apply (relative) yaw
     if (free_y) {
-        apply_angle(sangular.x, up);
+        apply_angle(sangular.x, get_up());
     }
     else {
         apply_angle(sangular.x, fvec3(0,1,0));
     }
     // recalculate right, dir is out of sync
-    fvec4 rightq = glm::mat4_cast(quaternion) * fvec4(0,0,1,0);
-    right.x = rightq.x;
-    right.y = rightq.y;
-    right.z = rightq.z;
-    right = glm::normalize(right);
+    fvec3 right = get_right();
     // now apply (relative) pitch
     apply_angle(sangular.y, right);
     // recalculate dir, up is out of sync
-    fvec4 dirq = glm::mat4_cast(quaternion) * fvec4(1,0,0,0);
-    dir.x = dirq.x;
-    dir.y = dirq.y;
-    dir.z = dirq.z;
-    dir = glm::normalize(dir);
+    fvec3 dir = get_dir();
     // now apply (relative) roll
     apply_angle(sangular.z, dir);
     // recalculate right, up
-    rightq = glm::mat4_cast(quaternion) * fvec4(0,0,1,0);
-    right.x = rightq.x;
-    right.y = rightq.y;
-    right.z = rightq.z;
-    right = glm::normalize(right);
+    //rightq = glm::mat4_cast(quaternion) * fvec4(0,0,1,0);
+    //right = get_fvec3_from_fvec4(rightq);
+    //right = glm::normalize(right);
     
-    up = glm::cross(right, dir);
-    up = glm::normalize(up);
+    //up = glm::cross(right, dir);
+    //up = glm::normalize(up);
     
     recalculate_rounded();
 }
 
 void Rotation::recalculate_rounded() {
-    forward.x = dir.x;
-    forward.y = 0;
-    forward.z = dir.z;
-    forward = glm::normalize(forward);
-    
     // first, try to align dir to an axis
+    fvec3 dir = get_dir();
     fvec3 rounded_dir = get_closest_rounded_vector(dir);
-    rounded_angle0 = acosf(glm::dot(rounded_dir, dir));
+    float rounded_angle0 = acosf(glm::dot(rounded_dir, dir));
+    fvec3 rounded_rotation_axis0, rounded_rotation_axis1;
     if (rounded_angle0 != 0) {
         rounded_rotation_axis0 = glm::cross(dir, rounded_dir);
         rounded_rotation_axis0 = glm::normalize(rounded_rotation_axis0);
@@ -168,16 +119,13 @@ void Rotation::recalculate_rounded() {
     glm::quat temp = glm::angleAxis(rounded_angle0, rounded_rotation_axis0);
     rounded_quaternion = glm::cross(temp, quaternion);
     
-    fvec3 temp_right;
     fvec4 rightq = glm::mat4_cast(rounded_quaternion) * fvec4(0,0,1,0);
-    temp_right.x = rightq.x;
-    temp_right.y = rightq.y;
-    temp_right.z = rightq.z;
+    fvec3 temp_right = get_fvec3_from_fvec4(rightq);
     temp_right = glm::normalize(temp_right);
     
     // now align right to an axis
     fvec3 rounded_right = get_closest_rounded_vector(temp_right);
-    rounded_angle1 = acosf(glm::dot(rounded_right, temp_right));
+    float rounded_angle1 = acosf(glm::dot(rounded_right, temp_right));
     if (rounded_angle1 != 0) {
         rounded_rotation_axis1 = glm::cross(temp_right, rounded_right);
         rounded_rotation_axis1 = glm::normalize(rounded_rotation_axis1);
@@ -190,30 +138,9 @@ void Rotation::recalculate_rounded() {
     rounded_quaternion = glm::normalize(rounded_quaternion);
 }
 
-void Rotation::set_angle(glm::quat angle) {
-    quaternion = angle;
-    
-    // recalculate right
-    fvec4 rightq = glm::mat4_cast(quaternion) * fvec4(0,0,1,0);
-    right.x = rightq.x;
-    right.y = rightq.y;
-    right.z = rightq.z;
-    right = glm::normalize(right);
-    // recalculate dir
-    fvec4 dirq = glm::mat4_cast(quaternion) * fvec4(1,0,0,0);
-    dir.x = dirq.x;
-    dir.y = dirq.y;
-    dir.z = dirq.z;
-    dir = glm::normalize(dir);
-    
-    up = glm::cross(right, dir);
-    up = glm::normalize(up);
-
-    recalculate_rounded();
-}
-
 void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
     // align dir to to_dir
+    fvec3 dir = get_dir();
     float val = glm::dot(to_dir, dir);
     if (val > 1.0f) {
         // account for rounding errors...
@@ -223,28 +150,19 @@ void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
         val = -1.0f;
     }
     float to_angle0 = acosf(val);
-    glm::quat to_quat = quaternion;
-    glm::quat temp;
     if (to_angle0 != 0) {
         fvec3 to_rotation_axis0 = glm::cross(dir, to_dir);
         if (to_rotation_axis0 == fvec3(0,0,0)) {
             // can rotate around any axis
-            to_rotation_axis0 = up;
+            to_rotation_axis0 = get_up();
         }
         else {
             to_rotation_axis0 = glm::normalize(to_rotation_axis0);
         }
-        temp = glm::angleAxis(to_angle0, to_rotation_axis0);
-        to_quat = glm::cross(temp, to_quat);
+        apply_angle(to_angle0, to_rotation_axis0);
     }
     
-    fvec3 temp_up;
-    fvec4 upq = glm::mat4_cast(to_quat) * fvec4(0,1,0,0);
-    temp_up.x = upq.x;
-    temp_up.y = upq.y;
-    temp_up.z = upq.z;
-    temp_up = glm::normalize(temp_up);
-    
+    fvec3 temp_up = get_up();
     // now align up to an axis
     val = glm::dot(to_up, temp_up);
     if (val > 1.0f) {
@@ -261,49 +179,52 @@ void Rotation::set_to_point(fvec3 to_dir, fvec3 to_up) {
             // can rotate around any axis
             to_rotation_axis1 = to_dir;
         }
-        to_rotation_axis1 = glm::normalize(to_rotation_axis1);
-        to_rotation_axis1 = glm::normalize(to_rotation_axis1);
-        temp = glm::angleAxis(to_angle1, to_rotation_axis1);
-        to_quat = glm::cross(temp, to_quat);
+        else {
+            to_rotation_axis1 = glm::normalize(to_rotation_axis1);
+        }
+        apply_angle(to_angle1, to_rotation_axis1);
     }
-    to_quat = glm::normalize(to_quat);
-    set_angle(to_quat);
+    recalculate_rounded();
 }
 
-void Rotation::reset_rotation() {
-    quaternion.x = rotation_state.x;
-    quaternion.y = rotation_state.y;
-    quaternion.z = rotation_state.z;
-    quaternion.w = rotation_state.w;
-    set_angle(quaternion);
-}
-
-void Rotation::inch_toward_normalization() {
+void Rotation::inch_toward_normalization(float max_angle) {
+    fvec3 up = get_up();
+    fvec3 rounded_up = get_closest_rounded_vector(up);
+    float rounded_angle0 = acosf(glm::dot(rounded_up, up));
+    
     // TODO make this save state sort of, and not happen fully automatically
-    if (rounded_angle0 < 0.001f && rounded_angle1 < 0.001f) {
-        // close enough
-        return;
+    if (rounded_angle0 < ANGLE_THRESHOLD) {
+        
+        fvec3 dir = get_dir();
+        fvec3 rounded_dir = get_closest_rounded_vector(dir);
+        float rounded_angle1 = acosf(glm::dot(rounded_dir, dir));
+        if (rounded_angle1 < ANGLE_THRESHOLD) {
+            // close enough
+            return;
+        }
+        rounded_angle1 = bound_absolute(rounded_angle1, max_angle);
+        fvec3 to_rotation_axis1 = glm::cross(dir, rounded_dir);
+        if (to_rotation_axis1 == fvec3(0,0,0)) {
+            // can rotate around any axis
+            to_rotation_axis1 = get_dir();
+        }
+        else {
+            to_rotation_axis1 = glm::normalize(to_rotation_axis1);
+        }
+        apply_angle(rounded_angle1, to_rotation_axis1);
     }
-    float move_angle0 = rounded_angle0;
-    float move_angle1 = rounded_angle1;
-    float max_move = 0.04f;
-    
-    if (move_angle0 < -max_move) {
-        move_angle0 = -max_move;
+    else {
+        rounded_angle0 = bound_absolute(rounded_angle0, max_angle);
+        fvec3 to_rotation_axis0 = glm::cross(up, rounded_up);
+        if (to_rotation_axis0 == fvec3(0,0,0)) {
+            // can rotate around any axis
+            to_rotation_axis0 = get_dir();
+        }
+        else {
+            to_rotation_axis0 = glm::normalize(to_rotation_axis0);
+        }
+        apply_angle(rounded_angle0, to_rotation_axis0);
     }
-    if (move_angle0 > max_move) {
-        move_angle0 = max_move;
-    }
-    if (move_angle1 < -max_move) {
-        move_angle1 = -max_move;
-    }
-    if (move_angle1 > max_move) {
-        move_angle1 = max_move;
-    }
-    
-    glm::quat temp0 = glm::angleAxis(move_angle0, rounded_rotation_axis0);
-    glm::quat temp1 = glm::angleAxis(move_angle1, rounded_rotation_axis1);
-    quaternion = glm::cross(temp1, glm::cross(temp0, quaternion));
 }
 
 void Rotation::transform_into_my_rotation(Rotation* dst, Rotation other) {
@@ -322,7 +243,7 @@ void Rotation::transform_into_world_rotation(Rotation* dst, Rotation other) {
     dst->set_angle(result);
 }
 
-fvec3 Rotation::transform_into_my_coordinates(fvec3 rwc) {
+fvec3 Rotation::transform_point_into_my_rotation(fvec3 rwc) {
     fvec4 result(rwc.x, rwc.y, rwc.z, 1.0f);
     fmat4 mat(1);
     add_my_rotation_rounded(&mat);
@@ -330,7 +251,7 @@ fvec3 Rotation::transform_into_my_coordinates(fvec3 rwc) {
     fvec3 src(result.x,result.y,result.z);
     return src;
 }
-
+/*
 fvec3 Rotation::transform_into_world_coordinates_smooth(fvec3 rwc) {
     fvec4 result(rwc.x, rwc.y, rwc.z, 1.0f);
     fmat4 mat(1);
@@ -338,4 +259,32 @@ fvec3 Rotation::transform_into_world_coordinates_smooth(fvec3 rwc) {
     result = mat * result;
     fvec3 src(result.x,result.y,result.z);
     return src;
+}*/
+
+fvec3 Rotation::get_dir() {
+    fvec4 dirq = glm::mat4_cast(quaternion) * fvec4(1,0,0,0);
+    fvec3 dir = get_fvec3_from_fvec4(dirq);
+    dir = glm::normalize(dir);
+    return dir;
+}
+
+fvec3 Rotation::get_up() {
+    fvec4 upq = glm::mat4_cast(quaternion) * fvec4(0,1,0,0);
+    fvec3 up = get_fvec3_from_fvec4(upq);
+    up = glm::normalize(up);
+    return up;
+}
+
+fvec3 Rotation::get_right() {
+    fvec4 rightq = glm::mat4_cast(quaternion) * fvec4(0,0,1,0);
+    fvec3 right = get_fvec3_from_fvec4(rightq);
+    right = glm::normalize(right);
+    return right;
+}
+
+fvec3 Rotation::get_forward() {
+    fvec3 dir = get_dir();
+    fvec3 forward(dir.x, 0, dir.z);
+    forward = glm::normalize(forward);
+    return forward;
 }

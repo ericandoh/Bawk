@@ -16,6 +16,11 @@
 #include "modelentityrender.h"
 
 Entity* get_entity_from(uint32_t pid, uint32_t vid, EntityType entity_class) {
+    if (vid == VID_TEMPORARY) {
+        // these objects are temporary, skip
+        printf("Attempted to load a temporary entity, and failed\n");
+        return 0;
+    }
     Entity* val;
     if (entity_class == EntityType::ENTITY) {
         val = new Entity();
@@ -52,54 +57,51 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, EntityType entity_class) {
 }
 
 Entity* copy_entity(Player* player, Entity* src) {
+    Entity* result = 0;
     EntityType entity_class = src->entity_class;
     if (entity_class == EntityType::BASEWORLD) {
         // copy world
         printf("Copying world not yet supported");
         BaseWorld* world = new BaseWorld();
         ((SuperObject*)src)->copy_into(player, world);
-        return world;
+        result = world;
     }
     else if (entity_class == EntityType::PLAYER) {
         // copy player and player inventory
         // do NOT implement - no need to copy player
         printf("Copying player not supported\n");
+        return 0;
     }
     else if (entity_class == EntityType::SUPEROBJECT) {
         // copy superobject
         // copy all blocks/chunks over
         // copy all subentities
-        SuperObject* result;
+        SuperObject* super_result;
         if (player)
-            result = new SuperObject(player->getID(), player->assignID());
+            super_result = new SuperObject(player->getID(), player->assignID());
         else
-            result = new SuperObject(0, player->assignID());
-        result->pos = src->pos;
-        result->angle = src->angle;
-        result->center_pos = src->center_pos;
-        result->recalculate_transform();
-        ((SuperObject*)src)->copy_into(player, result);
-        return result;
+            super_result = new SuperObject(0, player->assignID());
+        ((SuperObject*)src)->copy_into(player, super_result);
+        result = super_result;
     }
     else if (entity_class == EntityType::CURSORSUPEROBJECT) {
         // do NOT implement - no need to copy cursorobject
-        printf("Copying cursorobject not supported\n");
+        printf("Copying cursorobject not yet supported but will be in the future when needed\n");
+        return 0;
     }
     else if (entity_class == EntityType::GAMETEMPLATE) {
         // implement later?
-        printf("Copying game templates not supported");
+        printf("Copying game templates not supported\n");
+        return 0;
     }
     else if (entity_class == EntityType::MODELENTITY) {
         ModelEntity* copy_from = (ModelEntity*)src;
-        ModelEntity* result;
+        ModelEntity* model_result;
         if (player)
-            result = new ModelEntity(player->getID(), player->assignID(), copy_from->model_id);
+            model_result = new ModelEntity(player->getID(), player->assignID(), copy_from->model_id);
         else
-            result = new ModelEntity(0, player->assignID(), copy_from->model_id);
-        result->pos = src->pos;
-        result->angle = src->angle;
-        result->recalculate_transform();
-        return result;
+            model_result = new ModelEntity(0, player->assignID(), copy_from->model_id);
+        result = model_result;
     }
     else if (entity_class == EntityType::CURSORMODELENTITY) {
         // do NOT implement - no need to copy cursormodelobject
@@ -108,10 +110,18 @@ Entity* copy_entity(Player* player, Entity* src) {
     else {
         printf("Couldn't copy entity (%d,%d) of class %d\n", src->pid, src->vid, entity_class);
     }
-    return 0;
+    result->parent = 0;
+    result->set_pos_and_angle(src->get_world_pos() - src->get_center_offset(), src->get_world_rotation());
+    
+    return result;
 }
 
 void delete_entity_from_memory(Entity* entity) {
+    if (entity->vid == VID_TEMPORARY) {
+        // these objects are temporary, skip
+        return;
+    }
+    
     EntityType entity_class = entity->entity_class;
     // we should not erase entity class 0 => undefined
     if (entity_class == EntityType::BASEWORLD) {

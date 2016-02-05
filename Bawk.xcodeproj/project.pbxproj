@@ -23,7 +23,6 @@
 		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
 		07141EC61C31ED03009CD608 /* texture_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07141EC41C31ED03009CD608 /* texture_allocator.cpp */; };
 		07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */; };
-		0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0715F1101BF2D3CC00242F86 /* rotation_math.cpp */; };
 		0715FFB31C45C6A9008349F7 /* gameplay.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0715FFB21C45C6A0008349F7 /* gameplay.json */; };
 		0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718EAC41C2A81EC0084826F /* opengl_debug.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
@@ -102,6 +101,7 @@
 		07C4263B1BBCC5700045D796 /* chunkrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07C4263A1BBCC5700045D796 /* chunkrender.cpp */; };
 		07CCD6571BF1D309001C50CF /* light_frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3F91BED27860088744F /* light_frag_shader.glsl */; };
 		07CCD6581BF1D309001C50CF /* light_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0705F3FA1BED27860088744F /* light_vertex_shader.glsl */; };
+		07D8324F1C63EC5F00471961 /* basicrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07D8324D1C63EC5F00471961 /* basicrender.cpp */; };
 		07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */; };
 		07EADB0E1C5C551D009DDACA /* terraingenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07EADB0C1C5C551D009DDACA /* terraingenerator.cpp */; };
 		07F6906F1BD388F900818867 /* testing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07F6906D1BD388F900818867 /* testing.cpp */; };
@@ -164,8 +164,6 @@
 		07141EC41C31ED03009CD608 /* texture_allocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture_allocator.cpp; sourceTree = "<group>"; };
 		07141EC51C31ED03009CD608 /* texture_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture_allocator.h; sourceTree = "<group>"; };
 		07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = shadows_vertex_shader.glsl; sourceTree = "<group>"; };
-		0715F1101BF2D3CC00242F86 /* rotation_math.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation_math.cpp; sourceTree = "<group>"; };
-		0715F1111BF2D3CC00242F86 /* rotation_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation_math.h; sourceTree = "<group>"; };
 		0715FFB21C45C6A0008349F7 /* gameplay.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = gameplay.json; sourceTree = "<group>"; };
 		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
 		0718EAC41C2A81EC0084826F /* opengl_debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl_debug.cpp; sourceTree = "<group>"; };
@@ -319,6 +317,8 @@
 		07C426371BBCB37E0045D796 /* program.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = program.cpp; sourceTree = "<group>"; };
 		07C426381BBCB37E0045D796 /* program.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = program.h; sourceTree = "<group>"; };
 		07C4263A1BBCC5700045D796 /* chunkrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunkrender.cpp; sourceTree = "<group>"; };
+		07D8324D1C63EC5F00471961 /* basicrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = basicrender.cpp; sourceTree = "<group>"; };
+		07D8324E1C63EC5F00471961 /* basicrender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = basicrender.h; sourceTree = "<group>"; };
 		07E11BC51BEBFDB700C0F98C /* gbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gbuffer.cpp; sourceTree = "<group>"; };
 		07E11BC61BEBFDB700C0F98C /* gbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gbuffer.h; sourceTree = "<group>"; };
 		07EADB0C1C5C551D009DDACA /* terraingenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = terraingenerator.cpp; sourceTree = "<group>"; };
@@ -572,6 +572,8 @@
 				071F632A1C2C5E7100609129 /* directionallightrender.h */,
 				0720107D1C365988003FE723 /* readwritelock.cpp */,
 				0720107E1C365988003FE723 /* readwritelock.h */,
+				07D8324D1C63EC5F00471961 /* basicrender.cpp */,
+				07D8324E1C63EC5F00471961 /* basicrender.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -637,8 +639,6 @@
 		076BEFDF1BD19E6100D68C8F /* physics */ = {
 			isa = PBXGroup;
 			children = (
-				0715F1101BF2D3CC00242F86 /* rotation_math.cpp */,
-				0715F1111BF2D3CC00242F86 /* rotation_math.h */,
 				071C5C121BF7FE9C0087F398 /* rotation.cpp */,
 				071C5C131BF7FE9C0087F398 /* rotation.h */,
 				0712E1251C06EB8E008AF269 /* block_orientation.cpp */,
@@ -761,10 +761,10 @@
 				076819861C5A824A00D9218F /* threadjob.cpp in Sources */,
 				071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */,
 				071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */,
-				0715F1121BF2D3CC00242F86 /* rotation_math.cpp in Sources */,
 				0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */,
 				072243391C17C98E00B60091 /* spriterender.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
+				07D8324F1C63EC5F00471961 /* basicrender.cpp in Sources */,
 				07F858481C2397AB005ACAA9 /* worldweather.cpp in Sources */,
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,

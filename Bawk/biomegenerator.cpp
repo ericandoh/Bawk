@@ -22,7 +22,7 @@ TerrainGenerator* BiomeGenerator::get_random_generator() {
     if (valid_generators.size() == 0) {
         return 0;
     }
-    int index = rand() % valid_generators.size();
+    int index = get_positive_mod(rand(), (int)valid_generators.size());
     return valid_generators[index];
 }
 

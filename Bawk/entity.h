@@ -31,6 +31,11 @@
 #include "entity_type.h"
 #include "blockaction.h"
 
+// some special vid (vehicle IDs)
+#define VID_TEMPORARY 1
+#define VID_PERMANENT 2
+#define VID_UNIQUE_START 3
+
 class Game;
 class SuperObject;
 
@@ -58,8 +63,6 @@ public:
     bool stable;
     // BB of entire object in OAC
     bounding_box bounds;
-    // BB of entire moving object in RWC
-    bounding_box moving_bounds;
     
     // temp variable that tells me my speed at a certain point in time
     fvec3 velocity;
@@ -82,15 +85,32 @@ public:
     Entity();
     
     // --- Positionable
-    virtual void recalculate_transform() override;
+    // these functions change behaviour now with a parent in the equation
+    void transform_into_my_coordinates(fvec3* src, float x, float y, float z) override;
+    void transform_into_my_integer_coordinates(ivec3* src, int x, int y, int z) override;
+    void transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) override;
+    void transform_into_world_coordinates(fvec3* src, float x, float y, float z) override;
+    void transform_into_world_integer_coordinates(ivec3* src, int x, int y, int z) override;
+    void transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z) override;
+    
+    void transform_into_my_rotation(Rotation* dst, Rotation target) override;
+    void transform_into_world_rotation(Rotation* dst, Rotation target) override;
+    
+    fvec3 get_world_pos() override;
+    Rotation get_world_rotation() override;
+    // this should be called internally by SuperObject::add_entity
+    // do not call directly
+    void set_parent(SuperObject* parent);
     
     // --- DEBUG ---
     void print_debug();
     
     // --- POSITION ---
-    fvec3 get_center_pos();
-    void transform_into_base_rotation(Rotation* r);
-    void get_direction(Rotation* r);
+    void set_bounds(bounding_box bounds);
+    virtual void update_centerpos();
+    void update_centerpos(bounding_box bounds);
+    void update_centerpos_smooth();
+    void set_centerpos(fvec3 cp);
     
     // --- MOTION ---
     void move_forward(float force);
@@ -133,8 +153,9 @@ public:
     virtual void update_render(fvec3* player_pos) EMPTY_FUNCTION;
     
     // --- MORE COLLISION DETECTION ---
+    void add_bounds_to_box(bounding_box* moving_bounds);
     // calculate the moving bounding box for this frame
-    virtual void calculate_moving_bounding_box();
+    virtual void step_motion(fvec3* prev_pos, Rotation* prev_rot, bounding_box* moving_bounds);
     // for more exact collision detection
     virtual bool collides_with(Entity* other);
     // override this with your own int for up to what class of Entities you can handle collision

@@ -189,7 +189,7 @@ BlockOrientation get_translated_orientation(BlockOrientation base, BlockOrientat
 }
 
 BlockOrientation get_orientation_from_rotation(Rotation rot) {
-    fvec3 dir = rot.dir;
+    fvec3 dir = rot.get_dir();
     return get_orientation_from_direction(dir);
 }
 

@@ -16,9 +16,6 @@ SpriteColorTriangle::SpriteColorTriangle() {
 }
 
 void SpriteColorTriangle::render(fmat4* transform, SpriteRender* render)  {
-    render->pos = render->player->pos;
-    render->recalculate_transform();
-    
     // drawing direct colors
     OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::COLOR);
     // bind a rectangle pointing in direction of player, at pos

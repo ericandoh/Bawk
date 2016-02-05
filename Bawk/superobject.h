@@ -71,7 +71,7 @@ public:
     virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
     
     // --- Entity ---
-    void recalculate_transform() override;
+    void update_centerpos() override;
     Entity* poke(float x, float y, float z) override;
     bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) override;
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
@@ -81,7 +81,7 @@ public:
     virtual void update_render(fvec3* player_pos) override;
     
     bool collides_with(Entity* other) override;
-    void calculate_moving_bounding_box() override;
+    void step_motion(fvec3* prev_pos, Rotation* prev_rot, bounding_box* moving_bounds) override;
     int get_collision_level() override;
     // method for collision detection against base class entities ONLY
     bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level) override;

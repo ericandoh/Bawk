@@ -45,21 +45,22 @@ void DirectionalRenderableLight::set_camera(Player* player) {
     fvec3 up = glm::cross(right, direction);
     up = glm::normalize(up);
     
-    fvec3 center_pos;
+    fvec3 world_pos;
     if (BlockTracing::show_item) {
-        center_pos = BlockTracing::pointed_pos;
+        world_pos = BlockTracing::pointed_pos;
     }
     else {
-        center_pos = player->get_center_pos() + player->angle.dir * 10.0f;
+        Rotation lookdir = player->get_world_rotation();
+        world_pos = player->get_world_pos() + lookdir.get_dir() * 10.0f;
     }
     
     int width, height;
     get_window_size(&width, &height);
     
     float length = 70.0f;
-    float sun_height = std::max(SUN_HEIGHT, SUN_HEIGHT + center_pos.y);
-    fvec3 start_pos = get_height_aligned_offset(center_pos, direction, sun_height) + center_pos;
-    fvec3 toward_pos = center_pos;
+    float sun_height = std::max(SUN_HEIGHT, SUN_HEIGHT + world_pos.y);
+    fvec3 start_pos = get_height_aligned_offset(world_pos, direction, sun_height) + world_pos;
+    fvec3 toward_pos = world_pos;
     
     fmat4 view = glm::lookAt(start_pos, toward_pos, up);
     

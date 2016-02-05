@@ -16,6 +16,7 @@
 
 class ThreadJob {
     bool am_finished;
+    bool am_closed;
     SDL_mutex* am_finished_lock;
 protected:
     std::string job_name;

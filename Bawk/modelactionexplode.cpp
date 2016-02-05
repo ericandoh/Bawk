@@ -29,12 +29,7 @@ ModelExplodeActionMultiplexer::ModelExplodeActionMultiplexer() {
 }
 
 bool ModelExplodeActionMultiplexer::model_callback_collision(MODEL_FUNCTION_ARGS) {
-    fvec3 pos = piece->pos + piece->center_pos;
-    if (piece->parent) {
-        piece->parent->transform_into_world_coordinates_smooth(&pos, pos.x, pos.y, pos.z);
-        // remove myself from the world
-        piece->parent->remove_entity(piece);
-    }
+    fvec3 pos = piece->get_world_pos();
     // now explode everything in a radius of 4 around our target
     int radius = 4;
     fvec3 lower = pos - (float)radius;
@@ -56,6 +51,7 @@ bool ModelExplodeActionMultiplexer::model_callback_collision(MODEL_FUNCTION_ARGS
     SpriteRender* sprite = get_sprite_instance(1, game->player);
     sprite->set_pos(pos);
     game->world->base_world->add_entity(sprite);
+    // this will remove the entity at the end of this method
     return true;
 }
 

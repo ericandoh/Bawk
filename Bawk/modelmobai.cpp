@@ -31,7 +31,7 @@ ModelMobAiSimpleActionMultiplexer::ModelMobAiSimpleActionMultiplexer() {
 
 Entity* ModelMobAiSimpleActionMultiplexer::get_target(SuperObject* world, Entity* owner) {
     std::vector<Entity*> candidates;
-    bounding_box range(owner->get_center_pos(), radius);
+    bounding_box range(owner->get_world_pos(), radius);
     world->get_entities_in_range(candidates, range);
     for (Entity* candidate: candidates) {
         if (candidate->pid && candidate->pid != owner->pid) {
@@ -46,8 +46,8 @@ bool ModelMobAiSimpleActionMultiplexer::model_callback_step(MODEL_FUNCTION_ARGS)
     // if not initialized see if owner has any guns attached right above it
     if (targetting) {
         // see if our target is still in range
-        fvec3 target_pos = target->get_center_pos();
-        bounding_box range(owner->get_center_pos(), radius);
+        fvec3 target_pos = target->get_world_pos();
+        bounding_box range(owner->get_world_pos(), radius);
         bool in_range = range.hits(target_pos);  // TODO
         if (!in_range) {
             targetting = false;

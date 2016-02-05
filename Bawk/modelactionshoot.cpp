@@ -39,19 +39,15 @@ bool ModelShootActionMultiplexer::model_callback_click_main(MODEL_FUNCTION_ARGS)
         return true;
     }
     time_elapsed -= firerate;
-    
-    printf("pew pew! from %f %f %f\n", piece->pos.x, piece->pos.y, piece->pos.z);
+    fvec3 gun_pos = piece->get_world_pos();
+    printf("pew pew! from %f %f %f\n", gun_pos.x, gun_pos.y, gun_pos.z);
     // TODO this obviously needs to be changed
-    ModelEntity* bullet = new ModelEntity(game->player->pid, game->player->assignID(), projectile_id);
+    ModelEntity* bullet = new ModelEntity(game->player->pid, VID_TEMPORARY, projectile_id);
     bullet->velocity_decay = 0.98f;
-    if (piece->parent) {
-        fvec3 shoot_pos = piece->angle.dir * 2.0f + piece->pos + piece->center_pos;
-        piece->parent->transform_into_world_coordinates_smooth(&bullet->pos, shoot_pos.x, shoot_pos.y, shoot_pos.z);
-        bullet->pos = bullet->pos - bullet->center_pos;
-        piece->parent->angle.transform_into_world_rotation(&(bullet->angle), piece->angle);
-        bullet->recalculate_transform();
-        bullet->move_forward(firing_speed);
-    }
+    Rotation pointing = piece->get_world_rotation();
+    fvec3 shoot_pos = pointing.get_dir() * 2.0f + piece->get_world_pos() - bullet->get_center_offset();
+    bullet->set_pos_and_angle(shoot_pos, pointing);
+    bullet->move_forward(firing_speed);
     game->world->add_entity(bullet);
     return true;
 }

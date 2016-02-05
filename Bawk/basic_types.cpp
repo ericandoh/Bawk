@@ -27,6 +27,20 @@ int imax(int a, int b) {
     return a > b ? a : b;
 }
 
+float bound_absolute(float val, float bound) {
+    if (val < 0) {
+        if (val < -bound) {
+            val = -bound;
+        }
+    }
+    else {
+        if (val > bound) {
+            val = bound;
+        }
+    }
+    return val;
+}
+
 ivec3 get_floor_from_fvec3(fvec3 src) {
     ivec3 result((int)floorf(src.x), (int)floorf(src.y), (int)floorf(src.z));
     return result;
@@ -56,6 +70,43 @@ float get_fvec3_distance(fvec3 src) {
     return sqrtf(src.x * src.x + src.y * src.y + src.z * src.z);
 }
 
+fvec3 get_closest_rounded_vector(fvec3 from) {
+    if (fabsf(from.x) > fabsf(from.y)) {
+        if (fabsf(from.x) > fabsf(from.z)) {
+            // use x
+            return fvec3(roundf(from.x),0,0);
+        }
+        else {
+            // use z
+            return fvec3(0,0,roundf(from.z));
+        }
+    }
+    else if (fabsf(from.z) > fabsf(from.y)) {
+        // use z
+        return fvec3(0,0,roundf(from.z));
+    }
+    else {
+        // use y
+        return fvec3(0,roundf(from.y),0);
+    }
+}
+
+fvec3 get_fvec3_from_fvec4(fvec4 from) {
+    fvec3 result;
+    result.x = from.x;
+    result.y = from.y;
+    result.z = from.z;
+    return result;
+}
+
+fvec3 get_fvec3_from_ivec3(ivec3 from) {
+    fvec3 result;
+    result.x = from.x;
+    result.y = from.y;
+    result.z = from.z;
+    return result;
+}
+
 bounding_box get_bounding_box_intersection(bounding_box a, bounding_box b) {
     bounding_box result;
     result.lower.x = std::max(a.lower.x, b.lower.x);
@@ -82,7 +133,7 @@ void printf_fvec4(fvec4 a) {
 }
 
 int is_closer_to_half(float a) {
-    if ((int)roundf(a * 2.0f) % 2 == 1) {
+    if (get_positive_mod((int)roundf(a * 2.0f), 2) == 1) {
         return 1;
     }
     return 0;
@@ -153,7 +204,7 @@ int convert_sec_to_milli(float sec) {
 int choose_random(int average, int variance) {
     int result = average;
     for (int i = 0; i < variance; i++) {
-        if (rand() % 2 == 0) {
+        if (get_positive_mod(rand(), 2) == 0) {
             result++;
         }
         else {
@@ -168,7 +219,7 @@ float choose_random(float average, float variance) {
     int precision = 6;
     float var_per_precision = variance / precision;
     for (int i = 0; i < precision; i++) {
-        if (rand() % 2 == 0) {
+        if (get_positive_mod(rand(), 2) == 0) {
             result += var_per_precision;
         }
         else {

@@ -45,7 +45,7 @@ void RenderableModel::refresh() {
     fvec3 lower_bound = bounds.lower;
     bounds.upper -= lower_bound;
     bounds.lower = fvec3(0,0,0);
-    center_pos = bounds.get_center_pos();
+    center_pos = bounds.get_world_pos();
     
     fvec3 aligned_center_pos = get_nearest_half_or_whole(center_pos);
     if (aligned_center_pos.x < 0.5f) {
@@ -78,5 +78,5 @@ void RenderableModel::refresh() {
     if (bounds.upper.z == 0) {
         bounds.upper.z = 1.0f;
     }
-    center_pos = bounds.get_center_pos();
+    center_pos = bounds.get_world_pos();
 }

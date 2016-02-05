@@ -45,11 +45,10 @@ bool ModelEngineActionMultiplexer::model_callback_move_forward(MODEL_FUNCTION_AR
     // piece->get_force() or some shizzle...and repeat for all below
     owner->move_forward(forward_speed * ms);
     
-    fvec3 rand_offset = fvec3(rand() % 100 - 50.0f,rand() % 100 - 50.0f,rand() % 100 - 50.0f) / 400.0f;
-    fvec3 pos = piece->pos + piece->center_pos + rand_offset;
-    if (piece->parent) {
-        piece->parent->transform_into_world_coordinates_smooth(&pos, pos.x, pos.y, pos.z);
-    }
+    fvec3 rand_offset = fvec3(get_positive_mod(rand(), 100) - 50.0f,
+                              get_positive_mod(rand(), 100) - 50.0f,
+                              get_positive_mod(rand(), 100) - 50.0f) / 400.0f;
+    fvec3 pos = piece->get_world_pos() + rand_offset;
     SpriteRender* sprite = get_sprite_instance(2, game->player);
     sprite->set_pos(pos);
     game->world->base_world->add_entity(sprite);

@@ -29,9 +29,9 @@ void RenderableSuperObject::transform_into_chunk_bounds(ivec3* cac,
     int yr = int(floorf(y));
     int zr = int(floorf(z));
     // chunk relative coordinates
-    crc->x = (xr % CX + CX) % CX;
-    crc->y = (yr % CY + CY) % CY;
-    crc->z = (zr % CZ + CZ) % CZ;
+    crc->x = get_positive_mod(xr, CX);
+    crc->y = get_positive_mod(yr, CY);
+    crc->z = get_positive_mod(zr, CZ);
     
     // chunk aligned coordinates
     cac->x = (xr - crc->x) / CX;
@@ -260,6 +260,7 @@ void RenderableSuperObject::update_dimensions_from_chunk(ivec3 chunk_pos) {
     }
     //printf("Bounds updated to %f %f %f, %f %f %f\n", lower_bound.x, lower_bound.y, lower_bound.z,
     //                        upper_bound.x, upper_bound.y, upper_bound.z);
+    update_centerpos();
 }
 
 void RenderableSuperObject::save_all_chunks() {

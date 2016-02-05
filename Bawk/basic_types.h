@@ -51,6 +51,7 @@ uint32_t spread_bits(uint32_t val);
 
 int imin(int a, int b);
 int imax(int a, int b);
+float bound_absolute(float val, float bound);
 
 // a vec3 of ints that can be hashed (with coordinate locality)
 struct ivec3 : glm::tvec3<int> {
@@ -167,12 +168,18 @@ struct bounding_box {
         upper.y = std::max(upper.y, other.upper.y);
         upper.z = std::max(upper.z, other.upper.z);
     }
-    fvec3 get_center_pos() {
+    fvec3 get_world_pos() {
         fvec3 center_pos;
         center_pos.x = (lower.x + upper.x) / 2.0f;
         center_pos.y = (lower.y + upper.y) / 2.0f;
         center_pos.z = (lower.z + upper.z) / 2.0f;
         return center_pos;
+    }
+    fvec3 get_dimensions() {
+        fvec3 result(upper.x - lower.x,
+                     upper.y - lower.y,
+                     upper.z - lower.z);
+        return result;
     }
 };
 
@@ -200,7 +207,7 @@ struct int_bounding_box {
         upper.y = uppery;
         upper.z = upperz;
     }
-    fvec3 get_center_pos() {
+    fvec3 get_world_pos() {
         fvec3 center_pos;
         center_pos.x = (lower.x + upper.x) / 2.0f;
         center_pos.y = (lower.y + upper.y) / 2.0f;
@@ -239,6 +246,10 @@ ivec3 get_ivec3_minimum(ivec3 a, ivec3 b);
 ivec3 get_ivec3_maximum(ivec3 a, ivec3 b);
 
 float get_fvec3_distance(fvec3 src);
+
+fvec3 get_closest_rounded_vector(fvec3 from);
+fvec3 get_fvec3_from_fvec4(fvec4 from);
+fvec3 get_fvec3_from_ivec3(ivec3 from);
 
 void printf_ivec3(ivec3 a);
 void printf_fvec3(fvec3 a);

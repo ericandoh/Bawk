@@ -143,7 +143,7 @@ void CursorSuperObject::render_item() {
     }
     set_mvp();
     fvec3 old_pos = pos;
-    set_pos(fvec3(0, 0, 0));
+    set_pos(-bounds.lower);
     fmat4 one(1);
     render(&one);
     set_pos(old_pos);

@@ -16,7 +16,6 @@
 RenderablePlayer::RenderablePlayer() {
     // TODO investigate if we set this when we set angle...
     // TODO make angle constricted to 90/-90 for y (no turning backwards on head)
-    angle.free_y = false;
 }
 
 /*void RenderablePlayer::recalculate_dir() {
@@ -30,11 +29,14 @@ RenderablePlayer::RenderablePlayer() {
 void RenderablePlayer::set_camera() {
     int width, height;
     get_window_size(&width, &height);
-    fvec3 offpos = get_center_pos();
+    fvec3 offpos = get_world_pos();
     // TODO angle.dir is not relative...
-    Rotation lookdir;
-    get_direction(&lookdir);
-    view = glm::lookAt(offpos, offpos + lookdir.dir, lookdir.up);
+    Rotation lookdir = get_world_rotation();
+    fvec3 up = fvec3(0,1,0);
+    if (lookdir.get_up().y < 0) {
+        up = fvec3(0,-1,0);
+    }
+    view = glm::lookAt(offpos, offpos + lookdir.get_dir(), up);
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;
     set_camera_transform_matrix(&mvp);
@@ -59,10 +61,9 @@ void RenderablePlayer::query_depth(World* world) {
     
     
     // call to save mx, my, mz, and face here to a global var
-    fvec3 offpos = get_center_pos();
-    Rotation lookdir;
-    get_direction(&lookdir);
-    set_look_at(offpos, lookdir.dir, world);
+    fvec3 offpos = get_world_pos();
+    Rotation lookdir = get_world_rotation();
+    set_look_at(offpos, lookdir.get_dir(), world);
 }
 
 void RenderablePlayer::render() {

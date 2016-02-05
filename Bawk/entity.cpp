@@ -32,47 +32,180 @@ Entity::Entity() {
     // start out with no parent
     // damn that's depresssing
     parent = 0;
-    
-    recalculate_transform();
 }
 
-void Entity::recalculate_transform() {
-    Positionable::recalculate_transform();
+void Entity::transform_into_my_coordinates(fvec3* src, float x, float y, float z) {
+    src->x = x;
+    src->y = y;
+    src->z = z;
     if (parent) {
-        // apply parent matrices
-        into_my_mat = into_my_mat * parent->into_my_mat;
-        into_my_mat_smooth = into_my_mat_smooth * parent->into_my_mat_smooth;
-        into_world_mat = parent->into_world_mat * into_world_mat;
-        into_world_mat_smooth = parent->into_world_mat_smooth * into_world_mat_smooth;
+        parent->transform_into_my_coordinates(src, src->x, src->y, src->z);
+    }
+    Positionable::transform_into_my_coordinates(src, src->x, src->y, src->z);
+}
+
+void Entity::transform_into_my_integer_coordinates(ivec3* src, int x, int y, int z) {
+    src->x = x;
+    src->y = y;
+    src->z = z;
+    if (parent) {
+        parent->transform_into_my_integer_coordinates(src, src->x, src->y, src->z);
+    }
+    Positionable::transform_into_my_integer_coordinates(src, src->x, src->y, src->z);
+}
+
+void Entity::transform_into_my_coordinates_smooth(fvec3* src, float x, float y, float z) {
+    src->x = x;
+    src->y = y;
+    src->z = z;
+    if (parent) {
+        parent->transform_into_my_coordinates_smooth(src, src->x, src->y, src->z);
+    }
+    Positionable::transform_into_my_coordinates_smooth(src, src->x, src->y, src->z);
+}
+
+void Entity::transform_into_world_coordinates(fvec3* src, float x, float y, float z) {
+    Positionable::transform_into_world_coordinates(src, x, y, z);
+    if (parent) {
+        parent->transform_into_world_coordinates(src, src->x, src->y, src->z);
     }
 }
 
-fvec3 Entity::get_center_pos() {
+void Entity::transform_into_world_integer_coordinates(ivec3* src, int x, int y, int z) {
+    Positionable::transform_into_world_integer_coordinates(src, x, y, z);
     if (parent) {
-        fvec3 result;
+        parent->transform_into_world_integer_coordinates(src, src->x, src->y, src->z);
+    }
+}
+
+void Entity::transform_into_world_coordinates_smooth(fvec3* src, float x, float y, float z) {
+    Positionable::transform_into_world_coordinates_smooth(src, x, y, z);
+    if (parent) {
+        parent->transform_into_world_coordinates_smooth(src, src->x, src->y, src->z);
+    }
+}
+
+void Entity::transform_into_my_rotation(Rotation* dst, Rotation target) {
+    *dst = target;
+    if (parent) {
+        parent->transform_into_my_rotation(dst, *dst);
+    }
+    Positionable::transform_into_my_rotation(dst, *dst);
+}
+
+void Entity::transform_into_world_rotation(Rotation* dst, Rotation target) {
+    Positionable::transform_into_world_rotation(dst, target);
+    if (parent) {
+        parent->transform_into_world_rotation(dst, *dst);
+    }
+}
+
+fvec3 Entity::get_world_pos() {
+    fvec3 result = Positionable::get_world_pos();
+    if (parent) {
         parent->transform_into_world_coordinates_smooth(&result,
-                                                        pos.x + center_pos.x,
-                                                        pos.y + center_pos.y,
-                                                        pos.z + center_pos.z);
-        return result;
+                                                        result.x,
+                                                        result.y,
+                                                        result.z);
+        
     }
-    return pos;
+    return result;
 }
 
-void Entity::transform_into_base_rotation(Rotation* r) {
-    if (can_rotate) {
-        angle.transform_into_world_rotation(r, *r);
-    }
+Rotation Entity::get_world_rotation() {
+    Rotation rot = Positionable::get_world_rotation();
     if (parent) {
-        parent->transform_into_base_rotation(r);
+        parent->transform_into_world_rotation(&rot, rot);
     }
+    return rot;
 }
 
-void Entity::get_direction(Rotation* r) {
-    *r = angle;
+void Entity::set_parent(SuperObject* parent) {
+    // transform entity rotation/pos into this object's frame
+    // after transformation, the rwc center position should be the same
+    fvec3 global_center = get_world_pos();
+    Rotation global_rotation = get_world_rotation();
+    fvec3 oac;
     if (parent) {
-        parent->transform_into_base_rotation(r);
+        parent->transform_into_my_coordinates(&oac, global_center.x, global_center.y, global_center.z);
     }
+    else {
+        oac = global_center;
+    }
+    this->parent = parent;
+    set_pos(oac - get_center_offset());
+    Rotation aligned_rot;
+    if (parent) {
+        parent->transform_into_my_rotation(&aligned_rot, global_rotation);
+    }
+    else {
+        aligned_rot = global_rotation;
+    }
+    set_angle(aligned_rot);
+}
+
+void Entity::set_bounds(bounding_box bounds) {
+    this->bounds = bounds;
+    update_centerpos();
+}
+
+void Entity::update_centerpos() {
+    update_centerpos(bounds);
+}
+void Entity::update_centerpos(bounding_box bounds) {
+    // this should be called whenever our bounds change
+    // use bounds to set centerpos
+    if (!can_rotate || bounds.lower.x == FLT_MAX || bounds.lower.x == FLT_MIN) {
+        // TODO this is hack, do this properly
+        center_pos = fvec3(0, 0, 0);
+        return;
+    }
+    // we will always be pointing in the positive x-direction
+    // we want to put the centerpos such that it is offset by 0.5 at each coordinate
+    // or integer at each coordinate. this ensures nice rotations for our blocks
+    // in addition, we want the vehicle to be perfectly centered in the positive x direction
+    
+    // first, get the center z coordinate (perpendicular to our direction)
+    fvec3 exact_centerpos = fvec3((bounds.upper.x - bounds.lower.x) / 2.0f,
+                                  (bounds.upper.y - bounds.lower.y) / 2.0f,
+                                  (bounds.upper.z - bounds.lower.z) / 2.0f);
+    exact_centerpos = exact_centerpos + bounds.lower;
+    // see if it is closer to 0.5 or to 1.0
+    bool align_to_half = false;
+    int rounded_centerz = roundf(exact_centerpos.z * 2.0f);
+    if (get_positive_mod(rounded_centerz, 2) == 1) {
+        align_to_half = true;
+    }
+    
+    if (align_to_half) {
+        set_centerpos(fvec3(roundf(exact_centerpos.x - 0.5f) + 0.5f,
+                            roundf(exact_centerpos.y - 0.5f) + 0.5f,
+                            roundf(exact_centerpos.z - 0.5f) + 0.5f));
+    }
+    else {
+        set_centerpos(fvec3(roundf(exact_centerpos.x),
+                            roundf(exact_centerpos.y),
+                            roundf(exact_centerpos.z)));
+    }
+    
+    // TODO update position so that despite center pos having changed, blocks are still where they used to be
+    
+}
+
+void Entity::update_centerpos_smooth() {
+    set_centerpos(bounds.lower + fvec3((bounds.upper.x - bounds.lower.x) / 2.0f,
+                                       (bounds.upper.y - bounds.lower.y) / 2.0f,
+                                       (bounds.upper.z - bounds.lower.z) / 2.0f));
+}
+
+void Entity::set_centerpos(fvec3 cp) {
+    // convert our centerpos to rwc, before our centerpos has been updated
+    fvec3 rwc_new_centerpos;
+    Positionable::transform_into_world_coordinates(&rwc_new_centerpos, cp.x, cp.y, cp.z);
+    // get pos offset of the centerpos from (0,0,0)
+    fvec3 rwc_pos = rwc_new_centerpos - cp;
+    center_pos = cp;
+    set_pos(rwc_pos);
 }
 
 float Entity::get_speed(float force) {
@@ -86,52 +219,44 @@ float Entity::get_speed(float force) {
 // movement methods. Move these to class Entity
 void Entity::move_forward(float force) {
     // override this if flying/on land
-    move_dist(angle.dir * get_speed(force));
+    move_dist(angle.get_dir() * get_speed(force));
 }
 
 void Entity::move_backward(float force) {
-    move_dist(angle.dir * (-get_speed(force)));
+    move_dist(angle.get_dir() * (-get_speed(force)));
 }
 
 void Entity::move_forward_flat(float force) {
     // override this if flying/on land
-    //fvec3 forward = fvec3(dir.x, 0, dir.z);
-    //forward = glm::normalize(forward);
-    move_dist(angle.forward * get_speed(force));
+    move_dist(angle.get_forward() * get_speed(force));
 }
 
 void Entity::move_backward_flat(float force) {
-    //fvec3 forward = -fvec3(dir.x, 0, dir.z);
-    //forward = glm::normalize(forward);
-    move_dist(angle.forward * (-get_speed(force)));
+    move_dist(angle.get_forward() * (-get_speed(force)));
 }
 
 void Entity::move_left(float force) {
-    //fvec3 forward = fvec3(dir.x, 0, dir.z);
-    //forward = glm::normalize(forward);
-    move_dist(fvec3(angle.forward.z * get_speed(force),
+    fvec3 forward = angle.get_forward();
+    move_dist(fvec3(forward.z * get_speed(force),
                     0,
-                    -angle.forward.x * get_speed(force)));
+                    -forward.x * get_speed(force)));
 }
 
 void Entity::move_right(float force) {
-    //fvec3 forward = fvec3(dir.x, 0, dir.z);
-    //forward = glm::normalize(forward);
-    move_dist(fvec3(-angle.forward.z * get_speed(force),
+    fvec3 forward = angle.get_forward();
+    move_dist(fvec3(-forward.z * get_speed(force),
                     0,
-                    angle.forward.x * get_speed(force)));
+                    forward.x * get_speed(force)));
 }
 
 void Entity::move_up(float force) {
-    move_dist(get_speed(force)*fvec3(angle.up.x,
-                                     angle.up.y,
-                                     angle.up.z));
+    fvec3 up = angle.get_up();
+    move_dist(get_speed(force)*up);
 }
 
 void Entity::move_down(float force) {
-    move_dist(-get_speed(force)*fvec3(angle.up.x,
-                                      angle.up.y,
-                                      angle.up.z));
+    fvec3 up = angle.get_up();
+    move_dist(-get_speed(force)*up);
 }
 
 void Entity::move_up_flat(float force) {
@@ -200,20 +325,19 @@ void Entity::turn_angle(fvec3 off) {
 }
 
 void Entity::print_debug() {
-    printf("\n");
     print_entity_type(entity_class);
     printf(" (%d,%d) of class %d", pid, vid, entity_class);
     printf("\nPos: ");
     printf_fvec3(pos);
     printf("\nDir: ");
-    printf_fvec3(angle.dir);
+    printf_fvec3(angle.get_dir());
     printf("\nCenter: ");
     printf_fvec3(center_pos);
     printf("\nBounds:\n");
     printf_fvec3(bounds.lower);
     printf("\n");
     printf_fvec3(bounds.upper);
-    printf("\n\n");
+    printf("\n");
 }
 
 Entity* Entity::poke(float x, float y, float z) {
@@ -277,40 +401,26 @@ bool Entity::get_hurt(float x, float y, float z, float dmg, BreakablePolicy poli
     return true;
 }
 
-void Entity::calculate_moving_bounding_box() {
+void Entity::add_bounds_to_box(bounding_box* moving_bounds) {
     // transform my bounds into RWC
     fvec3 lower_rwc, upper_rwc;
     transform_into_world_coordinates(&lower_rwc, bounds.lower.x, bounds.lower.y, bounds.lower.z);
     transform_into_world_coordinates(&upper_rwc, bounds.upper.x, bounds.upper.y, bounds.upper.z);
-    fvec3 before_lower_corner(std::min(lower_rwc.x, upper_rwc.x),
-                              std::min(lower_rwc.y, upper_rwc.y),
-                              std::min(lower_rwc.z, upper_rwc.z));
-    fvec3 before_upper_corner(std::max(lower_rwc.x, upper_rwc.x),
-                              std::max(lower_rwc.y, upper_rwc.y),
-                              std::max(lower_rwc.z, upper_rwc.z));
+    moving_bounds->expand(lower_rwc);
+    moving_bounds->expand(upper_rwc);
+}
+
+void Entity::step_motion(fvec3* prev_pos, Rotation* prev_rot, bounding_box* moving_bounds) {
+    *prev_pos = pos;
+    *prev_rot = angle;
     
+    // transform my bounds into RWC
+    add_bounds_to_box(moving_bounds);
     pos += velocity;
     if (can_rotate) {
         angle.apply_angles(angular_velocity);
     }
-    recalculate_transform();
-    
-    transform_into_world_coordinates(&lower_rwc, bounds.lower.x, bounds.lower.y, bounds.lower.z);
-    transform_into_world_coordinates(&upper_rwc, bounds.upper.x, bounds.upper.y, bounds.upper.z);
-    fvec3 after_lower_corner(std::min(lower_rwc.x, upper_rwc.x),
-                             std::min(lower_rwc.y, upper_rwc.y),
-                             std::min(lower_rwc.z, upper_rwc.z));
-    fvec3 after_upper_corner(std::max(lower_rwc.x, upper_rwc.x),
-                             std::max(lower_rwc.y, upper_rwc.y),
-                             std::max(lower_rwc.z, upper_rwc.z));
-    
-    moving_bounds.lower = fvec3(std::min(before_lower_corner.x, after_lower_corner.x),
-                                std::min(before_lower_corner.y, after_lower_corner.y),
-                                std::min(before_lower_corner.z, after_lower_corner.z));
-    moving_bounds.upper = fvec3(std::max(before_upper_corner.x, after_upper_corner.x),
-                                std::max(before_upper_corner.y, after_upper_corner.y),
-                                std::max(before_upper_corner.z, after_upper_corner.z));
-    
+    add_bounds_to_box(moving_bounds);
 }
 
 bool Entity::collides_with(Entity* other) {
@@ -412,7 +522,6 @@ int Entity::load_self(IODataObject* obj) {
     weight = obj->read_value<int>();
     health = obj->read_value<int>();
     
-    recalculate_transform();
     return 0;
 }
 
@@ -443,5 +552,6 @@ Entity* Entity::find_top_level_parent() {
 
 void Entity::remove_self() {
     parent->remove_entity(this);
+    // TODO skip this check if entity doenst need to be written/deleted, to speedup
     delete_entity_from_memory(this);
 }

@@ -78,6 +78,8 @@ namespace Json {
 }
 
 class SpriteRender: public Entity {
+    // if true, render this relative to player
+    bool track_player;
 public:
     Player* player;
     SpriteSteppable* steppable;
@@ -96,6 +98,8 @@ public:
     void set_relative_transform();
     void render_rectangle(fmat4* transform, float width, float height, fvec3 texture_corners[4]);
     SpriteRender* copy();
+    
+    void set_track_player(bool val);
     
     // --- Entity ---
     void step(Game* game, int ms) override; //override;

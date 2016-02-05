@@ -104,7 +104,7 @@ int pick_biome_from_weights(std::map<int, float> &weights) {
     }
     // probably a good idea to set the seed here, although we already have it set from above
     int precision = 10000;
-    float rv = (rand() % precision) * 1.0 / precision;
+    float rv = get_positive_mod(rand(), precision) * 1.0 / precision;
     float total = 0;
     for (auto &i: weights) {
         total += i.second;
@@ -177,9 +177,9 @@ void SectorGenerator::generate_sector(ivec3 sector_pos, SuperObject* obj) {
             int zstart = sector_zwidth;
             int zend = sector_zwidth + margin_z;
             
-            padding_points.push_back(BiomeGenerationInfo(ivec3(rand() % (xend - xstart) + xstart,
+            padding_points.push_back(BiomeGenerationInfo(ivec3(get_positive_mod(rand(), (xend - xstart)) + xstart,
                                                                0,
-                                                               rand() % (zend - zstart) + zstart)));
+                                                               get_positive_mod(rand(), (zend - zstart)) + zstart)));
             
             zstart = -margin_z;
             zend = 0;

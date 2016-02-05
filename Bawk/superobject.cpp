@@ -14,6 +14,9 @@
 #include "entity_loader.h"
 #include "importsdl.h"
 
+// for debugging draw
+#include "basicrender.h"
+
 SuperObject::SuperObject() {
     // this constructor should be only called to construct a world
     vid = 0;
@@ -37,16 +40,9 @@ void SuperObject::add_entity(Entity* entity) {
     if (entity->parent) {
         entity->parent->remove_entity(entity);
     }
-    // transform entity rotation/pos into this object's frame
-    fvec3 true_center = entity->pos + entity->center_pos;
-    fvec3 oac;
-    transform_into_my_coordinates(&oac, true_center.x, true_center.y, true_center.z);
-    entity->pos = oac - entity->center_pos;
-    // transform rotation into my frame
-    angle.transform_into_my_rotation(&(entity->angle), entity->angle);
-    entity->parent = this;
-    entity->recalculate_transform();
+    entity->set_parent(this);
     entities.push_back(entity);
+    update_centerpos();
 }
 
 void SuperObject::remove_entity(Entity* entity) {
@@ -61,14 +57,8 @@ void SuperObject::remove_entity(Entity* entity) {
     if (!removed) {
         return;
     }
-    entity->parent = 0;
-    // transform entity back into RWC
-    fvec3 oac_center = entity->pos + entity->center_pos;
-    fvec3 rwc;
-    transform_into_world_coordinates(&rwc, oac_center.x, oac_center.y, oac_center.z);
-    entity->pos = rwc - entity->center_pos;
-    angle.transform_into_world_rotation(&(entity->angle), entity->angle);
-    entity->recalculate_transform();
+    entity->set_parent(0);
+    update_centerpos();
 }
 
 std::string SuperObject::get_chunk_save_path(ivec3* pos) {
@@ -82,13 +72,6 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
         // copy entity over, but if the entity is not a player
         Entity* copy = copy_entity(player, ent);
         if (copy) {
-            // transform entity rotation/pos into this object's frame
-            fvec3 true_center = copy->pos + copy->center_pos;
-            fvec3 rwc;
-            transform_into_world_coordinates(&rwc, true_center.x, true_center.y, true_center.z);
-            copy->pos = rwc - copy->center_pos;
-            angle.transform_into_world_rotation(&(copy->angle), copy->angle);
-            copy->recalculate_transform();
             target->add_entity(copy);
             entity_counter++;
         }
@@ -212,10 +195,18 @@ bool SuperObject::hits_chunk_bounds_in_range(bounding_box box) {
     return false;
 }
 
+struct EntityAndMovingState {
+    Entity* ref;
+    int index;
+    bounding_box moving_bounds;
+    fvec3 previous_pos;
+    Rotation previous_rotation;
+};
+
 struct EntityPair {
-    Entity* first;
-    Entity* second;
-    EntityPair(Entity* f, Entity* s) {
+    EntityAndMovingState* first;
+    EntityAndMovingState* second;
+    EntityPair(EntityAndMovingState* f, EntityAndMovingState* s) {
         first = f;
         second = s;
     }
@@ -235,13 +226,13 @@ struct EntityPairHasher {
     }
 };
 
-bool sort_on_x(Entity* a, Entity* b) {
+bool sort_on_x(EntityAndMovingState* a, EntityAndMovingState* b) {
     return a->moving_bounds.lower.x < b->moving_bounds.lower.x;
 }
-bool sort_on_y(Entity* a, Entity* b) {
+bool sort_on_y(EntityAndMovingState* a, EntityAndMovingState* b) {
     return a->moving_bounds.lower.y < b->moving_bounds.lower.y;
 }
-bool sort_on_z(Entity* a, Entity* b) {
+bool sort_on_z(EntityAndMovingState* a, EntityAndMovingState* b) {
     return a->moving_bounds.lower.z < b->moving_bounds.lower.z;
 }
 
@@ -280,36 +271,46 @@ bool sort_on_z(Entity* a, Entity* b) {
 void SuperObject::check_collision_detection_children(Game* game) {
     // step on each entity, updating velocity/stable/etc if needed
     // step should also add the velocities to the position/angle/dir
-    for (int i = 0; i < entities.size(); i++) {
-        entities[i]->calculate_moving_bounding_box();
+    int entity_size = (int)entities.size();
+    std::vector<EntityAndMovingState> entity_state_info(entity_size);
+    std::vector<EntityAndMovingState*> xbounding(entity_size);
+    std::vector<EntityAndMovingState*> ybounding(entity_size);
+    std::vector<EntityAndMovingState*> zbounding(entity_size);
+    for (int i = 0; i < entity_size; i++) {
+        entity_state_info[i].ref = entities[i];
+        entity_state_info[i].index = i;
+        entities[i]->step_motion(&entity_state_info[i].previous_pos,
+                                 &entity_state_info[i].previous_rotation,
+                                 &entity_state_info[i].moving_bounds);
+        // these will later be sorted
+        xbounding[i] = &(entity_state_info[i]);
+        ybounding[i] = &(entity_state_info[i]);
+        zbounding[i] = &(entity_state_info[i]);
     }
     // arrays of sorted lower bounds of each entity
     // an entity should be more precisely checked for collision if they intersect on all axises
-    std::vector<Entity*> xbounding(entities);
-    std::vector<Entity*> ybounding(entities);
-    std::vector<Entity*> zbounding(entities);
+    
     std::sort(xbounding.begin(), xbounding.end(), sort_on_x);
     std::sort(ybounding.begin(), ybounding.end(), sort_on_y);
     std::sort(zbounding.begin(), zbounding.end(), sort_on_z);
     
     // if the int value here ever gets to 3 we have a collision in all 3 axises = require closer look
     std::unordered_map<EntityPair,int,EntityPairHasher> collisionPairs;
-    std::unordered_map<Entity*, std::vector<Entity*>> collisionList;
+    std::unordered_map<EntityAndMovingState*, std::vector<Entity*>> collisionList;
     
-    for (auto& ent: entities) {
-        // if not stable, always check entity against the world
-        // if we add gravity, add it here later
+    for (int i = 0; i < entity_size; i++) {
+        Entity* ent = entity_state_info[i].ref;
         if (!ent->stable && ent->can_collide) {
-            if (hits_chunk_bounds_in_range(ent->moving_bounds)) {
-                collisionList[ent].push_back(this);
+            if (hits_chunk_bounds_in_range(entity_state_info[i].moving_bounds)) {
+                collisionList[&entity_state_info[i]].push_back(this);
             }
         }
     }
     
     // now run collision detection - see if anything collides
-    std::vector<Entity*> opened;
+    std::vector<EntityAndMovingState*> opened;
     for (int i = 0; i < xbounding.size(); i++) {
-        if (xbounding[i]->bounds.lower.x == FLT_MAX) {
+        if (xbounding[i]->ref->bounds.lower.x == FLT_MAX) {
             continue;
         }
         for (int j = (int)opened.size() - 1; j >= 0; j--) {
@@ -330,7 +331,7 @@ void SuperObject::check_collision_detection_children(Game* game) {
     // now run collision detection - see if anything collides
     opened.clear();
     for (int i = 0; i < ybounding.size(); i++) {
-        if (ybounding[i]->bounds.lower.y == FLT_MAX) {
+        if (ybounding[i]->ref->bounds.lower.y == FLT_MAX) {
             continue;
         }
         for (int j = (int)opened.size() - 1; j >= 0; j--) {
@@ -353,7 +354,7 @@ void SuperObject::check_collision_detection_children(Game* game) {
     // now run collision detection - see if anything collides
     opened.clear();
     for (int i = 0; i < zbounding.size(); i++) {
-        if (zbounding[i]->bounds.lower.z == FLT_MAX) {
+        if (zbounding[i]->ref->bounds.lower.z == FLT_MAX) {
             continue;
         }
         for (int j = (int)opened.size() - 1; j >= 0; j--) {
@@ -369,24 +370,24 @@ void SuperObject::check_collision_detection_children(Game* game) {
                     collisionPairs[love_buddies] += 1;
                     if (collisionPairs[love_buddies] == 3) {
                         // we have a collision
-                        Entity* first = love_buddies.first;
-                        Entity* second = love_buddies.second;
-                        if (!first->can_collide || !second->can_collide) {
+                        EntityAndMovingState* first = love_buddies.first;
+                        EntityAndMovingState* second = love_buddies.second;
+                        if (!first->ref->can_collide || !second->ref->can_collide) {
                             continue;
                         }
-                        if (!first->stable) {
+                        if (!first->ref->stable) {
                             // first is the perpetrator of the action
                             if (collisionList.count(first) == 0) {
                                 collisionList[first] = std::vector<Entity*>();
                             }
-                            collisionList[first].push_back(second);
+                            collisionList[first].push_back(second->ref);
                         }
-                        if (!second->stable) {
+                        if (!second->ref->stable) {
                             // second is the perpetrator of the action
                             if (collisionList.count(second) == 0) {
                                 collisionList[second] = std::vector<Entity*>();
                             }
-                            collisionList[second].push_back(first);
+                            collisionList[second].push_back(first->ref);
                         }
                     }
                 }
@@ -396,13 +397,14 @@ void SuperObject::check_collision_detection_children(Game* game) {
         opened.push_back(zbounding[i]);
     }
     
+    std::vector<EntityAndMovingState*> remove_list;
+    
     // if anything collided, revert back their velocities, then do step-by-step
     for (auto&i : collisionList) {
-        Entity* moved_entity = i.first;
+        Entity* moved_entity = i.first->ref;
         std::vector<Entity*> checking_against = i.second;
         // first, try rotating moved_entity and see if it can rotate
-        moved_entity->pos -= moved_entity->velocity;
-        moved_entity->recalculate_transform();
+        moved_entity->set_pos_and_angle(i.first->previous_pos, i.first->previous_rotation);
         if (moved_entity->angular_velocity.x != 0 || moved_entity->angular_velocity.y != 0) {
             bool collides = false;
             for (auto &j : checking_against) {
@@ -412,15 +414,12 @@ void SuperObject::check_collision_detection_children(Game* game) {
                 }
             }
             if (collides) {
-                moved_entity->angle.reset_rotation();
-                //moved_entity->angle -= moved_entity->angular_velocity;
-                //moved_entity->recalculate_dir();
-                moved_entity->recalculate_transform();
+                moved_entity->set_angle(i.first->previous_rotation);
             }
         }
         if (moved_entity->velocity.x != 0 || moved_entity->velocity.y != 0 || moved_entity->velocity.z != 0) {
             // now try moving the entity slowly in the direction until final destination
-            fvec3 start_pos = moved_entity->pos;
+            fvec3 start_pos = i.first->previous_pos;
             fvec3 current_pos = start_pos;
             fvec3 entity_velocity = moved_entity->velocity;
             // step in increments of 1 first
@@ -488,10 +487,16 @@ void SuperObject::check_collision_detection_children(Game* game) {
                 if (moved_entity->after_collision(game)) {
                     // TODO add to some list saying "remove me!"
                     // note that this is mostly for projectiles that are like, totally blown up afterwards
+                    remove_list.push_back(i.first);
                 }
             }
         }
     }
+    
+    for (auto &i: remove_list) {
+        i->ref->remove_self();
+    }
+    
     for (auto &i: entities) {
         if (!i->stable) {
             //i->velocity = fvec3(0,0,0);
@@ -593,11 +598,23 @@ int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z
 }
 
 // --- Entity ---
-void SuperObject::recalculate_transform() {
-    RenderableSuperObject::recalculate_transform();
-    for (Entity* ent: entities) {
-        ent->recalculate_transform();
+void SuperObject::update_centerpos() {
+    RenderableSuperObject::update_centerpos();
+    /*if (bounds.lower.x == FLT_MAX) {
+        center_pos = fvec3(0,0,0);
+        return;
     }
+    bounding_box box = bounding_box();
+    add_bounds_to_box(&box);
+    for (Entity* ent: entities) {
+        ent->add_bounds_to_box(&box);
+    }
+    // now convert our bounds into our coordinates
+    bounding_box oac_box;
+    transform_into_my_coordinates(&oac_box.lower, box.lower.x, box.lower.y, box.lower.z);
+    transform_into_my_coordinates(&oac_box.upper, box.upper.x, box.upper.y, box.upper.z);
+    oac_box.refit_for_rotation();
+    Entity::update_centerpos(oac_box);*/
 }
 
 Entity* SuperObject::poke(float x, float y, float z) {
@@ -703,13 +720,22 @@ void SuperObject::render(fmat4* transform) {
     }
     
     RenderableSuperObject::render(transform);
+    fmat4 view;
+    get_mvp(&view);
+    view = *transform * view;
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->render(transform);
+        entities[i]->render(&view);
     }
     
     if (selected) {
         OGLAttr::current_shader->set_shader_intensity(1.0f);
     }
+    
+    // debug, draw wireframe of bounds
+    draw_colored_wire_cube(&view, &bounds, COLOR_RED, true);
+    
+    bounding_box around_center_pos(center_pos, 0.2f);
+    draw_colored_wire_cube(&view, &around_center_pos, COLOR_BLUE, true);
 }
 
 void SuperObject::render_lights(fmat4* transform, fvec3 player_pos) {
@@ -743,15 +769,22 @@ bool SuperObject::collides_with(Entity* other) {
     return false;
 }
 
-void SuperObject::calculate_moving_bounding_box() {
-    RenderableSuperObject::calculate_moving_bounding_box();
+void SuperObject::step_motion(fvec3* prev_pos, Rotation* prev_rot, bounding_box* moving_bounds) {
+    *prev_pos = pos;
+    *prev_rot = angle;
+    
+    // transform my bounds into RWC
+    add_bounds_to_box(moving_bounds);
     for (Entity* ent: entities) {
-        ent->calculate_moving_bounding_box();
-        bounding_box ent_box = ent->moving_bounds;
-        //transform_into_world_coordinates(&ent_box.lower, ent_box.lower.x, ent_box.lower.y, ent_box.lower.z);
-        //transform_into_world_coordinates(&ent_box.upper, ent_box.upper.x, ent_box.upper.y, ent_box.upper.z);
-        //ent_box.refit_for_rotation();
-        moving_bounds.combine_with(ent_box);
+        ent->add_bounds_to_box(moving_bounds);
+    }
+    pos += velocity;
+    if (can_rotate) {
+        angle.apply_angles(angular_velocity);
+    }
+    add_bounds_to_box(moving_bounds);
+    for (Entity* ent: entities) {
+        ent->add_bounds_to_box(moving_bounds);
     }
 }
 
@@ -806,7 +839,6 @@ int SuperObject::load_self(IODataObject* obj) {
                 // this entity had an error while loading, don't add it
                 continue;
             }
-            entity->recalculate_transform();
             entities.push_back(entity);
         }
     }
@@ -857,6 +889,9 @@ void SuperObject::save_self(IODataObject* obj) {
     for (int i = 0; i < (int)entities.size(); i++) {
         if (entities[i]->entity_class == EntityType::PLAYER) {
             // don't save player as part of the world
+            continue;
+        }
+        else if (entities[i]->vid == VID_TEMPORARY) {
             continue;
         }
         else {

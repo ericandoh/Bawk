@@ -27,16 +27,14 @@ Player::Player(uint32_t p) {
     fvec3 lower_bound = fvec3(0.0f, 0.0f, 0.0f);
     fvec3 upper_bound = fvec3(0.9f, 0.9f, 0.9f);
     bounds = bounding_box(lower_bound, upper_bound);
-    center_pos = fvec3(0.45f, 0.45f, 0.45f);
-    
-    recalculate_transform();
+    update_centerpos_smooth();
     
     weight = 20;
     velocity_decay = 0.5f;
     
     update_direction(0.0, 0.0);
     
-    id_assign = 0;
+    id_assign = VID_UNIQUE_START;
     inventory = new PlayerInventory();
     mount = 0;
 }
@@ -60,19 +58,20 @@ uint32_t Player::assignID() {
 void Player::update_direction(double xdiff, double ydiff) {
     float anglex = -xdiff*STRAIGHT_ANGLE;
     float angley = -ydiff*STRAIGHT_ANGLE;
-    
+    angle.set_free_y(false);
     angle.apply_angles(fvec3(anglex, angley, 0));
 }
 
 ivec3 Player::get_rounded_left() {
-    if (fabsf(angle.dir.x) > fabsf(angle.dir.z)) {
-        if (angle.dir.x < 0) {
+    fvec3 dir = angle.get_dir();
+    if (fabsf(dir.x) > fabsf(dir.z)) {
+        if (dir.x < 0) {
             return ivec3(0, 0, -1);
         }
         return ivec3(0, 0, 1);
     }
     else {
-        if (angle.dir.z < 0) {
+        if (dir.z < 0) {
             return ivec3(1, 0, 0);
         }
         return ivec3(-1, 0, 0);
@@ -80,14 +79,15 @@ ivec3 Player::get_rounded_left() {
 }
 
 ivec3 Player::get_rounded_forward() {
-    if (fabsf(angle.dir.x) > fabsf(angle.dir.z)) {
-        if (angle.dir.x < 0) {
+    fvec3 dir = angle.get_dir();
+    if (fabsf(dir.x) > fabsf(dir.z)) {
+        if (dir.x < 0) {
             return ivec3(-1, 0, 0);
         }
         return ivec3(1, 0, 0);
     }
     else {
-        if (angle.dir.z < 0) {
+        if (dir.z < 0) {
             return ivec3(0, 0, -1);
         }
         return ivec3(0, 0, 1);
@@ -105,41 +105,39 @@ void Player::set_mount(SuperObject* m, fvec3 rwc) {
         // unmount first
         mount->remove_entity(this);
     }
-    printf_fvec3(get_center_pos());
+    printf_fvec3(get_world_pos());
     printf("\n");
     mount = m;
     // no moving around while mounted!
     velocity = fvec3(0, 0, 0);
     // TODO this is hack fix
-    this->set_pos(rwc);
+    this->set_pos(rwc - get_center_offset());
     mount->add_entity(this);
     //m->transform_into_my_coordinates_smooth(&offset_to_mount, pos.x, pos.y, pos.z);
     //set_pos(pos - this->center_pos);
     can_collide = false;
-    printf_fvec3(get_center_pos());
+    printf_fvec3(get_world_pos());
 }
 
 bool Player::unmount(World* world) {
     if (!mount) {
         return true;
     }
-    printf_fvec3(get_center_pos());
+    printf_fvec3(get_world_pos());
     printf("\n");
     mount->remove_entity(this);
     // try setting pos to about 2 blocks above current position
-    pos.y += 2.0f;
+    set_pos(fvec3(pos.x, pos.y + 2.0f, pos.z));
     if (world->will_collide_with_anything(this)) {
         // return false if we can't unmount...because not room for player
-        pos.y -= 2.0f;
+        set_pos(fvec3(pos.x, pos.y - 2.0f, pos.z));
         mount->add_entity(this);
         return false;
     }
     velocity = mount->velocity;
     mount = 0;
     can_collide = true;
-    angle.set_to_point(angle.forward, fvec3(0,1,0));
-    recalculate_transform();
-    printf_fvec3(get_center_pos());
+    printf_fvec3(get_world_pos());
     world->add_entity(this);
     return true;
 }
@@ -178,7 +176,8 @@ void Player::save_self(IODataObject* obj) {
 }
 
 void Player::debug() {
+    fvec3 dir = angle.get_dir();
     printf("Player at %f,%f,%f pointing at %f,%f,%f\n",
             pos.x, pos.y, pos.z,
-            angle.dir.x, angle.dir.y, angle.dir.z);
+            dir.x, dir.y, dir.z);
 }

@@ -56,7 +56,6 @@ void ModelEntity::set_model(uint16_t m) {
         multiplexer = model->multiplexer->copy();
     bounds = model->bounds;
     center_pos = model->center_pos;
-    recalculate_transform();
 }
 
 // --- Entity ---
@@ -122,8 +121,8 @@ void ModelEntity::update_render(fvec3* player_pos) {
 
 bool ModelEntity::after_collision(Game* game) {
     if (multiplexer)
-        multiplexer->model_callback_collision(game, this, this, 0);
-    return true;
+        return multiplexer->model_callback_collision(game, this, this, 0);
+    return false;
 }
 
 std::string ModelEntity::get_save_path() {

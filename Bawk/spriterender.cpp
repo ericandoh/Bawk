@@ -10,6 +10,7 @@
 #include "importopengl.h"
 #include "player.h"
 #include "worldrender.h"
+#include "game.h"
 
 SpriteRender::SpriteRender() {
     player = 0;
@@ -21,9 +22,12 @@ SpriteRender::SpriteRender() {
     
     can_collide = false;
     can_rotate = true;
+    
+    track_player = false;
 }
 
 void SpriteSteppable::step(Game* game, SpriteRender* render) { }
+
 SpriteSteppable* SpriteSteppable::copy() { return this; }
 void SpriteRenderable::render(fmat4 *transform, SpriteRender *render) { }
 SpriteRenderable* SpriteRenderable::copy() { return this; }
@@ -38,11 +42,10 @@ float SpriteRender::get_perc_age() {
 
 void SpriteRender::set_relative_transform() {
     // set this sprite's angle to point toward player
-    fvec3 dir = pos - player->get_center_pos();
+    fvec3 dir = pos - player->get_world_pos();
     dir = glm::normalize(dir);
-    Rotation lookdir;
-    player->get_direction(&lookdir);
-    fvec3 up = glm::cross(lookdir.right, dir);
+    Rotation lookdir = player->get_world_rotation();
+    fvec3 up = glm::cross(lookdir.get_right(), dir);
     up = glm::normalize(up);
     
     Rotation pointing = Rotation();
@@ -97,6 +100,10 @@ void SpriteRender::step(Game* game, int ms) {
         return;
     }
     ttl -= 1;
+    if (track_player) {
+        // set pos to player's position
+        set_pos(game->player->get_world_pos());
+    }
     if (steppable) {
         steppable->step(game, this);
     }
@@ -127,6 +134,10 @@ SpriteRender* SpriteRender::copy() {
         copy->renderable = renderable->copy();
     }
     return copy;
+}
+
+void SpriteRender::set_track_player(bool val) {
+    track_player = val;
 }
 
 // position

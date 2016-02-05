@@ -62,6 +62,7 @@ void WorldWeather::setup() {
                 SpriteRender* sprite = new SpriteRender();
                 sprite->can_rotate = false;
                 sprite->renderable = tri;
+                sprite->set_track_player(true);
                 background_sprites[y][x] = sprite;
             }
         }
@@ -83,6 +84,7 @@ void WorldWeather::setup() {
                 SpriteRender* sprite = new SpriteRender();
                 sprite->can_rotate = false;
                 sprite->renderable = quad;
+                sprite->set_track_player(true);
                 background_sprites[y][x] = sprite;
             }
         }

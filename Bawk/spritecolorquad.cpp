@@ -45,9 +45,6 @@ void bind_quad(fvec3 corners[4], fvec3 colors[4]) {
 }
 
 void SpriteColorQuad::render(fmat4* transform, SpriteRender* render)  {
-    render->pos = render->player->pos;
-    render->recalculate_transform();
-    
     // drawing direct colors
     OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::COLOR);
     // bind a rectangle pointing in direction of player, at pos
