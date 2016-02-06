@@ -905,6 +905,7 @@ bool has_block_mouse_action(block_type block_id) {
 }
 
 bool has_block_keyboard_action(block_type block_id) {
+    // TODO this has been disabled and this is a zombie function
     return game_data_object->block_info[block_id.type].has_keyboard_callback;
 }
 

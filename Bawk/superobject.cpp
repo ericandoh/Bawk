@@ -404,7 +404,7 @@ void SuperObject::check_collision_detection_children(Game* game) {
         Entity* moved_entity = i.first->ref;
         std::vector<Entity*> checking_against = i.second;
         // first, try rotating moved_entity and see if it can rotate
-        moved_entity->set_pos_and_angle(i.first->previous_pos, i.first->previous_rotation);
+        moved_entity->set_pos(i.first->previous_pos);
         if (moved_entity->angular_velocity.x != 0 || moved_entity->angular_velocity.y != 0) {
             bool collides = false;
             for (auto &j : checking_against) {
@@ -521,6 +521,7 @@ void SuperObject::check_collision_detection_children(Game* game) {
 // --- RenderableSuperObject
 void SuperObject::handle_block_addition(int x, int y, int z, block_type type) {
     // set key bindings if it has one
+    /*
     if (has_block_keyboard_action(type)) {
         std::map<Action, block_callback_func> bindings;
         get_block_keyboard_callback_from(type, bindings);
@@ -543,7 +544,7 @@ void SuperObject::handle_block_addition(int x, int y, int z, block_type type) {
             key_mapping[act].push_back(info);
             reverse_key_mapping[rounded_oac].push_back(act);
         }
-    }
+    }*/
     weight += get_block_info(type.type)->weight;
     health += type.life;
     block_counter++;
@@ -552,7 +553,7 @@ void SuperObject::handle_block_addition(int x, int y, int z, block_type type) {
 void SuperObject::handle_block_removal(int x, int y, int z, block_type type) {
     ivec3 rounded_oac(x, y, z);
     // see if we're removing a block that has a key binding
-    if (reverse_key_mapping.count(rounded_oac)) {
+    /*if (reverse_key_mapping.count(rounded_oac)) {
         // we do have such a key binding, remove it
         for (int i = 0; i < reverse_key_mapping[rounded_oac].size(); i++) {
             Action keybinding = reverse_key_mapping[rounded_oac][i];
@@ -566,7 +567,7 @@ void SuperObject::handle_block_removal(int x, int y, int z, block_type type) {
         }
         reverse_key_mapping.erase(rounded_oac);
         pos_to_active_block_mapping.erase(rounded_oac);
-    }
+    }*/
     // remove stats for current block
     // center pos is set outside separately
     weight -= get_block_info(type.type)->weight;
@@ -634,7 +635,7 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent, i
     for (Entity* entity: entities) {
         any = entity->block_keyboard_callback(game, key, ent, ms) || any;
     }
-    if (key_mapping.count(key)) {
+    /*if (key_mapping.count(key)) {
         for (int i = 0; i < key_mapping[key].size(); i++) {
             ivec3 position = key_mapping[key][i].position;
             // transform into rwc
@@ -650,7 +651,7 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent, i
             }
         }
         return any;
-    }
+    }*/
     return any;
 }
 
@@ -843,6 +844,7 @@ int SuperObject::load_self(IODataObject* obj) {
         }
     }
     
+    /*
     int block_binding_count = obj->read_value<int>();
     for (int i = 0; i < block_binding_count; i++) {
         ivec3 pos = obj->read_value<ivec3>();
@@ -868,7 +870,7 @@ int SuperObject::load_self(IODataObject* obj) {
             key_mapping[act].push_back(info);
             reverse_key_mapping[pos].push_back(act);
         }
-    }
+    }*/
     
     block_counter = obj->read_value<int>();
     return 0;
@@ -904,6 +906,7 @@ void SuperObject::save_self(IODataObject* obj) {
         }
     }
     
+    /*
     // save only the reverse key mapping
     int block_binding_count = (int)reverse_key_mapping.size();
     obj->save_value(block_binding_count);
@@ -911,7 +914,7 @@ void SuperObject::save_self(IODataObject* obj) {
         ivec3 pos = i.first;
         obj->save_value(pos);
         obj->save_value(pos_to_active_block_mapping[pos]);
-    }
+    }*/
     
     obj->save_value(block_counter);
 }

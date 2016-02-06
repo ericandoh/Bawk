@@ -135,7 +135,7 @@
             "weight": 20,
             "action": {"name": "engine"}
         },
-        "5": {
+        "6": {
             "name": "boxmob",
             "resistance": 2,
             "texture": "mob.obj",

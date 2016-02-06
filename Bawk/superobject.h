@@ -41,10 +41,10 @@ class Player;
 class SuperObject : public RenderableSuperObject {
 protected:
     // note that we might have >1 action per key press (ie. both engines X, Y fire on pressing W)
-    std::map<Action, std::vector<key_mapping_info>> key_mapping;
+    //std::map<Action, std::vector<key_mapping_info>> key_mapping;
     // the reverse mapping of the above, for convenience
-    std::unordered_map<ivec3, std::vector<Action>> reverse_key_mapping;
-    std::unordered_map<ivec3, block_type> pos_to_active_block_mapping;
+    //std::unordered_map<ivec3, std::vector<Action>> reverse_key_mapping;
+    //std::unordered_map<ivec3, block_type> pos_to_active_block_mapping;
     int block_counter;
 public:
     // supersuperobject things
