@@ -27,7 +27,7 @@ public:
     // a tool to scan blocks. very useful!
     
     // --- CursorScanTool
-    CursorScanTool();
+    CursorScanTool(CursorItemInfo* i);
     
     // --- CursorItem ---
     //virtual void init();
@@ -50,8 +50,6 @@ public:
     void render_item() override;
     // render the item in the world
     void render_in_world(fmat4* transform) override;
-    
-    cursor_item_identifier get_identifier() override;
 };
 
 #endif /* defined(__Bawk__cursorscantool__) */

@@ -38,7 +38,7 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, EntityType entity_class) {
         val = new SuperObject(pid, vid);
     }
     else if (entity_class == EntityType::CURSORSUPEROBJECT) {
-        val = new CursorSuperObject(pid, vid);
+        //val = new CursorSuperObject(pid, vid);
         printf("Warning: Attempted to load a cursorsuperobject from this pathway (%d,%d) of class %d\n", pid, vid, entity_class);
     }
     else if (entity_class == EntityType::GAMETEMPLATE) {
@@ -140,7 +140,8 @@ void delete_entity_from_memory(Entity* entity) {
         for (Entity* ent: ((SuperObject*)entity)->entities) {
             delete_entity_from_memory(ent);
         }
-        delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
+        if (!entity->parent)
+            delete_at_path(get_path_to_superobj_folder(entity->pid, entity->vid));
     }
     else if (entity_class == EntityType::CURSORSUPEROBJECT) {
         printf("Deleting a cursorsuperobject...\n");
@@ -157,14 +158,16 @@ void delete_entity_from_memory(Entity* entity) {
     }
     else if (entity_class == EntityType::MODELENTITY) {
         printf("Deleting a modelentity...\n");
-        delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
+        if (!entity->parent)
+            delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
     }
     else if (entity_class == EntityType::CURSORMODELENTITY) {
-        delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
+        // delete_at_path(get_path_to_template_folder(entity->pid, entity->vid));
     }
     else {
         printf("Couldn't delete entity (%d,%d) of class %d\n", entity->pid, entity->vid, entity_class);
     }
+    // TODO delete the pointer...? else this is considered a memory leak
 }
 
 /*

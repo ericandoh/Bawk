@@ -20,7 +20,7 @@ class CursorSelector: public CursorItem {
     void unselect();
     void select(Entity* ent);
 public:
-    CursorSelector();
+    CursorSelector(CursorItemInfo* i);
     
     // methods to initialize/cleanup this entity
     void init() override;
@@ -39,7 +39,6 @@ public:
     // render the item in the world
     void render_in_world(fmat4* transform) override;
     
-    cursor_item_identifier get_identifier() override;
 };
 
 #endif /* defined(__Bawk__cursorselector__) */

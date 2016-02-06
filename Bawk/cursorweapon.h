@@ -15,7 +15,7 @@
 class CursorWeapon: public CursorItem {
     float dmg;
 public:
-    CursorWeapon();
+    CursorWeapon(CursorItemInfo* i);
     
     bool clicked(Game* game, Action mouse) override;
     bool clicking(Game* game, Action mouse, int ms) override;
@@ -26,8 +26,6 @@ public:
     void render_item() override EMPTY_FUNCTION;
     // render the item in the world
     void render_in_world(fmat4* transform) override EMPTY_FUNCTION;
-    
-    cursor_item_identifier get_identifier();
 };
 
 #endif /* defined(__Bawk__cursorweapon__) */

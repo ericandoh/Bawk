@@ -20,7 +20,7 @@
 const int INVENTORY_BUTTON_ITEMS = 3;
 
 enum InventoryButtonAction {
-    SETUP, TO_BLOCKS, TO_RECIPES, TO_CUSTOM,
+    SETUP, TO_BLOCKS, TO_MODELS, TO_CUSTOM,
 };
 
 // forward declaration

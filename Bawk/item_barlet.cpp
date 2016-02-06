@@ -75,9 +75,14 @@ void ItemBarlet::render_elements() {
     OGLAttr::current_shader->set_texture_coord_attribute(GL_FLOAT);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    // TODO delete this...
-    //render_string("'=", x, y + height, 32);
-    //glViewport(x, y, width, height);
+    
+    if (entity && entity->has_count()) {
+        // render the counter
+        int count = entity->get_count();
+        render_string(std::to_string(count), x, y + height, 32);
+        // reset viewpoint
+        glViewport(x, y, width, height);
+    }
     
     glEnable(GL_CULL_FACE);
     glEnable(GL_POLYGON_OFFSET_FILL);

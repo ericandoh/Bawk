@@ -34,9 +34,9 @@
 class CursorBlock: public PlaceableObject, public CursorItem {
     void render_block(fmat4* transform);
 public:
-    block_type block;
     fvec3 pos;
-    CursorBlock(block_type type);
+    BlockOrientation orientation;
+    CursorBlock(CursorItemInfo* i);
     
     // --- PlaceableObject
     bool set_blocks(Player* player, World* world, SuperObject* object) override;
@@ -50,8 +50,8 @@ public:
     void render_item() override;
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;
-
-    cursor_item_identifier get_identifier() override;
+    
+    bool has_count() override;
 };
 
 #endif /* defined(__Bawk__cursorblock__) */

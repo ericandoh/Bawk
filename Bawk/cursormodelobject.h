@@ -17,7 +17,7 @@
 class CursorModelObject: public PlaceableObject, public CursorItem, public ModelEntity {
     bool locked;
 public:
-    CursorModelObject(uint16_t mid);
+    CursorModelObject(CursorItemInfo* i);
     
     // --- PlaceableObject
     bool set_blocks(Player* player, World* world, SuperObject* object) override;
@@ -34,7 +34,7 @@ public:
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;
     
-    cursor_item_identifier get_identifier() override;
+    bool has_count() override;
     
     // --- ModelEntity ---
     std::string get_save_path() override;

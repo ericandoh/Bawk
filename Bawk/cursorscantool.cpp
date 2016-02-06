@@ -19,7 +19,7 @@ const fvec3 SELECTING_COLOR = fvec3(0.5f, 0.0f, 0.0f);
 const fvec3 SELECTED_COLOR = fvec3(0.0f, 0.5f, 0.0f);
 const fvec3 EXTENDED_COLOR = fvec3(0.0f, 0.0f, 0.5f);
 
-CursorScanTool::CursorScanTool() {
+CursorScanTool::CursorScanTool(CursorItemInfo* i): CursorItem(i) {
     current_stage = ScanStages::SETTING_LOWER;
     show_item = false;
 }
@@ -71,8 +71,10 @@ bool CursorScanTool::confirmed(Game* game) {
     if (current_stage == ScanStages::SELECTED) {
         // copies the area selected into the first cursorobject that is available
         // TODO copy entities as well
-        CursorSuperObject* object = new CursorSuperObject(game->player->getID(),
-                                                          game->player->assignID());// all templates are made on the bar
+        CursorItemInfo* info = new CursorItemInfo((uint32_t)game->player->getID(),
+                                                  (uint32_t)game->player->assignID(),
+                                                  CursorType::CURSOR_SUPEROBJECT);
+        CursorSuperObject* object = new CursorSuperObject(info);// all templates are made on the bar
         // TODO giraffes (center chunk and set position to box.lower + box.upper)
         object->set_pos(box.lower);
         for (int x = box.lower.x; x < box.upper.x; x++) {
@@ -83,6 +85,8 @@ bool CursorScanTool::confirmed(Game* game) {
                 }
             }
         }
+        // TOFU what if inventory is open and this gets executed...?
+        game->player->inventory->add_custom(info);
         game->set_first_available(object);
         current_stage = ScanStages::SETTING_LOWER;
     }
@@ -272,13 +276,4 @@ void CursorScanTool::render_in_world(fmat4* transform) {
         //render_colored_box(transform, box, SELECTED_COLOR);
         render_colored_box(transform, extending_box, EXTENDED_COLOR);
     }
-}
-
-cursor_item_identifier CursorScanTool::get_identifier() {
-    // TODO
-    cursor_item_identifier identifier;
-    identifier.vid = 0;
-    identifier.pid = 0;
-    
-    return identifier;
 }

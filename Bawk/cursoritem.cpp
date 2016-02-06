@@ -12,7 +12,8 @@
 #include "game.h"
 #include "gametemplate.h"
 
-CursorItem::CursorItem() {
+CursorItem::CursorItem(CursorItemInfo* i) {
+    info = i;
     target = 0;
     show_item = false;
     pointing_pos = ivec3(0,0,0);
@@ -69,4 +70,8 @@ bool CursorItem::handle_movement(ivec3 dir) {
 
 bool CursorItem::handle_rotation() {
     return false;
+}
+
+int CursorItem::get_count() {
+    return info->count;
 }

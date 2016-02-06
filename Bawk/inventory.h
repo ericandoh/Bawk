@@ -18,50 +18,49 @@
 
 // TOFU consider making a cursorobject manager, so that we don't keep making new objects (even if we have them loaded in already)
 // TODO some of the delete_path in this file are wrong - cursorobjects might refer to other internal objects that are saved elsewhere,
-// so those must be deleted as well...in addition, 
+// so those must be deleted as well...in addition,
 class PlayerInventory {
-    // some basics
+    
+    // statistic counters
     int energy_production;
     int money;
-    // not so basics
-    std::map<uint16_t, int> blocks;
-    std::vector<uint16_t> found_blocks;
-    // list of discovered, non-playermade templates, numbered by ID
-    // when needed, the selection UI will query these IDs, then read in from
-    // memory the necessary cursorsuperobjects. Then those superobjects will be
-    // retained until the UI is closed and they're not bound on the item bar
-    std::map<uint16_t, int> recipes;
-    std::vector<uint16_t> found_recipes;
-    // list of player-made templates, numbered by player who made them and the id under said player
-    std::vector<player_and_id> customs;
-    std::vector<cursor_item_identifier> cursor_items;
+    
+    // inventory related
+    std::map<uint16_t, CursorItemInfo*> blocks;  // the actual block info
+    std::vector<uint16_t> found_blocks;         // used for ordering
+    
+    std::map<uint16_t, CursorItemInfo*> models;  // the actual model info
+    std::vector<uint16_t> found_models;         // used for ordering
+    
+    std::vector<CursorItemInfo*> customs;        // the actual custom model info (which is a reference to disk)
+    std::vector<CursorItemInfo*> bar_items;  // pointers to any of the above, to be put on the itembar
 public:
     PlayerInventory();
     
     void new_inv();
     
     int get_block_count();
-    int get_recipe_count();
+    int get_model_count();
     int get_custom_count();
     
-    CursorItem* get_block_at(int index);
-    CursorItem* get_recipe_at(int index);
-    CursorItem* get_custom_at(int index);
-    CursorItem* get_item_from(cursor_item_identifier distinguish);
-    CursorItem* get_cursoritem_at(int index);
+    CursorItem* get_block(int index);
+    CursorItem* get_model(int index);
+    CursorItem* get_custom(int index);
+    CursorItem* get_bar_item(int index);
     
-    bool has_custom(uint32_t pid, uint32_t vid);
-    bool has_cursor_item(uint32_t pid, uint32_t vid);
+    // used to delete cursoritems from memory if the last copy of them was deleted
+    bool has_custom(CursorItemInfo* info);
+    //bool has_bar_item(CursorItemInfo* info);
     
     void add_blocks(uint16_t type, int count);
-    void add_recipe_at(uint16_t type, int count);
-    void add_custom_at(CursorItem* to);
+    void add_models(uint16_t type, int count);
+    void add_custom(CursorItemInfo* item);
     
-    void set_custom_at(CursorItem* to, int index);
-    void set_cursoritem_at(CursorItem* to, int index);
+    void swap_custom_indices(int index0, int index1);
+    void set_bar_item(int index, CursorItemInfo* item);
     
     // can't unlearn blocks/recipes, but can have 0 count
-    void del_custom_at(CursorItem* item);
+    void del_custom(CursorItem* item);
     
     int load_self(IODataObject* obj);
     void save_self(IODataObject* obj);

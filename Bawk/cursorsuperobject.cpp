@@ -12,24 +12,9 @@
 #include "block.h"
 #include "gametemplate.h"
 
-CursorSuperObject::CursorSuperObject(uint32_t s): PlaceableSuperObject(s) {
+CursorSuperObject::CursorSuperObject(CursorItemInfo* i): PlaceableSuperObject((uint32_t)i->pid, (uint32_t)i->vid), CursorItem(i) {
     locked = false;
     entity_class = EntityType::CURSORSUPEROBJECT;
-    is_recipe = true;
-    show_item = false;
-}
-
-// heavily modify this so that
-// 1. it doesn't mark itself as a folder to disk
-// 2. it doesn't load/save chunks to disk (superobjectrender has the capacity to hold all the chunks
-//    if it wasn't for that pesky loading/unloading)
-// 3. override SuperObjectRender directly instead
-// 4. give superobjectrender a position attribute to scale stuff
-// 5. we'll handle rotation later (fuck that shit mate)
-CursorSuperObject::CursorSuperObject(uint32_t p, uint32_t s): PlaceableSuperObject(p, s) {
-    locked = false;
-    entity_class = EntityType::CURSORSUPEROBJECT;
-    is_recipe = false;
 }
 
 // --- CursorItem ---
@@ -75,6 +60,9 @@ void CursorSuperObject::cleanup() {
 void CursorSuperObject::reset() {
     locked = false;
     show_item = false;
+    
+    // TODO update info->count depending on if we have the resources to make this
+    info->count = 3;
 }
 
 bool CursorSuperObject::clicked(Game* game, Action mouse) {
@@ -164,14 +152,8 @@ void CursorSuperObject::render_light_in_world(fmat4* transform, fvec3 player_pos
     }
 }
 
-cursor_item_identifier CursorSuperObject::get_identifier() {
-    cursor_item_identifier val;
-    val.is_blk = false;
-    val.is_recipe = is_recipe;
-    val.bid = 0;
-    val.pid = pid;
-    val.vid = vid;
-    return val;
+bool CursorSuperObject::has_count() {
+    return true;
 }
 
 // --- SuperObject ---

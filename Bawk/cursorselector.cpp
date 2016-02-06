@@ -10,7 +10,7 @@
 #include "blocktracer.h"
 #include "superobject.h"
 
-CursorSelector::CursorSelector() {
+CursorSelector::CursorSelector(CursorItemInfo* i): CursorItem(i) {
     selected = 0;
     is_selected = false;
     is_block_selected = false;
@@ -98,8 +98,4 @@ void CursorSelector::render_item() {
 // render the item in the world
 void CursorSelector::render_in_world(fmat4* transform) {
     
-}
-
-cursor_item_identifier CursorSelector::get_identifier() {
-    return cursor_item_identifier();
 }

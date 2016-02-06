@@ -10,7 +10,7 @@
 #include "blocktracer.h"
 #include "game.h"
 
-CursorDrill::CursorDrill() {
+CursorDrill::CursorDrill(CursorItemInfo* i): CursorItem(i) {
     dps = MAX_HEALTH / 3.0f;
 }
 
@@ -49,8 +49,4 @@ void CursorDrill::render_item() {
 
 void CursorDrill::render_in_world(fmat4 *transform) {
     
-}
-
-cursor_item_identifier CursorDrill::get_identifier() {
-    return cursor_item_identifier();
 }

@@ -37,6 +37,7 @@
 		071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB73C1C18B12900563D4A /* modelactionmovement.cpp */; };
 		071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7421C18B36800563D4A /* modelactionexplode.cpp */; };
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
+		071CD8971C65693600F17DF5 /* cursoritem_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071CD8951C65693600F17DF5 /* cursoritem_loader.cpp */; };
 		071EB8141C480519004885D7 /* sectorgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071EB8121C480519004885D7 /* sectorgenerator.cpp */; };
 		071F632B1C2C5E7100609129 /* directionallightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071F63291C2C5E7100609129 /* directionallightrender.cpp */; };
 		071FA6BB1C10D19700884B70 /* lightrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071FA6B91C10D19700884B70 /* lightrender.cpp */; };
@@ -191,6 +192,8 @@
 		071BB7431C18B36800563D4A /* modelactionexplode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionexplode.h; sourceTree = "<group>"; };
 		071C5C121BF7FE9C0087F398 /* rotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation.cpp; sourceTree = "<group>"; };
 		071C5C131BF7FE9C0087F398 /* rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation.h; sourceTree = "<group>"; };
+		071CD8951C65693600F17DF5 /* cursoritem_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursoritem_loader.cpp; sourceTree = "<group>"; };
+		071CD8961C65693600F17DF5 /* cursoritem_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursoritem_loader.h; sourceTree = "<group>"; };
 		071EB8121C480519004885D7 /* sectorgenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sectorgenerator.cpp; sourceTree = "<group>"; };
 		071EB8131C480519004885D7 /* sectorgenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sectorgenerator.h; sourceTree = "<group>"; };
 		071F63291C2C5E7100609129 /* directionallightrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = directionallightrender.cpp; sourceTree = "<group>"; };
@@ -409,6 +412,8 @@
 				0710EE2F1C3D9ED10007F5C4 /* cursordrill.h */,
 				0710EE341C3DB8460007F5C4 /* cursorselector.cpp */,
 				0710EE351C3DB8460007F5C4 /* cursorselector.h */,
+				071CD8951C65693600F17DF5 /* cursoritem_loader.cpp */,
+				071CD8961C65693600F17DF5 /* cursoritem_loader.h */,
 			);
 			name = building;
 			sourceTree = "<group>";
@@ -735,6 +740,7 @@
 				0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */,
 				071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */,
 				0704CF741BC997550050EE52 /* item_bar.cpp in Sources */,
+				071CD8971C65693600F17DF5 /* cursoritem_loader.cpp in Sources */,
 				079AFDE41C406A45002F1235 /* modelactionturret.cpp in Sources */,
 				0766EAFF1BBF7DBE00477144 /* SOIL.c in Sources */,
 				076BEFF41BD213B900D68C8F /* scrolling_widget.cpp in Sources */,

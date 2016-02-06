@@ -30,12 +30,8 @@
 
 class CursorSuperObject: public PlaceableSuperObject, public CursorItem {
     bool locked;
-    bool is_recipe;
 public:
-    // for recipes
-    CursorSuperObject(uint32_t s);
-    // for custom cursorsuperobjects
-    CursorSuperObject(uint32_t p, uint32_t s);
+    CursorSuperObject(CursorItemInfo* i);
     
     // --- CursorSuperObject ---
     
@@ -54,7 +50,7 @@ public:
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;
     
-    cursor_item_identifier get_identifier() override;
+    bool has_count() override;
     
     // --- PlaceableSuperObject ---
     

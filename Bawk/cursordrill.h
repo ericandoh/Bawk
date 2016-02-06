@@ -16,7 +16,7 @@ class CursorDrill: public CursorItem {
     float dps;
 public:
     
-    CursorDrill();
+    CursorDrill(CursorItemInfo* i);
     
     // methods to initialize/cleanup this entity
     //virtual void init();
@@ -41,7 +41,6 @@ public:
     void render_in_world(fmat4* transform) override;
     //virtual void render_light_in_world(fmat4* transform, fvec3 player_pos) { };
     
-    cursor_item_identifier get_identifier() override;
 };
 
 #endif /* defined(__Bawk__cursordrill__) */

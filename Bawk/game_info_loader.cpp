@@ -913,16 +913,15 @@ SpriteRender* get_sprite_renderable(uint16_t sid) {
 }
 
 CursorSuperObject* get_recipe_cursoritem_from(uint16_t vid) {
+    CursorItemInfo* info = new CursorItemInfo(vid, CursorType::CURSOR_SUPEROBJECT);
+    CursorSuperObject* object = new CursorSuperObject(info);
     if (game_data_object->recipe_info[vid].from_file) {
         // make a superobject loaded from file path
-        CursorSuperObject* object = new CursorSuperObject(vid);
         std::string path = game_data_object->recipe_info[vid].file_path;
         object->init(path);
-        return object;
     }
     else {
         // construct a CursorSuperObject holding recipe contents
-        CursorSuperObject* object = new CursorSuperObject(vid);
         for (int i = 0; i < game_data_object->recipe_info[vid].blks.size(); i++) {
             ivec3 pos = game_data_object->recipe_info[vid].positions[i];
             uint16_t blk = game_data_object->recipe_info[vid].blks[i];
@@ -930,8 +929,8 @@ CursorSuperObject* get_recipe_cursoritem_from(uint16_t vid) {
             block_type block(blk, orientation, 0);
             object->set_block_integral(pos.x, pos.y, pos.z, block);
         }
-        return object;
     }
+    return object;
 }
 
 void fill_game_models(std::vector<fvec3> &model_vertices,

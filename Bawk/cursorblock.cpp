@@ -14,9 +14,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "game_info_loader.h"
 
-CursorBlock::CursorBlock(block_type type) {
-    block = type;
+CursorBlock::CursorBlock(CursorItemInfo* i): CursorItem(i) {
     pos = fvec3(0,0,0);
+    orientation = BlockOrientation::FRONT;
 }
 
 // --- PlaceableObject
@@ -27,7 +27,8 @@ bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) 
             // there's already a block here!
             return false;
         }
-        object->set_block_integral(pos.x, pos.y, pos.z, block);
+        block_type placeme = block_type((uint16_t)info->vid, orientation, player->pid);
+        object->set_block_integral(pos.x, pos.y, pos.z, placeme);
         printf("Placing block at: ");
         printf_fvec3(pos);
         printf("\n");
@@ -56,10 +57,10 @@ bool CursorBlock::confirmed(Game* game) {
 void CursorBlock::step(Game* game, int ms) {
     update_pointing_position(game, ivec3(1,1,1));
     pos = fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z);
-    block.orientation = pointing_orientation;
-    if (block.orientation == BlockOrientation::TOP || block.orientation == BlockOrientation::BOTTOM) {
+    orientation = pointing_orientation;
+    if (orientation == BlockOrientation::TOP || orientation == BlockOrientation::BOTTOM) {
         BlockOrientation player_direction = get_player_direction();
-        block.orientation = player_direction;
+        orientation = player_direction;
     }
 }
 
@@ -82,16 +83,6 @@ void CursorBlock::render_in_world(fmat4* transform) {
     }
 }
 
-cursor_item_identifier CursorBlock::get_identifier() {
-    cursor_item_identifier val;
-    val.is_blk = true;
-    val.is_recipe = false;
-    val.bid = block.type;
-    val.pid = 0;
-    val.vid = 0;
-    return val;
-}
-
 void CursorBlock::render_block(fmat4* transform) {
     
     // Render a box around the block we are pointing at
@@ -99,6 +90,8 @@ void CursorBlock::render_block(fmat4* transform) {
     GLbyte box_texture[36][3];
     
     int i = 0;
+    
+    block_type block = block_type((uint16_t)info->vid, orientation, 0);
     
     // x
     set_coord_and_texture(box, box_texture, i++, 0, 0, 0, block, BlockOrientation::BACK);
@@ -170,7 +163,12 @@ void CursorBlock::render_block(fmat4* transform) {
 void CursorBlock::render_light_in_world(fmat4* transform, fvec3 player_pos) {
     // if block has light, render it
     if (show_item) {
-        RenderableLight* light = &(get_block_info(block.type)->light);
+        uint16_t block_type = (uint16_t)info->vid;
+        RenderableLight* light = &(get_block_info(block_type)->light);
         light->render_light(transform, pos, player_pos);
     }
+}
+
+bool CursorBlock::has_count() {
+    return true;
 }

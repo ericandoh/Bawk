@@ -135,14 +135,7 @@ int Game::init() {
     
     bar->set_index(3);
     
-    // for testing, TODO delete
-    bar->set_current(new CursorModelObject(1));
-    bar->set_index(4);
-    bar->set_current(new CursorModelObject(2));
-    bar->set_index(5);
-    bar->set_current(new CursorModelObject(3));
-    
-    default_item = new CursorSelector();
+    default_item = new CursorSelector(0);
     
     return 0;
 }
@@ -408,7 +401,7 @@ void Game::key_callback_default(int key) {
         }
     }
     else if (do_this == SAVE_TEMPLATE) {
-        player->inventory->add_custom_at(bar->get_current());
+        player->inventory->add_custom(bar->get_current()->info);
         if (story->has_child(inventory_ui)) {
             inventory_ui->refresh();
         }
@@ -515,7 +508,7 @@ void Game::mouse_button_callback(int button, int action, int mods) {
 
     }
     else if (action == SDL_MOUSEBUTTONUP) {
-        Action do_this = mouse_to_action[button];
+        //Action do_this = mouse_to_action[button];
         mouse_toggled[button] = false;
     }
 }
@@ -573,7 +566,7 @@ Game::~Game() {
     world->save_self();
     if (game_template)
         delete game_template;
-    // player deleted as part of world...?
+    player->save_selfs();
     delete world;
     delete story;
     delete bar;

@@ -50,7 +50,7 @@ void SwitchInventoryButton::render_elements() {
         yfill = 0.4f;
         zfill = 0.5f;
     }
-    else if (bid == InventoryButtonAction::TO_RECIPES) {
+    else if (bid == InventoryButtonAction::TO_MODELS) {
         xfill = 0.5f;
         yfill = 0.4f;
         zfill = 0.3f;
@@ -114,13 +114,13 @@ BaseWidget* ScrollInventoryWidget::set_row(int index, BaseWidget* current) {
     }
     
     if (fetch == InventoryButtonAction::TO_BLOCKS) {
-        barlet->set_cursor_item(inventory->get_block_at(index));
+        barlet->set_cursor_item(inventory->get_block(index));
     }
-    else if (fetch == InventoryButtonAction::TO_RECIPES) {
-        barlet->set_cursor_item(inventory->get_recipe_at(index));
+    else if (fetch == InventoryButtonAction::TO_MODELS) {
+        barlet->set_cursor_item(inventory->get_model(index));
     }
     else if (fetch == InventoryButtonAction::TO_CUSTOM) {
-        barlet->set_cursor_item(inventory->get_custom_at(index));
+        barlet->set_cursor_item(inventory->get_custom(index));
     }
     return barlet;
 }
@@ -146,7 +146,7 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
     if (button == Action::CLICK_MAIN) {
         // TOFU discard this template, later add in a warning button or some shizzle
         if (fetch == InventoryButtonAction::TO_CUSTOM) {
-            inventory->del_custom_at(item);
+            inventory->del_custom(item);
             refresh();
         }
     }
@@ -154,7 +154,7 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
         // move item to bar
         if (itembar->can_set_current()) {
             if (item) {
-                itembar->set_current(inventory->get_item_from(item->get_identifier()));
+                itembar->set_current(item);
             }
             else {
                 itembar->set_current(0);
@@ -169,8 +169,8 @@ void ScrollInventoryWidget::refresh() {
     if (fetch == InventoryButtonAction::TO_BLOCKS) {
         total_count = inventory->get_block_count();
     }
-    else if (fetch == InventoryButtonAction::TO_RECIPES) {
-        total_count = inventory->get_recipe_count();
+    else if (fetch == InventoryButtonAction::TO_MODELS) {
+        total_count = inventory->get_model_count();
     }
     else if (fetch == InventoryButtonAction::TO_CUSTOM) {
         total_count = inventory->get_custom_count();
@@ -195,7 +195,7 @@ MainInventoryWidget::MainInventoryWidget(ItemBar* ib, PlayerInventory* inv,
     bx3 = x + bw * 2 + 8;
     SwitchInventoryButton* bt0 = new SwitchInventoryButton(this, InventoryButtonAction::TO_BLOCKS, bx1, by, bw, bh);
     SwitchInventoryButton* bt1 = new SwitchInventoryButton(this, InventoryButtonAction::TO_CUSTOM, bx2, by, bw, bh);
-    SwitchInventoryButton* bt2 = new SwitchInventoryButton(this, InventoryButtonAction::TO_RECIPES, bx3, by, bw, bh);
+    SwitchInventoryButton* bt2 = new SwitchInventoryButton(this, InventoryButtonAction::TO_MODELS, bx3, by, bw, bh);
     
     add_child(bt0);
     add_child(bt1);

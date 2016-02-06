@@ -13,7 +13,7 @@
 #include "player.h"
 #include "game.h"
 
-CursorModelObject::CursorModelObject(uint16_t mid): ModelEntity(mid) {
+CursorModelObject::CursorModelObject(CursorItemInfo* i): ModelEntity(i->vid), CursorItem(i) {
     locked = false;
     entity_class = EntityType::CURSORMODELENTITY;
 }
@@ -130,14 +130,8 @@ void CursorModelObject::render_light_in_world(fmat4* transform, fvec3 player_pos
     }
 }
 
-cursor_item_identifier CursorModelObject::get_identifier() {
-    cursor_item_identifier val;
-    val.is_blk = false;
-    val.is_recipe = true;
-    val.bid = 0;
-    val.pid = pid;
-    val.vid = vid;
-    return val;
+bool CursorModelObject::has_count() {
+    return true;
 }
 
 // --- ModelEntity ---

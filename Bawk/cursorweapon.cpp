@@ -10,7 +10,7 @@
 #include "blocktracer.h"
 #include "game.h"
 
-CursorWeapon::CursorWeapon() {
+CursorWeapon::CursorWeapon(CursorItemInfo* i): CursorItem(i) {
     dmg = 500.0f;
 }
 
@@ -31,8 +31,4 @@ bool CursorWeapon::clicking(Game* game, Action mouse, int ms) {
                   BlockTracing::pointed_pos.z,
                   dmg, BreakablePolicy::ACTIONED, game->player->pid);
     return true;
-}
-
-cursor_item_identifier CursorWeapon::get_identifier() {
-    return cursor_item_identifier();
 }

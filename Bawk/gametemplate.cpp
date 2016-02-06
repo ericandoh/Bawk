@@ -46,8 +46,10 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     }
     this->print_debug();
     // package our blocks into a cursorsuperobject
-    CursorSuperObject* object = new CursorSuperObject(player->getID(),
-                                                      player->assignID());// all templates are made on the bar
+    CursorItemInfo* info = new CursorItemInfo((uint32_t)player->getID(),
+                                              (uint32_t)player->assignID(),
+                                              CursorType::CURSOR_SUPEROBJECT);
+    CursorSuperObject* object = new CursorSuperObject(info);// all templates are made on the bar
     printf("publishing template %d\n", object->vid);
     // TODO giraffes (center chunk and set position to box.lower + box.upper)
     if (makes_vehicle) {
@@ -81,6 +83,8 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
         // tell object to publish to the world, the position/orientation should already be good
         object->set_blocks(player, world, world->base_world);
         object->print_debug();
+        
+        player->inventory->add_custom(info);
         return object;
     }
     delete object;

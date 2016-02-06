@@ -27,14 +27,43 @@
 #include "basic_types.h"
 #include "game_actions.h"
 #include "block_orientation.h"
+#include "cursoritem_loader.h"
 
-struct cursor_item_identifier {
-    bool is_blk;
-    // TODO deprecate is_recipe
-    bool is_recipe;
-    uint16_t bid;
+
+class CursorItemInfo {
+public:
+    CursorType type;
     uint32_t pid;
     uint32_t vid;
+    int count;
+    CursorItemInfo() {
+        type = CursorType::CURSOR_DEFAULT;
+        pid = vid = 0;
+        count = 0;
+    }
+    CursorItemInfo(CursorType t) {
+        type = t;
+        pid = vid = 0;
+        count = 0;
+    }
+    CursorItemInfo(uint32_t p, uint32_t v, CursorType t) {
+        type = t;
+        pid = p;
+        vid = v;
+        count = 0;
+    }
+    CursorItemInfo(uint32_t v, CursorType t) {
+        type = t;
+        pid = 0;
+        vid = v;
+        count = 0;
+    }
+    bool operator==(const CursorItemInfo &other) const
+    {
+        return (type == other.type
+                && pid == other.pid
+                && vid == other.vid);
+    }
 };
 
 class Game;
@@ -54,7 +83,8 @@ protected:
     void update_pointing_position(Game* game, ivec3 dimensions);
     
 public:
-    CursorItem();
+    CursorItemInfo* info;
+    CursorItem(CursorItemInfo* i);
     
     // methods to initialize/cleanup this entity
     virtual void init();
@@ -81,7 +111,8 @@ public:
     virtual void render_in_world(fmat4* transform) = 0;
     virtual void render_light_in_world(fmat4* transform, fvec3 player_pos) EMPTY_FUNCTION;
     
-    virtual cursor_item_identifier get_identifier() = 0;
+    virtual bool has_count() EMPTY_BOOL_FUNCTION;
+    virtual int get_count();
 };
 
 #endif /* defined(__Bawk__cursoritem__) */

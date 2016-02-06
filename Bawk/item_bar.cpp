@@ -34,16 +34,16 @@ ItemBar::ItemBar(PlayerInventory* inv, int width, int height): ParentWidget(widt
     for (int i = 0; i < BAR_ITEMS; i++) {
         ItemBarlet* barlet = new ItemBarlet(x_offset + i*barlet_n_gap, this->y, per_barlet_width, height);
         if (i >= STATIC_BAR_ELEMENTS) {
-            barlet->set_cursor_item(inventory->get_cursoritem_at(i - STATIC_BAR_ELEMENTS));
+            barlet->set_cursor_item(inventory->get_bar_item(i - STATIC_BAR_ELEMENTS));
         }
         else if (i == 0) {
             barlet->set_cursor_item(0); //new CursorWeapon()
         }
         else if (i == 1) {
-            barlet->set_cursor_item(new CursorDrill());
+            barlet->set_cursor_item(new CursorDrill(0));
         }
         else if (i == 2) {
-            barlet->set_cursor_item(new CursorScanTool());
+            barlet->set_cursor_item(new CursorScanTool(0));
         }
         add_child(barlet);
     }
@@ -67,8 +67,13 @@ bool ItemBar::can_set_current() {
 
 void ItemBar::set_current(CursorItem* item) {
     if (index < STATIC_BAR_ELEMENTS)
-        return;
-    inventory->set_cursoritem_at(item, index);
+    return;
+    if (item) {
+        inventory->set_bar_item(index - STATIC_BAR_ELEMENTS, item->info);
+    }
+    else {
+        inventory->set_bar_item(index - STATIC_BAR_ELEMENTS, 0);
+    }
     ((ItemBarlet*)children[index])->set_cursor_item(item);
 }
 
@@ -89,13 +94,13 @@ void ItemBar::set_to_right() {
 void ItemBar::set_first_available(CursorItem* item) {
     for (int i = STATIC_BAR_ELEMENTS; i < BAR_ITEMS; i++) {
         if (!((ItemBarlet*)children[i])->get_cursor_item()) {
-            inventory->set_cursoritem_at(item, i);
+            inventory->set_bar_item(i - STATIC_BAR_ELEMENTS, item->info);
             ((ItemBarlet*)children[i])->set_cursor_item(item);
             return;
         }
     }
     // all bar elements are full, simply override the first one I guess
     int i = STATIC_BAR_ELEMENTS;
-    inventory->set_cursoritem_at(item, i);
+    inventory->set_bar_item(0, item->info);
     ((ItemBarlet*)children[i])->set_cursor_item(item);
 }

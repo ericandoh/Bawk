@@ -29,6 +29,8 @@ ModelEntity::ModelEntity(uint32_t p, uint32_t v) {
     entity_class = EntityType::MODELENTITY;
     in_range = true;
     
+    multiplexer = 0;
+    
     // some permissions/flags
     can_collide = true;
     can_rotate = true;
@@ -52,8 +54,12 @@ ModelEntity::ModelEntity(uint32_t p, uint32_t v, uint16_t mid) {
 void ModelEntity::set_model(uint16_t m) {
     model_id = m;
     model = get_game_model(model_id);
-    if (model->multiplexer)
+    if (model->multiplexer) {
         multiplexer = model->multiplexer->copy();
+    }
+    else {
+        multiplexer = 0;
+    }
     bounds = model->bounds;
     center_pos = model->center_pos;
 }
