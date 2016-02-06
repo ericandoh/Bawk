@@ -22,11 +22,16 @@ CursorBlock::CursorBlock(CursorItemInfo* i): CursorItem(i) {
 // --- PlaceableObject
 bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) {
     if (show_item) {
+        if (info->count <= 0) {
+            // no blocks left to place
+            return false;
+        }
         block_type* blk = object->get_block_integral(pos.x, pos.y, pos.z);
         if (blk && blk->type) {
             // there's already a block here!
             return false;
         }
+        info->count -= 1;
         block_type placeme = block_type((uint16_t)info->vid, orientation, player->pid);
         object->set_block_integral(pos.x, pos.y, pos.z, placeme);
         printf("Placing block at: ");

@@ -29,6 +29,6 @@ bool CursorWeapon::clicking(Game* game, Action mouse, int ms) {
     src->get_hurt(BlockTracing::pointed_pos.x,
                   BlockTracing::pointed_pos.y,
                   BlockTracing::pointed_pos.z,
-                  dmg, BreakablePolicy::ACTIONED, game->player->pid);
+                  dmg, BreakablePolicy::ACTIONED, game->player);
     return true;
 }

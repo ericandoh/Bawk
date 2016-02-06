@@ -38,6 +38,7 @@
 
 class Game;
 class SuperObject;
+class Player;
 
 enum BreakablePolicy {
     ACTIONED, EXECUTED
@@ -142,7 +143,8 @@ public:
     bool can_be_destroyed(BreakablePolicy policy, uint32_t pid);
     float calculate_damage(float dmg, float resistance);
     // hit this object with some damage
-    virtual bool get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy=ACTIONED, uint32_t pid=0);
+    virtual bool get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy=ACTIONED, Player* player=0);
+    virtual void drop_loot(Player* slayer) EMPTY_FUNCTION;
     
     // --- ACTION ---
     // callback methods for when actions are called on this item

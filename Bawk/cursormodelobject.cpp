@@ -20,7 +20,10 @@ CursorModelObject::CursorModelObject(CursorItemInfo* i): ModelEntity(i->vid), Cu
 
 // --- PlaceableObject
 bool CursorModelObject::set_blocks(Player* player, World* world, SuperObject* object) {
-    
+    if (info->count <= 0) {
+        // no blocks left to place
+        return false;
+    }
     // make a new ModelObject and see if it fits
     ModelEntity* model = new ModelEntity(player->pid, player->assignID(), model_id);
     // TOFU for unitary models, set orientation of this model object to match
@@ -29,8 +32,11 @@ bool CursorModelObject::set_blocks(Player* player, World* world, SuperObject* ob
     
     // assume cursorobject is in the world - that is, there is no need to
     // transform pos/angle into RWC (world coordinates) because they already are
-    if (object->collides_with(model))
+    if (object->collides_with(model)) {
+        delete model;
         return false;
+    }
+    info->count -= 1;
     object->add_entity(model);
     return true;
 }

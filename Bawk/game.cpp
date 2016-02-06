@@ -559,6 +559,14 @@ void Game::set_first_available(CursorItem* obj) {
     bar->set_first_available(obj);
 }
 
+Player* Game::get_player(uint32_t pid) {
+    if (player->getID() == pid) {
+        return player;
+    }
+    // TODO think about how best to do this for a multiplayer scenario
+    return 0;
+}
+
 Game::~Game() {
     printf("Cleaning up game\n");
     player->unmount(world);

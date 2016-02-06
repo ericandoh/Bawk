@@ -41,7 +41,9 @@ bool ModelExplodeActionMultiplexer::model_callback_collision(MODEL_FUNCTION_ARGS
             for (int z = ilower.z; z <= iupper.z; z++) {
                 if (get_fvec3_distance(fvec3(x - pos.x, y - pos.y, z - pos.z)) <= radius) {
                     // damage whatever is at this position
-                    game->world->base_world->get_hurt(x, y, z, damage, BreakablePolicy::ACTIONED, owner->pid);
+                    game->world->base_world->get_hurt(x, y, z, damage,
+                                                      BreakablePolicy::ACTIONED,
+                                                      game->get_player(owner->pid));
                 }
             }
         }

@@ -11,6 +11,8 @@
 #include "entity_loader.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "player.h"
+
 #define DEFAULT_VELOCITY_DECAY 0.5f
 
 Entity::Entity() {
@@ -383,8 +385,12 @@ float Entity::calculate_damage(float dmg, float resistance) {
     return ((10.0f / (10.0f + resistance)) * dmg);
 }
 
-bool Entity::get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, uint32_t o_pid) {
-    if (!can_be_hurt(policy, o_pid)) {
+bool Entity::get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, Player* player) {
+    uint32_t pid = 0;
+    if (player) {
+        pid = player->getID();
+    }
+    if (!can_be_hurt(policy, pid)) {
         return false;
     }
     /*if (poke(x,y,z) != this) {
@@ -394,7 +400,8 @@ bool Entity::get_hurt(float x, float y, float z, float dmg, BreakablePolicy poli
     health += dmg;
     if (health >= MAX_HEALTH) {
         health = MAX_HEALTH;
-        if (can_be_destroyed(policy, o_pid)) {
+        if (can_be_destroyed(policy, pid)) {
+            drop_loot(player);
             remove_self();
         }
     }

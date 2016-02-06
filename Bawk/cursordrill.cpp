@@ -11,7 +11,7 @@
 #include "game.h"
 
 CursorDrill::CursorDrill(CursorItemInfo* i): CursorItem(i) {
-    dps = MAX_HEALTH / 3.0f;
+    dps = MAX_HEALTH / 1.0f;
 }
 
 bool CursorDrill::clicked(Game* game, Action mouse) {
@@ -39,7 +39,7 @@ bool CursorDrill::clicking(Game* game, Action mouse, int ms) {
     src->get_hurt(BlockTracing::pointed_pos.x,
                   BlockTracing::pointed_pos.y,
                   BlockTracing::pointed_pos.z,
-                  dmg, BreakablePolicy::EXECUTED, game->player->pid);
+                  dmg, BreakablePolicy::EXECUTED, game->player);
     return true;
 }
 

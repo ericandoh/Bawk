@@ -85,6 +85,7 @@ public:
     void scroll_callback(double xoffset, double yoffset) override;
     
     void set_first_available(CursorItem* obj);
+    Player* get_player(uint32_t pid);
     ~Game();
 };
 

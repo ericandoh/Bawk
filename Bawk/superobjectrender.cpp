@@ -12,6 +12,8 @@
 #include "superobjectrender.h"
 #include "game_info_loader.h"
 
+#include "player.h"
+
 #include "threadmanager.h"
 #include "chunkloadjob.h"
 
@@ -289,7 +291,12 @@ int get_breaking_stage(int life) {
     return life * BREAKING_STAGES / MAX_HEALTH;
 }
 
-bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, uint32_t pid) {
+bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, Player* player) {
+    uint32_t pid = 0;
+    if (player) {
+        pid = player->getID();
+    }
+    
     if (!can_be_hurt(policy, pid)) {
         return false;
     }
@@ -303,6 +310,11 @@ bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, Break
         if (blk->life >= MAX_HEALTH) {
             blk->life = MAX_HEALTH;
             if (can_be_destroyed(policy, pid)) {
+                if (policy == BreakablePolicy::EXECUTED) {
+                    // give the player this block for his efforts
+                    // TODO if breaking a block should yield some other item, override this
+                    player->inventory->add_blocks(blk->type, 1);
+                }
                 set_block(x, y, z, block_type());
             }
         }

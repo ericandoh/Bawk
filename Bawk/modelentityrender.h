@@ -29,6 +29,7 @@ public:
     
     // --- Entity ---
     // Entity* poke(float x, float y, float z) override;
+    void drop_loot(Player* slayer) override;
     bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) override;
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     void step(Game* game, int ms) override;

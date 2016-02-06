@@ -10,6 +10,8 @@
 #include "game_info_loader.h"
 #include "worldrender.h"
 
+#include "player.h"
+
 ModelEntity::ModelEntity(uint16_t mid) {
     entity_class = EntityType::MODELENTITY;
     in_range = true;
@@ -66,6 +68,10 @@ void ModelEntity::set_model(uint16_t m) {
 
 // --- Entity ---
 // Entity* ModelEntity::poke(float x, float y, float z) {}
+
+void ModelEntity::drop_loot(Player* slayer) {
+    slayer->inventory->add_models(model_id, 1);
+}
 
 bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) {
     if (multiplexer)

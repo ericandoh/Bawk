@@ -45,21 +45,19 @@ void PlayerInventory::new_inv() {
     // now you can place air! by breathing it out! ...
     add_blocks(0, 0);
     // let's get you 3 blocks of 1 as well, why not
-    add_blocks(1, 3);
+    add_blocks(1, 5);
     
     // let's get you all the blocks from 2 to 20, but give you only 1 of each
-    add_blocks(2, 1);
-    add_blocks(3, 1);
-    // lucky 7
-    add_blocks(7, 3);
-    add_blocks(10, 1);
-    add_blocks(16, 1);
-    add_blocks(20, 1);
-    add_blocks(37, 1);
-    add_blocks(38, 1);
-    add_blocks(94, 1);
-    add_blocks(120, 1);
-    add_blocks(128, 1);
+    add_blocks(2, 5);
+    add_blocks(3, 5);
+    add_blocks(10, 5);
+    add_blocks(16, 5);
+    add_blocks(20, 5);
+    add_blocks(37, 5);
+    add_blocks(38, 5);
+    add_blocks(94, 5);
+    add_blocks(120, 5);
+    add_blocks(128, 5);
     
     /*for (int i = 2; i < 20; i++) {
         add_blocks(i, 1);
