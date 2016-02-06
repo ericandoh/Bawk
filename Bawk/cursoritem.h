@@ -85,11 +85,12 @@ protected:
 public:
     CursorItemInfo* info;
     CursorItem(CursorItemInfo* i);
+    virtual ~CursorItem() = default;
     
     // methods to initialize/cleanup this entity
-    virtual void init();
+    virtual void init() EMPTY_FUNCTION;
     virtual void cleanup();
-    virtual void reset();
+    virtual void reset() EMPTY_FUNCTION;
     
     // behaviour when this cursor item is clicked
     virtual bool clicked(Game* game, Action mouse);

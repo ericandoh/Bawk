@@ -47,10 +47,11 @@ public:
     CursorItem* get_model(int index);
     CursorItem* get_custom(int index);
     CursorItem* get_bar_item(int index);
+    CursorItem* get_item(CursorItemInfo* info);
     
     // used to delete cursoritems from memory if the last copy of them was deleted
     bool has_custom(CursorItemInfo* info);
-    //bool has_bar_item(CursorItemInfo* info);
+    int find_bar_item(CursorItemInfo* info);
     
     void add_blocks(uint16_t type, int count);
     void add_models(uint16_t type, int count);

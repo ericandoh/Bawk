@@ -19,6 +19,8 @@
 #include "cursorselector.h"
 
 CursorItem* get_cursor_item_from(CursorItemInfo* info) {
+    if (!info)
+        return 0;
     CursorType type = info->type;
     
     switch (type) {

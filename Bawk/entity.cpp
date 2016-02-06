@@ -554,4 +554,5 @@ void Entity::remove_self() {
     parent->remove_entity(this);
     // TODO skip this check if entity doenst need to be written/deleted, to speedup
     delete_entity_from_memory(this);
+    delete this;
 }

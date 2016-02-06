@@ -146,7 +146,12 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
     if (button == Action::CLICK_MAIN) {
         // TOFU discard this template, later add in a warning button or some shizzle
         if (fetch == InventoryButtonAction::TO_CUSTOM) {
+            int bar_index = inventory->find_bar_item(item->info);
+            if (bar_index >= 0) {
+                itembar->set_at_index(bar_index, 0);
+            }
             inventory->del_custom(item);
+            // TODO this is incredibly lazy, isn't there a better way to just shift all items up by 1?
             refresh();
         }
     }
@@ -154,7 +159,7 @@ bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, i
         // move item to bar
         if (itembar->can_set_current()) {
             if (item) {
-                itembar->set_current(item);
+                itembar->set_current(inventory->get_item(item->info));
             }
             else {
                 itembar->set_current(0);
@@ -194,8 +199,8 @@ MainInventoryWidget::MainInventoryWidget(ItemBar* ib, PlayerInventory* inv,
     bx2 = x + bw + 4;
     bx3 = x + bw * 2 + 8;
     SwitchInventoryButton* bt0 = new SwitchInventoryButton(this, InventoryButtonAction::TO_BLOCKS, bx1, by, bw, bh);
-    SwitchInventoryButton* bt1 = new SwitchInventoryButton(this, InventoryButtonAction::TO_CUSTOM, bx2, by, bw, bh);
-    SwitchInventoryButton* bt2 = new SwitchInventoryButton(this, InventoryButtonAction::TO_MODELS, bx3, by, bw, bh);
+    SwitchInventoryButton* bt1 = new SwitchInventoryButton(this, InventoryButtonAction::TO_MODELS, bx2, by, bw, bh);
+    SwitchInventoryButton* bt2 = new SwitchInventoryButton(this, InventoryButtonAction::TO_CUSTOM, bx3, by, bw, bh);
     
     add_child(bt0);
     add_child(bt1);

@@ -67,7 +67,7 @@ bool ItemBar::can_set_current() {
 
 void ItemBar::set_current(CursorItem* item) {
     if (index < STATIC_BAR_ELEMENTS)
-    return;
+        return;
     if (item) {
         inventory->set_bar_item(index - STATIC_BAR_ELEMENTS, item->info);
     }
@@ -75,6 +75,17 @@ void ItemBar::set_current(CursorItem* item) {
         inventory->set_bar_item(index - STATIC_BAR_ELEMENTS, 0);
     }
     ((ItemBarlet*)children[index])->set_cursor_item(item);
+}
+
+void ItemBar::set_at_index(int i, CursorItem* item) {
+    i += STATIC_BAR_ELEMENTS;
+    if (item) {
+        inventory->set_bar_item(i - STATIC_BAR_ELEMENTS, item->info);
+    }
+    else {
+        inventory->set_bar_item(i - STATIC_BAR_ELEMENTS, 0);
+    }
+    ((ItemBarlet*)children[i])->set_cursor_item(item);
 }
 
 void ItemBar::set_index(int new_index) {

@@ -52,11 +52,6 @@ void CursorSuperObject::init(std::string path) {
     }
 }
 
-void CursorSuperObject::cleanup() {
-    // do nothing top kek
-    delete this;
-}
-
 void CursorSuperObject::reset() {
     locked = false;
     show_item = false;

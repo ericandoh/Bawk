@@ -31,7 +31,6 @@ public:
     
     // --- CursorItem ---
     //virtual void init();
-    //virtual void cleanup();
     void reset() override;
     
     // behaviour when this cursor item is clicked

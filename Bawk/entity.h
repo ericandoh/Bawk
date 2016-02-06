@@ -83,6 +83,7 @@ public:
     SuperObject* parent;
     
     Entity();
+    virtual ~Entity() = default;
     
     // --- Positionable
     // these functions change behaviour now with a parent in the equation

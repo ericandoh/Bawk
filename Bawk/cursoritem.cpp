@@ -44,11 +44,10 @@ void CursorItem::update_pointing_position(Game* game, ivec3 dimensions) {
 }
 
 // methods to initialize/cleanup this entity
-void CursorItem::init() { }
 
-void CursorItem::cleanup() { }
-
-void CursorItem::reset() { }
+void CursorItem::cleanup() {
+    delete this;
+}
 
 // behaviour when this cursor item is clicked
 bool CursorItem::clicked(Game* game, Action mouse) {

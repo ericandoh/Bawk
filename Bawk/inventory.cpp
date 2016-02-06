@@ -121,6 +121,10 @@ CursorItem* PlayerInventory::get_bar_item(int index) {
     return get_cursor_item_from(bar_items[index]);
 }
 
+CursorItem* PlayerInventory::get_item(CursorItemInfo* info) {
+    return get_cursor_item_from(info);
+}
+
 bool PlayerInventory::has_custom(CursorItemInfo* info) {
     for (auto& i: customs) {
         if (*i == *info) {
@@ -130,16 +134,15 @@ bool PlayerInventory::has_custom(CursorItemInfo* info) {
     }
     return false;
 }
-/*
-bool PlayerInventory::has_bar_item(CursorItemInfo* info) {
-    for (auto &i: bar_items) {
-        if (i->type == info->type && i->pid == info->pid && i->vid == info->vid) {
-            // compare pointers directly, because why not
-            return true;
+
+int PlayerInventory::find_bar_item(CursorItemInfo* info) {
+    for (int i = 0; i < bar_items.size(); i++) {
+        if (bar_items[i] && *bar_items[i] == *info) {
+            return i;
         }
     }
-    return false;
-}*/
+    return -1;
+}
 
 void PlayerInventory::add_blocks(uint16_t type, int count) {
     if (blocks.count(type)) {
@@ -198,12 +201,6 @@ void PlayerInventory::set_bar_item(int index, CursorItemInfo* item) {
 }
 
 void PlayerInventory::del_custom(CursorItem* item) {
-    // see if it's on bar, delete if so
-    for (int i = 0; i < bar_items.size(); i++) {
-        if (*item->info == *bar_items[i]) {
-            set_bar_item(i, 0);
-        }
-    }
     for (int i = 0; i < customs.size(); i++) {
         if (*customs[i] == *item->info) {
             delete_cursor_item_from_memory(item);
@@ -211,6 +208,18 @@ void PlayerInventory::del_custom(CursorItem* item) {
             customs.erase(customs.begin() + i);
             break;
         }
+    }
+}
+
+CursorItemInfo* read_cursor_item_info_ptr(IODataObject* obj) {
+    CursorItemInfo info = obj->read_value<CursorItemInfo>();
+    if (info.type == CursorType::CURSOR_DEFAULT) {
+        return 0;
+    }
+    else {
+        CursorItemInfo* ptr = new CursorItemInfo();
+        *ptr = info;
+        return ptr;
     }
 }
 
@@ -222,31 +231,33 @@ int PlayerInventory::load_self(IODataObject* obj) {
     
     int block_count = obj->read_value<int>();
     for (int i = 0; i < block_count; i++) {
-        info = new CursorItemInfo();
-        *info = obj->read_value<CursorItemInfo>();
-        uint16_t blk = (uint16_t)info->vid;
-        blocks[blk] = info;
-        found_blocks.push_back(blk);
+        info = read_cursor_item_info_ptr(obj);
+        if (info) {
+            uint16_t blk = (uint16_t)info->vid;
+            blocks[blk] = info;
+            found_blocks.push_back(blk);
+        }
     }
     
     int model_count = obj->read_value<int>();
     for (int i = 0; i < model_count; i++) {
-        info = new CursorItemInfo();
-        *info = obj->read_value<CursorItemInfo>();
-        uint16_t model = (uint16_t)info->vid;
-        models[model] = info;
-        found_models.push_back(model);
+        info = read_cursor_item_info_ptr(obj);
+        if (info) {
+            uint16_t model = (uint16_t)info->vid;
+            models[model] = info;
+            found_models.push_back(model);
+        }
     }
     
     int custom_count = obj->read_value<int>();
     for (int i = 0; i < custom_count; i++) {
-        info = new CursorItemInfo();
-        *info = obj->read_value<CursorItemInfo>();
-        customs.push_back(info);
+        info = read_cursor_item_info_ptr(obj);
+        if (info) {
+            customs.push_back(info);
+        }
     }
     
     CursorItemInfo temp = CursorItemInfo();
-    CursorItemInfo* info_ptr = 0;
     
     int bar_items_count = obj->read_value<int>();
     for (int i = 0; i < bar_items_count; i++) {
@@ -254,28 +265,38 @@ int PlayerInventory::load_self(IODataObject* obj) {
         
         if (temp.type == CursorType::CURSOR_BLOCK) {
             // link it to the block cursorinfo
-            info_ptr = blocks[temp.vid];
+            info = blocks[temp.vid];
         }
         else if (temp.type == CursorType::CURSOR_MODEL) {
             // link it to the model cursorinfo
-            info_ptr = models[temp.vid];
+            info = models[temp.vid];
         }
         else if (temp.type == CursorType::CURSOR_SUPEROBJECT) {
             // link it to the custom cursorinfo
             for (auto &i: customs) {
                 if (*i == temp) {
-                    info_ptr = i;
+                    info = i;
                     break;
                 }
             }
         }
         else {
             // TOFU support loading in other cursors, or not...
-            info_ptr = 0;
+            info = 0;
         }
-        bar_items.push_back(info_ptr);
+        bar_items.push_back(info);
     }
     return 0;
+}
+
+void save_cursor_item_info_ptr(IODataObject* obj, CursorItemInfo* ptr) {
+    if (ptr) {
+        obj->save_value(*ptr);
+        return;
+    }
+    // else, save NULL
+    CursorItemInfo null_cursor(CursorType::CURSOR_DEFAULT);
+    obj->save_value(null_cursor);
 }
 
 void PlayerInventory::save_self(IODataObject* obj) {
@@ -286,26 +307,26 @@ void PlayerInventory::save_self(IODataObject* obj) {
     obj->save_value(block_count);
     for (int i = 0; i < block_count; i++) {
         uint16_t blk = found_blocks[i];
-        obj->save_value(*blocks[blk]);
+        save_cursor_item_info_ptr(obj, blocks[blk]);
     }
     
     int model_count = (int)found_models.size();
     obj->save_value(model_count);
     for (int i = 0; i < model_count; i++) {
         uint16_t model = found_models[i];
-        obj->save_value(*models[model]);
+        save_cursor_item_info_ptr(obj, models[model]);
     }
     
     int custom_count = (int)customs.size();
     obj->save_value(custom_count);
     for (int i = 0; i < custom_count; i++) {
-        obj->save_value(*customs[i]);
+        save_cursor_item_info_ptr(obj, customs[i]);
     }
     
     // TODO handle saving null items
     int bar_items_count = (int)bar_items.size();
     obj->save_value(bar_items_count);
     for (int i = 0; i < bar_items_count; i++) {
-        obj->save_value(*bar_items[i]);
+        save_cursor_item_info_ptr(obj, bar_items[i]);
     }
 }
