@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/debug_action.cpp"
-            timestampString = "476261583.233333"
+            timestampString = "476517017.339823"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "21"
@@ -112,6 +112,38 @@
             startingLineNumber = "128"
             endingLineNumber = "128"
             landmarkName = "delete_entity_from_memory(Entity* entity)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Bawk/modelmobai.cpp"
+            timestampString = "476521330.762517"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "ModelMobAiSimpleActionMultiplexer::model_callback_step(MODEL_FUNCTION_ARGS)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Bawk/entity_loader.cpp"
+            timestampString = "476520239.876449"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "get_entity_from(uint32_t pid, uint32_t vid, EntityType entity_class)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

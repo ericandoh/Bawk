@@ -22,6 +22,7 @@ public:
     int firerate;                    // rate of fire (how frequently to shoot), in MS
     ModelShootActionMultiplexer();
     bool model_callback_click_main(MODEL_FUNCTION_ARGS) override;
+    ModelActionMultiplexer* copy() override;
 };
 
 ModelShootActionMultiplexer::ModelShootActionMultiplexer() {
@@ -50,6 +51,12 @@ bool ModelShootActionMultiplexer::model_callback_click_main(MODEL_FUNCTION_ARGS)
     bullet->move_forward(firing_speed);
     game->world->add_entity(bullet);
     return true;
+}
+
+ModelActionMultiplexer* ModelShootActionMultiplexer::copy() {
+    ModelShootActionMultiplexer* copy = new ModelShootActionMultiplexer();
+    *copy = *this;
+    return copy;
 }
 
 ModelActionMultiplexer* get_shoot_model_multiplexer(Json::Value node) {

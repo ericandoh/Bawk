@@ -265,6 +265,7 @@ ivec3 sub_ivec3(ivec3 a, ivec3 b);
 float get_ivec3_distance(ivec3 src);
 
 int get_positive_mod(int a, int m);
+float get_positive_fmodf(float a, float m);
 
 float convert_milli_to_sec(int ms);
 int convert_sec_to_milli(float sec);

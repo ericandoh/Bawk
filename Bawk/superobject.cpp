@@ -123,7 +123,8 @@ void SuperObject::copy_into(Player* player, SuperObject* target) {
 void SuperObject::get_entities_in_range(std::vector<Entity*> &children, bounding_box box, bool include_boundary) {
     if (include_boundary) {
         for (auto &i: entities) {
-            if (box.hits(i->bounds)) {
+            if (i->poke_rough(box)) {
+                // TODO do this more exactly lel
                 if (box.hits(i->bounds.lower) && box.hits(i->bounds.upper)) {
                     children.push_back(i);
                 }
@@ -132,7 +133,7 @@ void SuperObject::get_entities_in_range(std::vector<Entity*> &children, bounding
     }
     else {
         for (auto &i: entities) {
-            if (box.hits(i->bounds)) {
+            if (i->poke_rough(box)) {
                 children.push_back(i);
             }
         }
@@ -630,6 +631,17 @@ Entity* SuperObject::poke(float x, float y, float z) {
     return 0;
 }
 
+bool SuperObject::poke_rough(bounding_box box) {
+    if (RenderableSuperObject::poke_rough(box))
+        return true;
+    for (unsigned int i = 0; i < entities.size(); i++) {
+        if (entities[i]->poke_rough(box)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) {
     bool any = false;
     for (Entity* entity: entities) {
@@ -883,6 +895,9 @@ void SuperObject::save_self(IODataObject* obj) {
     for (int i = 0; i < (int)entities.size(); i++) {
         if (entities[i]->entity_class == EntityType::PLAYER) {
             // don't save player as part of the world
+            entities_count--;
+        }
+        else if (entities[i]->vid == VID_TEMPORARY) {
             entities_count--;
         }
     }

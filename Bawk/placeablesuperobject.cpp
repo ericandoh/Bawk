@@ -94,6 +94,10 @@ void PlaceableSuperObject::update_render(fvec3* start_pos) {
     // do nothing
 }
 
+void PlaceableSuperObject::step(Game* game, int ms) {
+    // this item is placeable so don't interact it
+}
+
 // --- PlaceableObject ---
 fvec3 PlaceableSuperObject::calculate_center_position(BlockOrientation pointing) {
     // TODO this doesnt keep take into account what direction we're pointing in...

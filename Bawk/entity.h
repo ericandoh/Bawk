@@ -139,6 +139,7 @@ public:
     // --- COLLISION ---
     // poke this object at RWC, true if this object says, "OUCH"
     virtual Entity* poke(float x, float y, float z);
+    virtual bool poke_rough(bounding_box box);
     bool can_be_hurt(BreakablePolicy policy, uint32_t pid);
     bool can_be_destroyed(BreakablePolicy policy, uint32_t pid);
     float calculate_damage(float dmg, float resistance);

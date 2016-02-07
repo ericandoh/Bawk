@@ -73,6 +73,7 @@ public:
     // --- Entity ---
     void update_centerpos() override;
     Entity* poke(float x, float y, float z) override;
+    bool poke_rough(bounding_box box) override;
     bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) override;
     bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
     virtual void step(Game* game, int ms) override;

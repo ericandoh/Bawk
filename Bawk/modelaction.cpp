@@ -16,6 +16,9 @@
 #include "modelactionexplode.h"
 #include "modelactionmovement.h"
 #include "modelactionshoot.h"
+#include "modelmobai.h"
+
+#include "entity.h"
 
 namespace action_multiplexing {
     std::vector<model_callback_func> action_map;
@@ -93,6 +96,9 @@ ModelActionMultiplexer* get_model_action_multiplexer_from(Json::Value node) {
     }
     else if (name.compare("explode") == 0) {
         return get_explode_model_multiplexer(node);
+    }
+    else if (name.compare("mob1") == 0) {
+        return get_mob_ai_model_multiplexer(node);
     }
     return 0;
 }

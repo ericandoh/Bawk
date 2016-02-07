@@ -352,6 +352,18 @@ Entity* Entity::poke(float x, float y, float z) {
     return 0;
 }
 
+bool Entity::poke_rough(bounding_box box) {
+    // transform box into my coordinates
+    bounding_box my_box;
+    transform_into_my_coordinates(&my_box.lower, box.lower.x, box.lower.y, box.lower.z);
+    transform_into_my_coordinates(&my_box.upper, box.upper.x, box.upper.y, box.upper.z);
+    my_box.refit_for_rotation();
+    if (bounds.hits(my_box)) {
+        return true;
+    }
+    return false;
+}
+
 bool Entity::can_be_hurt(BreakablePolicy policy, uint32_t o_pid) {
     if (policy == ACTIONED) {
         // if actioned, a player can't hurt himself unless he is the world (pid 0)

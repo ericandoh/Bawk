@@ -193,6 +193,10 @@ int get_positive_mod(int a, int m) {
     return ((a % m) + m) % m;
 }
 
+float get_positive_fmodf(float a, float m) {
+    return fmodf(fmodf(a, m) + m, m);
+}
+
 float convert_milli_to_sec(int ms) {
     return ms / 1000.0f;
 }
