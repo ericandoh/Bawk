@@ -49,6 +49,8 @@ public:
     CursorItem* get_bar_item(int index);
     CursorItem* get_item(CursorItemInfo* info);
     
+    bool has_blocks(uint16_t type, int count);
+    bool has_models(uint16_t type, int count);
     // used to delete cursoritems from memory if the last copy of them was deleted
     bool has_custom(CursorItemInfo* info);
     int find_bar_item(CursorItemInfo* info);

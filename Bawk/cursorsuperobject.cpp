@@ -11,6 +11,7 @@
 #include "game.h"
 #include "block.h"
 #include "gametemplate.h"
+#include "modelentityrender.h"
 
 CursorSuperObject::CursorSuperObject(CursorItemInfo* i): PlaceableSuperObject((uint32_t)i->pid, (uint32_t)i->vid), CursorItem(i) {
     locked = false;
@@ -70,13 +71,43 @@ bool CursorSuperObject::clicked(Game* game, Action mouse) {
     return false;
 }
 
+bool CursorSuperObject::has_sufficient_resources(Player* player) {
+    for (auto &i: block_resource_req) {
+        if (!player->inventory->has_blocks(i.first, i.second)) {
+            return false;
+        }
+    }
+    for (auto &i: model_resource_req) {
+        if (!player->inventory->has_models(i.first, i.second)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void CursorSuperObject::spend_resources(Player* player) {
+    for (auto &i: block_resource_req) {
+        player->inventory->add_blocks(i.first, -i.second);
+    }
+    for (auto &i: model_resource_req) {
+        player->inventory->add_models(i.first, -i.second);
+    }
+}
+
 bool CursorSuperObject::confirmed(Game* game) {
     if (!locked) {
         return false;
     }
     else {
-        if (set_blocks(game->player, game->world, target)) {
-            locked = false;
+        // check if we have enough resources
+        if (has_sufficient_resources(game->player)) {
+            if (set_blocks(game->player, game->world, target)) {
+                locked = false;
+                spend_resources(game->player);
+            }
+        }
+        else {
+            printf("Not enough resources\n");
         }
         return true;
     }
@@ -152,6 +183,66 @@ bool CursorSuperObject::has_count() {
 }
 
 // --- SuperObject ---
+void CursorSuperObject::add_entity(Entity* entity) {
+    PlaceableSuperObject::add_entity(entity);
+    
+    if (entity->entity_class == EntityType::MODELENTITY) {
+        ModelEntity* ent = (ModelEntity*)entity;
+        if (model_resource_req.count(ent->model_id)) {
+            model_resource_req[ent->model_id] += 1;
+        }
+        else {
+            model_resource_req[ent->model_id] = 1;
+        }
+    }
+    else if (entity->entity_class == EntityType::SUPEROBJECT) {
+        printf("frog: Adding costs of sub-superobjects not yet supported\n");
+    }
+    
+}
+
+void CursorSuperObject::remove_entity(Entity* entity) {
+    PlaceableSuperObject::remove_entity(entity);
+    
+    if (entity->entity_class == EntityType::MODELENTITY) {
+        ModelEntity* ent = (ModelEntity*)entity;
+        if (model_resource_req.count(ent->model_id)) {
+            model_resource_req[ent->model_id] -= 1;
+            if (model_resource_req[ent->model_id] <= 0) {
+                model_resource_req.erase(ent->model_id);
+            }
+        }
+        // alternate scenario shouldn't be called - we had the block here already!
+    }
+    else if (entity->entity_class == EntityType::SUPEROBJECT) {
+        // TOFU support adding costs of superobjects
+        printf("frog: Subtracting costs of sub-superobjects not yet supported\n");
+    }
+}
+
+void CursorSuperObject::handle_block_addition(int x, int y, int z, block_type type) {
+    PlaceableSuperObject::handle_block_addition(x, y, z, type);
+    
+    if (block_resource_req.count(type.type)) {
+        block_resource_req[type.type] += 1;
+    }
+    else {
+        block_resource_req[type.type] = 1;
+    }
+}
+
+void CursorSuperObject::handle_block_removal(int x, int y, int z, block_type type) {
+    PlaceableSuperObject::handle_block_removal(x, y, z, type);
+    
+    if (block_resource_req.count(type.type)) {
+        block_resource_req[type.type] -= 1;
+        if (block_resource_req[type.type] <= 0) {
+            block_resource_req.erase(type.type);
+        }
+    }
+    // alternate scenario shouldn't be called - we had the block here already!
+}
+
 std::string CursorSuperObject::get_save_path() {
     return get_path_to_template(pid, vid);
 }
@@ -165,6 +256,21 @@ int CursorSuperObject::load_self(IODataObject* obj) {
         return 1;
     makes_vehicle = obj->read_value<int>();
     independent = obj->read_value<bool>();
+    
+    int block_res_count = obj->read_value<int>();
+    for (int i = 0; i < block_res_count; i++) {
+        uint16_t vid = obj->read_value<uint16_t>();
+        int count = obj->read_value<int>();
+        block_resource_req[vid] = count;
+    }
+    
+    int model_res_count = obj->read_value<int>();
+    for (int i = 0; i < model_res_count; i++) {
+        uint16_t vid = obj->read_value<uint16_t>();
+        int count = obj->read_value<int>();
+        model_resource_req[vid] = count;
+    }
+    
     return 0;
 }
 
@@ -172,6 +278,25 @@ void CursorSuperObject::save_self(IODataObject* obj) {
     SuperObject::save_self(obj);
     obj->save_value(makes_vehicle);
     obj->save_value(independent);
+    
+    int block_res_count = (int)block_resource_req.size();
+    obj->save_value(block_res_count);
+    for (auto &i: block_resource_req) {
+        uint16_t vid = i.first;
+        int count = i.second;
+        obj->save_value(vid);
+        obj->save_value(count);
+    }
+    
+    int model_res_count = (int)model_resource_req.size();
+    obj->save_value(model_res_count);
+    for (auto &i: model_resource_req) {
+        uint16_t vid = i.first;
+        int count = i.second;
+        obj->save_value(vid);
+        obj->save_value(count);
+    }
+    
     save_all_chunks();
 }
 

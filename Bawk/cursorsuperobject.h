@@ -23,13 +23,20 @@
 #define __Bawk__cursorsuperobject__
 
 #include <stdio.h>
+#include <map>
 #include "cursoritem.h"
 #include "placeablesuperobject.h"
 
 // Represents a template that can be put down
 
 class CursorSuperObject: public PlaceableSuperObject, public CursorItem {
+    std::map<uint16_t, int> block_resource_req;
+    std::map<uint16_t, int> model_resource_req;
     bool locked;
+    
+    bool has_sufficient_resources(Player* player);
+    void spend_resources(Player* player);
+    
 public:
     CursorSuperObject(CursorItemInfo* i);
     
@@ -54,6 +61,12 @@ public:
     // --- PlaceableSuperObject ---
     
     // --- SuperObject ---
+    void add_entity(Entity* entity) override;
+    void remove_entity(Entity* entity) override;
+    
+    void handle_block_addition(int x, int y, int z, block_type type) override;
+    void handle_block_removal(int x, int y, int z, block_type type) override;
+    
     std::string get_save_path() override;
     std::string get_chunk_save_path(ivec3* pos) override;
     int load_self(IODataObject* obj) override;

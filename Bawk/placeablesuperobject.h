@@ -31,10 +31,10 @@ public:
     void render_blocks(fmat4* transform);
     
     // --- SuperObject ---
-    void add_entity(Entity* entity) override;
-    void remove_entity(Entity* entity) override;
-    void handle_block_addition(int x, int y, int z, block_type type) override;
-    void handle_block_removal(int x, int y, int z, block_type type) override;
+    virtual void add_entity(Entity* entity) override;
+    virtual void remove_entity(Entity* entity) override;
+    virtual void handle_block_addition(int x, int y, int z, block_type type) override;
+    virtual void handle_block_removal(int x, int y, int z, block_type type) override;
     void update_render(fvec3* start_pos) override;
     
     // --- PlaceableObject ---

@@ -123,6 +123,20 @@ CursorItem* PlayerInventory::get_item(CursorItemInfo* info) {
     return get_cursor_item_from(info);
 }
 
+bool PlayerInventory::has_blocks(uint16_t type, int count) {
+    if (blocks.count(type)) {
+        return blocks[type]->count >= count;
+    }
+    return false;
+}
+
+bool PlayerInventory::has_models(uint16_t type, int count) {
+    if (models.count(type)) {
+        return models[type]->count >= count;
+    }
+    return false;
+}
+
 bool PlayerInventory::has_custom(CursorItemInfo* info) {
     for (auto& i: customs) {
         if (*i == *info) {
