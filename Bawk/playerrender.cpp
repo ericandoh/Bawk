@@ -26,17 +26,28 @@ RenderablePlayer::RenderablePlayer() {
     Entity::recalculate_dir();
 }*/
 
-void RenderablePlayer::set_camera() {
+bounding_box RenderablePlayer::get_bounds_for_viewing() {
+    return bounds;
+}
+
+void RenderablePlayer::set_camera(bool viewpoint) {
     int width, height;
     get_window_size(&width, &height);
     fvec3 offpos = get_world_pos();
-    // TODO angle.dir is not relative...
     Rotation lookdir = get_world_rotation();
+    fvec3 lookdirection = lookdir.get_dir();
+    if (!viewpoint) {
+        // 3rd person viewpoint
+        bounding_box range = get_bounds_for_viewing();
+        fvec3 height_offset = lookdir.get_up() * (range.upper.y - range.lower.y) * 0.3f;
+        fvec3 backward_offset = lookdirection * (range.upper.x - range.lower.x) * (-3.0f);
+        offpos = offpos + height_offset + backward_offset;
+    }
     fvec3 up = fvec3(0,1,0);
     if (lookdir.get_up().y < 0) {
         up = fvec3(0,-1,0);
     }
-    view = glm::lookAt(offpos, offpos + lookdir.get_dir(), up);
+    view = glm::lookAt(offpos, offpos + lookdirection, up);
     projection = glm::perspective(45.0f, 1.0f*width/height, 0.01f, 1000.0f);
     mvp = projection * view;
     set_camera_transform_matrix(&mvp);

@@ -56,6 +56,8 @@ class Game : public Displayable {
     ParentWidget* story;
     
     bool in_game;
+    // switch between first person (TRUE) and third person (FALSE) viewpoint
+    bool viewpoint;
     
     void render_geometry();
     void render_ui();

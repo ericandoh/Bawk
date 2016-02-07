@@ -53,6 +53,9 @@ public:
     SuperObject* get_mount();
     bool unmount(World* world);
     
+    // --- RenderablePlayer
+    bounding_box get_bounds_for_viewing() override;
+    
     // --- Entity ---
     void step(Game* game, int ms) override;
     std::string get_save_path() override;

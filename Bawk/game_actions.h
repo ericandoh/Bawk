@@ -20,6 +20,7 @@ enum Action {
     CLICK_SECONDARY, CLICK_MAIN,
     COLLIDE,
     DELETE,
+    TOGGLE_VIEWPOINT,
     TOTAL_ACTIONS
 };
 

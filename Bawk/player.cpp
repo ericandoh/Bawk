@@ -146,6 +146,13 @@ SuperObject* Player::get_mount() {
     return mount;
 }
 
+bounding_box Player::get_bounds_for_viewing() {
+    if (mount) {
+        return mount->bounds;
+    }
+    return RenderablePlayer::get_bounds_for_viewing();
+}
+
 std::string Player::get_save_path() {
     return get_path_to_player(pid);
 }

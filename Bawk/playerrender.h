@@ -36,7 +36,8 @@ public:
     RenderablePlayer();
     
     // --- RenderablePlayer ---
-    void set_camera();
+    virtual bounding_box get_bounds_for_viewing();
+    void set_camera(bool viewpoint);
     void query_depth(World* world);
     // render the player, and renders cursor/some UI elements which shouldnt be here....
     // TOFU fix the above

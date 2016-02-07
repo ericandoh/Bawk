@@ -23,10 +23,8 @@ Entity* get_entity_from(uint32_t pid, uint32_t vid, EntityType entity_class) {
     }
     Entity* val;
     if (entity_class == EntityType::ENTITY) {
-        val = new Entity();
-        val->pid = pid;
-        val->vid = vid;
         printf("Warning: Initializing a generic Entity object (%d,%d) of class %d\n", pid, vid, entity_class);
+        return 0;
     }
     else if (entity_class == EntityType::BASEWORLD) {
         val = new BaseWorld();
