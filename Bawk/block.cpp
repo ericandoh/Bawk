@@ -32,7 +32,7 @@ block_type::block_type(uint16_t t, BlockOrientation orient, uint32_t pid) {
     owner = pid;
 }
 
-block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t bid, uint32_t pid) {
+block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint32_t bid, uint32_t pid) {
     type = t;
     orientation = orient;
     life = h;
@@ -42,6 +42,14 @@ block_type::block_type(uint16_t t, BlockOrientation orient, uint16_t h, uint64_t
 
 bool block_type::equals(block_type other) {
     return type == other.type && orientation == other.orientation && life == other.life;
+}
+
+bool block_type::equals_exact(block_type* other) {
+    return type == other->type &&
+            orientation == other->orientation &&
+            life == other->life &&
+            owner == other->owner &&
+            block_id == other->block_id;
 }
 
 int creates_independence(uint16_t block) {

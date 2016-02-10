@@ -270,7 +270,7 @@ void RenderableSuperObject::save_all_chunks() {
     int counter = 0;
     for (auto kv : chunks) {
         counter++;
-        save_chunk(kv.second->blk, kv.first.x, kv.first.y, kv.first.z);
+        save_chunk(kv.second, kv.first.x, kv.first.y, kv.first.z);
         //kv.second->cleanup();
     }
     printf("Saved %d chunks\n", counter);

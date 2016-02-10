@@ -68,7 +68,7 @@ public:
     virtual void handle_block_addition(int x, int y, int z, block_type type) override;
     virtual void handle_block_removal(int x, int y, int z, block_type type) override;
     virtual RenderableChunk* get_chunk(int x, int y, int z) override;
-    virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) override;
+    virtual int save_chunk(RenderableChunk* chunk, int x, int y, int z) override;
     
     // --- Entity ---
     void update_centerpos() override;

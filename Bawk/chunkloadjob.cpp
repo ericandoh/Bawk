@@ -53,7 +53,7 @@ void ChunkLoadJob::init() {
 
 void ChunkLoadJob::run() {
     for (auto &i: save_and_free) {
-        target->save_chunk(i.chunk->blk, i.pos.x, i.pos.y, i.pos.z);
+        target->save_chunk(i.chunk, i.pos.x, i.pos.y, i.pos.z);
         delete i.chunk;
     }
     

@@ -68,7 +68,7 @@ public:
     // this should be overriden to provide chunk data at (CAC) xyz, if the chunk doesnt exist return NULL
     virtual RenderableChunk* get_chunk(int x, int y, int z) = 0;
     // this should be overriden to save chunk data at (CAC) xyz
-    virtual int save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) = 0;
+    virtual int save_chunk(RenderableChunk* chunk, int x, int y, int z) = 0;
     
     // check if a chunk coordinate (CAC) xyz is a chunk held by this object
     virtual bool within_dimensions_chunk(int x, int y, int z);

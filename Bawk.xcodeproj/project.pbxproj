@@ -25,6 +25,7 @@
 		07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */; };
 		0715FFB31C45C6A9008349F7 /* gameplay.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0715FFB21C45C6A0008349F7 /* gameplay.json */; };
 		0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718EAC41C2A81EC0084826F /* opengl_debug.cpp */; };
+		0718F0EF1C6B971C00003974 /* chunk_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718F0ED1C6B971C00003974 /* chunk_loader.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
 		071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 071A040C1BD9875C003BF218 /* gameinfo.json */; };
@@ -169,6 +170,8 @@
 		0718C84D1BF57053005615F5 /* game_actions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = game_actions.h; sourceTree = "<group>"; };
 		0718EAC41C2A81EC0084826F /* opengl_debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl_debug.cpp; sourceTree = "<group>"; };
 		0718EAC51C2A81EC0084826F /* opengl_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl_debug.h; sourceTree = "<group>"; };
+		0718F0ED1C6B971C00003974 /* chunk_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunk_loader.cpp; sourceTree = "<group>"; };
+		0718F0EE1C6B971C00003974 /* chunk_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk_loader.h; sourceTree = "<group>"; };
 		071A04031BD96349003BF218 /* game_info_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game_info_loader.cpp; sourceTree = "<group>"; };
 		071A04041BD96349003BF218 /* game_info_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game_info_loader.h; sourceTree = "<group>"; };
 		071A04091BD98454003BF218 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
@@ -600,6 +603,8 @@
 				0713FF521C0FD88B0069FDAF /* entity_type.cpp */,
 				078E87A61C1C11A800A825EB /* json_reader_helper.cpp */,
 				078E87A71C1C11A800A825EB /* json_reader_helper.h */,
+				0718F0ED1C6B971C00003974 /* chunk_loader.cpp */,
+				0718F0EE1C6B971C00003974 /* chunk_loader.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";
@@ -766,6 +771,7 @@
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
 				076819861C5A824A00D9218F /* threadjob.cpp in Sources */,
 				071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */,
+				0718F0EF1C6B971C00003974 /* chunk_loader.cpp in Sources */,
 				071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */,
 				0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */,
 				072243391C17C98E00B60091 /* spriterender.cpp in Sources */,

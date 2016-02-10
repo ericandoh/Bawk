@@ -12,6 +12,7 @@
 #include "game.h"
 #include "blocktracer.h"
 #include "entity_loader.h"
+#include "chunk_loader.h"
 #include "importsdl.h"
 
 // for debugging draw
@@ -577,24 +578,21 @@ void SuperObject::handle_block_removal(int x, int y, int z, block_type type) {
 }
 
 RenderableChunk* SuperObject::get_chunk(int x, int y, int z) {
-    block_type to_arr[CX][CY][CZ];
     ivec3 pos = ivec3(x, y, z);
     IODataObject reader(get_chunk_save_path(&pos));
     if (reader.read(false))
         return 0;
-    reader.read_pointer(&(to_arr[0][0][0]), sizeof(to_arr[0][0][0])*CX*CY*CZ);
+    RenderableChunk* chunk = read_chunk_data(&reader);
     reader.close();
-    
-    RenderableChunk* chunk = new RenderableChunk(to_arr);
     return chunk;
 }
 
-int SuperObject::save_chunk(block_type from_arr[CX][CY][CZ], int x, int y, int z) {
+int SuperObject::save_chunk(RenderableChunk* chunk, int x, int y, int z) {
     ivec3 pos = ivec3(x, y, z);
     IODataObject writer(get_chunk_save_path(&pos));
     if (writer.save(false))
         return 1;
-    writer.save_pointer(&(from_arr[0][0][0]), sizeof(from_arr[0][0][0])*CX*CY*CZ);
+    save_chunk_data(chunk, &writer);
     writer.close();
     return 0;
 }

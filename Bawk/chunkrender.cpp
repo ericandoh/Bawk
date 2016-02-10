@@ -38,7 +38,6 @@ RenderableChunk::RenderableChunk() {
     changed = true;
     left = right = below = above = front = back = 0;
     has_lights = false;
-    update_dimensions();
 }
 
 RenderableChunk::RenderableChunk(block_type from[CX][CY][CZ]) {
