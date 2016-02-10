@@ -44,8 +44,8 @@ void SpriteRender::set_relative_transform() {
     // set this sprite's angle to point toward player
     fvec3 dir = pos - player->get_viewpoint();
     dir = glm::normalize(dir);
-    Rotation lookdir = player->get_world_rotation();
-    fvec3 up = glm::cross(lookdir.get_right(), dir);
+    Rotation* lookdir = player->get_viewpoint_angle();
+    fvec3 up = glm::cross(lookdir->get_right(), dir);
     up = glm::normalize(up);
     
     Rotation pointing = Rotation();

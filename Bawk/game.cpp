@@ -138,8 +138,6 @@ int Game::init() {
     
     default_item = new CursorSelector(0);
     
-    viewpoint = true;
-    
     return 0;
 }
     
@@ -169,7 +167,7 @@ void Game::render_ui() {
 
 void Game::render() {
     // get transform from player's perspective
-    player->set_camera(viewpoint);
+    player->set_camera();
     OGLAttr::current_shader->set_enable_shadows(true);
     render_geometry();
     OGLAttr::current_shader->set_enable_shadows(false);
@@ -213,7 +211,7 @@ void Game::render_lights() {
     
     // --- OTHER LIGHTING ---
     // render a light around the player for now
-    player->set_camera(viewpoint);
+    player->set_camera();
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     
@@ -429,7 +427,7 @@ void Game::key_callback_default(int key) {
         player->query_depth(world);
     }
     else if (do_this == TOGGLE_VIEWPOINT) {
-        viewpoint = !viewpoint;
+        player->set_viewpoint(!player->viewpoint);
     }
     else if (key >= SDLK_1 && key <= SDLK_9) {
         int to_index = key - SDLK_1;

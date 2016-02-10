@@ -50,8 +50,8 @@ void DirectionalRenderableLight::set_camera(Player* player) {
         world_pos = BlockTracing::pointed_pos;
     }
     else {
-        Rotation lookdir = player->get_world_rotation();
-        world_pos = player->get_viewpoint() + lookdir.get_dir() * 10.0f;
+        Rotation* lookdir = player->get_viewpoint_angle();
+        world_pos = player->get_viewpoint() + lookdir->get_dir() * 10.0f;
     }
     
     int width, height;

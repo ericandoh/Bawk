@@ -532,8 +532,8 @@ void Entity::save_selfs() {
 
 int Entity::load_self(IODataObject* obj) {
     //up = obj->read_value<fvec3>();
-    pos = obj->read_value<fvec3>();
-    angle = obj->read_value<Rotation>();
+    set_pos(obj->read_value<fvec3>());
+    set_angle(obj->read_value<Rotation>());
     
     bounds = obj->read_value<bounding_box>();
     center_pos = obj->read_value<fvec3>();

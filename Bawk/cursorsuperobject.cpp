@@ -138,7 +138,7 @@ void CursorSuperObject::step(Game* game, int ms) {
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
         update_pointing_position(game, upper);
-        pos = fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z);
+        set_pos(fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z));
     }
 }
 
