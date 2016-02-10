@@ -73,7 +73,7 @@ int Game::init() {
     // later separate loading the player and the world - this might get complicated!
     player = new Player(pid);
     player->load_selfs();
-    last_player_pos = player->get_world_pos();
+    last_player_pos = player->get_viewpoint();
     
     world->add_player(player);
     world->update_render(&(last_player_pos));
@@ -217,10 +217,12 @@ void Game::render_lights() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     
+    fvec3 player_viewpoint_pos = player->get_viewpoint();
+    
     fmat4 transform(1);
-    world->render_lights(&transform, player->get_world_pos());
+    world->render_lights(&transform, player_viewpoint_pos);
     if (bar->get_current()) {
-        bar->get_current()->render_light_in_world(&transform, player->get_world_pos());
+        bar->get_current()->render_light_in_world(&transform, player_viewpoint_pos);
     }
 }
 
@@ -299,7 +301,7 @@ float get_dst(fvec3* a, fvec3* b) {
 }
 
 void Game::check_need_update() {
-    fvec3 player_pos = player->get_world_pos();
+    fvec3 player_pos = player->get_viewpoint();
     if (get_dst(&last_player_pos, &player_pos) >= CHUNK_UPDATE_TRIGGER_DISTANCE) {
         world->update_render(&player_pos);
         last_player_pos = player_pos;

@@ -51,7 +51,7 @@ void DirectionalRenderableLight::set_camera(Player* player) {
     }
     else {
         Rotation lookdir = player->get_world_rotation();
-        world_pos = player->get_world_pos() + lookdir.get_dir() * 10.0f;
+        world_pos = player->get_viewpoint() + lookdir.get_dir() * 10.0f;
     }
     
     int width, height;

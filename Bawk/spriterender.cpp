@@ -42,7 +42,7 @@ float SpriteRender::get_perc_age() {
 
 void SpriteRender::set_relative_transform() {
     // set this sprite's angle to point toward player
-    fvec3 dir = pos - player->get_world_pos();
+    fvec3 dir = pos - player->get_viewpoint();
     dir = glm::normalize(dir);
     Rotation lookdir = player->get_world_rotation();
     fvec3 up = glm::cross(lookdir.get_right(), dir);
@@ -102,7 +102,7 @@ void SpriteRender::step(Game* game, int ms) {
     ttl -= 1;
     if (track_player) {
         // set pos to player's position
-        set_pos(game->player->get_world_pos());
+        set_pos(game->player->get_viewpoint());
     }
     if (steppable) {
         steppable->step(game, this);

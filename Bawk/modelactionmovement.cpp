@@ -34,11 +34,11 @@ public:
 ModelEngineActionMultiplexer::ModelEngineActionMultiplexer() {
     // apply 500 force during 1 second
     forward_speed = 500.0f / convert_sec_to_milli(1);
-    backward_speed = 100.0f / convert_sec_to_milli(1);
-    vertical_speed = 150.0f / convert_sec_to_milli(1);
-    yaw_speed = 100.0f / convert_sec_to_milli(1);
-    roll_speed = 70.0f / convert_sec_to_milli(1);
-    pitch_speed = 100.0f / convert_sec_to_milli(1);
+    backward_speed = 250.0f / convert_sec_to_milli(1);
+    vertical_speed = 250.0f / convert_sec_to_milli(1);
+    yaw_speed = 250.0f / convert_sec_to_milli(1);
+    roll_speed = 250.0f / convert_sec_to_milli(1);
+    pitch_speed = 250.0f / convert_sec_to_milli(1);
 }
 
 bool ModelEngineActionMultiplexer::model_callback_move_forward(MODEL_FUNCTION_ARGS) {

@@ -77,7 +77,7 @@ void World::set_light_camera(Player* player) {
 }
 
 void World::set_light_camera_for_lighting(Player* player) {
-    weather.dir_light.set_camera_for_light(player->get_world_pos());
+    weather.dir_light.set_camera_for_light(player->get_viewpoint());
 }
 
 void World::update_render(fvec3* player_pos) {
