@@ -18,13 +18,9 @@
 class Player;
 
 class WorldWeather {
-    // TODO finish this up
-    // colors for daytime/nighttime/sunttime
-    fvec3 daytime, nighttime, suntime;
-    int xfragments, yfragments;
-    int distance;
-    // TODO we can't do this, not exactly a skybox...
-    std::vector<std::vector<SpriteRender*>> background_sprites;
+    int radius;
+    
+    SpriteRender* skybox;
     
     // keep track of time, or make this a pointer of some sort
     int time;
@@ -35,8 +31,7 @@ public:
     DirectionalRenderableLight dir_light;
     
     WorldWeather();
-    void setup();
-    void render(fmat4* transform, Player* player);
+    void render(fmat4* transform);
     void step();
     void update_sky();
 };

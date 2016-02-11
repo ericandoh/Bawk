@@ -68,8 +68,8 @@ void World::render_lights(fmat4* transform, fvec3 player_pos) {
     base_world->render_lights(transform, player_pos);
 }
 
-void World::render_background(fmat4* transform, Player* player) {
-    weather.render(transform, player);
+void World::render_background(fmat4* transform) {
+    weather.render(transform);
 }
 
 void World::set_light_camera(Player* player) {

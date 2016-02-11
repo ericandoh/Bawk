@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 //#include "positionable.h"
-#include "entity.h"
+#include "positionable.h"
 #include "lightrender.h"
 
 class Player;
@@ -58,18 +58,14 @@ class SpriteRender;
 
 class Game;
 
-class SpriteSteppable {
+class SpriteMultiplexer {
 public:
-    virtual void step(Game* game, SpriteRender* render);
+    virtual ~SpriteMultiplexer() = default;
+    
+    virtual void step(Game* game, int ms, SpriteRender* render) EMPTY_FUNCTION;
+    virtual void render(fmat4* transform, SpriteRender* render) EMPTY_FUNCTION;
     // don't override if you don't want new instance every time
-    virtual SpriteSteppable* copy();
-};
-
-class SpriteRenderable {
-public:
-    virtual void render(fmat4* transform, SpriteRender* render);
-    // don't override if you don't want new instance every time
-    virtual SpriteRenderable* copy();
+    virtual SpriteMultiplexer* copy();
 };
 
 // defined for subclasses when fetching
@@ -77,13 +73,11 @@ namespace Json {
     class Value;
 }
 
-class SpriteRender: public Entity {
+class SpriteRender: public Positionable {
     // if true, render this relative to player
     bool track_player;
 public:
-    Player* player;
-    SpriteSteppable* steppable;
-    SpriteRenderable* renderable;
+    SpriteMultiplexer* multiplexer;
     // time to live, set to -1 if this will keep living
     unsigned int ttl;
     // this is constant, how long the sprite lives in total (doesnt count down)
@@ -91,18 +85,19 @@ public:
     RenderableLight light;
     
     SpriteRender();
+    virtual ~SpriteRender() = default;
     
     // --- SpriteRender ---
     // some helper functions for common operations usually done on sprite, that are stateless
     float get_perc_age();
-    void set_relative_transform();
+    void set_to_face_player(Player* player);
     void render_rectangle(fmat4* transform, float width, float height, fvec3 texture_corners[4]);
     SpriteRender* copy();
     
     void set_track_player(bool val);
     
-    // --- Entity ---
-    void step(Game* game, int ms) override; //override;
+    // --- Positionable ---
+    void step(Game* game, int ms);
     void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
 

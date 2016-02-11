@@ -11,22 +11,29 @@
 #include "worldrender.h"
 #include "json_reader_helper.h"
 #include "json/json.h"
+#include "game.h"
 
-class SpriteExplosiveRenderable: public SpriteRenderable {
+class SpriteExplosiveRenderable: public SpriteMultiplexer {
 public:
     int texture_id;
     float start_radius, end_radius;
     
     SpriteExplosiveRenderable();
+    void step(Game* game, int ms, SpriteRender* render) override;
     void render(fmat4* transform, SpriteRender* render) override;
     
-    SpriteRenderable* copy() override;
+    SpriteMultiplexer* copy() override;
 };
 
 SpriteExplosiveRenderable::SpriteExplosiveRenderable() {
     texture_id = 0;
     start_radius = 1;
     end_radius = 1;
+}
+
+void SpriteExplosiveRenderable::step(Game* game, int ms, SpriteRender* render) {
+    // bind a rectangle pointing in direction of player, at pos
+    render->set_to_face_player(game->player);
 }
 
 void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {
@@ -49,12 +56,10 @@ void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {
     
     // drawing from block texture
     OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
-    // bind a rectangle pointing in direction of player, at pos
-    render->set_relative_transform();
     render->render_rectangle(transform, radius, radius, textures);
 }
 
-SpriteRenderable* SpriteExplosiveRenderable::copy() {
+SpriteMultiplexer* SpriteExplosiveRenderable::copy() {
     // allow copy, since we could have explosions of different radii
     SpriteExplosiveRenderable* copy = new SpriteExplosiveRenderable();
     copy->texture_id = texture_id;
@@ -63,7 +68,7 @@ SpriteRenderable* SpriteExplosiveRenderable::copy() {
     return copy;
 }
 
-SpriteRenderable* get_sprite_explosive(Json::Value node) {
+SpriteMultiplexer* get_sprite_explosive(Json::Value node) {
     SpriteExplosiveRenderable* sprite_render = new SpriteExplosiveRenderable();
     json_read_int_safe(&sprite_render->texture_id, node, "texture");
     json_read_float_safe(&sprite_render->start_radius, node, "start_radius");

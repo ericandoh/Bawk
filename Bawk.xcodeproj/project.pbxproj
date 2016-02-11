@@ -11,8 +11,6 @@
 		0704CF741BC997550050EE52 /* item_bar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF721BC997550050EE52 /* item_bar.cpp */; };
 		0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0704CF751BC997DE0050EE52 /* item_barlet.cpp */; };
 		070930741C38985C009DB251 /* cursorscantool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 070930721C38985C009DB251 /* cursorscantool.cpp */; };
-		071026581C272E7400BBC711 /* spritecolorquad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026561C272E7400BBC711 /* spritecolorquad.cpp */; };
-		0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026591C273E5800BBC711 /* spritecolortriangle.cpp */; };
 		0710265F1C275EBD00BBC711 /* shadows_frag_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */; };
 		071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071026611C27618200BBC711 /* shadow_mapper.cpp */; };
 		0710EE2D1C3D9EBF0007F5C4 /* cursorweapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0710EE2B1C3D9EBF0007F5C4 /* cursorweapon.cpp */; };
@@ -26,6 +24,10 @@
 		0715FFB31C45C6A9008349F7 /* gameplay.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0715FFB21C45C6A0008349F7 /* gameplay.json */; };
 		0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718EAC41C2A81EC0084826F /* opengl_debug.cpp */; };
 		0718F0EF1C6B971C00003974 /* chunk_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718F0ED1C6B971C00003974 /* chunk_loader.cpp */; };
+		0718F0F21C6BF3AB00003974 /* spritemodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718F0F01C6BF3AB00003974 /* spritemodel.cpp */; };
+		0718F0F51C6BFCD500003974 /* spritemanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718F0F31C6BFCD500003974 /* spritemanager.cpp */; };
+		0718F0F81C6C018B00003974 /* modeldata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718F0F61C6C018B00003974 /* modeldata.cpp */; };
+		0718F0FB1C6C022000003974 /* obj_data_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0718F0F91C6C022000003974 /* obj_data_loader.cpp */; };
 		071A04051BD96349003BF218 /* game_info_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A04031BD96349003BF218 /* game_info_loader.cpp */; };
 		071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071A040A1BD98454003BF218 /* jsoncpp.cpp */; };
 		071A040D1BD98765003BF218 /* gameinfo.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = 071A040C1BD9875C003BF218 /* gameinfo.json */; };
@@ -145,10 +147,6 @@
 		0705F3FA1BED27860088744F /* light_vertex_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = light_vertex_shader.glsl; path = Bawk/light_vertex_shader.glsl; sourceTree = "<group>"; };
 		070930721C38985C009DB251 /* cursorscantool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorscantool.cpp; sourceTree = "<group>"; };
 		070930731C38985C009DB251 /* cursorscantool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorscantool.h; sourceTree = "<group>"; };
-		071026561C272E7400BBC711 /* spritecolorquad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritecolorquad.cpp; sourceTree = "<group>"; };
-		071026571C272E7400BBC711 /* spritecolorquad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritecolorquad.h; sourceTree = "<group>"; };
-		071026591C273E5800BBC711 /* spritecolortriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritecolortriangle.cpp; sourceTree = "<group>"; };
-		0710265A1C273E5800BBC711 /* spritecolortriangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritecolortriangle.h; sourceTree = "<group>"; };
 		0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; name = shadows_frag_shader.glsl; path = Bawk/shadows_frag_shader.glsl; sourceTree = "<group>"; };
 		071026611C27618200BBC711 /* shadow_mapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shadow_mapper.cpp; sourceTree = "<group>"; };
 		071026621C27618200BBC711 /* shadow_mapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shadow_mapper.h; sourceTree = "<group>"; };
@@ -172,6 +170,14 @@
 		0718EAC51C2A81EC0084826F /* opengl_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl_debug.h; sourceTree = "<group>"; };
 		0718F0ED1C6B971C00003974 /* chunk_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = chunk_loader.cpp; sourceTree = "<group>"; };
 		0718F0EE1C6B971C00003974 /* chunk_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chunk_loader.h; sourceTree = "<group>"; };
+		0718F0F01C6BF3AB00003974 /* spritemodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritemodel.cpp; sourceTree = "<group>"; };
+		0718F0F11C6BF3AB00003974 /* spritemodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritemodel.h; sourceTree = "<group>"; };
+		0718F0F31C6BFCD500003974 /* spritemanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spritemanager.cpp; sourceTree = "<group>"; };
+		0718F0F41C6BFCD500003974 /* spritemanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spritemanager.h; sourceTree = "<group>"; };
+		0718F0F61C6C018B00003974 /* modeldata.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modeldata.cpp; sourceTree = "<group>"; };
+		0718F0F71C6C018B00003974 /* modeldata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modeldata.h; sourceTree = "<group>"; };
+		0718F0F91C6C022000003974 /* obj_data_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = obj_data_loader.cpp; sourceTree = "<group>"; };
+		0718F0FA1C6C022000003974 /* obj_data_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = obj_data_loader.h; sourceTree = "<group>"; };
 		071A04031BD96349003BF218 /* game_info_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game_info_loader.cpp; sourceTree = "<group>"; };
 		071A04041BD96349003BF218 /* game_info_loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game_info_loader.h; sourceTree = "<group>"; };
 		071A04091BD98454003BF218 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
@@ -582,6 +588,8 @@
 				0720107E1C365988003FE723 /* readwritelock.h */,
 				07D8324D1C63EC5F00471961 /* basicrender.cpp */,
 				07D8324E1C63EC5F00471961 /* basicrender.h */,
+				0718F0F61C6C018B00003974 /* modeldata.cpp */,
+				0718F0F71C6C018B00003974 /* modeldata.h */,
 			);
 			name = render;
 			sourceTree = "<group>";
@@ -605,6 +613,8 @@
 				078E87A71C1C11A800A825EB /* json_reader_helper.h */,
 				0718F0ED1C6B971C00003974 /* chunk_loader.cpp */,
 				0718F0EE1C6B971C00003974 /* chunk_loader.h */,
+				0718F0F91C6C022000003974 /* obj_data_loader.cpp */,
+				0718F0FA1C6C022000003974 /* obj_data_loader.h */,
 			);
 			name = asset_loaders;
 			sourceTree = "<group>";
@@ -670,10 +680,10 @@
 				078E87A11C1BEF0B00A825EB /* spriteexplosion.h */,
 				078E87A31C1BF98700A825EB /* spritegetter.cpp */,
 				078E87A41C1BF98700A825EB /* spritegetter.h */,
-				071026561C272E7400BBC711 /* spritecolorquad.cpp */,
-				071026571C272E7400BBC711 /* spritecolorquad.h */,
-				071026591C273E5800BBC711 /* spritecolortriangle.cpp */,
-				0710265A1C273E5800BBC711 /* spritecolortriangle.h */,
+				0718F0F01C6BF3AB00003974 /* spritemodel.cpp */,
+				0718F0F11C6BF3AB00003974 /* spritemodel.h */,
+				0718F0F31C6BFCD500003974 /* spritemanager.cpp */,
+				0718F0F41C6BFCD500003974 /* spritemanager.h */,
 			);
 			name = sprites;
 			sourceTree = "<group>";
@@ -734,7 +744,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				071026581C272E7400BBC711 /* spritecolorquad.cpp in Sources */,
 				074B6C9C1BB9D2380065192B /* main.cpp in Sources */,
 				0766EAFD1BBF7DBE00477144 /* image_DXT.c in Sources */,
 				076819831C5A824200D9218F /* threadmanager.cpp in Sources */,
@@ -766,6 +775,7 @@
 				0766EB091BBF9CC900477144 /* base_world.cpp in Sources */,
 				071B468D1BF3C265000CB782 /* placeablesuperobject.cpp in Sources */,
 				076BEFE81BD1FE0E00D68C8F /* inventory.cpp in Sources */,
+				0718F0FB1C6C022000003974 /* obj_data_loader.cpp in Sources */,
 				07C426391BBCB37E0045D796 /* program.cpp in Sources */,
 				0718EAC61C2A81EC0084826F /* opengl_debug.cpp in Sources */,
 				0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */,
@@ -773,7 +783,6 @@
 				071B46891BF3C1F4000CB782 /* placeableobject.cpp in Sources */,
 				0718F0EF1C6B971C00003974 /* chunk_loader.cpp in Sources */,
 				071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */,
-				0710265B1C273E5800BBC711 /* spritecolortriangle.cpp in Sources */,
 				072243391C17C98E00B60091 /* spriterender.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
 				07D8324F1C63EC5F00471961 /* basicrender.cpp in Sources */,
@@ -781,6 +790,7 @@
 				075EA6D91BBE078B001CC402 /* basic_types.cpp in Sources */,
 				072A0A2C1C0BCE86009304E5 /* cursormodelobject.cpp in Sources */,
 				0768198C1C5AC25100D9218F /* textrender.cpp in Sources */,
+				0718F0F81C6C018B00003974 /* modeldata.cpp in Sources */,
 				0710EE2D1C3D9EBF0007F5C4 /* cursorweapon.cpp in Sources */,
 				07FE04321BEABB90001B26D9 /* debug_action.cpp in Sources */,
 				07F6906F1BD388F900818867 /* testing.cpp in Sources */,
@@ -803,6 +813,7 @@
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				0710EE301C3D9ED10007F5C4 /* cursordrill.cpp in Sources */,
 				07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */,
+				0718F0F51C6BFCD500003974 /* spritemanager.cpp in Sources */,
 				070930741C38985C009DB251 /* cursorscantool.cpp in Sources */,
 				075C67471BBA427B00CB87DE /* worldrender.cpp in Sources */,
 				071026631C27618200BBC711 /* shadow_mapper.cpp in Sources */,
@@ -810,6 +821,7 @@
 				07EADB0E1C5C551D009DDACA /* terraingenerator.cpp in Sources */,
 				07E11BC71BEBFDB700C0F98C /* gbuffer.cpp in Sources */,
 				076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */,
+				0718F0F21C6BF3AB00003974 /* spritemodel.cpp in Sources */,
 				0766EAF81BBF7D1300477144 /* texture_loader.cpp in Sources */,
 				071BB73B1C18B0D900563D4A /* modelactionshoot.cpp in Sources */,
 				076410711BC45EA300135EDC /* gametemplate.cpp in Sources */,

@@ -9,31 +9,32 @@
 #include "spritegetter.h"
 
 #include "spriterender.h"
-#include "spriteexplosion.h"
+
 #include "json/json.h"
 #include "json_reader_helper.h"
 #include "game_info_loader.h"
 
-SpriteRenderable* get_sprite_renderable_from_string(std::string name, Json::Value node) {
+#include "spriteexplosion.h"
+#include "spritemodel.h"
+
+SpriteMultiplexer* get_sprite_multiplexer_from_string(std::string name, Json::Value node) {
     if (name.compare("explosion") == 0) {
         return get_sprite_explosive(node);
     }
-    return 0;
-}
-
-SpriteSteppable* get_sprite_steppable_from_string(std::string name, Json::Value node) {
+    else if (name.compare("model") == 0) {
+        return get_sprite_model(node);
+    }
     return 0;
 }
 
 // if we add more properties, make fetching methods for them here
 
 // called by game, and I guess by things that want to make sprites?
-SpriteRender* get_sprite_instance(int sid, Player* p) {
+SpriteRender* get_sprite_instance(int sid) {
     // get sprite from gameinfoloader
     SpriteRender* base_sprite = get_sprite_renderable(sid);
     // copy the sprite, since it needs its own state/whatnot
     SpriteRender* copy = base_sprite->copy();
-    copy->player = p;
     return copy;
 }
 
@@ -55,12 +56,8 @@ void set_sprite_properties(SpriteRender* render, Json::Value node) {
         if (!property.isObject()) {
             continue;
         }
-        if (property.isMember("render")) {
-            render->renderable = get_sprite_renderable_from_string(json_read_string_safe(property, "render"), property);
+        if (property.isMember("id")) {
+            render->multiplexer = get_sprite_multiplexer_from_string(json_read_string_safe(property, "id"), property);
         }
-        if (property.isMember("step")) {
-            render->steppable = get_sprite_steppable_from_string(json_read_string_safe(property, "step"), property);
-        }
-        // if we add more properties add them here
     }
 }

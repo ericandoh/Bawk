@@ -50,9 +50,9 @@ bool ModelExplodeActionMultiplexer::model_callback_collision(MODEL_FUNCTION_ARGS
     }
     // TODO add sprites to the world here
     // TODO redo this - this is horrible, horrible code...
-    SpriteRender* sprite = get_sprite_instance(1, game->player);
+    SpriteRender* sprite = get_sprite_instance(1);
     sprite->set_pos(pos);
-    game->world->base_world->add_entity(sprite);
+    game->sprite_manager.add_sprite(sprite);
     // this will remove the entity at the end of this method
     return true;
 }

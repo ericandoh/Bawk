@@ -36,6 +36,7 @@
 #include "item_bar.h"
 #include "parent_widget.h"
 #include "inventory_widget.h"
+#include "spritemanager.h"
 
 const int VERSION = 4;
 
@@ -68,6 +69,7 @@ public:
     Player* player;
     // template holding current template we're working on (if any)
     GameTemplate* game_template;
+    SpriteManager sprite_manager;
     void set_parameters(std::string wn, uint32_t p);
     int init() override;
     // TODO refactor the rendering pipeline into its own class

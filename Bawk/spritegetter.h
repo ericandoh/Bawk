@@ -16,7 +16,7 @@ namespace Json {
     class Value;
 }
 
-SpriteRender* get_sprite_instance(int sid, Player* p);
+SpriteRender* get_sprite_instance(int sid);
 void set_sprite_properties(SpriteRender* render, Json::Value node);
 
 #endif /* defined(__Bawk__spritegetter__) */

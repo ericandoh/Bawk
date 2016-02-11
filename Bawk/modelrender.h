@@ -10,7 +10,7 @@
 #define __Bawk__modelrender__
 
 #include <stdio.h>
-#include <vector>
+#include "modeldata.h"
 #include <string>
 #include <map>
 #include "basic_types.h"
@@ -19,7 +19,7 @@
 
 class Game;
 
-class RenderableModel {
+class RenderableModel: public ModelData {
 public:
     std::string name;
     int resistance;
@@ -30,14 +30,10 @@ public:
     
     bounding_box bounds;
     fvec3 center_pos;
-    std::vector<fvec3> model_vertices;
-    std::vector<fvec3> model_normals;
-    std::vector<fvec3> model_uvs;
     
     RenderableModel();
     
     // --- RenderableModel ---
-    void render();
     void refresh();
 };
 

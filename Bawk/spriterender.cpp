@@ -12,25 +12,18 @@
 #include "worldrender.h"
 #include "game.h"
 
+SpriteMultiplexer* SpriteMultiplexer::copy() { return this; }
+
 SpriteRender::SpriteRender() {
-    player = 0;
-    steppable = 0;
-    renderable = 0;
+    multiplexer = 0;
     ttl = 0;
     duration = 0;
     light = RenderableLight();
     
-    can_collide = false;
     can_rotate = true;
     
     track_player = false;
 }
-
-void SpriteSteppable::step(Game* game, SpriteRender* render) { }
-
-SpriteSteppable* SpriteSteppable::copy() { return this; }
-void SpriteRenderable::render(fmat4 *transform, SpriteRender *render) { }
-SpriteRenderable* SpriteRenderable::copy() { return this; }
 
 float SpriteRender::get_perc_age() {
     // 0.0f = start, 1.0f = end
@@ -40,7 +33,7 @@ float SpriteRender::get_perc_age() {
     return 1.0f - (ttl * 1.0f / duration);
 }
 
-void SpriteRender::set_relative_transform() {
+void SpriteRender::set_to_face_player(Player* player) {
     // set this sprite's angle to point toward player
     fvec3 dir = pos - player->get_viewpoint();
     dir = glm::normalize(dir);
@@ -96,7 +89,7 @@ void SpriteRender::step(Game* game, int ms) {
     if (ttl == 0 && duration > 0) {
         // TODO this sprite should die
         //((SuperObject*)parent)->remove_sprite(...);
-        ((SuperObject*)parent)->remove_entity(this);
+        game->sprite_manager.remove_sprite(this);
         return;
     }
     ttl -= 1;
@@ -104,14 +97,14 @@ void SpriteRender::step(Game* game, int ms) {
         // set pos to player's position
         set_pos(game->player->get_viewpoint());
     }
-    if (steppable) {
-        steppable->step(game, this);
+    if (multiplexer) {
+        multiplexer->step(game, ms, this);
     }
 }
 
 void SpriteRender::render(fmat4* transform) {
-    if (renderable) {
-        renderable->render(transform, this);
+    if (multiplexer) {
+        multiplexer->render(transform, this);
     }
 }
 
@@ -127,11 +120,8 @@ SpriteRender* SpriteRender::copy() {
     copy->duration = duration;
     copy->ttl = duration;
     copy->light = light;
-    if (steppable) {
-        copy->steppable = steppable->copy();
-    }
-    if (renderable) {
-        copy->renderable = renderable->copy();
+    if (multiplexer) {
+        copy->multiplexer = multiplexer->copy();
     }
     return copy;
 }
@@ -139,15 +129,3 @@ SpriteRender* SpriteRender::copy() {
 void SpriteRender::set_track_player(bool val) {
     track_player = val;
 }
-
-// position
-
-// size/shape (ie face player?)
-
-// texture/color/how to render/how this changes with time
-
-// duration
-
-// lighting
-
-// count?

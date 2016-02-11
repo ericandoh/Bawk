@@ -119,6 +119,10 @@ void Positionable::set_pos(fvec3 p) {
     pos = p;
 }
 
+Rotation* Positionable::get_angle() {
+    return &angle;
+}
+
 void Positionable::set_angle(Rotation a) {
     angle = a;
 }

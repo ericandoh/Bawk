@@ -49,9 +49,9 @@ bool ModelEngineActionMultiplexer::model_callback_move_forward(MODEL_FUNCTION_AR
                               get_positive_mod(rand(), 100) - 50.0f,
                               get_positive_mod(rand(), 100) - 50.0f) / 400.0f;
     fvec3 pos = piece->get_world_pos() + rand_offset;
-    SpriteRender* sprite = get_sprite_instance(2, game->player);
+    SpriteRender* sprite = get_sprite_instance(2);
     sprite->set_pos(pos);
-    game->world->base_world->add_entity(sprite);
+    game->sprite_manager.add_sprite(sprite);
     return true;
 }
 

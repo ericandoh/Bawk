@@ -138,6 +138,8 @@ int Game::init() {
     
     default_item = new CursorSelector(0);
     
+    sprite_manager = SpriteManager();
+    
     return 0;
 }
     
@@ -172,7 +174,8 @@ void Game::render() {
     render_geometry();
     OGLAttr::current_shader->set_enable_shadows(false);
     fmat4 transform(1);
-    world->render_background(&transform, player);
+    world->render_background(&transform);
+    sprite_manager.render(&transform);
     render_ui();
 }
 
@@ -219,6 +222,7 @@ void Game::render_lights() {
     
     fmat4 transform(1);
     world->render_lights(&transform, player_viewpoint_pos);
+    sprite_manager.render_lights(&transform, player_viewpoint_pos);
     if (bar->get_current()) {
         bar->get_current()->render_light_in_world(&transform, player_viewpoint_pos);
     }
@@ -289,6 +293,7 @@ void Game::frame(int ms) {
     player->query_depth(world);
     
     world->step(this, ms);
+    sprite_manager.step(this, ms);
     if (bar->get_current()) {
         bar->get_current()->step(this, ms);
     }

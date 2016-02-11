@@ -13,6 +13,6 @@
 #include "spriterender.h"
 
 // constructs an explosive sprite given the parameters
-SpriteRenderable* get_sprite_explosive(Json::Value node);
+SpriteMultiplexer* get_sprite_explosive(Json::Value node);
 
 #endif /* defined(__Bawk__spriteexplosion__) */

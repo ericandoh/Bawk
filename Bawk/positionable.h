@@ -51,6 +51,7 @@ public:
     void get_mvp(fmat4* dst);
     
     void set_pos(fvec3 p);
+    Rotation* get_angle();
     void set_angle(Rotation a);
     void set_pos_and_angle(fvec3 p, Rotation a);
     
