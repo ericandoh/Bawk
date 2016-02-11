@@ -42,6 +42,7 @@ void SpriteManager::remove_sprite(SpriteRender* sprite) {
             break;
         }
     }
-    // free memory...
-    delete sprite;
+    // TODO sprites are leaking memory...and a simple delete won't do!
+    sprite->multiplexer = 0;
+    // delete sprite;
 }
