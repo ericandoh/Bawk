@@ -235,8 +235,6 @@ void CursorScanTool::step(Game* game, int ms) {
 }
 
 void CursorScanTool::render_item() {
-    // TODO
-    OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
     //UIHelper::draw_square_color(SELECTED_COLOR);
     UIHelper::draw_square_voxel(255);
 }

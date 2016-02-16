@@ -56,6 +56,7 @@ void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {
     
     // drawing from block texture
     OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
+    OGLAttr::current_shader->bind_texture(Textures::TextureName::TILES);
     render->render_rectangle(transform, radius, radius, textures);
 }
 

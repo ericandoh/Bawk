@@ -26,8 +26,7 @@
 #include <stdio.h>
 #include "importopengl.h"
 #include "basic_types.h"
-#include "superobject.h"
-#include "block.h"
+#include "texture_loader.h"
 
 // --- Some Globals ---
 
@@ -56,11 +55,12 @@ enum LightDrawMode {
 class FirstPassShaderProgram: public ShaderProgram {
 public:
     void set_coord_attribute(GLenum type);
-    virtual void set_texture_coord_attribute(GLenum type) { };
-    virtual void set_block_draw_mode(BlockDrawMode v) { };
-    virtual void set_shader_intensity(float m) { };
-    virtual void set_alpha_cutoff(float a) { };
-    virtual void set_enable_shadows(bool v) { };
+    virtual void set_texture_coord_attribute(GLenum type) EMPTY_FUNCTION;
+    virtual void set_block_draw_mode(BlockDrawMode v) EMPTY_FUNCTION;
+    virtual void set_shader_intensity(float m) EMPTY_FUNCTION;
+    virtual void set_alpha_cutoff(float a) EMPTY_FUNCTION;
+    virtual void set_enable_shadows(bool v) EMPTY_FUNCTION;
+    virtual void bind_texture(Textures::TextureName resource) EMPTY_FUNCTION;
 };
 
 // stage 1 of the deferred rendering
@@ -75,12 +75,16 @@ public:
     GLuint enable_shadows;
     GLuint tile_texture;
     
+    // to avoid excessive OpenGL calls
+    Textures::TextureName last_used_tex;
+    
     void set_transform_matrix(fmat4* view) override;
     void set_texture_coord_attribute(GLenum type) override;
     void set_block_draw_mode(BlockDrawMode v) override;
     void set_shader_intensity(float m) override;
     void set_alpha_cutoff(float a) override;
     void set_enable_shadows(bool v) override;
+    void bind_texture(Textures::TextureName resource) override;
 };
 
 // stage 2 of the deferred rendering
@@ -110,10 +114,6 @@ public:
 namespace OGLAttr {
     // vertex array object (for everythings!)
     extern GLuint vao;
-    
-    // handle to texture
-    extern GLuint tile_texture;
-    extern GLuint active_tile_texture;
     
     extern GLuint common_vertex_vbo;
     extern GLuint common_texture_vbo;

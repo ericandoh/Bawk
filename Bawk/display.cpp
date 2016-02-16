@@ -9,24 +9,27 @@
  */
 
 #include "display.h"
-#include "worldrender.h"
 
-// REMOVEME
-#include "texture_loader.h"
-#include "gbuffer.h"
-#include "shader_loader.h"
-#include "worldrender.h"
-#include "shadow_mapper.h"
-#include "texture_allocator.h"
-
-#include "opengl_debug.h"
-
-// TODO multiplex this input for windows
+// TOFU multiplex this input for windows
+// SDL/OpenGL imports
 #include "importsdl.h"
 #include "importopengl.h"
 
-#include "threadmanager.h"
+// resources
+#include "texture_loader.h"
 #include "textrender.h"
+#include "threadmanager.h"
+
+// display-related
+#include "gbuffer.h"
+#include "shadow_mapper.h"
+
+// shaders
+#include "shader_loader.h"
+#include "worldrender.h"
+
+// debug
+#include "opengl_debug.h"
 
 // --- Screen Dimensions ---
 // physical px width on screen
@@ -206,6 +209,7 @@ int init_display() {
     }
     check_for_error();
     
+    load_textures();
     init_threader();
     init_string_resources();
     
@@ -221,6 +225,8 @@ void close_render_loop() {
 }
 
 void display_close() {
+    clean_string_resources();
+    cleanup_textures();
     glDeleteProgram(OGLAttr::geometry_shader.program);
     glDeleteProgram(OGLAttr::lighting_shader.program);
     glDeleteProgram(OGLAttr::shadow_shader.program);
@@ -237,9 +243,6 @@ void render_geometry() {
     
     // disable blending. we have only RGB (not RGBA)
     glDisable(GL_BLEND);
-    
-    // bind our tile texture to our uniform
-    glUniform1i(OGLAttr::geometry_shader.tile_texture, OGLAttr::active_tile_texture);
     
     int width, height;
     get_window_size(&width, &height);

@@ -106,7 +106,9 @@ int GameInfoDataObject::read_blocks(Json::Value root) {
             }
             else if (block["texture"].type() == Json::stringValue) {
                 block_model_info[block_id] = ModelData();
-                read_obj_file(&(block_model_info[block_id]), block["texture"].asString());
+                read_obj_file(&(block_model_info[block_id]),
+                              block["texture"].asString(),
+                              get_texturename_from_string(json_read_string_or_empty(block["resource"])));
                 info->is_model = true;
             }
             else if (block["texture"].type() == Json::arrayValue) {
@@ -182,7 +184,9 @@ int GameInfoDataObject::read_models(Json::Value root) {
             info->resistance = model["resistance"].asInt();
         }
         if (model.isMember("texture")) {
-            read_obj_file(info, model["texture"].asString());
+            read_obj_file(info,
+                          model["texture"].asString(),
+                          get_texturename_from_string(json_read_string_or_empty(model["resource"])));
         }
         if (model.isMember("weight") && model["weight"].type() == Json::intValue) {
             info->weight = model["weight"].asInt();

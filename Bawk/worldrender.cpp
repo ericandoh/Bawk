@@ -8,7 +8,6 @@
 
 #include <cstdlib>
 #include <glm/gtc/type_ptr.hpp>
-#include "texture_loader.h"
 #include "worldrender.h"
 #include "chunkrender.h"
 #include "cursorblock.h"
@@ -21,8 +20,6 @@ namespace OGLAttr {
     // shaders and attributes set by shader loading program
     // put these inside a namespace or some shizzle
     GLuint vao;
-    GLuint tile_texture;
-    GLuint active_tile_texture;
     
     GLuint common_vertex_vbo;
     GLuint common_texture_vbo;
@@ -64,6 +61,10 @@ void GeometryShaderProgram::set_texture_coord_attribute(GLenum type) {
 void GeometryShaderProgram::set_block_draw_mode(BlockDrawMode v) {
     glUniform1i(draw_mode, v);
     check_for_error();
+    if (v == BlockDrawMode::VOXEL) {
+        // bind to tiles
+        bind_texture(Textures::TextureName::TILES);
+    }
 }
 
 void GeometryShaderProgram::set_shader_intensity(float m) {
@@ -86,17 +87,19 @@ void GeometryShaderProgram::set_enable_shadows(bool v) {
     }
 }
 
+void GeometryShaderProgram::bind_texture(Textures::TextureName resource) {
+    if (resource == last_used_tex) {
+        return;
+    }
+    int active_texture_unit = bind_and_get_active_texture_unit(resource);
+    glUniform1i(tile_texture, active_texture_unit);
+    last_used_tex = resource;
+}
 
 int world_load_resources() {
     check_for_error();
     
-    active_tile_texture = reserve_n_active_textures(1);
-    set_active_texture(active_tile_texture);
-    // Load textures
-    tile_texture = load_tiles();
-    glBindTexture(GL_TEXTURE_2D, tile_texture);
-    
-    printf("Loaded tile texture\n");
+    OGLAttr::geometry_shader.last_used_tex = Textures::TextureName::TOTAL_TEXTURES;
     
     glEnable(GL_CULL_FACE);
     
@@ -121,8 +124,6 @@ int world_load_resources() {
 void world_free_resources() {
     free_game_info();
     delete_all_buffers();
-    
-    glDeleteTextures(1, &tile_texture);
     
     glDeleteBuffers(1, &common_vertex_vbo);
     glDeleteBuffers(1, &common_texture_vbo);

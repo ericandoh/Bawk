@@ -28,7 +28,9 @@ SpriteMultiplexer* get_sprite_model(Json::Value node) {
     SpriteModel* model = new SpriteModel();
     if (node.isMember("texture")) {
         std::string texture_src = json_read_string_or_empty(node["texture"]);
-        read_obj_file(model->model, texture_src);
+        read_obj_file(model->model,
+                      texture_src,
+                      get_texturename_from_string(json_read_string_or_empty(node["resource"])));
     }
     return model;
 }

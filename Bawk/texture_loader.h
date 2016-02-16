@@ -25,10 +25,20 @@
 #define __Bawk__texture_loader__
 
 #include <stdio.h>
+#include <string>
 #include "importopengl.h"
 
-GLuint load_tiles();
-GLuint load_texts();
+namespace Textures {
+    enum TextureName {
+        TILES, FONTS, SKYBOX,
+        TOTAL_TEXTURES
+    };
+}
+
+void load_textures();
+Textures::TextureName get_texturename_from_string(std::string name);
+int bind_and_get_active_texture_unit(Textures::TextureName resource);
 void save_tile();
+void cleanup_textures();
 
 #endif /* defined(__Bawk__texture_loader__) */

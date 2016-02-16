@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Eric Oh. All rights reserved.
 //
 
+#include "chunkrender.h"
 #include <stdio.h>
 #include <cstring>
 #include "importopengl.h"
@@ -523,6 +524,7 @@ void RenderableChunk::render() {
     if (model_vertices.size() > 0) {
         // draw blocks that are models
         OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
+        OGLAttr::current_shader->bind_texture(Textures::TextureName::TILES);
         int num_triangles = (int)model_vertices.size();
         
         glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);

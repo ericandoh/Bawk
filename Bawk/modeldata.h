@@ -12,10 +12,11 @@
 #include <stdio.h>
 #include <vector>
 #include "basic_types.h"
+#include "texture_loader.h"
 
 class ModelData {
 public:
-    int texture;
+    Textures::TextureName texture;
     std::vector<fvec3> model_vertices;
     std::vector<fvec3> model_normals;
     std::vector<fvec3> model_uvs;

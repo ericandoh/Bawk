@@ -9,8 +9,6 @@
 #include "textrender.h"
 #include <map>
 #include "worldrender.h"
-#include "texture_allocator.h"
-#include "texture_loader.h"
 
 const std::string TEXT_TEXTURE_STRING = "0123456789abcdefghijklmnopqrstuvwxyz?!.,";
 const int TEXT_TEXTURE_CHARS_PER_ROW = 10;
@@ -20,27 +18,16 @@ const int TEXT_TEXTURE_ROW_COUNT = 4;
 const float TEXT_TEXTURE_RATIO = 0.5f;
 
 class TextRenderResource {
-    int active_text_texture;
-    GLuint text_texture;
-    
     int alphabet_start;
     int number_start;
     std::map<char, int> char_to_index;
 public:
     void init();
-    void bind_text_texture();
     void draw_char(char v);
-    void revert_text_texture();
     void clean();
 };
 
 void TextRenderResource::init() {
-    active_text_texture = reserve_n_active_textures(1);
-    set_active_texture(active_text_texture);
-    // Load textures
-    GLuint text_texture = load_texts();
-    glBindTexture(GL_TEXTURE_2D, text_texture);
-    
     for (int i = 0; i < TEXT_TEXTURE_STRING.length(); i++) {
         char character = TEXT_TEXTURE_STRING[i];
         char_to_index[character] = i;
@@ -52,11 +39,6 @@ void TextRenderResource::init() {
         }
     }
 }
-
-void TextRenderResource::bind_text_texture() {
-    glUniform1i(OGLAttr::geometry_shader.tile_texture, active_text_texture);
-}
-
 
 bool is_alphabet(char x) {
     return x >= 'a' && x <= 'z';
@@ -96,6 +78,7 @@ void TextRenderResource::draw_char(char v) {
     float uppery = 1.0f - yc * 1.0f / TEXT_TEXTURE_ROW_COUNT;
     
     OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
+    OGLAttr::current_shader->bind_texture(Textures::TextureName::FONTS);
     float vertex[6][3] = {
         {-1, -1, 0},
         {1, -1, 0},
@@ -125,12 +108,7 @@ void TextRenderResource::draw_char(char v) {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void TextRenderResource::revert_text_texture() {
-    glUniform1i(OGLAttr::geometry_shader.tile_texture, OGLAttr::active_tile_texture);
-}
-
 void TextRenderResource::clean() {
-    glDeleteTextures(1, &text_texture);
     char_to_index.clear();
 }
 
@@ -145,18 +123,15 @@ void init_string_resources() {
 }
 
 void render_string(std::string text, int x, int y, int height) {
-    text_resource.bind_text_texture();
     int width = height * TEXT_TEXTURE_RATIO;
     for (int i = 0; i < text.length(); i++) {
         char v = text[i];
         glViewport(x + i * width, y - height, width, height);
         text_resource.draw_char(v);
     }
-    text_resource.revert_text_texture();
 }
 
 void render_string(std::string text, int xl, int yl, int xu, int yu, int height) {
-    text_resource.bind_text_texture();
     int width = height * TEXT_TEXTURE_RATIO;
     int row = 0;
     for (int i = 0; i < text.length(); i++) {
@@ -172,7 +147,6 @@ void render_string(std::string text, int xl, int yl, int xu, int yu, int height)
         glViewport(xl + i * width, yl + (row - 1) * height, width, height);
         text_resource.draw_char(v);
     }
-    text_resource.revert_text_texture();
 }
 
 void clean_string_resources() {

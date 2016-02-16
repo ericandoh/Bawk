@@ -28,7 +28,7 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
     return elems;
 }
 
-void read_obj_file(ModelData* dst, std::string obj_filename) {
+void read_obj_file(ModelData* dst, std::string obj_filename, Textures::TextureName tex) {
     // taken shamelessly from http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
     
     //obj_filename = "/Users/Eric/Documents/dev/BawkAssets/simplebox.obj";
@@ -117,4 +117,8 @@ void read_obj_file(ModelData* dst, std::string obj_filename) {
         }
     }
     file.close();
+    if (tex == Textures::TextureName::TOTAL_TEXTURES) {
+        tex = Textures::TextureName::TILES;
+    }
+    dst->texture = tex;
 }

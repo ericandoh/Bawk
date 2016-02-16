@@ -12,6 +12,7 @@
 void ModelData::render() {
     // draw the model elements
     OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
+    OGLAttr::current_shader->bind_texture(texture);
     int num_triangles = (int)model_vertices.size();
     
     glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);

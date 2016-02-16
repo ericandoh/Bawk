@@ -8,6 +8,9 @@
 
 #include "uirenderhelper.h"
 #include "worldrender.h"
+#include "settings.h"
+
+// TODO combine this with basicrender
 
 using namespace UIHelper;
 
@@ -77,6 +80,7 @@ namespace UIHelper {
         
         set_unitary_transform_matrix();
         OGLAttr::current_shader->set_block_draw_mode(BlockDrawMode::UV);
+        OGLAttr::current_shader->bind_texture(Textures::TextureName::TILES);
         
         glBindBuffer(GL_ARRAY_BUFFER, OGLAttr::common_vertex_vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof vertex, vertex, GL_DYNAMIC_DRAW);

@@ -10,6 +10,7 @@
 
 #include "basicrender.h"
 #include "worldrender.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 GLbyte filled_cube_geometry[36][3] = {
     {-1,-1,-1},

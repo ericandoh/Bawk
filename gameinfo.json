@@ -172,7 +172,7 @@
         },
         "3": {
             "name": "skybox",
-            "properties": [{"id": "model", "texture": "skybox.obj"}]
+            "properties": [{"id": "model", "texture": "skybox.obj", "resource": "skybox"}]
         },
         "4": {
             "name": "allsupportedfeatures",

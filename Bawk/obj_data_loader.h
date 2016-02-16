@@ -11,9 +11,10 @@
 
 #include <stdio.h>
 #include <string>
+#include "texture_loader.h"
 
 class ModelData;
 
-void read_obj_file(ModelData* dst, std::string obj_filename);
+void read_obj_file(ModelData* dst, std::string obj_filename, Textures::TextureName tex);
 
 #endif /* defined(__Bawk__obj_data_loader__) */

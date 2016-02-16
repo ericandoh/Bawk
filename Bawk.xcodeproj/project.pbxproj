@@ -18,6 +18,7 @@
 		0710EE331C3DA31A0007F5C4 /* positionable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0710EE311C3DA31A0007F5C4 /* positionable.cpp */; };
 		0710EE361C3DB8460007F5C4 /* cursorselector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0710EE341C3DB8460007F5C4 /* cursorselector.cpp */; };
 		0712E1271C06EB8E008AF269 /* block_orientation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0712E1251C06EB8E008AF269 /* block_orientation.cpp */; };
+		0713E2E81C73A653009BF0C6 /* skybox.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0713E2E71C739658009BF0C6 /* skybox.png */; };
 		0713FF531C0FD88B0069FDAF /* entity_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0713FF521C0FD88B0069FDAF /* entity_type.cpp */; };
 		07141EC61C31ED03009CD608 /* texture_allocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 07141EC41C31ED03009CD608 /* texture_allocator.cpp */; };
 		07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */; };
@@ -121,6 +122,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				0713E2E81C73A653009BF0C6 /* skybox.png in CopyFiles */,
 				0768198F1C5ADA8200D9218F /* fonts.png in CopyFiles */,
 				0715FFB31C45C6A9008349F7 /* gameplay.json in CopyFiles */,
 				07149F481C2A0388002D9A78 /* shadows_vertex_shader.glsl in CopyFiles */,
@@ -160,6 +162,7 @@
 		0710EE351C3DB8460007F5C4 /* cursorselector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorselector.h; sourceTree = "<group>"; };
 		0712E1251C06EB8E008AF269 /* block_orientation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block_orientation.cpp; sourceTree = "<group>"; };
 		0712E1261C06EB8E008AF269 /* block_orientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block_orientation.h; sourceTree = "<group>"; };
+		0713E2E71C739658009BF0C6 /* skybox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = skybox.png; sourceTree = "<group>"; };
 		0713FF521C0FD88B0069FDAF /* entity_type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = entity_type.cpp; sourceTree = "<group>"; };
 		07141EC41C31ED03009CD608 /* texture_allocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture_allocator.cpp; sourceTree = "<group>"; };
 		07141EC51C31ED03009CD608 /* texture_allocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture_allocator.h; sourceTree = "<group>"; };
@@ -468,6 +471,7 @@
 				071A040C1BD9875C003BF218 /* gameinfo.json */,
 				0715FFB21C45C6A0008349F7 /* gameplay.json */,
 				0766EAF41BBF7CDA00477144 /* tiles.png */,
+				0713E2E71C739658009BF0C6 /* skybox.png */,
 				0768198E1C5AD61B00D9218F /* fonts.png */,
 				0710265D1C275EAD00BBC711 /* shadows_frag_shader.glsl */,
 				07149F471C2A037F002D9A78 /* shadows_vertex_shader.glsl */,
