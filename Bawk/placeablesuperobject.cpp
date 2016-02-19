@@ -8,9 +8,9 @@
 
 #include "placeablesuperobject.h"
 #include "game_info_loader.h"
-#include "world.h"
+#include "player.h"
 #include "gametemplate.h"
-#include "game.h"
+#include "common_accessor.h"
 #include "modelentityrender.h"
 
 // for game templates
@@ -94,7 +94,7 @@ void PlaceableSuperObject::update_render(fvec3* start_pos) {
     // do nothing
 }
 
-void PlaceableSuperObject::step(Game* game, int ms) {
+void PlaceableSuperObject::step(int ms) {
     // this item is placeable so don't interact it
 }
 
@@ -160,7 +160,8 @@ fvec3 PlaceableSuperObject::calculate_center_position(BlockOrientation pointing)
     }
 }
 
-bool PlaceableSuperObject::set_blocks(Player* player, World* world, SuperObject* object) {
+bool PlaceableSuperObject::set_blocks(Player* player, SuperObject* object) {
+    World* world = get_world();
     if (world->will_collide_with_anything(this)) {
         return false;
     }

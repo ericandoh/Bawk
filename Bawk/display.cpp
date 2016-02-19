@@ -208,15 +208,19 @@ int init_display() {
         return 1;
     }
     check_for_error();
-    
+    // load our textures
     load_textures();
+    // initialize our threader
     init_threader();
+    // initialize font library resources
     init_string_resources();
+    // set up some shaders
+    world_load_resources();
     
     return 0;
 }
 
-void set_current_game(Displayable* display) {
+void set_current_displayable(Displayable* display) {
     current_display = display;
 }
 
@@ -225,7 +229,11 @@ void close_render_loop() {
 }
 
 void display_close() {
+    // free some shader related stuff
+    world_free_resources();
+    // free font library resources
     clean_string_resources();
+    // free textures
     cleanup_textures();
     glDeleteProgram(OGLAttr::geometry_shader.program);
     glDeleteProgram(OGLAttr::lighting_shader.program);

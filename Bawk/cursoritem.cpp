@@ -9,8 +9,8 @@
 #include "cursoritem.h"
 #include "entity.h"
 #include "blocktracer.h"
-#include "game.h"
 #include "gametemplate.h"
+#include "client_accessor.h"
 
 CursorItem::CursorItem(CursorItemInfo* i) {
     info = i;
@@ -19,11 +19,12 @@ CursorItem::CursorItem(CursorItemInfo* i) {
     pointing_pos = ivec3(0,0,0);
 }
 
-void CursorItem::update_pointing_position(Game* game, ivec3 dimensions) {
+void CursorItem::update_pointing_position(ivec3 dimensions) {
     if (get_pointing_position(&pointing_pos, &pointing_orientation, dimensions)) {
         show_item = true;
-        if (game->game_template) {
-            target = game->game_template;
+        GameTemplate* gtemplate = get_player()->game_template;
+        if (gtemplate) {
+            target = gtemplate;
         }
         else {
             Entity* at = BlockTracing::selected;
@@ -47,28 +48,6 @@ void CursorItem::update_pointing_position(Game* game, ivec3 dimensions) {
 
 void CursorItem::cleanup() {
     delete this;
-}
-
-// behaviour when this cursor item is clicked
-bool CursorItem::clicked(Game* game, Action mouse) {
-    return false;
-}
-
-// behaviour when this cursor item is entered
-bool CursorItem::confirmed(Game* game) {
-    return false;
-}
-
-bool CursorItem::canceled(Game* game) {
-    return false;
-}
-
-bool CursorItem::handle_movement(ivec3 dir) {
-    return false;
-}
-
-bool CursorItem::handle_rotation() {
-    return false;
 }
 
 int CursorItem::get_count() {

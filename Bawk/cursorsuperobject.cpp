@@ -8,7 +8,7 @@
 
 #include "cursorsuperobject.h"
 #include "blocktracer.h"
-#include "game.h"
+#include "client_accessor.h"
 #include "block.h"
 #include "gametemplate.h"
 #include "modelentityrender.h"
@@ -61,7 +61,7 @@ void CursorSuperObject::reset() {
     info->count = 3;
 }
 
-bool CursorSuperObject::clicked(Game* game, Action mouse) {
+bool CursorSuperObject::clicked(Action mouse) {
     if (!locked) {
         if (show_item) {
             locked = true;
@@ -94,16 +94,16 @@ void CursorSuperObject::spend_resources(Player* player) {
     }
 }
 
-bool CursorSuperObject::confirmed(Game* game) {
+bool CursorSuperObject::confirmed() {
     if (!locked) {
         return false;
     }
     else {
         // check if we have enough resources
-        if (has_sufficient_resources(game->player)) {
-            if (set_blocks(game->player, game->world, target)) {
+        if (has_sufficient_resources(get_player())) {
+            if (set_blocks(get_player(), target)) {
                 locked = false;
-                spend_resources(game->player);
+                spend_resources(get_player());
             }
         }
         else {
@@ -113,7 +113,7 @@ bool CursorSuperObject::confirmed(Game* game) {
     }
 }
 
-bool CursorSuperObject::canceled(Game* game) {
+bool CursorSuperObject::canceled() {
     if (locked) {
         locked = false;
         return true;
@@ -130,14 +130,14 @@ bool CursorSuperObject::handle_movement(ivec3 dir) {
     return true;
 }
 
-void CursorSuperObject::step(Game* game, int ms) {
+void CursorSuperObject::step(int ms) {
     // try locking this object into position
     if (!locked) {
         ivec3 upper;
         upper.x = bounds.upper.x - bounds.lower.x;
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
-        update_pointing_position(game, upper);
+        update_pointing_position(upper);
         set_pos(fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z));
     }
 }

@@ -690,9 +690,9 @@ RenderableModel* get_game_model(uint16_t model_id) {
     return &(game_data_object->model_info[model_id]);
 }
 
-bool call_block_mouse_callback_from(block_type* block_id, Game* game, Entity* ent, ivec3 pos, Action a) {
+bool call_block_mouse_callback_from(block_type* block_id, Player* player, Entity* ent, ivec3 pos, Action a) {
     block_callback_func func = game_data_object->block_info[block_id->type].mouse_callbacks[a];
-    return (*func)(game, ent, block_id, pos);
+    return (*func)(player, ent, block_id, pos);
 }
 
 void get_block_keyboard_callback_from(block_type block_id, std::map<Action, block_callback_func> &funcs) {

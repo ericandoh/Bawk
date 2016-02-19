@@ -7,8 +7,9 @@
 //
 
 #include "modelactionmount.h"
-#include "game.h"
+#include "common_accessor.h"
 #include "entity.h"
+#include "player.h"
 
 class ModelMountActionMultiplexer: public ModelActionMultiplexer {
 public:
@@ -21,14 +22,14 @@ bool ModelMountActionMultiplexer::model_callback_clicked_secondary(MODEL_FUNCTIO
         fvec3 piece_pos = piece->get_center_offset() + fvec3(0.0f, 0.75f, 0.0f);
         //if (piece->parent)
         piece->transform_into_world_coordinates(&piece_pos, piece_pos.x, piece_pos.y, piece_pos.z);
-        game->player->set_mount((SuperObject*)owner, piece_pos);
+        player->set_mount((SuperObject*)owner, piece_pos);
         return true;
     }
     return false;
 }
 
 bool ModelMountActionMultiplexer::model_callback_mount(MODEL_FUNCTION_ARGS) {
-    game->player->unmount(game->world);
+    player->unmount();
     return true;
 }
 

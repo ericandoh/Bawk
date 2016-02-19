@@ -331,8 +331,8 @@ bool RenderableSuperObject::get_hurt(float x, float y, float z, float dmg, Break
     return true;
 }
 
-void RenderableSuperObject::step(Game* game, int ms) {
-    Entity::step(game, ms);
+void RenderableSuperObject::step(int ms) {
+    Entity::step(ms);
 }
 
 void RenderableSuperObject::render(fmat4* transform) {

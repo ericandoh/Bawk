@@ -27,24 +27,19 @@
 #include "placeablesuperobject.h"
 
 class CursorSuperObject;
-class World;
-class Game;
 
 // represents a template in the making
 class GameTemplate: public PlaceableSuperObject {
     Rotation get_vehicle_orientation();
-    World* world;
 public:
-    GameTemplate(World* w);
+    GameTemplate();
     
     // --- SuperObject ---
     // void render(fmat4* transform) override;
     RenderableChunk* get_chunk(int x, int y, int z) override;
     
     // --- GameTemplate ---
-    CursorSuperObject* create_from_template(Player* player, World* world);
-    void publish(Game* game);
-    void unpublish(World* world);
+    CursorSuperObject* create_from_template();
 };
 
 #endif /* defined(__Bawk__gametemplate__) */

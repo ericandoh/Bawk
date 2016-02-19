@@ -11,7 +11,7 @@
 #include "json_reader_helper.h"
 #include "entity.h"
 #include "superobject.h"
-#include "game.h"
+#include "common_accessor.h"
 
 class ModelMobAiSimpleActionMultiplexer: public ModelActionMultiplexer {
     bool targetting;
@@ -68,7 +68,7 @@ bool ModelMobAiSimpleActionMultiplexer::model_callback_step(MODEL_FUNCTION_ARGS)
     }
     else {
         // scan for a target
-        target = get_target(game->world->base_world, owner);
+        target = get_target(get_world()->base_world, owner);
         if (target) {
             // if target found, set it
             targetting = true;
@@ -89,11 +89,11 @@ bool ModelMobAiSimpleActionMultiplexer::model_callback_step(MODEL_FUNCTION_ARGS)
         if (fabsf(height_difference) > 4.0f) {
             if (height_difference < 0) {
                 // my target's under me, descend
-                owner->block_keyboard_callback(game, Action::MOVE_DOWN, owner, ms);
+                owner->block_keyboard_callback(player, Action::MOVE_DOWN, owner, ms);
             }
             else {
                 // else, move up
-                owner->block_keyboard_callback(game, Action::MOVE_UP, owner, ms);
+                owner->block_keyboard_callback(player, Action::MOVE_UP, owner, ms);
             }
         }
         else {
@@ -119,23 +119,23 @@ bool ModelMobAiSimpleActionMultiplexer::model_callback_step(MODEL_FUNCTION_ARGS)
         if (dst * fabsf(desired_angle) < 2.5f) {
             if (at_appropriate_height) {
                 // we're in an optimal position. fire away!
-                owner->block_keyboard_callback(game, Action::CLICK_MAIN, owner, ms);
+                owner->block_keyboard_callback(player, Action::CLICK_MAIN, owner, ms);
             }
         }
         else if (desired_angle > 0) {
             // turn right
-            owner->block_keyboard_callback(game, Action::MOVE_RIGHT, owner, ms);
+            owner->block_keyboard_callback(player, Action::MOVE_RIGHT, owner, ms);
         }
         else {
             // turn left
-            owner->block_keyboard_callback(game, Action::MOVE_LEFT, owner, ms);
+            owner->block_keyboard_callback(player, Action::MOVE_LEFT, owner, ms);
         }
         if (dst > 20.0f) {
             if (fabsf(desired_angle) < M_PI / 8.0f) {
-                owner->block_keyboard_callback(game, Action::MOVE_FORWARD, owner, ms);
+                owner->block_keyboard_callback(player, Action::MOVE_FORWARD, owner, ms);
             }
             else if (fabsf(desired_angle) > M_PI * 7.0f / 8.0f) {
-                owner->block_keyboard_callback(game, Action::MOVE_BACKWARD, owner, ms);
+                owner->block_keyboard_callback(player, Action::MOVE_BACKWARD, owner, ms);
             }
         }
     }

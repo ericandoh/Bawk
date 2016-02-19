@@ -80,7 +80,7 @@ public:
     // --- Entity ---
     virtual Entity* poke(float x, float y, float z) override;
     bool get_hurt(float x, float y, float z, float dmg, BreakablePolicy policy, Player* player) override;
-    virtual void step(Game* game, int ms) override;
+    virtual void step(int ms) override;
     virtual void render(fmat4* transform) override;
     virtual void render_lights(fmat4* transform, fvec3 player_pos) override;
     virtual void update_render(fvec3* player_pos) override;

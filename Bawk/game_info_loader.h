@@ -53,7 +53,7 @@ void free_game_info();
 BlockInfo* get_block_info(uint16_t block_id);
 
 // deprecate below, or move to a BlockInfo class...
-bool call_block_mouse_callback_from(block_type* block_id, Game* game, Entity* ent, ivec3 pos, Action a);
+bool call_block_mouse_callback_from(block_type* block_id, Player* player, Entity* ent, ivec3 pos, Action a);
 void get_block_keyboard_callback_from(block_type block_id, std::map<Action, block_callback_func> &funcs);
 
 bool has_block_mouse_action(block_type block_id);

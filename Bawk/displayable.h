@@ -26,7 +26,6 @@
 
 class Displayable {
 public:
-    virtual int init() = 0;
     virtual void render() = 0;
     virtual void render_lights() { };
     virtual void render_shadows() { };

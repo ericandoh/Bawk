@@ -52,7 +52,7 @@ void SpawnEvent::action(World* world) {
     CursorSuperObject* item = (CursorSuperObject*)get_recipe_cursoritem_from(recipe_id);
     // set position
     item->set_pos(position);
-    item->set_blocks(0, world, 0);
+    //item->set_blocks(0, 0);
     item->cleanup();
 }
 

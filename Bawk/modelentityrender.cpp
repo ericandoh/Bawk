@@ -73,27 +73,27 @@ void ModelEntity::drop_loot(Player* slayer) {
     slayer->inventory->add_models(model_id, 1);
 }
 
-bool ModelEntity::block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) {
+bool ModelEntity::block_keyboard_callback(Player* player, Action key, Entity* ent, int ms) {
     if (multiplexer)
-        return multiplexer->model_callback(game, ent, this, key, ms);
+        return multiplexer->model_callback(player, ent, this, key, ms);
     return false;
 }
 
-bool ModelEntity::block_mouse_callback(Game* game, Action button, Entity* ent) {
+bool ModelEntity::block_mouse_callback(Player* player, Action button, Entity* ent) {
     if (multiplexer) {
         if (button == Action::CLICK_MAIN) {
-            return multiplexer->model_callback_clicked_main(game, ent, this, 0);
+            return multiplexer->model_callback_clicked_main(player, ent, this, 0);
         }
         else if (button == Action::CLICK_SECONDARY) {
-            return multiplexer->model_callback_clicked_secondary(game, ent, this, 0);
+            return multiplexer->model_callback_clicked_secondary(player, ent, this, 0);
         }
     }
     return false;
 }
 
-void ModelEntity::step(Game* game, int ms) {
+void ModelEntity::step(int ms) {
     if (multiplexer)
-        multiplexer->model_callback_step(game, this, this, ms);
+        multiplexer->model_callback_step(0, this, this, ms);
 }
 
 void ModelEntity::render(fmat4* transform) {
@@ -131,9 +131,9 @@ void ModelEntity::update_render(fvec3* player_pos) {
 // int ModelEntity::get_collision_level() {}
 // bool ModelEntity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
 
-bool ModelEntity::after_collision(Game* game) {
+bool ModelEntity::after_collision() {
     if (multiplexer)
-        return multiplexer->model_callback_collision(game, this, this, 0);
+        return multiplexer->model_callback_collision(0, this, this, 0);
     return false;
 }
 

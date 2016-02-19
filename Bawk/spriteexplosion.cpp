@@ -11,7 +11,7 @@
 #include "worldrender.h"
 #include "json_reader_helper.h"
 #include "json/json.h"
-#include "game.h"
+#include "client_accessor.h"
 
 class SpriteExplosiveRenderable: public SpriteMultiplexer {
 public:
@@ -19,7 +19,7 @@ public:
     float start_radius, end_radius;
     
     SpriteExplosiveRenderable();
-    void step(Game* game, int ms, SpriteRender* render) override;
+    void step(int ms, SpriteRender* render) override;
     void render(fmat4* transform, SpriteRender* render) override;
     
     SpriteMultiplexer* copy() override;
@@ -31,9 +31,9 @@ SpriteExplosiveRenderable::SpriteExplosiveRenderable() {
     end_radius = 1;
 }
 
-void SpriteExplosiveRenderable::step(Game* game, int ms, SpriteRender* render) {
+void SpriteExplosiveRenderable::step(int ms, SpriteRender* render) {
     // bind a rectangle pointing in direction of player, at pos
-    render->set_to_face_player(game->player);
+    render->set_to_face_player(get_player());
 }
 
 void SpriteExplosiveRenderable::render(fmat4 *transform, SpriteRender *render) {

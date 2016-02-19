@@ -15,13 +15,13 @@
 #include "block.h"
 #include "game_actions.h"
 
-class Game;
+class Player;
 class Entity;
 
 // callback functions for blocks
 // @param owner: the top level object
 // @param rwc: the rwc position
-typedef bool (*block_callback_func)(Game* game, Entity* owner, block_type* blk, ivec3 rwc);
+typedef bool (*block_callback_func)(Player* game, Entity* owner, block_type* blk, ivec3 rwc);
 
 // used by gameloader to get appropriate action functions
 void get_block_mouse_callback_for(std::string name, std::map<Action, block_callback_func> &action_map);

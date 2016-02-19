@@ -30,7 +30,6 @@
 #include "base_world.h"
 #include "worldweather.h"
 
-class Game;
 class Player;
 
 class World {
@@ -48,7 +47,7 @@ public:
     
     int load_self();
     void save_self();
-    void render(fmat4* transform, Player* player);
+    void render(fmat4* transform);
     void render_lights(fmat4* transform, fvec3 player_pos);
     void render_background(fmat4* transform);
     void set_light_camera(Player* player);
@@ -61,7 +60,7 @@ public:
     void add_entity(Entity* entity);
     void add_event(WorldEvent* event);
     
-    void step(Game* game, int ms);
+    void step(int ms);
     
     bool will_collide_with_anything(Entity* superobject);
     SuperObject* create_superobject(Player* player);

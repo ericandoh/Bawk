@@ -7,15 +7,15 @@
 //
 
 #include "gametemplate.h"
-#include "game.h"
 #include "cursorsuperobject.h"
 #include "world.h"
 #include "modelentityrender.h"
 #include "entity_loader.h"
 
-GameTemplate::GameTemplate(World* w) {
+#include "client_accessor.h"
+
+GameTemplate::GameTemplate() {
     entity_class = EntityType::GAMETEMPLATE;
-    world = w;
     selected = true;
 }
 
@@ -38,13 +38,14 @@ Rotation GameTemplate::get_vehicle_orientation() {
     return result;
 }
 
-CursorSuperObject* GameTemplate::create_from_template(Player* player, World* world) {
+CursorSuperObject* GameTemplate::create_from_template() {
     printf("Publishing template!\n");
     if (!block_counter && entities.size() <= 1) {
         printf("no blocks/entities to publish...\n");
         return 0;
     }
     this->print_debug();
+    Player* player = get_player();
     // package our blocks into a cursorsuperobject
     CursorItemInfo* info = new CursorItemInfo((uint32_t)player->getID(),
                                               (uint32_t)player->assignID(),
@@ -76,12 +77,12 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
         object->set_pos(bounds.lower);
     }
     
-    if (set_blocks(player, world, object)) {
+    if (set_blocks(player, object)) {
         // save the object to disk
         // this doesn't actually delete the object from memory
         object->save_selfs();
         // tell object to publish to the world, the position/orientation should already be good
-        object->set_blocks(player, world, world->base_world);
+        object->set_blocks(player, parent);
         object->print_debug();
         
         player->inventory->add_custom(info);
@@ -89,17 +90,6 @@ CursorSuperObject* GameTemplate::create_from_template(Player* player, World* wor
     }
     delete object;
     return 0;
-}
-
-void GameTemplate::publish(Game* game) {
-    game->world->remove_entity(this);
-    for (Entity* ent: entities) {
-        delete_entity_from_memory(ent);
-    }
-}
-
-void GameTemplate::unpublish(World* world) {
-    world->remove_entity(this);
 }
 
 /*void GameTemplate::render(fmat4* transform) {

@@ -77,8 +77,8 @@ void BaseWorld::update_render(fvec3* player_pos) {
 
 // --- Entity ---
 
-void BaseWorld::step(Game* game, int ms) {
-    SuperObject::step(game, ms);
+void BaseWorld::step(int ms) {
+    SuperObject::step(ms);
 }
 
 bool BaseWorld::collides_with(Entity* other) {

@@ -11,8 +11,8 @@
 
 #include <stdio.h>
 
-class Game;
+class Client;
 
-void debug_action(Game* game);
+void debug_action(Client* client);
 
 #endif /* defined(__Bawk__debug_action__) */

@@ -491,11 +491,6 @@ bool Entity::collides_with(Entity* other, bounding_box* my_bounds, bounding_box*
     return false;
 }
 
-bool Entity::after_collision(Game* game) {
-    // do nothing
-    return false;
-}
-
 std::string Entity::get_save_path() {
     return "";
 }

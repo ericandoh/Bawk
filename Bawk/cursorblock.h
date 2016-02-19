@@ -39,14 +39,14 @@ public:
     CursorBlock(CursorItemInfo* i);
     
     // --- PlaceableObject
-    bool set_blocks(Player* player, World* world, SuperObject* object) override;
+    bool set_blocks(Player* player, SuperObject* object) override;
     
     // --- CursorItem ---
     void reset() override;
     
-    bool clicked(Game* game, Action mouse) override;
-    bool confirmed(Game* game) override;
-    void step(Game* game, int ms) override;
+    bool clicked(Action mouse) override;
+    bool confirmed() override;
+    void step(int ms) override;
     void render_item() override;
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;

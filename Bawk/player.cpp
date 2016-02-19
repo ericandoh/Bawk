@@ -9,6 +9,7 @@
 #include "block_loader.h"
 #include "superobject.h"
 #include "world.h"
+#include "common_accessor.h"
 
 #define PI 3.14159265358979323846
 
@@ -37,6 +38,7 @@ Player::Player(uint32_t p) {
     id_assign = VID_UNIQUE_START;
     inventory = new PlayerInventory();
     mount = 0;
+    game_template = 0;
 }
 
 Player::~Player() {
@@ -94,8 +96,8 @@ ivec3 Player::get_rounded_forward() {
     }
 }
 
-void Player::step(Game* game, int ms) {
-    RenderablePlayer::step(game, ms);
+void Player::step(int ms) {
+    RenderablePlayer::step(ms);
 }
 
 void Player::set_mount(SuperObject* m, fvec3 rwc) {
@@ -119,7 +121,7 @@ void Player::set_mount(SuperObject* m, fvec3 rwc) {
     printf_fvec3(get_world_pos());
 }
 
-bool Player::unmount(World* world) {
+bool Player::unmount() {
     if (!mount) {
         return true;
     }
@@ -128,7 +130,7 @@ bool Player::unmount(World* world) {
     mount->remove_entity(this);
     // try setting pos to about 2 blocks above current position
     set_pos(fvec3(pos.x, pos.y + 2.0f, pos.z));
-    if (world->will_collide_with_anything(this)) {
+    if (get_world()->will_collide_with_anything(this)) {
         // return false if we can't unmount...because not room for player
         set_pos(fvec3(pos.x, pos.y - 2.0f, pos.z));
         mount->add_entity(this);
@@ -138,7 +140,7 @@ bool Player::unmount(World* world) {
     mount = 0;
     can_collide = true;
     printf_fvec3(get_world_pos());
-    world->add_entity(this);
+    get_world()->add_entity(this);
     return true;
 }
 

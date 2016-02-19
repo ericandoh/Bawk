@@ -66,7 +66,6 @@ public:
     }
 };
 
-class Game;
 class Entity;
 class SuperObject;
 
@@ -80,7 +79,7 @@ protected:
     ivec3 pointing_pos;
     BlockOrientation pointing_orientation;
     
-    void update_pointing_position(Game* game, ivec3 dimensions);
+    void update_pointing_position(ivec3 dimensions);
     
 public:
     CursorItemInfo* info;
@@ -93,18 +92,18 @@ public:
     virtual void reset() EMPTY_FUNCTION;
     
     // behaviour when this cursor item is clicked
-    virtual bool clicked(Game* game, Action mouse);
-    virtual bool clicking(Game* game, Action mouse, int ms) EMPTY_BOOL_FUNCTION;
-    virtual bool pushed(Game* game, Action key) EMPTY_BOOL_FUNCTION;
+    virtual bool clicked(Action mouse) EMPTY_BOOL_FUNCTION;
+    virtual bool clicking(Action mouse, int ms) EMPTY_BOOL_FUNCTION;
+    virtual bool pushed(Action key) EMPTY_BOOL_FUNCTION;
     
     // behaviour when this cursor item is entered
-    virtual bool confirmed(Game* game);
-    virtual bool canceled(Game* game);
-    virtual bool handle_movement(ivec3 dir);
-    virtual bool handle_rotation();
+    virtual bool confirmed() EMPTY_BOOL_FUNCTION;
+    virtual bool canceled() EMPTY_BOOL_FUNCTION;
+    virtual bool handle_movement(ivec3 dir) EMPTY_BOOL_FUNCTION;
+    virtual bool handle_rotation() EMPTY_BOOL_FUNCTION;
     
     // behaviour to update at each step
-    virtual void step(Game* game, int ms) EMPTY_FUNCTION;
+    virtual void step(int ms) EMPTY_FUNCTION;
     
     // render the item with transform in a small box or whatnot
     virtual void render_item() = 0;

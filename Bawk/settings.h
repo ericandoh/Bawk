@@ -32,6 +32,11 @@
 
 #define MAX_HEALTH 1024
 
+const int VERSION = 4;
+
+// if the player moves more than 1 dimension away from previous location, update
+const float CHUNK_UPDATE_TRIGGER_DISTANCE = 16.0f;
+
 const unsigned int TILES_PER_TEXTURE = 16;
 
 const int CHUNK_RENDER_DIST = 7;

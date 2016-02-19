@@ -36,10 +36,10 @@ public:
     virtual void handle_block_addition(int x, int y, int z, block_type type) override;
     virtual void handle_block_removal(int x, int y, int z, block_type type) override;
     void update_render(fvec3* start_pos) override;
-    void step(Game* game, int ms) override;
+    void step(int ms) override;
     
     // --- PlaceableObject ---
-    bool set_blocks(Player* player, World* world, SuperObject* object) override;
+    bool set_blocks(Player* player, SuperObject* object) override;
 };
 
 #endif /* defined(__Bawk__placeablesuperobject__) */

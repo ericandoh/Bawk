@@ -7,7 +7,6 @@
 //
 
 #include "placeableobject.h"
-#include "game.h"
 #include "gametemplate.h"
 #include "worldrender.h"
 #include "blocktracer.h"

@@ -27,12 +27,12 @@ public:
     void reset() override;
     
     // behaviour when this cursor item is clicked
-    bool clicked(Game* game, Action mouse) override;
-    bool pushed(Game* game, Action key) override;
+    bool clicked(Action mouse) override;
+    bool pushed(Action key) override;
     
     // behaviour when this cursor item is entered
-    bool confirmed(Game* game) override;
-    bool canceled(Game* game) override;
+    bool confirmed() override;
+    bool canceled() override;
     
     // render the item with transform in a small box or whatnot
     void render_item() override;

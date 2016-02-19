@@ -8,7 +8,6 @@
 
 #include "importopengl.h"
 #include "blockaction.h"
-#include "game.h"
 #include "entity.h"
 
 #include "modelactionmount.h"
@@ -17,7 +16,7 @@
 #include "modelactionexplode.h"
 
 // ----- ALL BLOCK ACTIONS -----
-bool block_default_callback(Game* game, Entity* owner, block_type* blk, ivec3 rwc) {
+bool block_default_callback(Player* player, Entity* owner, block_type* blk, ivec3 rwc) {
     return true;
 }
 

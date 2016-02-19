@@ -12,7 +12,7 @@
 #include "uirenderhelper.h"
 
 #include "cursorsuperobject.h"
-#include "game.h"
+#include "client_accessor.h"
 #include "basicrender.h"
 
 const fvec3 SELECTING_COLOR = fvec3(0.5f, 0.0f, 0.0f);
@@ -29,7 +29,7 @@ void CursorScanTool::reset() {
     show_item = false;
 }
 
-bool CursorScanTool::clicked(Game* game, Action mouse) {
+bool CursorScanTool::clicked(Action mouse) {
     if (current_stage == ScanStages::SETTING_LOWER) {
         // we've selected a lower corner, upgrade
         if (show_item) {
@@ -56,7 +56,7 @@ bool CursorScanTool::clicked(Game* game, Action mouse) {
     return true;
 }
 
-bool CursorScanTool::pushed(Game* game, Action key) {
+bool CursorScanTool::pushed(Action key) {
     if (key == Action::MOUNTING) {
         if (current_stage == ScanStages::SELECTED) {
             current_stage = ScanStages::EXTENDING;
@@ -67,12 +67,12 @@ bool CursorScanTool::pushed(Game* game, Action key) {
     return false;
 }
 
-bool CursorScanTool::confirmed(Game* game) {
+bool CursorScanTool::confirmed() {
     if (current_stage == ScanStages::SELECTED) {
         // copies the area selected into the first cursorobject that is available
         // TODO copy entities as well
-        CursorItemInfo* info = new CursorItemInfo((uint32_t)game->player->getID(),
-                                                  (uint32_t)game->player->assignID(),
+        CursorItemInfo* info = new CursorItemInfo((uint32_t)get_player()->getID(),
+                                                  (uint32_t)get_player()->assignID(),
                                                   CursorType::CURSOR_SUPEROBJECT);
         CursorSuperObject* object = new CursorSuperObject(info);// all templates are made on the bar
         // TODO giraffes (center chunk and set position to box.lower + box.upper)
@@ -86,8 +86,8 @@ bool CursorScanTool::confirmed(Game* game) {
             }
         }
         // TOFU what if inventory is open and this gets executed...?
-        game->player->inventory->add_custom(info);
-        game->set_first_available(object);
+        get_player()->inventory->add_custom(info);
+        get_client()->set_first_available(object);
         current_stage = ScanStages::SETTING_LOWER;
     }
     else if (current_stage == ScanStages::EXTENDED) {
@@ -114,7 +114,7 @@ bool CursorScanTool::confirmed(Game* game) {
     return true;
 }
 
-bool CursorScanTool::canceled(Game* game) {
+bool CursorScanTool::canceled() {
     if (current_stage == ScanStages::EXTENDING ||
         current_stage == ScanStages::EXTENDED) {
         current_stage = ScanStages::SELECTED;
@@ -181,7 +181,7 @@ bool CursorScanTool::handle_movement(ivec3 dir) {
     return true;
 }
 
-void CursorScanTool::step(Game* game, int ms) {
+void CursorScanTool::step(int ms) {
     if (current_stage == ScanStages::SETTING_LOWER ||
         current_stage == ScanStages::SETTING_UPPER ||
         current_stage == ScanStages::EXTENDING) {

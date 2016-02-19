@@ -44,7 +44,7 @@ void CursorSelector::select(Entity* ent) {
 }
 
 // behaviour when this cursor item is clicked
-bool CursorSelector::clicked(Game* game, Action mouse) {
+bool CursorSelector::clicked(Action mouse) {
     if (!BlockTracing::show_item) {
         unselect();
         return true;
@@ -64,7 +64,7 @@ bool CursorSelector::clicked(Game* game, Action mouse) {
     return true;
 }
 
-bool CursorSelector::pushed(Game* game, Action key) {
+bool CursorSelector::pushed(Action key) {
     if (key == Action::DELETE) {
         if (is_selected && !is_block_selected && selected->entity_class != EntityType::BASEWORLD) {
             Entity* deselect = selected;
@@ -76,14 +76,14 @@ bool CursorSelector::pushed(Game* game, Action key) {
 }
 
 // behaviour when this cursor item is entered
-bool CursorSelector::confirmed(Game* game) {
+bool CursorSelector::confirmed() {
     if (is_selected && !is_block_selected) {
         // TODO show info about the selected
     }
     return true;
 }
 
-bool CursorSelector::canceled(Game* game) {
+bool CursorSelector::canceled() {
     if (is_selected) {
         unselect();
         return true;

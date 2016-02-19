@@ -24,16 +24,16 @@ public:
     //virtual void reset();
     
     // behaviour when this cursor item is clicked
-    bool clicked(Game* game, Action mouse) override;
-    bool clicking(Game* game, Action mouse, int ms) override;
-    //virtual bool pushed(Game* game, Action key) { return false; };
+    bool clicked(Action mouse) override;
+    bool clicking(Action mouse, int ms) override;
+    //virtual bool pushed(Action key) { return false; };
     
     // behaviour when this cursor item is entered
-    //virtual bool confirmed(Game* game);
-    //virtual bool canceled(Game* game);
+    //virtual bool confirmed();
+    //virtual bool canceled();
     //virtual bool handle_movement(ivec3 dir);
     //virtual bool handle_rotation();
-    //void step(Game* game, int ms) override;
+    //void step(int ms) override;
     
     // render the item with transform in a small box or whatnot
     void render_item() override;

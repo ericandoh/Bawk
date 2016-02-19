@@ -7,18 +7,19 @@
 //
 
 #include "cursordrill.h"
+#include "settings.h"
 #include "blocktracer.h"
-#include "game.h"
+#include "client_accessor.h"
 
 CursorDrill::CursorDrill(CursorItemInfo* i): CursorItem(i) {
     dps = MAX_HEALTH / 1.0f;
 }
 
-bool CursorDrill::clicked(Game* game, Action mouse) {
+bool CursorDrill::clicked(Action mouse) {
     return true;
 }
 
-bool CursorDrill::clicking(Game* game, Action mouse, int ms) {
+bool CursorDrill::clicking(Action mouse, int ms) {
     if (!BlockTracing::show_item)
         return false;
     Entity* src = BlockTracing::selected;
@@ -39,7 +40,7 @@ bool CursorDrill::clicking(Game* game, Action mouse, int ms) {
     src->get_hurt(BlockTracing::pointed_pos.x,
                   BlockTracing::pointed_pos.y,
                   BlockTracing::pointed_pos.z,
-                  dmg, BreakablePolicy::EXECUTED, game->player);
+                  dmg, BreakablePolicy::EXECUTED, get_player());
     return true;
 }
 

@@ -11,7 +11,7 @@
 #include "blocktracer.h"
 #include "superobject.h"
 #include "player.h"
-#include "game.h"
+#include "client_accessor.h"
 
 CursorModelObject::CursorModelObject(CursorItemInfo* i): ModelEntity(i->vid), CursorItem(i) {
     locked = false;
@@ -19,7 +19,7 @@ CursorModelObject::CursorModelObject(CursorItemInfo* i): ModelEntity(i->vid), Cu
 }
 
 // --- PlaceableObject
-bool CursorModelObject::set_blocks(Player* player, World* world, SuperObject* object) {
+bool CursorModelObject::set_blocks(Player* player, SuperObject* object) {
     if (info->count <= 0) {
         // no blocks left to place
         return false;
@@ -47,7 +47,7 @@ void CursorModelObject::reset() {
     show_item = false;
 }
 
-bool CursorModelObject::clicked(Game* game, Action mouse) {
+bool CursorModelObject::clicked(Action mouse) {
     if (!locked) {
         if (show_item) {
             locked = true;
@@ -57,19 +57,19 @@ bool CursorModelObject::clicked(Game* game, Action mouse) {
     return false;
 }
 
-bool CursorModelObject::confirmed(Game* game) {
+bool CursorModelObject::confirmed() {
     if (!locked) {
         return false;
     }
     else {
-        if (set_blocks(game->player, game->world, target)) {
+        if (set_blocks(get_player(), target)) {
             locked = false;
         }
         return true;
     }
 }
 
-bool CursorModelObject::canceled(Game* game) {
+bool CursorModelObject::canceled() {
     if (locked) {
         locked = false;
         return true;
@@ -92,13 +92,13 @@ bool CursorModelObject::handle_rotation() {
     return true;
 }
 
-void CursorModelObject::step(Game* game, int ms) {
+void CursorModelObject::step(int ms) {
     if (!locked) {
         ivec3 upper;
         upper.x = bounds.upper.x - bounds.lower.x;
         upper.y = bounds.upper.y - bounds.lower.y;
         upper.z = bounds.upper.z - bounds.lower.z;
-        update_pointing_position(game, upper);
+        update_pointing_position(upper);
         set_pos(fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z));
     }
 }

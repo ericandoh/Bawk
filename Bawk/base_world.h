@@ -47,7 +47,7 @@ public:
     void update_render(fvec3* player_pos) override;
     
     // --- Entity ---
-    void step(Game* game, int ms) override;
+    void step(int ms) override;
     bool collides_with(Entity* other) override;
     
     int load_self(IODataObject* obj) override;

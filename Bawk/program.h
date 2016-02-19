@@ -27,7 +27,7 @@
 #include <stdio.h>
 
 enum Display {
-    GAME, EXIT
+    TITLE, LOADING, SP_GAME, MP_GAME, EXIT
 };
 
 void switch_display(Display toDisplay);

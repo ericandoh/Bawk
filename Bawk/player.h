@@ -31,13 +31,15 @@
 #include "inventory.h"
 
 class SuperObject;
-class World;
+class GameTemplate;
 
 class Player : public RenderablePlayer {
     unsigned long id_assign;
     SuperObject* mount;
     fvec3 offset_to_mount;
 public:
+    // template holding current template we're working on (if any)
+    GameTemplate* game_template;
     PlayerInventory* inventory;
     Player(uint32_t p);
     ~Player();
@@ -51,13 +53,13 @@ public:
     
     void set_mount(SuperObject* m, fvec3 rwc);
     SuperObject* get_mount();
-    bool unmount(World* world);
+    bool unmount();
     
     // --- RenderablePlayer
     bounding_box get_bounds_for_viewing() override;
     
     // --- Entity ---
-    void step(Game* game, int ms) override;
+    void step(int ms) override;
     std::string get_save_path() override;
     int load_selfs() override;
     int load_self(IODataObject* obj) override;

@@ -10,7 +10,7 @@
 #include "importopengl.h"
 #include "player.h"
 #include "worldrender.h"
-#include "game.h"
+#include "client_accessor.h"
 
 SpriteMultiplexer* SpriteMultiplexer::copy() { return this; }
 
@@ -85,20 +85,20 @@ void SpriteRender::render_rectangle(fmat4* transform, float width, float height,
     glDrawArrays(GL_TRIANGLES, 0, num_triangles);
 }
 
-void SpriteRender::step(Game* game, int ms) {
+void SpriteRender::step(int ms) {
     if (ttl == 0 && duration > 0) {
         // TODO this sprite should die
         //((SuperObject*)parent)->remove_sprite(...);
-        game->sprite_manager.remove_sprite(this);
+        get_client()->sprite_manager.remove_sprite(this);
         return;
     }
     ttl -= 1;
     if (track_player) {
         // set pos to player's position
-        set_pos(game->player->get_viewpoint());
+        set_pos(get_player()->get_viewpoint());
     }
     if (multiplexer) {
-        multiplexer->step(game, ms, this);
+        multiplexer->step(ms, this);
     }
 }
 

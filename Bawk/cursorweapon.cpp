@@ -8,17 +8,17 @@
 
 #include "cursorweapon.h"
 #include "blocktracer.h"
-#include "game.h"
+#include "client_accessor.h"
 
 CursorWeapon::CursorWeapon(CursorItemInfo* i): CursorItem(i) {
     dmg = 500.0f;
 }
 
-bool CursorWeapon::clicked(Game* game, Action mouse) {
+bool CursorWeapon::clicked(Action mouse) {
     return true;
 }
 
-bool CursorWeapon::clicking(Game* game, Action mouse, int ms) {
+bool CursorWeapon::clicking(Action mouse, int ms) {
     if (!BlockTracing::show_item)
         return false;
     Entity* src = BlockTracing::selected;
@@ -29,6 +29,6 @@ bool CursorWeapon::clicking(Game* game, Action mouse, int ms) {
     src->get_hurt(BlockTracing::pointed_pos.x,
                   BlockTracing::pointed_pos.y,
                   BlockTracing::pointed_pos.z,
-                  dmg, BreakablePolicy::ACTIONED, game->player);
+                  dmg, BreakablePolicy::ACTIONED, get_player());
     return true;
 }

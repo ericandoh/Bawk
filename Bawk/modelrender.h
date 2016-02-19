@@ -17,8 +17,6 @@
 #include "lightrender.h"
 #include "modelaction.h"
 
-class Game;
-
 class RenderableModel: public ModelData {
 public:
     std::string name;

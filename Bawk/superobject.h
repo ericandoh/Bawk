@@ -62,7 +62,7 @@ public:
     void get_entities_in_range(std::vector<Entity*> &children, bounding_box box, bool include_boundary=false);
     // rough check to see if a bounding box hits any bounds of any chunks currently loaded in
     bool hits_chunk_bounds_in_range(bounding_box box);
-    void check_collision_detection_children(Game* game);
+    void check_collision_detection_children();
     
     // --- RenderableSuperObject ---
     virtual void handle_block_addition(int x, int y, int z, block_type type) override;
@@ -74,9 +74,9 @@ public:
     void update_centerpos() override;
     Entity* poke(float x, float y, float z) override;
     bool poke_rough(bounding_box box) override;
-    bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) override;
-    bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
-    virtual void step(Game* game, int ms) override;
+    bool block_keyboard_callback(Player* player, Action key, Entity* ent, int ms) override;
+    bool block_mouse_callback(Player* player, Action button, Entity* ent) override;
+    virtual void step(int ms) override;
     virtual void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
     virtual void update_render(fvec3* player_pos) override;

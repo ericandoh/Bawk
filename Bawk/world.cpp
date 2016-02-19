@@ -56,7 +56,7 @@ void World::save_self() {
 }
 
 // renders the world
-void World::render(fmat4* transform, Player* player) {
+void World::render(fmat4* transform) {
     base_world->render(transform);
 }
 
@@ -108,8 +108,8 @@ void World::add_event(WorldEvent *event) {
 }
 
 // cycles one timestep for the world
-void World::step(Game* game, int ms) {
-    base_world->step(game, ms);
+void World::step(int ms) {
+    base_world->step(ms);
     
     int counter = 0;
     while (counter < events.size()) {

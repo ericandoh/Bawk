@@ -56,13 +56,11 @@ class SpriteRender;
  - Multiplex in the base BlockAction class, define + copy behaviours for different engines of different strength/etc
  */
 
-class Game;
-
 class SpriteMultiplexer {
 public:
     virtual ~SpriteMultiplexer() = default;
     
-    virtual void step(Game* game, int ms, SpriteRender* render) EMPTY_FUNCTION;
+    virtual void step(int ms, SpriteRender* render) EMPTY_FUNCTION;
     virtual void render(fmat4* transform, SpriteRender* render) EMPTY_FUNCTION;
     // don't override if you don't want new instance every time
     virtual SpriteMultiplexer* copy();
@@ -97,7 +95,7 @@ public:
     void set_track_player(bool val);
     
     // --- Positionable ---
-    void step(Game* game, int ms);
+    void step(int ms);
     void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
 

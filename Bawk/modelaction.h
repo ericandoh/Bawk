@@ -13,9 +13,9 @@
 #include "game_actions.h"
 #include "basic_types.h"
 
-#define MODEL_FUNCTION_ARGS Game* game, Entity* owner, Entity* piece, int ms
+#define MODEL_FUNCTION_ARGS Player* player, Entity* owner, Entity* piece, int ms
 
-class Game;
+class Player;
 class Entity;
 
 class ModelActionMultiplexer {
@@ -55,7 +55,7 @@ public:
     virtual bool model_callback_step(MODEL_FUNCTION_ARGS) EMPTY_BOOL_FUNCTION;
     
     // --- ModelActionMultiplexer ---
-    bool model_callback(Game* game, Entity* owner, Entity* piece, Action key, int ms);
+    bool model_callback(Player* player, Entity* owner, Entity* piece, Action key, int ms);
     virtual ModelActionMultiplexer* copy();
 };
 

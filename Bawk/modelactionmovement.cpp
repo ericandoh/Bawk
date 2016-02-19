@@ -7,11 +7,13 @@
 //
 
 #include "modelactionmovement.h"
-#include "game.h"
 #include "entity.h"
 #include "spritegetter.h"
 #include "json/json.h"
 #include "json_reader_helper.h"
+
+// for sprites, is there a better way to do this?
+#include "client_accessor.h"
 
 class ModelEngineActionMultiplexer: public ModelActionMultiplexer {
 public:
@@ -51,7 +53,7 @@ bool ModelEngineActionMultiplexer::model_callback_move_forward(MODEL_FUNCTION_AR
     fvec3 pos = piece->get_world_pos() + rand_offset;
     SpriteRender* sprite = get_sprite_instance(2);
     sprite->set_pos(pos);
-    game->sprite_manager.add_sprite(sprite);
+    get_client()->sprite_manager.add_sprite(sprite);
     return true;
 }
 

@@ -8,11 +8,12 @@
 
 #include "cursorblock.h"
 #include "blocktracer.h"
-#include "game.h"
+#include "client_accessor.h"
 #include "gametemplate.h"
 #include "blockrender.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "game_info_loader.h"
+#include "worldrender.h"
 
 CursorBlock::CursorBlock(CursorItemInfo* i): CursorItem(i) {
     pos = fvec3(0,0,0);
@@ -20,7 +21,7 @@ CursorBlock::CursorBlock(CursorItemInfo* i): CursorItem(i) {
 }
 
 // --- PlaceableObject
-bool CursorBlock::set_blocks(Player* player, World* world, SuperObject* object) {
+bool CursorBlock::set_blocks(Player* player, SuperObject* object) {
     if (show_item) {
         if (info->count <= 0) {
             // no blocks left to place
@@ -47,20 +48,20 @@ void CursorBlock::reset() {
     show_item = false;
 }
 
-bool CursorBlock::clicked(Game* game, Action mouse) {
+bool CursorBlock::clicked(Action mouse) {
     if (mouse == CLICK_SECONDARY) {
-        set_blocks(game->player, game->world, target);
+        set_blocks(get_player(), target);
         return true;
     }
     return false;
 }
 
-bool CursorBlock::confirmed(Game* game) {
+bool CursorBlock::confirmed() {
     return false;
 }
 
-void CursorBlock::step(Game* game, int ms) {
-    update_pointing_position(game, ivec3(1,1,1));
+void CursorBlock::step(int ms) {
+    update_pointing_position(ivec3(1,1,1));
     pos = fvec3(pointing_pos.x, pointing_pos.y, pointing_pos.z);
     orientation = pointing_orientation;
     if (orientation == BlockOrientation::TOP || orientation == BlockOrientation::BOTTOM) {

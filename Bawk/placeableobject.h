@@ -14,7 +14,6 @@
 
 class Player;
 class World;
-class Game;
 class SuperObject;
 
 class PlaceableObject {
@@ -28,7 +27,7 @@ public:
     // if independent, creates a new entity whenever placed into another object
     bool independent;
     PlaceableObject();
-    virtual bool set_blocks(Player* player, World* world, SuperObject* object) = 0;
+    virtual bool set_blocks(Player* player, SuperObject* object) = 0;
 };
 
 #endif /* defined(__Bawk__placeableobject__) */

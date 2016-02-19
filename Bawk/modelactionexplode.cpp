@@ -8,12 +8,15 @@
 
 #include "modelactionexplode.h"
 #include "entity.h"
-#include "game.h"
 #include "superobject.h"
 #include "json/json.h"
 #include "json_reader_helper.h"
 
 #include "spritegetter.h"
+#include "common_accessor.h"
+// this is conflicting...uh oh!
+#include "engine_accessor.h"
+#include "client_accessor.h"
 
 class ModelExplodeActionMultiplexer: public ModelActionMultiplexer {
 public:
@@ -41,9 +44,9 @@ bool ModelExplodeActionMultiplexer::model_callback_collision(MODEL_FUNCTION_ARGS
             for (int z = ilower.z; z <= iupper.z; z++) {
                 if (get_fvec3_distance(fvec3(x - pos.x, y - pos.y, z - pos.z)) <= radius) {
                     // damage whatever is at this position
-                    game->world->base_world->get_hurt(x, y, z, damage,
+                    get_world()->base_world->get_hurt(x, y, z, damage,
                                                       BreakablePolicy::ACTIONED,
-                                                      game->get_player(owner->pid));
+                                                      get_engine()->get_player_from(owner->pid));
                 }
             }
         }
@@ -52,7 +55,7 @@ bool ModelExplodeActionMultiplexer::model_callback_collision(MODEL_FUNCTION_ARGS
     // TODO redo this - this is horrible, horrible code...
     SpriteRender* sprite = get_sprite_instance(1);
     sprite->set_pos(pos);
-    game->sprite_manager.add_sprite(sprite);
+    get_client()->sprite_manager.add_sprite(sprite);
     // this will remove the entity at the end of this method
     return true;
 }

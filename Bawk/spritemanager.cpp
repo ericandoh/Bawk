@@ -24,9 +24,9 @@ void SpriteManager::render_lights(fmat4* transform, fvec3 player_pos) {
     }
 }
 
-void SpriteManager::step(Game* game, int ms) {
+void SpriteManager::step(int ms) {
     for (auto &i: sprites) {
-        i->step(game, ms);
+        i->step(ms);
     }
 }
 

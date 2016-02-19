@@ -31,7 +31,7 @@ void display_disable_cursor();
 void display_get_cursor_position(double* x, double* y);
 
 int init_display();
-void set_current_game(Displayable* display);
+void set_current_displayable(Displayable* display);
 void display_close();
 void close_render_loop();
 

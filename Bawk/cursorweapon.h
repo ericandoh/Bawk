@@ -17,10 +17,10 @@ class CursorWeapon: public CursorItem {
 public:
     CursorWeapon(CursorItemInfo* i);
     
-    bool clicked(Game* game, Action mouse) override;
-    bool clicking(Game* game, Action mouse, int ms) override;
+    bool clicked(Action mouse) override;
+    bool clicking(Action mouse, int ms) override;
     
-    //void step(Game* game, int ms) override;
+    //void step(int ms) override;
     
     // render the item with transform in a small box or whatnot
     void render_item() override EMPTY_FUNCTION;

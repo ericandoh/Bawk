@@ -9,14 +9,16 @@
 #include "superobject.h"
 #include "block_loader.h"
 #include "game_info_loader.h"
-#include "game.h"
 #include "blocktracer.h"
 #include "entity_loader.h"
 #include "chunk_loader.h"
 #include "importsdl.h"
 
+#include "player.h"
+
 // for debugging draw
 #include "basicrender.h"
+#include "worldrender.h"
 
 SuperObject::SuperObject() {
     // this constructor should be only called to construct a world
@@ -270,7 +272,7 @@ bool sort_on_z(EntityAndMovingState* a, EntityAndMovingState* b) {
  for practice will work well enough
  
  */
-void SuperObject::check_collision_detection_children(Game* game) {
+void SuperObject::check_collision_detection_children() {
     // step on each entity, updating velocity/stable/etc if needed
     // step should also add the velocities to the position/angle/dir
     int entity_size = (int)entities.size();
@@ -486,7 +488,7 @@ void SuperObject::check_collision_detection_children(Game* game) {
                 // TODO this is unsafe if our target object is the receiver on later collision detections..
                 // and is removed
                 // solution is easy - just put these objects into a queue (if they will remove themselves)
-                if (moved_entity->after_collision(game)) {
+                if (moved_entity->after_collision()) {
                     // TODO add to some list saying "remove me!"
                     // note that this is mostly for projectiles that are like, totally blown up afterwards
                     remove_list.push_back(i.first);
@@ -640,10 +642,10 @@ bool SuperObject::poke_rough(bounding_box box) {
     return false;
 }
 
-bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) {
+bool SuperObject::block_keyboard_callback(Player* player, Action key, Entity* ent, int ms) {
     bool any = false;
     for (Entity* entity: entities) {
-        any = entity->block_keyboard_callback(game, key, ent, ms) || any;
+        any = entity->block_keyboard_callback(player, key, ent, ms) || any;
     }
     /*if (key_mapping.count(key)) {
         for (int i = 0; i < key_mapping[key].size(); i++) {
@@ -665,7 +667,7 @@ bool SuperObject::block_keyboard_callback(Game* game, Action key, Entity* ent, i
     return any;
 }
 
-bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
+bool SuperObject::block_mouse_callback(Player* player, Action button, Entity* ent) {
     if (BlockTracing::show_item) {
         fvec3 lookingat = BlockTracing::pointed_pos;
         block_type* blk = get_block(lookingat.x, lookingat.y, lookingat.z);
@@ -673,22 +675,22 @@ bool SuperObject::block_mouse_callback(Game* game, Action button, Entity* ent) {
             ivec3 oac = get_floor_from_fvec3(fvec3(lookingat.x, lookingat.y, lookingat.z));
             ivec3 rwc;
             transform_into_world_integer_coordinates(&rwc, oac.x, oac.y, oac.z);
-            return call_block_mouse_callback_from(blk, game, ent, rwc, button);
+            return call_block_mouse_callback_from(blk, player, ent, rwc, button);
         }
     }
     // the else should not be called...
     return false;
 }
 
-void SuperObject::step(Game* game, int ms) {
-    RenderableSuperObject::step(game, ms);
+void SuperObject::step(int ms) {
+    RenderableSuperObject::step(ms);
     bool check_collisions = false;
     for (int i = 0; i < entities.size(); i++) {
-        entities[i]->step(game, ms);
+        entities[i]->step(ms);
         check_collisions = check_collisions || (!entities[i]->stable);
     }
     if (check_collisions) {
-        check_collision_detection_children(game);
+        check_collision_detection_children();
     }
     /*if (stable) {
         float max_movement = 0.05f;

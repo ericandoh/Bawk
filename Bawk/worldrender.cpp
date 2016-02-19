@@ -115,14 +115,11 @@ int world_load_resources() {
     glGenBuffers(1, &common_vertex_vbo);
     glGenBuffers(1, &common_texture_vbo);
     
-    load_game_info();
-    
     check_for_error();
     return 0;
 }
 
 void world_free_resources() {
-    free_game_info();
     delete_all_buffers();
     
     glDeleteBuffers(1, &common_vertex_vbo);

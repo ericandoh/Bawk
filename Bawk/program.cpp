@@ -7,12 +7,18 @@
 //
 
 #include "program.h"
+
 #include "display.h"
 #include "displayable.h"
-#include "game.h"
+
+#include "game_single.h"
+
+#include "client_accessor.h"
+#include "engine_accessor.h"
 
 // variables for current state of program
 Display current;
+
 
 void failed_init() {
     printf("Failed to initialize resources for a game");
@@ -22,19 +28,57 @@ void failed_init() {
 // sets up then renders a display
 void start_display() {
     switch (current) {
-        case GAME: {
-            Game game;
-            game.set_parameters("testworld", 1);
-            if (game.init()) {
+        case TITLE: {
+            /*
+            TitleScreen title_screen;   // TitleScreen implements Displayable
+            set_current_displayable(&title_screen);
+            */
+            break;
+        }
+        case LOADING: {
+            /*
+             LoadingScreen loading_screen;  // LoadingScreen implements Displayable
+             set_current_displayable(&loading_screen);
+             */
+            break;
+        }
+        case SP_GAME: {
+            GameSP client_and_server = GameSP();
+            set_engine(&client_and_server);
+            set_client(&client_and_server);
+            if (client_and_server.start("testworld")) {
                 failed_init();
             }
-            set_current_game(&game);
+            uint32_t player_id = 1;
+            client_and_server.init(player_id);
+            set_current_displayable(&client_and_server);
             // loop to run the game
             display_run();
             break;
         }
-        case EXIT:
+        case MP_GAME: {
+            /*
+            GameClient game;
+            game.set_parameters("server_name", etc);
+            Client client;
+            client.link_to_game(&game);
+            set_current_displayable(&client);
+            display_run();
+             
+            // and on server side
+            Engine game_engine;
+            if (game_engine.start_mp("testworld")) {
+                failed_init();
+            }
+            */
             break;
+        }
+        case EXIT: {
+            break;
+        }
+        default: {
+            break;
+        }
     }
 }
 
@@ -57,7 +101,7 @@ int run_game() {
         return 1;
     
     // the starting display of the game
-    current = GAME;
+    current = SP_GAME;
     
     // if simply switching, display_run will return 0
     // if exitting game, return something else which will trigger program to end

@@ -18,8 +18,6 @@
 #include <vector>
 #include "spriterender.h"
 
-class Game;
-
 class SpriteManager {
     std::vector<SpriteRender*> sprites;
 public:
@@ -27,7 +25,7 @@ public:
     
     void render(fmat4* transform);
     void render_lights(fmat4* transform, fvec3 player_pos);
-    void step(Game* game, int ms);
+    void step(int ms);
     
     void add_sprite(SpriteRender* sprite);
     void remove_sprite(SpriteRender* sprite);

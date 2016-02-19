@@ -46,12 +46,12 @@ public:
     void init() override;
     void init(std::string path);
     void reset() override;
-    bool clicked(Game* game, Action mouse) override;
-    bool confirmed(Game* game) override;
-    bool canceled(Game* game) override;
+    bool clicked(Action mouse) override;
+    bool confirmed() override;
+    bool canceled() override;
     bool handle_movement(ivec3 dir) override;
     bool handle_rotation() override;
-    void step(Game* game, int ms) override;
+    void step(int ms) override;
     void render_item() override;
     void render_in_world(fmat4* transform) override;
     void render_light_in_world(fmat4* transform, fvec3 player_pos) override;

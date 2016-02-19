@@ -30,9 +30,9 @@ public:
     // --- Entity ---
     // Entity* poke(float x, float y, float z) override;
     void drop_loot(Player* slayer) override;
-    bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) override;
-    bool block_mouse_callback(Game* game, Action button, Entity* ent) override;
-    void step(Game* game, int ms) override;
+    bool block_keyboard_callback(Player* player, Action key, Entity* ent, int ms) override;
+    bool block_mouse_callback(Player* player, Action button, Entity* ent) override;
+    void step(int ms) override;
     void render(fmat4* transform) override;
     void render_lights(fmat4* transform, fvec3 player_pos) override;
     void update_render(fvec3* player_pos) override;
@@ -41,7 +41,7 @@ public:
     // bool collides_with(Entity* other) override;
     // int get_collision_level() override;
     // bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
-    bool after_collision(Game* game) override;
+    bool after_collision() override;
     
     virtual std::string get_save_path() override;
     int load_self(IODataObject* obj) override;

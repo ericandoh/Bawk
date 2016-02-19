@@ -36,7 +36,6 @@
 #define VID_PERMANENT 2
 #define VID_UNIQUE_START 3
 
-class Game;
 class SuperObject;
 class Player;
 
@@ -149,9 +148,9 @@ public:
     
     // --- ACTION ---
     // callback methods for when actions are called on this item
-    virtual bool block_keyboard_callback(Game* game, Action key, Entity* ent, int ms) EMPTY_BOOL_FUNCTION;
-    virtual bool block_mouse_callback(Game* game, Action button, Entity* ent) EMPTY_BOOL_FUNCTION;
-    virtual void step(Game* game, int ms) EMPTY_FUNCTION;
+    virtual bool block_keyboard_callback(Player* player, Action key, Entity* ent, int ms) EMPTY_BOOL_FUNCTION;
+    virtual bool block_mouse_callback(Player* player, Action button, Entity* ent) EMPTY_BOOL_FUNCTION;
+    virtual void step(int ms) EMPTY_FUNCTION;
     
     // update how this is rendered depending on player position
     virtual void update_render(fvec3* player_pos) EMPTY_FUNCTION;
@@ -168,7 +167,7 @@ public:
     // method for collision detection against base class entities ONLY
     virtual bool collides_with(Entity* other, bounding_box* my_bounds, bounding_box* other_bounds, int my_collision_lvl, int other_collision_level);
     // behaviour to do after a collision
-    virtual bool after_collision(Game* game);
+    virtual bool after_collision() EMPTY_BOOL_FUNCTION;
     
     // --- FILE SAVE ---
     virtual int load_selfs();
