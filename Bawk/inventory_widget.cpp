@@ -17,7 +17,7 @@ SwitchInventoryButton::SwitchInventoryButton(MainInventoryWidget* o,
     bid = b;
 }
 
-bool SwitchInventoryButton::onclick(int mx, int my, int button) {
+bool SwitchInventoryButton::onclick(int mx, int my, Action button) {
     owner->switch_view(bid);
     return true;
 }
@@ -138,7 +138,7 @@ void ScrollInventoryWidget::switch_button_action(InventoryButtonAction to) {
     refresh();
 }
 
-bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, int button) {
+bool ScrollInventoryWidget::onclick(BaseWidget* clicked_child, int mx, int my, Action button) {
     // TOFU move this to a mouse binding method...
     // move item that is here onto the item bar
     ItemBarlet* barlet = (ItemBarlet*)clicked_child;

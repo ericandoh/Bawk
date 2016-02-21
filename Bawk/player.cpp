@@ -10,6 +10,7 @@
 #include "superobject.h"
 #include "world.h"
 #include "common_accessor.h"
+#include "client_accessor.h"
 
 #define PI 3.14159265358979323846
 
@@ -101,8 +102,10 @@ void Player::step(int ms) {
 }
 
 void Player::set_mount(SuperObject* m, fvec3 rwc) {
-    if (!m)
+    if (!m) {
+        unmount();
         return;
+    }
     if (mount) {
         // unmount first
         mount->remove_entity(this);
@@ -119,6 +122,8 @@ void Player::set_mount(SuperObject* m, fvec3 rwc) {
     //set_pos(pos - this->center_pos);
     can_collide = false;
     printf_fvec3(get_world_pos());
+    
+    get_client()->toggle_mount_ui(true);
 }
 
 bool Player::unmount() {
@@ -141,6 +146,9 @@ bool Player::unmount() {
     can_collide = true;
     printf_fvec3(get_world_pos());
     get_world()->add_entity(this);
+    
+    get_client()->toggle_mount_ui(false);
+
     return true;
 }
 

@@ -32,7 +32,7 @@ class SwitchInventoryButton: public BaseWidget {
 public:
     SwitchInventoryButton(MainInventoryWidget* o, InventoryButtonAction b,
                           int x, int y, int width, int height);
-    bool onclick(int mx, int my, int button) override;
+    bool onclick(int mx, int my, Action button) override;
     void render_elements() override;
 };
 
@@ -49,7 +49,7 @@ public:
     BaseWidget* set_row(int index, BaseWidget* current) override;
     void clear_child(BaseWidget* child) override;
     void switch_button_action(InventoryButtonAction to);
-    bool onclick(BaseWidget* clicked_child, int mx, int my, int button) override;
+    bool onclick(BaseWidget* clicked_child, int mx, int my, Action button) override;
     void refresh() override;
 };
 

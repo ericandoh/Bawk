@@ -41,8 +41,8 @@ World* GameSP::get_world() {
     return world;
 }
 
-void GameSP::toggle_action(Action do_this) {
-    react(do_this, player);
+void GameSP::toggle_action(Action do_this, int ms) {
+    react(do_this, player, ms);
 }
 
 void GameSP::toggle_player_movement(double x, double y) {

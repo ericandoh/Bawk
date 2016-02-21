@@ -53,18 +53,25 @@ void BaseWidget::render() {
 
 bool BaseWidget::is_clicked(int mx, int my) {
     if (mx >= x && my >= y && mx <= (x + width) && my <= (y + height)) {
-        printf("Click triggered at %d %d\n", mx, my);
+        printf("Clicked at %d %d\n", mx, my);
         return true;
     }
     return false;
 }
 
-bool BaseWidget::scrolled(int mx, int my, int px) {
-    // do nothing
-    return false;
+// --- InputReceiver ---
+bool BaseWidget::mouse_clicked_callback(Action do_this) {
+    double mx, my;
+    display_get_cursor_position(&mx, &my);
+    return onclick((int)mx, (int)my, do_this);
 }
 
-bool BaseWidget::onclick(int mx, int my, int button) {
-    // do nothing
-    return false;
+bool BaseWidget::scroll_callback(double xdiff, double ydiff) {
+    double mx, my;
+    display_get_cursor_position(&mx, &my);
+    return scrolled((int)mx, (int)my, ydiff * 30);
 }
+
+
+
+

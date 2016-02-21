@@ -12,6 +12,8 @@
 #include "cursordrill.h"
 #include "cursorscantool.h"
 
+#include "client_accessor.h"
+
 const int STATIC_BAR_ELEMENTS = 3;
 
 ItemBar::ItemBar(PlayerInventory* inv, int width, int height): ParentWidget(width, height) {
@@ -114,4 +116,80 @@ void ItemBar::set_first_available(CursorItem* item) {
     int i = STATIC_BAR_ELEMENTS;
     inventory->set_bar_item(0, item->info);
     ((ItemBarlet*)children[i])->set_cursor_item(item);
+}
+
+bool ItemBar::key_callback(Action do_this, int ms) {
+    CursorItem* current = get_current();
+    if (do_this >= KEY0 && do_this <= KEY9) {
+        int to_index = do_this - KEY0;
+        set_index(to_index);
+    }
+    else if (current) {
+        if (do_this == CONFIRM) {
+            return current->confirmed();
+        }
+        else if (do_this == CANCEL) {
+            return current->canceled();
+        }
+        else if (do_this == MOVE_BLOCK_UP) {
+            printf("Moving placed template\n");
+            current->handle_movement(ivec3(0, 1, 0));
+        }
+        else if (do_this == MOVE_BLOCK_DOWN) {
+            printf("Moving placed template\n");
+            current->handle_movement(ivec3(0, -1, 0));
+        }
+        else if (do_this == MOVE_BLOCK_LEFT) {
+            printf("Moving placed template\n");
+            ivec3 left = get_player()->get_rounded_left();
+            current->handle_movement(ivec3(-left.x, 0, -left.z));
+        }
+        else if (do_this == MOVE_BLOCK_RIGHT) {
+            printf("Moving placed template\n");
+            current->handle_movement(get_player()->get_rounded_left());
+        }
+        else if (do_this == MOVE_BLOCK_FORWARD) {
+            printf("Moving placed template\n");
+            current->handle_movement(get_player()->get_rounded_forward());
+        }
+        else if (do_this == MOVE_BLOCK_BACKWARD) {
+            printf("Moving placed template\n");
+            ivec3 forward = get_player()->get_rounded_forward();
+            current->handle_movement(ivec3(-forward.x, 0, -forward.z));
+        }
+        else if (do_this == MOVE_BLOCK_ROTATE) {
+            current->handle_rotation();
+        }
+        else if (do_this == SAVE_TEMPLATE) {
+            get_player()->inventory->add_custom(current->info);
+            if (get_client()->story->has_child(get_client()->inventory_ui)) {
+                get_client()->inventory_ui->refresh();
+            }
+        }
+        else if (current->pushed(do_this)) {
+            return true;
+        }
+        return true;
+    }
+    return false;
+}
+
+bool ItemBar::mouse_clicked_callback(Action do_this) {
+    CursorItem* current = get_current();
+    if (current) {
+        if (current->clicked(do_this)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ItemBar::mouse_clicking_callback(Action do_this, int ms) {
+    CursorItem* current = get_current();
+    if (current) {
+        if (current->clicking(do_this, ms)) {
+            return true;
+        }
+    }
+    return false;
 }

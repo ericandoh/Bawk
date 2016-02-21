@@ -27,7 +27,7 @@ public:
     void deregister_player(uint32_t pid) override;
     void update_render(fvec3 player_pos) override;
     World* get_world() override;
-    void toggle_action(Action do_this) override;
+    void toggle_action(Action do_this, int ms) override;
     void toggle_player_movement(double x, double y) override;
 };
 

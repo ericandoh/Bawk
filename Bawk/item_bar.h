@@ -46,6 +46,11 @@ public:
     void set_to_right();
     
     void set_first_available(CursorItem* item);
+    
+    // --- InputReceiver ---
+    bool key_callback(Action do_this, int ms) override;
+    bool mouse_clicked_callback(Action do_this) override;
+    bool mouse_clicking_callback(Action do_this, int ms) override;
 };
 
 #endif /* defined(__Bawk__item_bar__) */

@@ -47,6 +47,9 @@
 		071BB73B1C18B0D900563D4A /* modelactionshoot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7391C18B0D900563D4A /* modelactionshoot.cpp */; };
 		071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB73C1C18B12900563D4A /* modelactionmovement.cpp */; };
 		071BB7441C18B36800563D4A /* modelactionexplode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BB7421C18B36800563D4A /* modelactionexplode.cpp */; };
+		071BFEAA1C77A58900677742 /* game_input_receiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BFEA81C77A58900677742 /* game_input_receiver.cpp */; };
+		071BFEAD1C77A5A800677742 /* mount_input_receiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BFEAB1C77A5A800677742 /* mount_input_receiver.cpp */; };
+		071BFEB01C77A8E700677742 /* input_multiplexer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071BFEAE1C77A8E700677742 /* input_multiplexer.cpp */; };
 		071C5C141BF7FE9C0087F398 /* rotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071C5C121BF7FE9C0087F398 /* rotation.cpp */; };
 		071CD8971C65693600F17DF5 /* cursoritem_loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071CD8951C65693600F17DF5 /* cursoritem_loader.cpp */; };
 		071D54B21C76DE1E0067DE11 /* common_accessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 071D54B01C76DE1E0067DE11 /* common_accessor.cpp */; };
@@ -224,6 +227,13 @@
 		071BB73D1C18B12900563D4A /* modelactionmovement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionmovement.h; sourceTree = "<group>"; };
 		071BB7421C18B36800563D4A /* modelactionexplode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = modelactionexplode.cpp; sourceTree = "<group>"; };
 		071BB7431C18B36800563D4A /* modelactionexplode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modelactionexplode.h; sourceTree = "<group>"; };
+		071BFEA61C77A48A00677742 /* input_receiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input_receiver.h; sourceTree = "<group>"; };
+		071BFEA81C77A58900677742 /* game_input_receiver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game_input_receiver.cpp; sourceTree = "<group>"; };
+		071BFEA91C77A58900677742 /* game_input_receiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = game_input_receiver.h; sourceTree = "<group>"; };
+		071BFEAB1C77A5A800677742 /* mount_input_receiver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mount_input_receiver.cpp; sourceTree = "<group>"; };
+		071BFEAC1C77A5A800677742 /* mount_input_receiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mount_input_receiver.h; sourceTree = "<group>"; };
+		071BFEAE1C77A8E700677742 /* input_multiplexer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = input_multiplexer.cpp; sourceTree = "<group>"; };
+		071BFEAF1C77A8E700677742 /* input_multiplexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input_multiplexer.h; sourceTree = "<group>"; };
 		071C5C121BF7FE9C0087F398 /* rotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rotation.cpp; sourceTree = "<group>"; };
 		071C5C131BF7FE9C0087F398 /* rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rotation.h; sourceTree = "<group>"; };
 		071CD8951C65693600F17DF5 /* cursoritem_loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursoritem_loader.cpp; sourceTree = "<group>"; };
@@ -389,6 +399,7 @@
 		0704CF6E1BC98CEE0050EE52 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				071BFEA41C77A46E00677742 /* input */,
 				0704CF6F1BC98D300050EE52 /* base_widget.cpp */,
 				0704CF701BC98D300050EE52 /* base_widget.h */,
 				0704CF721BC997550050EE52 /* item_bar.cpp */,
@@ -523,6 +534,20 @@
 				071AEC0E1C6073AC001F03D8 /* modelmobai.h */,
 			);
 			name = blockactions;
+			sourceTree = "<group>";
+		};
+		071BFEA41C77A46E00677742 /* input */ = {
+			isa = PBXGroup;
+			children = (
+				071BFEA61C77A48A00677742 /* input_receiver.h */,
+				071BFEAE1C77A8E700677742 /* input_multiplexer.cpp */,
+				071BFEAF1C77A8E700677742 /* input_multiplexer.h */,
+				071BFEA81C77A58900677742 /* game_input_receiver.cpp */,
+				071BFEA91C77A58900677742 /* game_input_receiver.h */,
+				071BFEAB1C77A5A800677742 /* mount_input_receiver.cpp */,
+				071BFEAC1C77A5A800677742 /* mount_input_receiver.h */,
+			);
+			name = input;
 			sourceTree = "<group>";
 		};
 		074B6C8F1BB9D2380065192B = {
@@ -827,6 +852,7 @@
 				076BEFDB1BD184DF00D68C8F /* blockrender.cpp in Sources */,
 				0774A9761BDEC85A0069489D /* entity_loader.cpp in Sources */,
 				075C67531BBA603D00CB87DE /* shader_loader.cpp in Sources */,
+				071BFEAA1C77A58900677742 /* game_input_receiver.cpp in Sources */,
 				0704CF711BC98D300050EE52 /* base_widget.cpp in Sources */,
 				071D54B21C76DE1E0067DE11 /* common_accessor.cpp in Sources */,
 				0704CF771BC997DE0050EE52 /* item_barlet.cpp in Sources */,
@@ -868,6 +894,7 @@
 				072A0A261C0B90C9009304E5 /* modelrender.cpp in Sources */,
 				075C67431BBA41F000CB87DE /* player.cpp in Sources */,
 				071EB8141C480519004885D7 /* sectorgenerator.cpp in Sources */,
+				071BFEB01C77A8E700677742 /* input_multiplexer.cpp in Sources */,
 				071A040B1BD98454003BF218 /* jsoncpp.cpp in Sources */,
 				071B46861BF3C1D8000CB782 /* cursoritem.cpp in Sources */,
 				0766EAEE1BBF74FD00477144 /* block.cpp in Sources */,
@@ -881,6 +908,7 @@
 				0713E68D1C763AE500DA92FD /* engine_server.cpp in Sources */,
 				075C67661BBA78D600CB87DE /* display.cpp in Sources */,
 				0710EE301C3D9ED10007F5C4 /* cursordrill.cpp in Sources */,
+				071BFEAD1C77A5A800677742 /* mount_input_receiver.cpp in Sources */,
 				07919A361C1F9E050047C7FE /* modelaction.cpp in Sources */,
 				0718F0F51C6BFCD500003974 /* spritemanager.cpp in Sources */,
 				070930741C38985C009DB251 /* cursorscantool.cpp in Sources */,

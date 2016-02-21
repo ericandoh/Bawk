@@ -29,8 +29,9 @@
 #include <stdio.h>
 #include "importopengl.h"
 #include "basic_types.h"
+#include "input_receiver.h"
 
-class BaseWidget {
+class BaseWidget: public InputReceiver {
 public:
     int x, y, width, height;
     BaseWidget();
@@ -44,11 +45,15 @@ public:
     // sees if a press at mx, my clicked this widget
     bool is_clicked(int mx, int my);
     // called when this is scrolled
-    virtual bool scrolled(int mx, int my, int px);
+    virtual bool scrolled(int mx, int my, int px) EMPTY_BOOL_FUNCTION;
     // this should be overriden
     virtual void render_elements() = 0;
     // action to do when clicked
-    virtual bool onclick(int mx, int my, int button);
+    virtual bool onclick(int mx, int my, Action button) EMPTY_BOOL_FUNCTION;
+    
+    // --- InputReceiver ---
+    virtual bool mouse_clicked_callback(Action do_this) override;
+    bool scroll_callback(double xdiff, double ydiff) override;
 };
 
 #endif /* defined(__Bawk__base_widget__) */

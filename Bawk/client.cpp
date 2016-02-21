@@ -18,6 +18,9 @@
 #include "gametemplate.h"
 #include "cursorsuperobject.h"
 
+// input/output
+#include "game_input_receiver.h"
+
 #include "program.h"
 
 #include "debug_action.h"
@@ -78,6 +81,19 @@ int Client::init(uint32_t p) {
     
     key_to_action[SDLK_DELETE] = DELETE;
     
+    // is there a less stupid way to do this lol
+    key_to_action[SDLK_1] = KEY0;
+    key_to_action[SDLK_2] = KEY1;
+    key_to_action[SDLK_3] = KEY2;
+    key_to_action[SDLK_4] = KEY3;
+    key_to_action[SDLK_5] = KEY4;
+    key_to_action[SDLK_6] = KEY5;
+    key_to_action[SDLK_7] = KEY6;
+    key_to_action[SDLK_8] = KEY7;
+    key_to_action[SDLK_9] = KEY8;
+    key_to_action[SDLK_0] = KEY9;
+    
+    
     mouse_to_action[SDL_BUTTON_LEFT] = CLICK_MAIN;
     mouse_to_action[SDL_BUTTON_RIGHT] = CLICK_SECONDARY;
     
@@ -103,6 +119,16 @@ int Client::init(uint32_t p) {
     // TODO is this okay??? it should be...
     bar = new ItemBar(player->inventory, bar_width*10, bar_width);
     story->add_child(bar);
+    
+    // --- Input/Output ---
+    client_receiver = InputMultiplexer();
+    
+    GameInputReceiver* game_receiver = new GameInputReceiver();
+    mount_receiver = new MountInputReceiver();
+    
+    client_receiver.add_receiver(game_receiver);
+    client_receiver.add_receiver(bar);
+    client_receiver.add_receiver(story);
     
     inventory_ui = new MainInventoryWidget(bar, player->inventory, width / 2, height / 2);
     
@@ -137,139 +163,16 @@ void Client::check_need_update() {
     }
 }
 
-void Client::switch_current_item(int to_index) {
-    bar->set_index(to_index);
-}
-
 void Client::set_first_available(CursorItem* obj) {
     bar->set_first_available(obj);
 }
 
-void Client::key_callback_default(Action do_this, int key) {
-    // TODO clean up this shit
-    // TODO default_item->clicking(do_this, ms) will not be triggered so do trigger it somewhere
-    if (do_this == CONFIRM) {
-        if (bar->get_current() && bar->get_current()->confirmed()) {
-            ;
-        }
-        else if (get_player()->game_template) {
-            printf("Exporting template to current cursor!\n");
-            if (bar->can_set_current()) {
-                GameTemplate* gtemplate = get_player()->game_template;
-                bar->set_current(gtemplate->create_from_template());
-                gtemplate->remove_self();
-                gtemplate = 0;
-            }
-        }
-        else {
-            printf("Making new template\n");
-            // create a new place_info
-            get_player()->game_template = new GameTemplate();
-            get_world()->add_entity(get_player()->game_template);
-        }
+void Client::toggle_mount_ui(bool mounted) {
+    if (mounted) {
+        client_receiver.add_receiver(mount_receiver);
     }
-    else if (do_this == CANCEL) {
-        if (ui_open) {
-            story->close_latest_child();
-            if (story->count_children() == 1) {
-                display_disable_cursor();
-                ui_open = false;
-            }
-        }
-        else if (bar->get_current() && bar->get_current()->canceled()) {
-            printf("Cancelling current template placing 1\n");
-        }
-        else if (get_player()->game_template) {
-            // we're canceling making this template
-            printf("Cancelling current template\n");
-            get_player()->game_template->remove_self();
-            get_player()->game_template = 0;
-        }
-        else if (default_item->canceled()) {
-            // try to cancel selection if any
-        }
-        else {
-            printf("Escape pressed with no context. Exitting\n");
-            exit_game();
-        }
-    }
-    else if (do_this == MOVE_BLOCK_UP) {
-        if (bar->get_current()) {
-            printf("Moving placed template\n");
-            bar->get_current()->handle_movement(ivec3(0, 1, 0));
-        }
-    }
-    else if (do_this == MOVE_BLOCK_DOWN) {
-        if (bar->get_current()) {
-            printf("Moving placed template\n");
-            bar->get_current()->handle_movement(ivec3(0, -1, 0));
-        }
-    }
-    else if (do_this == MOVE_BLOCK_LEFT) {
-        if (bar->get_current()) {
-            printf("Moving placed template\n");
-            ivec3 left = player->get_rounded_left();
-            bar->get_current()->handle_movement(ivec3(-left.x, 0, -left.z));
-        }
-    }
-    else if (do_this == MOVE_BLOCK_RIGHT) {
-        if (bar->get_current()) {
-            printf("Moving placed template\n");
-            bar->get_current()->handle_movement(player->get_rounded_left());
-        }
-    }
-    else if (do_this == MOVE_BLOCK_FORWARD) {
-        if (bar->get_current()) {
-            printf("Moving placed template\n");
-            bar->get_current()->handle_movement(player->get_rounded_forward());
-        }
-    }
-    else if (do_this == MOVE_BLOCK_BACKWARD) {
-        if (bar->get_current()) {
-            printf("Moving placed template\n");
-            ivec3 forward = player->get_rounded_forward();
-            bar->get_current()->handle_movement(ivec3(-forward.x, 0, -forward.z));
-        }
-    }
-    else if (do_this == MOVE_BLOCK_ROTATE) {
-        if (bar->get_current()) {
-            bar->get_current()->handle_rotation();
-        }
-    }
-    else if (do_this == SAVE_TEMPLATE) {
-        player->inventory->add_custom(bar->get_current()->info);
-        if (story->has_child(inventory_ui)) {
-            inventory_ui->refresh();
-        }
-    }
-    else if (do_this == OPEN_INV) {
-        story->toggle_child(inventory_ui);
-        if (story->count_children() > 1) {
-            inventory_ui->refresh();
-            display_enable_cursor();
-            ui_open = true;
-        }
-        else {
-            display_disable_cursor();
-            ui_open = false;
-        }
-    }
-    else if (do_this == DEBUG_ACTION) {
-        // use this for debugging only
-        debug_action(this);
-    }
-    else if (do_this == TOGGLE_VIEWPOINT) {
-        player->set_viewpoint(!player->viewpoint);
-    }
-    else if (key >= SDLK_1 && key <= SDLK_9) {
-        int to_index = key - SDLK_1;
-        switch_current_item(to_index);
-    }
-    else if (key == SDLK_0) {
-        switch_current_item(9);
-    }
-    else if (key == SDLK_BACKSLASH) {
-        default_item->pushed(Action::DELETE);
+    else {
+        client_receiver.remove_receiver(mount_receiver);
     }
 }
 
@@ -363,25 +266,18 @@ void Client::frame(int ms) {
     for (auto& key : key_toggled) {
         if (key.second) {
             Action do_this = key_to_action[key.first];
-            // see if we're in any vehicle of any sort, then see if it'll accept the key i send
-            toggle_action(do_this);
+            
+            client_receiver.key_callback(do_this, ms);
+            //toggle_action(do_this, ms);
         }
     }
     
     for (auto &key: mouse_toggled) {
         if (key.second) {
             Action do_this = mouse_to_action[key.first];
-            SuperObject* mount = player->get_mount();
-            if (mount) {
-                toggle_action(do_this);
-            }
-            // try capturing the action first with the item bar or story
-            if (bar->get_current()) {
-                // using mouse
-                if (bar->get_current()->clicking(do_this, ms)) {
-                    continue;
-                }
-            }
+            
+            client_receiver.mouse_clicking_callback(do_this, ms);
+            //toggle_action(do_this, ms);
         }
     }
     check_need_update();
@@ -397,6 +293,7 @@ void Client::frame(int ms) {
 void Client::key_callback(int key, int scancode, int action, int mods) {
     if (key == SDLK_DELETE or key == SDLK_p) {
         exit_game();
+        return;
     }
     
     // if toggleable key
@@ -410,53 +307,20 @@ void Client::key_callback(int key, int scancode, int action, int mods) {
     }
     else if (action == SDL_KEYDOWN) {
         Action do_this = key_to_action[key];
-        // see if we're in any vehicle of any sort, then see if it'll accept the key i send
-        SuperObject* mount = player->get_mount();
-        if (mount) {
-            toggle_action(do_this);
-            // TODO do we want to lock out all actions once we're in a mount?
-        }
-        if (bar->get_current()) {
-            if (bar->get_current()->pushed(do_this)) {
-                return;
-            }
-        }
-        key_callback_default(do_this, key);
-        
+        client_receiver.key_callback(do_this, 0);
     }
 }
 
 void Client::mouse_move_callback(double xdiff, double ydiff) {
-    // move the player's direction and then sync it later
-    toggle_player_movement(xdiff, ydiff);
+    client_receiver.mouse_move_callback(xdiff, ydiff);
 }
 
 void Client::mouse_button_callback(int button, int action, int mods) {
     if (action == SDL_MOUSEBUTTONDOWN) {
         Action do_this = mouse_to_action[button];
         mouse_toggled[button] = true;
-        if (ui_open) {
-            double mx, my;
-            display_get_cursor_position(&mx, &my);
-            story->onclick((int)mx, (int)my, do_this);
-        }
-        else {
-            if (BlockTracing::show_item) {
-                Entity* src = BlockTracing::selected->find_top_level_parent();
-                if (BlockTracing::selected->block_mouse_callback(get_player(), do_this, src)) {
-                    return;
-                }
-            }
-            if (bar->get_current()) {
-                // using mouse
-                if (bar->get_current()->clicked(do_this)) {
-                    return;
-                }
-            }
-            if (!player->get_mount()) {
-                default_item->clicked(do_this);
-            }
-        }
+        
+        client_receiver.mouse_clicked_callback(do_this);
     }
     else if (action == SDL_MOUSEBUTTONUP) {
         //Action do_this = mouse_to_action[button];
@@ -465,19 +329,5 @@ void Client::mouse_button_callback(int button, int action, int mods) {
 }
 
 void Client::scroll_callback(double xoffset, double yoffset) {
-    if (ui_open) {
-        if (yoffset < 0) {
-            bar->set_to_right();
-        }
-        else if (yoffset > 0) {
-            bar->set_to_left();
-        }
-    }
-    else {
-        if (yoffset != 0) {
-            double mx, my;
-            display_get_cursor_position(&mx, &my);
-            story->scrolled((int)mx, (int)my, yoffset * 30);
-        }
-    }
+    client_receiver.scroll_callback(xoffset, yoffset);
 }

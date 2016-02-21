@@ -72,11 +72,9 @@ void Engine::step(int ms) {
     world->step(ms);
 }
 
-void Engine::react(Action do_this, Player* player) {
-    
-    // TODO fix this...urgent...how to control frame for a button push
-    int ms = 30;
-    
+void Engine::react(Action do_this, Player* player, int ms) {
+    // TODO THIS IS UNUSED
+    printf("frog\n");
     bool actioned = false;
     SuperObject* mount = player->get_mount();
     if (mount) {

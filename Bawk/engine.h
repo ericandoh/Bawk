@@ -36,7 +36,7 @@ public:
     void stop();
     
     void step(int ms);
-    void react(Action do_this, Player* player);
+    void react(Action do_this, Player* player, int ms);
     
     World* get_world();
     Player* get_player_from(uint32_t pid);

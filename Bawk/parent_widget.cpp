@@ -7,6 +7,7 @@
 //
 
 #include "parent_widget.h"
+#include "display.h"
 
 ParentWidget::ParentWidget(): BaseWidget() {};
 
@@ -72,7 +73,7 @@ void ParentWidget::render_elements() {
 }
 
 // action to do when clicked
-bool ParentWidget::onclick(int mx, int my, int button) {
+bool ParentWidget::onclick(int mx, int my, Action button) {
     // latest widget gets input first
     for (int i = (int)children.size() - 1; i >= 0; i--) {
         if (children.at(i)->is_clicked(mx, my)) {
@@ -82,6 +83,18 @@ bool ParentWidget::onclick(int mx, int my, int button) {
     return false;
 }
 
-bool ParentWidget::onclick(BaseWidget* clicked_child, int mx, int my, int button) {
+bool ParentWidget::onclick(BaseWidget* clicked_child, int mx, int my, Action button) {
     return clicked_child->onclick(mx, my, button);
+}
+
+bool ParentWidget::key_callback(Action do_this, int ms) {
+    if (do_this == CANCEL) {
+        close_latest_child();
+        if (count_children() == 1) {
+            display_disable_cursor();
+        }
+        return true;
+    }
+    // TODO should we transmit the key push to our children?
+    return false;
 }
