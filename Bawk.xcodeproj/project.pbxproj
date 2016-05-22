@@ -79,6 +79,7 @@
 		076410711BC45EA300135EDC /* gametemplate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0764106F1BC45EA300135EDC /* gametemplate.cpp */; };
 		076410741BC48F7B00135EDC /* cursorblock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410721BC48F7B00135EDC /* cursorblock.cpp */; };
 		0764107A1BC48F9B00135EDC /* cursorsuperobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076410781BC48F9B00135EDC /* cursorsuperobject.cpp */; };
+		0764431B1C79787700E0C1AC /* citygenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 076443191C79787700E0C1AC /* citygenerator.cpp */; };
 		0766EAEE1BBF74FD00477144 /* block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAEC1BBF74FD00477144 /* block.cpp */; };
 		0766EAF11BBF75E900477144 /* superobjectrender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0766EAEF1BBF75E900477144 /* superobjectrender.cpp */; };
 		0766EAF51BBF7CDA00477144 /* tiles.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0766EAF41BBF7CDA00477144 /* tiles.png */; };
@@ -295,6 +296,8 @@
 		076410731BC48F7B00135EDC /* cursorblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorblock.h; sourceTree = "<group>"; };
 		076410781BC48F9B00135EDC /* cursorsuperobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cursorsuperobject.cpp; sourceTree = "<group>"; };
 		076410791BC48F9B00135EDC /* cursorsuperobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cursorsuperobject.h; sourceTree = "<group>"; };
+		076443191C79787700E0C1AC /* citygenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = citygenerator.cpp; sourceTree = "<group>"; };
+		0764431A1C79787700E0C1AC /* citygenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = citygenerator.h; sourceTree = "<group>"; };
 		0766EAEC1BBF74FD00477144 /* block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = block.cpp; sourceTree = "<group>"; };
 		0766EAED1BBF74FD00477144 /* block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = block.h; sourceTree = "<group>"; };
 		0766EAEF1BBF75E900477144 /* superobjectrender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = superobjectrender.cpp; sourceTree = "<group>"; };
@@ -478,6 +481,8 @@
 				07B0F9C11C529C6E0001A206 /* biomegenerator.h */,
 				07EADB0C1C5C551D009DDACA /* terraingenerator.cpp */,
 				07EADB0D1C5C551D009DDACA /* terraingenerator.h */,
+				076443191C79787700E0C1AC /* citygenerator.cpp */,
+				0764431A1C79787700E0C1AC /* citygenerator.h */,
 			);
 			name = worldgen;
 			sourceTree = "<group>";
@@ -876,6 +881,7 @@
 				0718F0EF1C6B971C00003974 /* chunk_loader.cpp in Sources */,
 				071BB73E1C18B12900563D4A /* modelactionmovement.cpp in Sources */,
 				072243391C17C98E00B60091 /* spriterender.cpp in Sources */,
+				0764431B1C79787700E0C1AC /* citygenerator.cpp in Sources */,
 				07FA183A1BE5ACAB00C7319C /* worldevent.cpp in Sources */,
 				07D8324F1C63EC5F00471961 /* basicrender.cpp in Sources */,
 				07F858481C2397AB005ACAA9 /* worldweather.cpp in Sources */,

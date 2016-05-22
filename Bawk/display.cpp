@@ -31,6 +31,9 @@
 // debug
 #include "opengl_debug.h"
 
+// remove later (see TODO below)
+#include "engine_accessor.h"
+
 // --- Screen Dimensions ---
 // physical px width on screen
 int window_width = 720;
@@ -454,6 +457,8 @@ int display_run()
         if (current_time > previous_time + TIME_PER_FRAME) {
             uint32_t diff_time = std::min((int)(current_time - previous_time), 100);
             current_display->frame(diff_time);
+            // TODO this won't work for multiplayer, change this to its own thread for multithreading
+            get_engine()->step(diff_time);
             previous_time += diff_time;
             step_threader();
         }
@@ -496,6 +501,9 @@ int display_run()
     }
     
     close_all_threads();
+    
+    // TODO this won't work for multiplayer, change this to its own thread for multithreading
+    get_engine()->stop();
     
     if (!should_exit) {
         // this was called by a call to exit window. close the program

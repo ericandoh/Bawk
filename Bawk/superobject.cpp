@@ -463,6 +463,10 @@ void SuperObject::check_collision_detection_children() {
                     break;
                 counter++;
             }
+            if (counter == 0) {
+                // TODO remove me
+                printf("i'm stuck!\n");
+            }
             if (!collided) {
                 moved_entity->set_pos(start_pos + entity_velocity);
             }

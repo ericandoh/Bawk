@@ -63,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "21"
             endingLineNumber = "21"
-            landmarkName = "debug_action(Game* game)"
+            landmarkName = "debug_action(Client* client)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -154,12 +154,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Bawk/client.cpp"
-            timestampString = "477721018.911661"
+            timestampString = "485621622.145789"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "268"
-            endingLineNumber = "268"
-            landmarkName = "Client::frame(int ms)"
+            startingLineNumber = "314"
+            endingLineNumber = "314"
+            landmarkName = "Client::mouse_move_callback(double xdiff, double ydiff)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Bawk/parent_widget.cpp"
+            timestampString = "485621886.032678"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "ParentWidget::key_callback(Action do_this, int ms)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

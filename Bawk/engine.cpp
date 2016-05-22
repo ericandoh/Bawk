@@ -118,8 +118,6 @@ void Engine::react(Action do_this, Player* player, int ms) {
             
         }
     }
-    
-    
 }
 
 World* Engine::get_world() {

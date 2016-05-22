@@ -169,7 +169,7 @@ bool ItemBar::key_callback(Action do_this, int ms) {
         else if (current->pushed(do_this)) {
             return true;
         }
-        return true;
+        return false;
     }
     return false;
 }

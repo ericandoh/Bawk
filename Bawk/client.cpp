@@ -127,7 +127,6 @@ int Client::init(uint32_t p) {
     mount_receiver = new MountInputReceiver();
     
     client_receiver.add_receiver(game_receiver);
-    client_receiver.add_receiver(bar);
     client_receiver.add_receiver(story);
     
     inventory_ui = new MainInventoryWidget(bar, player->inventory, width / 2, height / 2);

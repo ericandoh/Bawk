@@ -36,7 +36,11 @@ public:
     virtual bool onclick(BaseWidget* clicked_child, int mx, int my, Action button);
     
     // -- InputReceiver ---
+    bool mouse_move_callback(double xdiff, double ydiff) override;
     virtual bool key_callback(Action do_this, int ms) override;
+    virtual bool mouse_clicked_callback(Action do_this) override;
+    virtual bool mouse_clicking_callback(Action do_this, int ms) override;
+    virtual bool scroll_callback(double xdiff, double ydiff) override;
 };
 
 #endif /* defined(__Bawk__parent_widget__) */

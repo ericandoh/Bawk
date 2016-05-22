@@ -87,14 +87,65 @@ bool ParentWidget::onclick(BaseWidget* clicked_child, int mx, int my, Action but
     return clicked_child->onclick(mx, my, button);
 }
 
-bool ParentWidget::key_callback(Action do_this, int ms) {
-    if (do_this == CANCEL) {
-        close_latest_child();
-        if (count_children() == 1) {
-            display_disable_cursor();
-        }
+// --- InputReceiver ---
+bool ParentWidget::mouse_move_callback(double xdiff, double ydiff) {
+    // by default, UI doesn't capture mouse movements
+    if (count_children() > 1) {
         return true;
     }
+    return false;
+}
+
+bool ParentWidget::key_callback(Action do_this, int ms) {
+    if (do_this == CANCEL) {
+        if (count_children() > 1) {
+            close_latest_child();
+            if (count_children() == 1) {
+                display_disable_cursor();
+            }
+            return true;
+        }
+    }
     // TODO should we transmit the key push to our children?
+    for (auto &child: children) {
+        if (child->key_callback(do_this, ms)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ParentWidget::mouse_clicked_callback(Action do_this) {
+    // TODO this is hack, revise to some unified framework instead
+    if (BaseWidget::mouse_clicked_callback(do_this)) {
+        return true;
+    }
+    for (auto &child: children) {
+        if (child->mouse_clicked_callback(do_this)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ParentWidget::mouse_clicking_callback(Action do_this, int ms) {
+    for (auto &child: children) {
+        if (child->mouse_clicking_callback(do_this, ms)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ParentWidget::scroll_callback(double xdiff, double ydiff) {
+    // TODO this is hack
+    if (BaseWidget::scroll_callback(xdiff, ydiff)) {
+        return true;
+    }
+    for (auto &child: children) {
+        if (child->scroll_callback(xdiff, ydiff)) {
+            return true;
+        }
+    }
     return false;
 }
