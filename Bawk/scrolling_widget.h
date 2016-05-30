@@ -26,7 +26,7 @@ public:
     ScrollingWidget(int rw, int rh, int mc, int x, int y, int width, int height);
     void set_max_count(int mc);
     void setup();
-    bool scrolled(int mx, int my, int px) override;
+    
     virtual void refresh();
     BaseWidget* get_child_at(int x, int y);
     void set_child_at(BaseWidget* child, int x, int y);
@@ -35,6 +35,9 @@ public:
     virtual BaseWidget* set_row(int index, BaseWidget* current) = 0;
     virtual BaseWidget* set_row(int row, int col, BaseWidget* current);
     int get_max_rows();
+    
+    // --- BaseWidget ---
+    bool scrolled(int mx, int my, int px) override;
     virtual void render_elements() override;
 };
 

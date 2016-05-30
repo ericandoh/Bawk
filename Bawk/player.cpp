@@ -123,7 +123,7 @@ void Player::set_mount(SuperObject* m, fvec3 rwc) {
     can_collide = false;
     printf_fvec3(get_world_pos());
     
-    get_client()->toggle_mount_ui(true);
+    toggle_mount(true);
 }
 
 bool Player::unmount() {
@@ -147,7 +147,7 @@ bool Player::unmount() {
     printf_fvec3(get_world_pos());
     get_world()->add_entity(this);
     
-    get_client()->toggle_mount_ui(false);
+    toggle_mount(false);
 
     return true;
 }

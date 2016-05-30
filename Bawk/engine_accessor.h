@@ -12,7 +12,10 @@
 #include <stdio.h>
 #include "engine.h"
 
+class World;
+
 void set_engine(Engine* engine);
 Engine* get_engine();
+World* get_engine_world();
 
 #endif /* defined(__Bawk__engine_accessor__) */

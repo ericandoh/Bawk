@@ -10,9 +10,9 @@
 #define __Bawk__mount_input_receiver__
 
 #include <stdio.h>
-#include "input_receiver.h"
+#include "displayable.h"
 
-class MountInputReceiver: public InputReceiver {
+class MountInputReceiver: public Displayable {
 protected:
     bool has_mount();
 public:

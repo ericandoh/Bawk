@@ -43,6 +43,34 @@ void Engine::stop() {
     world_free_resources();
 }
 
+void Engine::register_player(uint32_t pid) {
+    Player* player = get_player_from(pid);
+    if (player) {
+        // this player is already registered and in-game
+        return;
+    }
+    // create the player for the game
+    player = new Player(pid);
+    get_world()->add_player(player);
+    players.push_back(player);
+    // set its position at spawn
+    // TODO ^
+}
+
+void Engine::deregister_player(uint32_t pid) {
+    // TODO do more than just remove the player, lol
+    Player* player = get_player_from(pid);
+    player->unmount();
+    // save player to disk
+    player->save_selfs();
+    // remove player from list of actives
+    for (int i = 0; i < players.size(); i++) {
+        if (players[i]->pid == pid) {
+            players.erase(players.begin()+i);
+        }
+    }
+}
+
 int Engine::load_game_data() {
     IODataObject read(get_path_to_game());
     if (read.read()) {

@@ -21,12 +21,15 @@ public:
     ParentWidget();
     ParentWidget(int x, int y, int width, int height);
     ParentWidget(int width, int height);
+    
     void add_child(BaseWidget* child);
     void close_child(BaseWidget* child);
     bool has_child(BaseWidget* child);
     void toggle_child(BaseWidget* child);
     void close_latest_child();
     int count_children();
+    
+    // --- BaseWidget ---
     // called when this is scrolled
     virtual bool scrolled(int mx, int my, int px) override;
     // render the children
@@ -35,12 +38,8 @@ public:
     bool onclick(int mx, int my, Action button) override;
     virtual bool onclick(BaseWidget* clicked_child, int mx, int my, Action button);
     
-    // -- InputReceiver ---
-    bool mouse_move_callback(double xdiff, double ydiff) override;
+    // -- Displayable ---
     virtual bool key_callback(Action do_this, int ms) override;
-    virtual bool mouse_clicked_callback(Action do_this) override;
-    virtual bool mouse_clicking_callback(Action do_this, int ms) override;
-    virtual bool scroll_callback(double xdiff, double ydiff) override;
 };
 
 #endif /* defined(__Bawk__parent_widget__) */

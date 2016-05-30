@@ -42,7 +42,7 @@ class ScrollInventoryWidget: public ScrollingWidget {
     ItemBar* itembar;
     int total_count;
 public:
-    ScrollInventoryWidget(ItemBar* ib, InventoryButtonAction t, PlayerInventory* inv,
+    ScrollInventoryWidget(ItemBar* ib, InventoryButtonAction t,
                           int rw, int rh, int mr,
                           int x, int y, int width, int height);
     ~ScrollInventoryWidget();
@@ -56,7 +56,7 @@ public:
 class MainInventoryWidget: public ParentWidget {
     InventoryButtonAction current_view;
 public:
-    MainInventoryWidget(ItemBar* ib, PlayerInventory* inv, int width, int height);
+    MainInventoryWidget(ItemBar* ib, int width, int height);
     ~MainInventoryWidget();
     void refresh();
     void switch_view(InventoryButtonAction action);

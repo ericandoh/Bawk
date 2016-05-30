@@ -13,11 +13,13 @@
 #include "cursorscantool.h"
 
 #include "client_accessor.h"
+#include "game_window_holder.h"
+#include "inventory_widget.h"
 
 const int STATIC_BAR_ELEMENTS = 3;
 
-ItemBar::ItemBar(PlayerInventory* inv, int width, int height): ParentWidget(width, height) {
-    inventory = inv;
+ItemBar::ItemBar(int width, int height): ParentWidget(width, height) {
+    inventory = get_player()->inventory;
     // pixel distance between each barlet
     int gaps_per_barlet = 1;
     // distance sum of all gaps we need
@@ -125,6 +127,7 @@ bool ItemBar::key_callback(Action do_this, int ms) {
         set_index(to_index);
     }
     else if (current) {
+        // TODO move this. this should be handled in the game
         if (do_this == CONFIRM) {
             return current->confirmed();
         }
@@ -162,34 +165,14 @@ bool ItemBar::key_callback(Action do_this, int ms) {
         }
         else if (do_this == SAVE_TEMPLATE) {
             get_player()->inventory->add_custom(current->info);
-            if (get_client()->story->has_child(get_client()->inventory_ui)) {
-                get_client()->inventory_ui->refresh();
+            if (get_client()->game_window_holder->has_child(get_inventory_widget())) {
+                get_inventory_widget()->refresh();
             }
         }
         else if (current->pushed(do_this)) {
             return true;
         }
         return false;
-    }
-    return false;
-}
-
-bool ItemBar::mouse_clicked_callback(Action do_this) {
-    CursorItem* current = get_current();
-    if (current) {
-        if (current->clicked(do_this)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool ItemBar::mouse_clicking_callback(Action do_this, int ms) {
-    CursorItem* current = get_current();
-    if (current) {
-        if (current->clicking(do_this, ms)) {
-            return true;
-        }
     }
     return false;
 }

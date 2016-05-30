@@ -87,7 +87,7 @@ bool CursorScanTool::confirmed() {
         }
         // TOFU what if inventory is open and this gets executed...?
         get_player()->inventory->add_custom(info);
-        get_client()->set_first_available(object);
+        get_item_bar()->set_first_available(object);
         current_stage = ScanStages::SETTING_LOWER;
     }
     else if (current_stage == ScanStages::EXTENDED) {

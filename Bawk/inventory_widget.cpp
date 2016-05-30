@@ -8,6 +8,7 @@
 
 #include "inventory_widget.h"
 #include "worldrender.h"
+#include "client_accessor.h"
 
 SwitchInventoryButton::SwitchInventoryButton(MainInventoryWidget* o,
                                              InventoryButtonAction b,
@@ -80,12 +81,12 @@ void SwitchInventoryButton::render_elements() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-ScrollInventoryWidget::ScrollInventoryWidget(ItemBar* ib, InventoryButtonAction t, PlayerInventory* inv,
+ScrollInventoryWidget::ScrollInventoryWidget(ItemBar* ib, InventoryButtonAction t,
                                              int rw, int rh, int mr,
                                              int x, int y, int width, int height):
 ScrollingWidget(rw, rh, mr, x, y, width, height) {
     itembar = ib;
-    inventory = inv;
+    inventory = get_player()->inventory;
     fetch = t;
     maxrows = 0;
     total_count = 0;
@@ -184,7 +185,7 @@ void ScrollInventoryWidget::refresh() {
     ScrollingWidget::refresh();
 }
 
-MainInventoryWidget::MainInventoryWidget(ItemBar* ib, PlayerInventory* inv,
+MainInventoryWidget::MainInventoryWidget(ItemBar* ib,
                                          int width, int height): ParentWidget(width, height) {
     current_view = InventoryButtonAction::SETUP;
     
@@ -212,7 +213,7 @@ MainInventoryWidget::MainInventoryWidget(ItemBar* ib, PlayerInventory* inv,
     int rw = width / 8;
     int rh = rw;
     
-    ScrollInventoryWidget* scrolling = new ScrollInventoryWidget(ib, InventoryButtonAction::SETUP, inv, rw, rh, 0, x, y, width, scrh);
+    ScrollInventoryWidget* scrolling = new ScrollInventoryWidget(ib, InventoryButtonAction::SETUP, rw, rh, 0, x, y, width, scrh);
     scrolling->setup();
     add_child(scrolling);
 }

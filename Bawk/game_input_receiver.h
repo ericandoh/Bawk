@@ -10,12 +10,19 @@
 #define __Bawk__game_input_receiver__
 
 #include <stdio.h>
-#include "input_receiver.h"
+#include "displayable.h"
 
-class GameInputReceiver: public InputReceiver {
+class CursorSelector;
+
+class GameInputReceiver: public Displayable {
+    CursorSelector* default_item;
 protected:
     float get_player_speed(int ms);
 public:
+    // --- Displayable ---
+    void init() override;
+    void cleanup() override;
+    
     bool key_callback(Action do_this, int ms) override;
     bool mouse_move_callback(double xdiff, double ydiff) override;
     bool mouse_clicked_callback(Action do_this) override;

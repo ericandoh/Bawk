@@ -29,9 +29,9 @@
 #include <stdio.h>
 #include "importopengl.h"
 #include "basic_types.h"
-#include "input_receiver.h"
+#include "displayable.h"
 
-class BaseWidget: public InputReceiver {
+class BaseWidget: public Displayable {
 public:
     int x, y, width, height;
     BaseWidget();
@@ -39,21 +39,28 @@ public:
     BaseWidget(int x, int y, int width, int height);
     // makes the widget below, but keeps it centered
     BaseWidget(int width, int height);
+    
     void set_dimensions(int x, int y, int width, int height);
-    // renders the widget, making sure to set the viewport
-    void render();
+    
     // sees if a press at mx, my clicked this widget
     bool is_clicked(int mx, int my);
+    
     // called when this is scrolled
     virtual bool scrolled(int mx, int my, int px) EMPTY_BOOL_FUNCTION;
+    
     // this should be overriden
     virtual void render_elements() = 0;
+    
     // action to do when clicked
     virtual bool onclick(int mx, int my, Action button) EMPTY_BOOL_FUNCTION;
     
-    // --- InputReceiver ---
-    virtual bool mouse_clicked_callback(Action do_this) override;
-    bool scroll_callback(double xdiff, double ydiff) override;
+    // --- Displayable ---
+    void render() override;                                     // see render_elements
+    
+    bool mouse_move_callback(double xdiff, double ydiff) override EMPTY_BOOL_FUNCTION;  // UI elements don't support this
+    bool mouse_clicked_callback(Action do_this) override;       // see on_clicked
+    bool mouse_clicking_callback(Action do_this, int ms) override EMPTY_BOOL_FUNCTION;  // UI elements don't support this
+    bool scroll_callback(double xdiff, double ydiff) override;  // see scrolled
 };
 
 #endif /* defined(__Bawk__base_widget__) */

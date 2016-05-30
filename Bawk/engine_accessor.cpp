@@ -17,3 +17,7 @@ void set_engine(Engine* engine) {
 Engine* get_engine() {
     return current_engine;
 }
+
+World* get_engine_world() {
+    return current_engine->get_world();
+}

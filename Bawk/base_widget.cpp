@@ -46,11 +46,6 @@ void BaseWidget::set_dimensions(int x, int y, int width, int height) {
     this->height = height;
 }
 
-void BaseWidget::render() {
-    glViewport(x, y, width, height);
-    render_elements();
-}
-
 bool BaseWidget::is_clicked(int mx, int my) {
     if (mx >= x && my >= y && mx <= (x + width) && my <= (y + height)) {
         printf("Clicked at %d %d\n", mx, my);
@@ -60,6 +55,11 @@ bool BaseWidget::is_clicked(int mx, int my) {
 }
 
 // --- InputReceiver ---
+void BaseWidget::render() {
+    glViewport(x, y, width, height);
+    render_elements();
+}
+
 bool BaseWidget::mouse_clicked_callback(Action do_this) {
     double mx, my;
     display_get_cursor_position(&mx, &my);

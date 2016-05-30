@@ -35,6 +35,9 @@ public:
     int start(std::string world_name);
     void stop();
     
+    void register_player(uint32_t pid);
+    void deregister_player(uint32_t pid);
+    
     void step(int ms);
     void react(Action do_this, Player* player, int ms);
     

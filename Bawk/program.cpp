@@ -11,7 +11,7 @@
 #include "display.h"
 #include "displayable.h"
 
-#include "game_single.h"
+#include "client.h"
 
 #include "client_accessor.h"
 #include "engine_accessor.h"
@@ -27,6 +27,7 @@ void failed_init() {
 
 // sets up then renders a display
 void start_display() {
+    clear_displayables();
     switch (current) {
         case TITLE: {
             /*
@@ -43,17 +44,22 @@ void start_display() {
             break;
         }
         case SP_GAME: {
-            GameSP client_and_server = GameSP();
-            set_engine(&client_and_server);
-            set_client(&client_and_server);
-            if (client_and_server.start("testworld")) {
+            Client client = Client();
+            Engine engine = Engine();
+            set_engine(&engine);
+            set_client(&client);
+            setup_for_singleplayer();
+            if (engine.start("testworld")) {
                 failed_init();
             }
             uint32_t player_id = 1;
-            client_and_server.init(player_id);
-            set_current_displayable(&client_and_server);
+            
+            register_player(player_id);
+            client.init();
+            add_displayable(&client);
             // loop to run the game
             display_run();
+            deregister_current_player();
             break;
         }
         case MP_GAME: {
@@ -105,9 +111,9 @@ int run_game() {
     
     // if simply switching, display_run will return 0
     // if exitting game, return something else which will trigger program to end
-    while (current != EXIT) {
-        start_display();
-    }
+    //while (current != EXIT) {
+    start_display();
+    //}
     display_close();
     return 0;
 }

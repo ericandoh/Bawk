@@ -24,16 +24,26 @@
 #ifndef Bawk_displayable_h
 #define Bawk_displayable_h
 
+#include "basic_types.h"
+#include "game_actions.h"
+
 class Displayable {
 public:
-    virtual void render() = 0;
-    virtual void render_lights() { };
-    virtual void render_shadows() { };
-    virtual void frame(int ms) = 0;
-    virtual void key_callback(int key, int scancode, int action, int mods) = 0;
-    virtual void mouse_move_callback(double xdiff, double ydiff) = 0;
-    virtual void mouse_button_callback(int button, int action, int mods) = 0;
-    virtual void scroll_callback(double xoffset, double yoffset) = 0;
+    virtual void init() EMPTY_FUNCTION;
+    virtual void cleanup() EMPTY_FUNCTION;
+    
+    virtual void render() EMPTY_FUNCTION;
+    virtual void render_lights() EMPTY_FUNCTION;
+    virtual void render_shadows() EMPTY_FUNCTION;
+    
+    virtual void frame(int ms) EMPTY_FUNCTION;
+    
+    virtual bool key_callback(Action do_this, int ms) EMPTY_BOOL_FUNCTION;
+    virtual bool mouse_move_callback(double xdiff, double ydiff) EMPTY_BOOL_FUNCTION;
+    virtual bool mouse_clicked_callback(Action do_this) EMPTY_BOOL_FUNCTION;
+    virtual bool mouse_clicking_callback(Action do_this, int ms) EMPTY_BOOL_FUNCTION;
+    virtual bool scroll_callback(double xdiff, double ydiff) EMPTY_BOOL_FUNCTION;
 };
+
 
 #endif

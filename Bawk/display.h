@@ -31,7 +31,9 @@ void display_disable_cursor();
 void display_get_cursor_position(double* x, double* y);
 
 int init_display();
-void set_current_displayable(Displayable* display);
+void add_displayable(Displayable* display);
+void clear_displayables();
+
 void display_close();
 void close_render_loop();
 

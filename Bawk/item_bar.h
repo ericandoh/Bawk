@@ -35,7 +35,7 @@ class ItemBar: public ParentWidget {
     int index;
     PlayerInventory* inventory;
 public:
-    ItemBar(PlayerInventory* inv, int width, int height);
+    ItemBar(int width, int height);
     ~ItemBar();
     CursorItem* get_current();
     bool can_set_current();
@@ -49,8 +49,6 @@ public:
     
     // --- InputReceiver ---
     bool key_callback(Action do_this, int ms) override;
-    bool mouse_clicked_callback(Action do_this) override;
-    bool mouse_clicking_callback(Action do_this, int ms) override;
 };
 
 #endif /* defined(__Bawk__item_bar__) */
