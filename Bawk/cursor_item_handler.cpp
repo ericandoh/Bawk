@@ -40,3 +40,7 @@ bool CursorItemHandler::mouse_clicking_callback(Action do_this, int ms) {
     }
     return false;
 }
+
+bool CursorItemHandler::scroll_callback(double xdiff, double ydiff) {
+    return get_item_bar()->scroll_callback(xdiff, ydiff);
+}

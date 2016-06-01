@@ -120,6 +120,15 @@ void ItemBar::set_first_available(CursorItem* item) {
     ((ItemBarlet*)children[i])->set_cursor_item(item);
 }
 
+bool ItemBar::scrolled(int mx, int my, int px) {
+    if (px > 0) {
+        set_to_left();
+    } else {
+        set_to_right();
+    }
+    return true;
+}
+
 bool ItemBar::key_callback(Action do_this, int ms) {
     CursorItem* current = get_current();
     if (do_this >= KEY0 && do_this <= KEY9) {

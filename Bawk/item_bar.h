@@ -47,6 +47,9 @@ public:
     
     void set_first_available(CursorItem* item);
     
+    // --- BaseWidget ---
+    bool scrolled(int mx, int my, int px) override;
+    
     // --- InputReceiver ---
     bool key_callback(Action do_this, int ms) override;
 };

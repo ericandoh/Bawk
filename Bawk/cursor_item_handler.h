@@ -22,6 +22,7 @@ public:
     bool key_callback(Action do_this, int ms) override;
     bool mouse_clicked_callback(Action do_this) override;
     bool mouse_clicking_callback(Action do_this, int ms) override;
+    bool scroll_callback(double xdiff, double ydiff) override;
 };
 
 #endif /* defined(__Bawk__cursor_item_handler__) */
