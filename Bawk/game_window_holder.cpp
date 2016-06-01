@@ -59,6 +59,11 @@ void GameWindowHolder::init() {
     
 }
 
+bool GameWindowHolder::mouse_move_callback(double xdiff, double ydiff) {
+    // if cursor is free, capture this event
+    return is_cursor_free;
+}
+
 bool GameWindowHolder::key_callback(Action do_this, int ms) {
     if (do_this == CANCEL) {
         if (count_children() > STATIC_UI_ELEMENT_COUNT) {

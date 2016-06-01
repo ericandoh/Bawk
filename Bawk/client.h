@@ -10,7 +10,6 @@
 #define __Bawk__client__
 
 #include <stdio.h>
-#include "displayable.h"
 
 // UI imports
 #include "item_bar.h"
@@ -27,13 +26,12 @@
 class CursorItem;
 class GameWindowHolder;
 class GameInputReceiver;
+class CursorItemHandler;
 
-class Client: public Displayable {
+class Client: public InputMultiplexer {
     
     // used for updating player pos/chunk loading
     fvec3 last_player_pos;
-    
-    InputMultiplexer client_receiver;
     GameInputReceiver* game_receiver;
 
 protected:
@@ -47,7 +45,11 @@ public:
     // sprites
     SpriteManager sprite_manager;
     
+    // mount input receiver
     MountInputReceiver* mount_receiver;
+    
+    // cursor item receiver
+    CursorItemHandler* cursor_handler;
     
     // --- Client ---
     void toggle_mount_ui(bool mounted);
@@ -64,12 +66,6 @@ public:
     void render_lights() override;
     void render_shadows() override;
     void frame(int ms) override;
-    
-    bool key_callback(Action do_this, int ms) override;
-    bool mouse_move_callback(double xdiff, double ydiff) override;
-    bool mouse_clicked_callback(Action do_this) override;
-    bool mouse_clicking_callback(Action do_this, int ms) override;
-    bool scroll_callback(double xdiff, double ydiff) override;
 };
 
 #endif /* defined(__Bawk__client__) */

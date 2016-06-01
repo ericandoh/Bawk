@@ -27,7 +27,6 @@ void failed_init() {
 
 // sets up then renders a display
 void start_display() {
-    clear_displayables();
     switch (current) {
         case TITLE: {
             /*
@@ -56,7 +55,7 @@ void start_display() {
             
             register_player(player_id);
             client.init();
-            add_displayable(&client);
+            set_displayable(&client);
             // loop to run the game
             display_run();
             deregister_current_player();

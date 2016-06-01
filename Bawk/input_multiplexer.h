@@ -24,15 +24,15 @@ public:
     void pop_receiver();
     
     // --- Displayable ---
-    void init() override;
-    void cleanup() override;
+    virtual void init() override;
+    virtual void cleanup() override;
     
-    void render() override;
+    virtual void render() override;
     // the below 2 might be unused...
-    void render_lights() override;
-    void render_shadows() override;
+    virtual void render_lights() override;
+    virtual void render_shadows() override;
     
-    void frame(int ms) override;
+    virtual void frame(int ms) override;
     
     bool key_callback(Action do_this, int ms) override;
     bool mouse_move_callback(double xdiff, double ydiff) override;

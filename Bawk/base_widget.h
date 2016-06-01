@@ -57,7 +57,7 @@ public:
     // --- Displayable ---
     void render() override;                                     // see render_elements
     
-    bool mouse_move_callback(double xdiff, double ydiff) override EMPTY_BOOL_FUNCTION;  // UI elements don't support this
+    virtual bool mouse_move_callback(double xdiff, double ydiff) override EMPTY_BOOL_FUNCTION;  // UI elements don't support this
     bool mouse_clicked_callback(Action do_this) override;       // see on_clicked
     bool mouse_clicking_callback(Action do_this, int ms) override EMPTY_BOOL_FUNCTION;  // UI elements don't support this
     bool scroll_callback(double xdiff, double ydiff) override;  // see scrolled

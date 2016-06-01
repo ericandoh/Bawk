@@ -35,6 +35,7 @@ public:
     // --- Displayable ---
     void init() override;
     
+    bool mouse_move_callback(double xdiff, double ydiff) override;
     bool key_callback(Action do_this, int ms) override;
 };
 

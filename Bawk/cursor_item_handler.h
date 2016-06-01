@@ -15,10 +15,7 @@
 class ItemBar;
 
 class CursorItemHandler: public Displayable {
-    ItemBar* item_bar;
 public:
-    void set_item_bar(ItemBar* reference);
-    
     // --- Displayable ---
     void frame(int ms) override;
     

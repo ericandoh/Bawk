@@ -8,20 +8,17 @@
 
 #include "cursor_item_handler.h"
 #include "item_bar.h"
-
-void CursorItemHandler::set_item_bar(ItemBar *reference) {
-    item_bar = reference;
-}
+#include "client_accessor.h"
 
 void CursorItemHandler::frame(int ms) {
-    CursorItem* cursor_item = item_bar->get_current();
+    CursorItem* cursor_item = get_item_bar()->get_current();
     if (cursor_item) {
         cursor_item->step(ms);
     }
 }
 
 bool CursorItemHandler::key_callback(Action do_this, int ms) {
-    CursorItem* cursor_item = item_bar->get_current();
+    CursorItem* cursor_item = get_item_bar()->get_current();
     if (cursor_item) {
         return cursor_item->pushed(do_this);
     }
@@ -29,7 +26,7 @@ bool CursorItemHandler::key_callback(Action do_this, int ms) {
 }
 
 bool CursorItemHandler::mouse_clicked_callback(Action do_this) {
-    CursorItem* cursor_item = item_bar->get_current();
+    CursorItem* cursor_item = get_item_bar()->get_current();
     if (cursor_item) {
         return cursor_item->clicked(do_this);
     }
@@ -37,7 +34,7 @@ bool CursorItemHandler::mouse_clicked_callback(Action do_this) {
 }
 
 bool CursorItemHandler::mouse_clicking_callback(Action do_this, int ms) {
-    CursorItem* cursor_item = item_bar->get_current();
+    CursorItem* cursor_item = get_item_bar()->get_current();
     if (cursor_item) {
         return cursor_item->clicking(do_this, ms);
     }

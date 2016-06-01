@@ -21,6 +21,7 @@
 // input/output
 #include "game_input_receiver.h"
 #include "game_window_holder.h"
+#include "cursor_item_handler.h"
 
 #include "program.h"
 
@@ -33,7 +34,6 @@
 #include "engine_accessor.h"
 
 void Client::init() {
-    
     // --- PLAYER POS ---
     // update player pos and render scoped variables
     last_player_pos = get_player()->get_viewpoint();
@@ -45,22 +45,21 @@ void Client::init() {
     // --- Game Inputs ---
     game_receiver = new GameInputReceiver();
     mount_receiver = new MountInputReceiver();
+    cursor_handler = new CursorItemHandler();
     
-    client_receiver = InputMultiplexer();
-    
-    client_receiver.add_receiver(game_receiver);
-    client_receiver.add_receiver(game_window_holder);
-    client_receiver.add_receiver(mount_receiver);
-    
-    client_receiver.init();
-    
-    
+    // last receiver added is checked first
+    add_receiver(game_receiver);
+    add_receiver(cursor_handler);
+    add_receiver(game_window_holder);
+
     // --- SPRITE MANAGER ---
     sprite_manager = SpriteManager();
+    
+    InputMultiplexer::init();
 }
 
 void Client::cleanup() {
-    client_receiver.cleanup();
+    InputMultiplexer::cleanup();
     delete game_receiver;
     delete mount_receiver;
     delete game_window_holder;
@@ -76,10 +75,10 @@ void Client::check_need_update() {
 
 void Client::toggle_mount_ui(bool mounted) {
     if (mounted) {
-        client_receiver.add_receiver(mount_receiver);
+        add_receiver(mount_receiver);
     }
     else {
-        client_receiver.remove_receiver(mount_receiver);
+        remove_receiver(mount_receiver);
     }
 }
 
@@ -116,7 +115,7 @@ void Client::render_ui() {
     glDisable(GL_DEPTH_TEST);
     // render the cursor
     get_player()->render();
-    client_receiver.render();
+    InputMultiplexer::render();
 }
 
 void Client::render() {
@@ -190,24 +189,4 @@ void Client::frame(int ms) {
     if (get_item_bar()->get_current()) {
         get_item_bar()->get_current()->step(ms);
     }
-}
-
-bool Client::key_callback(Action do_this, int ms) {
-    return client_receiver.key_callback(do_this, ms);
-}
-
-bool Client::mouse_move_callback(double xdiff, double ydiff) {
-    return client_receiver.mouse_move_callback(xdiff, ydiff);
-}
-
-bool Client::mouse_clicked_callback(Action do_this) {
-    return client_receiver.mouse_clicked_callback(do_this);
-}
-
-bool Client::mouse_clicking_callback(Action do_this, int ms) {
-    return client_receiver.mouse_clicking_callback(do_this, ms);
-}
-
-bool Client::scroll_callback(double xoffset, double yoffset) {
-    return client_receiver.scroll_callback(xoffset, yoffset);
 }

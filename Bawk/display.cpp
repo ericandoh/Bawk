@@ -72,7 +72,7 @@ double max_mouse_movement = 100;
 double mouse_speed = 1.0;
 
 // --- Current Displayable ---
-std::vector<Displayable*> display_elements;
+Displayable* current_display;
 
 // --- Exit Flag ---
 bool should_exit = 0;
@@ -120,11 +120,7 @@ void key_callback(int key, int scancode, int action, int mods) {
         }
     } else if (action == SDL_KEYDOWN) {
         Action do_this = getKeyActionFrom(key);
-        for (Displayable* displayable: display_elements) {
-            if (displayable->key_callback(do_this, 0)) {
-                return;
-            }
-        }
+        current_display->key_callback(do_this, 0);
     }
 }
 
@@ -150,11 +146,7 @@ void mouse_move_callback(double xpos, double ypos) {
     
     int width, height;
     get_window_size(&width, &height);
-    for (Displayable* displayable: display_elements) {
-        if (displayable->mouse_move_callback(xdiff / width * mouse_speed, ydiff / height * mouse_speed)) {
-            return;
-        }
-    }
+    current_display->mouse_move_callback(xdiff / width * mouse_speed, ydiff / height * mouse_speed);
 }
 
 void mouse_button_callback(int button, int action, int mods) {
@@ -168,20 +160,12 @@ void mouse_button_callback(int button, int action, int mods) {
     }
     if (action == SDL_MOUSEBUTTONDOWN) {
         Action do_this = getMouseActionFrom(button);
-        for (Displayable* displayable: display_elements) {
-            if (displayable->mouse_clicked_callback(do_this)) {
-                return;
-            }
-        }
+        current_display->mouse_clicked_callback(do_this);
     }
 }
 
 void scroll_callback(double xoffset, double yoffset) {
-    for (Displayable* displayable: display_elements) {
-        if (displayable->scroll_callback(xoffset, yoffset)) {
-            return;
-        }
-    }
+    current_display->scroll_callback(xoffset, yoffset);
 }
 
 // --- INIT ---
@@ -259,17 +243,14 @@ int init_display() {
     init_string_resources();
     // set up some shaders
     world_load_resources();
+    // init key mappings
+    initInputMapping();
     
     return 0;
 }
 
-void add_displayable(Displayable* display) {
-    display_elements.push_back(display);
-}
-
-void clear_displayables() {
-    // TODO memory leak here. free each display element
-    display_elements.clear();
+void set_displayable(Displayable* display) {
+    current_display = display;
 }
 
 void close_render_loop() {
@@ -315,9 +296,7 @@ void render_geometry() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     OGLAttr::current_shader->set_shader_intensity(0.5f); // this needs to be deprecated/changed
     check_for_error();
-    for (Displayable* displayable: display_elements) {
-        displayable->render();
-    }
+    current_display->render();
     check_for_error();
     //glFinish();
     
@@ -332,9 +311,7 @@ void render_geometry() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     OGLAttr::current_shader->set_shader_intensity(0.5f); // this needs to be deprecated/changed
     check_for_error();
-    for (Displayable* displayable: display_elements) {
-        displayable->render();
-    }
+    current_display->render();
     //glFinish();
     check_for_error();
 }
@@ -359,9 +336,7 @@ void render_shadowmetry() {
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     check_for_error();
-    for (Displayable* displayable: display_elements) {
-        displayable->render_shadows();
-    }
+    current_display->render_shadows();
     //glFinish();
     check_for_error();
 }
@@ -465,9 +440,7 @@ void render_lights() {
    	glBlendFunc(GL_ONE, GL_ONE);
     
     set_lighting_screen_size(wwidth, wheight);
-    for (Displayable* displayable: display_elements) {
-        displayable->render_lights();
-    }
+    current_display->render_lights();
     
     // for debugging only
     //render_shadowmap();
@@ -508,10 +481,8 @@ int display_run()
         uint32_t current_time = get_current_time();
         if (current_time > previous_time + TIME_PER_FRAME) {
             uint32_t diff_time = std::min((int)(current_time - previous_time), 100);
-            for (Displayable* displayable: display_elements) {
-                stepInput(displayable, diff_time);
-                displayable->frame(diff_time);
-            }
+            stepInput(current_display, diff_time);
+            current_display->frame(diff_time);
             // TODO this won't work for multiplayer, change this to its own thread for multithreading
             get_engine()->step(diff_time);
             previous_time += diff_time;
